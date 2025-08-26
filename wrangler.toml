@@ -1,8 +1,8 @@
-name = "ryan-polasky-portfolio"
+name = "ryanpolasky-website"
 compatibility_date = "2025-08-26"
 
 [env.production]
-name = "ryan-polasky-portfolio"
+name = "ryanpolasky-website"
 
 # Static site configuration
 pages_build_output_dir = "."
