@@ -29,7 +29,6 @@
               mono: ['JetBrains Mono', 'Menlo', 'Monaco', 'Courier New', 'monospace']
             },
             colors: {
-              // Professional dark theme
               bg: {
                 DEFAULT: '#0a0a0b',
                 soft: '#141416',
@@ -47,7 +46,6 @@
                 green: 'var(--accent-light, #6ba3e8)',
                 purple: 'var(--accent-dark, #3a7bc8)',
                 orange: 'var(--accent-glow, rgba(74, 144, 226, 0.8))',
-                gray: '#8e8e93',
               },
             },
             animation: {
@@ -92,16 +90,11 @@
               }
             },
             boxShadow: {
-              'glow-blue': '0 0 30px rgba(74, 144, 226, 0.2)',
-              'glow-green': '0 0 30px rgba(112, 192, 184, 0.2)',
-              'glow-purple': '0 0 30px rgba(139, 126, 200, 0.2)',
-              'inner-glow': 'inset 0 0 15px rgba(74, 144, 226, 0.1)',
-              'professional': '0 0 15px rgba(74, 144, 226, 0.3), 0 0 30px rgba(74, 144, 226, 0.1)',
+              'glow': '0 0 30px var(--accent-glow)',
+              'inner-glow': 'inset 0 0 15px var(--accent-glow)',
             },
             backgroundImage: {
-              'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-              'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-              'professional-grid': 'linear-gradient(rgba(74, 144, 226, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(74, 144, 226, 0.05) 1px, transparent 1px)',
+              'grid': 'linear-gradient(var(--accent-glow) 1px, transparent 1px), linear-gradient(90deg, var(--accent-glow) 1px, transparent 1px)',
             }
           },
         },
@@ -167,25 +160,20 @@
         left: 100%;
       }
 
-      /* Professional grid */
-      .professional-grid {
+      /* Grid background */
+      .grid-bg {
         background-image:
           linear-gradient(var(--accent-glow) 1px, transparent 1px),
           linear-gradient(90deg, var(--accent-glow) 1px, transparent 1px);
         background-size: 50px 50px;
       }
 
-      /* Professional gradient text */
-      .holo-text {
+      /* Gradient text */
+      .gradient-text {
         background: linear-gradient(135deg, var(--accent-color), var(--accent-light));
         -webkit-background-clip: text;
         background-clip: text;
         -webkit-text-fill-color: transparent;
-      }
-
-      @keyframes gradient-shift {
-        0%, 100% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
       }
 
       /* Neon glow effects */
@@ -406,15 +394,15 @@
     <!-- Matrix Background -->
     <div class="matrix-bg"></div>
 
-    <!-- Professional Grid Overlay -->
-    <div class="fixed inset-0 professional-grid opacity-3 pointer-events-none"></div>
+    <!-- Grid Overlay -->
+    <div class="fixed inset-0 grid-bg opacity-[0.3] pointer-events-none"></div>
 
     <!-- Header -->
     <header class="sticky top-0 z-50 glass">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
           <a href="#home" class="font-black tracking-tight text-2xl">
-            <span class="holo-text">Ryan</span><span class="text-accent animate-pulse">.</span>
+            <span class="gradient-text">Ryan</span><span class="text-accent animate-pulse">.</span>
           </a>
           <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
             <a data-scroll="home" href="#home" class="relative hover:text-accent transition-colors px-2 py-1 rounded">Home</a>
@@ -447,7 +435,7 @@
             </div>
 
             <a href="https://github.com/ryanpolasky" target="_blank" rel="noreferrer"
-               class="p-2 rounded-xl glass hover:shadow-glow-pink transition-all hover-lift" aria-label="GitHub">
+               class="p-2 rounded-xl glass hover:shadow-glow transition-all hover-lift" aria-label="GitHub">
               <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 .5a12 12 0 0 0-3.79 23.4c.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.74.08-.73.08-.73 1.2.09 1.83 1.23 1.83 1.23 1.07 1.83 2.81 1.3 3.5.99.11-.78.42-1.3.76-1.6-2.66-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.16 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.3-1.55 3.3-1.23 3.3-1.23.66 1.64.24 2.86.12 3.16.77.84 1.24 1.9 1.24 3.22 0 4.61-2.81 5.62-5.49 5.92.43.37.82 1.1.82 2.22v3.29c0 .32.21.69.83.57A12 12 0 0 0 12 .5Z"/>
               </svg>
@@ -474,7 +462,7 @@
 
             <h1 class="text-5xl sm:text-7xl font-black tracking-tight leading-none mb-8">
               <span class="block">Hey, I'm</span>
-                <span class="holo-text">Ryan</span><span class="text-accent animate-pulse">.</span>
+                <span class="gradient-text">Ryan</span><span class="text-accent animate-pulse">.</span>
               <span class="block text-2xl sm:text-3xl font-normal mt-4">
                 I like to build cool things :)
               </span>
@@ -482,9 +470,9 @@
 
             <p class="text-xl text-slate-300 max-w-2xl mb-8 leading-relaxed">
               Junior Software Engineer @ UT Dallas ('26). 2x Apple intern crafting
-              <span class="text-secondary-green font-semibold">AI-powered tooling</span>,
-              <span class="text-secondary-green font-semibold">scalable backend systems</span>, and
-              <span class="text-secondary-green font-semibold">developer productivity tools</span> that actually ship.
+              <span class="text-accent-light font-semibold">AI-powered tooling</span>,
+              <span class="text-accent-light font-semibold">scalable backend systems</span>, and
+              <span class="text-accent-light font-semibold">developer productivity tools</span> that actually ship.
             </p>
 
             <div class="flex gap-3 mb-6">
@@ -541,7 +529,7 @@
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
           <h2 class="text-4xl font-black mb-6">
-            <span class="holo-text">About Me</span>
+            <span class="gradient-text">About Me</span>
           </h2>
           <div class="w-24 h-1 bg-gradient-to-r from-accent to-accent-light mx-auto rounded-full"></div>
         </div>
@@ -557,7 +545,7 @@
               </p>
 
               <p class="text-lg text-slate-300 leading-relaxed">
-                At Apple, I built <span class="text-cyber-blue font-semibold">LLM-powered tooling</span> for the Camera & Photos team,
+                At Apple, I built <span class="text-accent font-semibold">LLM-powered tooling</span> for the Camera & Photos team,
                 automated thousands of test failures with smart triage systems, and designed cloud workflows that ship fast and break nothing.
                 I balance velocity with reliability, security with usability, and always prioritize crystal-clear communication.
               </p>
@@ -606,7 +594,7 @@
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div class="text-center mb-12">
           <h2 class="text-4xl font-black mb-6">
-            <span class="holo-text">Experience</span>
+            <span class="gradient-text">Experience</span>
           </h2>
           <div class="w-24 h-1 bg-gradient-to-r from-accent to-accent-light mx-auto rounded-full"></div>
         </div>
@@ -618,7 +606,7 @@
           <div class="space-y-12">
               <!-- Experience 1 -->
               <div class="relative flex items-start gap-8 z-10">
-              <div class="flex-shrink-0 w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent shadow-glow-blue animate-glow z-20 relative">
+              <div class="flex-shrink-0 w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent shadow-glow animate-glow z-20 relative">
                 <span class="text-2xl font-black">🎯</span>
               </div>
               <div class="glass-card p-8 rounded-3xl hover-lift flex-1 z-10 relative">
@@ -650,7 +638,7 @@
 
             <!-- Experience 2 -->
             <div class="relative flex items-start gap-8 z-10">
-              <div class="flex-shrink-0 w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent shadow-glow-blue animate-glow z-20 relative">
+              <div class="flex-shrink-0 w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent shadow-glow animate-glow z-20 relative">
                 <span class="text-2xl font-black">📱</span>
               </div>
               <div class="glass-card p-8 rounded-3xl hover-lift flex-1 z-10 relative">
@@ -682,7 +670,7 @@
 
             <!-- Experience 3 -->
             <div class="relative flex items-start gap-8 z-10">
-              <div class="flex-shrink-0 w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent shadow-glow-blue animate-glow z-20 relative">
+              <div class="flex-shrink-0 w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent shadow-glow animate-glow z-20 relative">
                 <span class="text-2xl font-black">⚡</span>
               </div>
               <div class="glass-card p-8 rounded-3xl hover-lift flex-1 z-10 relative">
@@ -718,7 +706,7 @@
 
             <!-- Experience 4 -->
             <div class="relative flex items-start gap-8 z-10">
-              <div class="flex-shrink-0 w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent shadow-glow-blue animate-glow z-20 relative">
+              <div class="flex-shrink-0 w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent shadow-glow animate-glow z-20 relative">
                 <span class="text-2xl font-black">🏥</span>
               </div>
               <div class="glass-card p-8 rounded-3xl hover-lift flex-1 z-10 relative">
@@ -750,11 +738,11 @@
 
     <!-- Projects Section -->
     <section id="projects" class="py-12 relative overflow-hidden">
-      <div class="absolute inset-0 bg-gradient-to-r from-accent/5 via-transparent to-cyber-blue/5"></div>
+      <div class="absolute inset-0 bg-gradient-to-b from-transparent via-bg-soft/50 to-transparent"></div>
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div class="text-center mb-12">
           <h2 class="text-4xl font-black mb-6">
-            <span class="holo-text">Featured Projects</span>
+            <span class="gradient-text">Featured Projects</span>
           </h2>
           <div class="w-24 h-1 bg-gradient-to-r from-accent to-accent-light mx-auto rounded-full mb-6"></div>
           <a href="https://github.com/ryanpolasky" target="_blank" rel="noreferrer"
@@ -769,7 +757,7 @@
         <div class="grid lg:grid-cols-2 xl:grid-cols-3 gap-8">
           <!-- Project 1 -->
           <article class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden">
-            <div class="absolute inset-0 bg-gradient-to-br from-accent/10 via-transparent to-cyber-blue/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div class="absolute inset-0 bg-gradient-to-br from-accent/10 via-transparent to-accent-light/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
             <div class="relative">
               <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center gap-3">
@@ -804,7 +792,7 @@
 
           <!-- Project 2 -->
           <article class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden">
-            <div class="absolute inset-0 bg-gradient-to-br from-cyber-blue/10 via-transparent to-cyber-green/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div class="absolute inset-0 bg-gradient-to-br from-accent/10 via-transparent to-accent-light/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
             <div class="relative">
               <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center gap-3">
@@ -816,7 +804,7 @@
                     <p class="text-sm text-slate-400 font-mono">QA Result Analyzer</p>
                   </div>
                 </div>
-                <span class="px-3 py-1 rounded-full bg-cyber-blue/20 text-cyber-blue font-bold text-xs">DevTools</span>
+                <span class="px-3 py-1 rounded-full bg-accent/20 text-accent font-bold text-xs">DevTools</span>
               </div>
 
               <p class="text-slate-300 mb-6 leading-relaxed">
@@ -841,7 +829,7 @@
 
           <!-- Project 3 - Coming Soon -->
           <article class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden border-2 border-dashed border-accent/30">
-            <div class="absolute inset-0 bg-gradient-to-br from-accent/5 via-transparent to-cyber-purple/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div class="absolute inset-0 bg-gradient-to-br from-accent/5 via-transparent to-accent-dark/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
             <div class="relative text-center">
               <div class="w-20 h-20 bg-gradient-to-r from-slate-800 to-slate-700 rounded-3xl mx-auto mb-6 flex items-center justify-center border-2 border-accent">
                 <span class="text-4xl animate-bounce-slow">🚀</span>
@@ -866,7 +854,7 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div class="text-center mb-12">
           <h2 class="text-4xl font-black mb-6">
-            <span class="holo-text">Skills & Technologies</span>
+            <span class="gradient-text">Skills & Technologies</span>
           </h2>
           <div class="w-24 h-1 bg-gradient-to-r from-accent to-accent-light mx-auto rounded-full"></div>
         </div>
@@ -877,7 +865,7 @@
             <div class="absolute inset-0 bg-gradient-to-br from-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
             <div class="relative">
               <div class="flex items-center gap-4 mb-6">
-                <div class="w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent shadow-glow-blue">
+                <div class="w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent shadow-glow">
                   <span class="text-3xl">💻</span>
                 </div>
                 <h3 class="text-2xl font-bold text-white">Languages</h3>
@@ -926,7 +914,7 @@
             <div class="absolute inset-0 bg-gradient-to-br from-cyber-blue/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
             <div class="relative">
               <div class="flex items-center gap-4 mb-6">
-                <div class="w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent shadow-glow-blue">
+                <div class="w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent shadow-glow">
                   <span class="text-3xl">🗄️</span>
                 </div>
                 <h3 class="text-2xl font-bold text-white">Data</h3>
@@ -975,7 +963,7 @@
             <div class="absolute inset-0 bg-gradient-to-br from-cyber-green/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
             <div class="relative">
               <div class="flex items-center gap-4 mb-6">
-                <div class="w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent shadow-glow-blue">
+                <div class="w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent shadow-glow">
                   <span class="text-3xl">🤖</span>
                 </div>
                 <h3 class="text-2xl font-bold text-white">AI/LLMs</h3>
@@ -1024,7 +1012,7 @@
             <div class="absolute inset-0 bg-gradient-to-br from-cyber-purple/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
             <div class="relative">
               <div class="flex items-center gap-4 mb-6">
-                <div class="w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent shadow-glow-blue">
+                <div class="w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent shadow-glow">
                   <span class="text-3xl">☁️</span>
                 </div>
                 <h3 class="text-2xl font-bold text-white">DevOps</h3>
@@ -1077,7 +1065,7 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div class="text-center mb-12">
           <h2 class="text-4xl font-black mb-6">
-            <span class="holo-text">What People Say</span>
+            <span class="gradient-text">What People Say</span>
           </h2>
           <div class="w-24 h-1 bg-gradient-to-r from-accent to-accent-light mx-auto rounded-full mb-6"></div>
           <p class="text-slate-400 font-mono">Full references available upon request</p>
@@ -1089,7 +1077,7 @@
             <div class="absolute inset-0 bg-gradient-to-br from-slate-800/20 to-slate-900/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
             <div class="relative">
               <div class="flex items-center gap-4 mb-6">
-                <div class="w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent shadow-glow-blue">
+                <div class="w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent shadow-glow">
                   <span class="text-3xl">💯</span>
                 </div>
                 <div>
@@ -1119,7 +1107,7 @@
             <div class="absolute inset-0 bg-gradient-to-br from-slate-800/20 to-slate-900/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
             <div class="relative">
               <div class="flex items-center gap-4 mb-6">
-                <div class="w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent shadow-glow-blue">
+                <div class="w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent shadow-glow">
                   <span class="text-3xl">🚀</span>
                 </div>
                 <div>
@@ -1151,7 +1139,7 @@
             <div class="absolute inset-0 bg-gradient-to-br from-slate-800/20 to-slate-900/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
             <div class="relative">
               <div class="flex items-center gap-4 mb-6">
-                <div class="w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent shadow-glow-blue">
+                <div class="w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent shadow-glow">
                   <span class="text-3xl">⭐</span>
                 </div>
                 <div>
@@ -1187,7 +1175,7 @@
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div class="text-center mb-12">
           <h2 class="text-5xl font-black mb-6">
-            <span class="holo-text">Let's Build Something Epic</span>
+            <span class="gradient-text">Let's Build Something Epic</span>
           </h2>
           <div class="w-24 h-1 bg-gradient-to-r from-accent to-accent-light mx-auto rounded-full mb-6"></div>
           <p class="text-xl text-slate-300 max-w-2xl mx-auto">
@@ -1294,7 +1282,7 @@
           <!-- Logo -->
           <div class="mb-8">
             <h3 class="text-3xl font-black">
-              <span class="holo-text">Ryan</span><span class="text-accent animate-pulse">.</span>
+              <span class="gradient-text">Ryan</span><span class="text-accent animate-pulse">.</span>
             </h3>
             <p class="text-slate-400 mt-2 font-mono">Building the future, one line at a time</p>
           </div>
@@ -1520,8 +1508,8 @@
         });
 
         // Update box shadows and glows
-        document.querySelectorAll('.shadow-glow-blue, .shadow-glow-green, .shadow-glow-purple, .shadow-professional').forEach(el => {
-          el.style.boxShadow = `0 0 15px ${glowColor}, 0 0 30px ${hexToRgba(color, 0.1)}`;
+        document.querySelectorAll('.shadow-glow').forEach(el => {
+          el.style.boxShadow = `0 0 30px ${glowColor}`;
         });
       }
 
