@@ -410,46 +410,23 @@
           <div class="flex items-center gap-3">
             <!-- Color Picker -->
             <div class="relative">
-              <button id="colorPickerBtn" class="p-2 rounded-xl glass hover:shadow-glow-blue transition-all hover-lift" aria-label="Change Theme Color" aria-expanded="false" aria-haspopup="true">
+              <button id="colorPickerBtn" class="p-2 rounded-xl glass hover:shadow-glow-pink transition-all hover-lift" aria-label="Change Theme Color" aria-expanded="false" aria-haspopup="true">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM7 3V1m0 18v2m8-10a4 4 0 00-4-4H7m4 8a4 4 0 004-4V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v8a4 4 0 004 4z"></path>
                 </svg>
               </button>
               
               <!-- Color Palette -->
-              <div id="colorPalette" class="absolute top-full right-0 mt-2 p-8 glass rounded-3xl opacity-0 pointer-events-none transition-all z-50 shadow-2xl border-2 border-white/10 min-w-max" role="menu" aria-labelledby="colorPickerBtn">
-                <div class="text-center mb-6">
-                  <h3 class="text-sm font-semibold text-white mb-1">Theme Colors</h3>
-                  <p class="text-xs text-slate-400">Choose your accent color</p>
-                </div>
-                <div class="grid grid-cols-4 gap-4 mb-6">
-                  <button class="color-option w-14 h-14 rounded-2xl border-3 border-white/30 hover:scale-110 hover:border-white/60 transition-all duration-200 focus:outline-none focus:ring-3 focus:ring-white/50 shadow-lg relative overflow-hidden group" data-color="#4a90e2" style="background: linear-gradient(135deg, #4a90e2, #6ba3e8);" aria-label="Blue theme" role="menuitem">
-                    <div class="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  </button>
-                  <button class="color-option w-14 h-14 rounded-2xl border-3 border-white/30 hover:scale-110 hover:border-white/60 transition-all duration-200 focus:outline-none focus:ring-3 focus:ring-white/50 shadow-lg relative overflow-hidden group" data-color="#007aff" style="background: linear-gradient(135deg, #007aff, #5ac8fa);" aria-label="Apple blue theme" role="menuitem">
-                    <div class="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  </button>
-                  <button class="color-option w-14 h-14 rounded-2xl border-3 border-white/30 hover:scale-110 hover:border-white/60 transition-all duration-200 focus:outline-none focus:ring-3 focus:ring-white/50 shadow-lg relative overflow-hidden group" data-color="#5ac8fa" style="background: linear-gradient(135deg, #5ac8fa, #64d2ff);" aria-label="Light blue theme" role="menuitem">
-                    <div class="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  </button>
-                  <button class="color-option w-14 h-14 rounded-2xl border-3 border-white/30 hover:scale-110 hover:border-white/60 transition-all duration-200 focus:outline-none focus:ring-3 focus:ring-white/50 shadow-lg relative overflow-hidden group" data-color="#af52de" style="background: linear-gradient(135deg, #af52de, #bf5af2);" aria-label="Purple theme" role="menuitem">
-                    <div class="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  </button>
-                  <button class="color-option w-14 h-14 rounded-2xl border-3 border-white/30 hover:scale-110 hover:border-white/60 transition-all duration-200 focus:outline-none focus:ring-3 focus:ring-white/50 shadow-lg relative overflow-hidden group" data-color="#ff9500" style="background: linear-gradient(135deg, #ff9500, #ffb340);" aria-label="Orange theme" role="menuitem">
-                    <div class="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  </button>
-                  <button class="color-option w-14 h-14 rounded-2xl border-3 border-white/30 hover:scale-110 hover:border-white/60 transition-all duration-200 focus:outline-none focus:ring-3 focus:ring-white/50 shadow-lg relative overflow-hidden group" data-color="#30d158" style="background: linear-gradient(135deg, #30d158, #64de85);" aria-label="Green theme" role="menuitem">
-                    <div class="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  </button>
-                  <button class="color-option w-14 h-14 rounded-2xl border-3 border-white/30 hover:scale-110 hover:border-white/60 transition-all duration-200 focus:outline-none focus:ring-3 focus:ring-white/50 shadow-lg relative overflow-hidden group" data-color="#ff453a" style="background: linear-gradient(135deg, #ff453a, #ff6961);" aria-label="Red theme" role="menuitem">
-                    <div class="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  </button>
-                  <button class="color-option w-14 h-14 rounded-2xl border-3 border-white/30 hover:scale-110 hover:border-white/60 transition-all duration-200 focus:outline-none focus:ring-3 focus:ring-white/50 shadow-lg relative overflow-hidden group" data-color="#ff6b35" style="background: linear-gradient(135deg, #ff6b35, #ff8a65);" aria-label="Orange red theme" role="menuitem">
-                    <div class="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  </button>
-                </div>
-                <div class="pt-4 border-t border-white/10">
-                  <p class="text-xs text-slate-500 text-center">Color persists across sessions</p>
+              <div id="colorPalette" class="absolute top-full right-0 mt-2 p-6 glass rounded-2xl opacity-0 pointer-events-none transition-all z-50 shadow-xl border border-white/20 min-w-max" role="menu" aria-labelledby="colorPickerBtn">
+                <div class="grid grid-cols-4 gap-3">
+                  <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#4a90e2" style="background: linear-gradient(135deg, #4a90e2, #6ba3e8);" aria-label="Blue theme" role="menuitem"></button>
+                  <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#007aff" style="background: linear-gradient(135deg, #007aff, #5ac8fa);" aria-label="Apple blue theme" role="menuitem"></button>
+                  <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#5ac8fa" style="background: linear-gradient(135deg, #5ac8fa, #64d2ff);" aria-label="Light blue theme" role="menuitem"></button>
+                  <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#af52de" style="background: linear-gradient(135deg, #af52de, #bf5af2);" aria-label="Purple theme" role="menuitem"></button>
+                  <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#ff9500" style="background: linear-gradient(135deg, #ff9500, #ffb340);" aria-label="Orange theme" role="menuitem"></button>
+                  <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#30d158" style="background: linear-gradient(135deg, #30d158, #64de85);" aria-label="Green theme" role="menuitem"></button>
+                  <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#ff453a" style="background: linear-gradient(135deg, #ff453a, #ff6961);" aria-label="Red theme" role="menuitem"></button>
+                  <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#ff6b35" style="background: linear-gradient(135deg, #ff6b35, #ff8a65);" aria-label="Orange red theme" role="menuitem"></button>
                 </div>
               </div>
             </div>
