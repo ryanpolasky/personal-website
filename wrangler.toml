@@ -50,3 +50,6 @@ headers = { "Cache-Control" = "public, max-age=31536000" }
 type = "header"
 src = "*.pdf"
 headers = { "Cache-Control" = "public, max-age=86400" }
+
+[assets]
+directory = "./ryanpolasky-website
