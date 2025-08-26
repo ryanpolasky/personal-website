@@ -53,6 +53,9 @@
       // Available color options
       const colorOptions = ['#4a90e2', '#af52de', '#30d158', '#ff9500', '#ff453a', '#e91e63', '#00bcd4', '#f8bbd9'];
       
+      // Rainbow colors for special mode
+      const rainbowColors = ['#ff0000', '#ff8000', '#ffff00', '#80ff00', '#00ff00', '#00ff80', '#00ffff', '#0080ff', '#0000ff', '#8000ff', '#ff00ff', '#ff0080'];
+      
       // Pick a random color on every page load
       const savedColor = colorOptions[Math.floor(Math.random() * colorOptions.length)];
       const lightColor = lightenColor(savedColor, 25);
@@ -212,6 +215,9 @@
         // Initialize effects
         createParticles();
 
+        // Konami code for rainbow mode
+        initKonamiCode();
+
         // Animate elements on scroll
         const animateOnScroll = new IntersectionObserver((entries) => {
           entries.forEach(entry => {
@@ -224,6 +230,127 @@
         document.querySelectorAll('.glass-card, .hover-lift').forEach(el => {
           animateOnScroll.observe(el);
         });
+
+        // Konami Code Implementation
+        function initKonamiCode() {
+          const konamiSequence = [
+            'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown',
+            'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight',
+            'KeyB', 'KeyA'
+          ];
+          let userSequence = [];
+          let rainbowMode = false;
+          let rainbowInterval = null;
+
+          document.addEventListener('keydown', (e) => {
+            // Check if this key is part of the Konami sequence
+            const isKonamiKey = konamiSequence.includes(e.code);
+            
+            if (isKonamiKey) {
+              // Prevent default behavior (scrolling) for Konami code keys
+              e.preventDefault();
+              
+              // Add the pressed key to user sequence
+              userSequence.push(e.code);
+              
+              // Keep only the last 10 keys (length of Konami code)
+              if (userSequence.length > konamiSequence.length) {
+                userSequence.shift();
+              }
+              
+              // Check if sequence matches Konami code
+              if (userSequence.length === konamiSequence.length) {
+                const matches = userSequence.every((key, index) => key === konamiSequence[index]);
+                
+                if (matches) {
+                  if (!rainbowMode) {
+                    activateRainbowMode();
+                  } else {
+                    deactivateRainbowMode();
+                  }
+                  userSequence = []; // Reset sequence
+                }
+              }
+            }
+          });
+
+          function activateRainbowMode() {
+            rainbowMode = true;
+            let colorIndex = 0;
+            
+            // Show activation message
+            showRainbowMessage('ACTIVATED');
+            
+            // Start rainbow cycling
+            rainbowInterval = setInterval(() => {
+              updateAccentColor(rainbowColors[colorIndex]);
+              colorIndex = (colorIndex + 1) % rainbowColors.length;
+            }, 200); // Change color every 200ms
+            
+            // Add rainbow class to body for additional effects
+            document.body.classList.add('rainbow-mode');
+          }
+
+          function deactivateRainbowMode() {
+            rainbowMode = false;
+            
+            if (rainbowInterval) {
+              clearInterval(rainbowInterval);
+              rainbowInterval = null;
+            }
+            
+            // Show deactivation message
+            showRainbowMessage('DISABLED');
+            
+            // Return to saved color or random color
+            const savedColor = localStorage.getItem('accentColor') || colorOptions[Math.floor(Math.random() * colorOptions.length)];
+            updateAccentColor(savedColor);
+            
+            // Remove rainbow class
+            document.body.classList.remove('rainbow-mode');
+          }
+
+          function showRainbowMessage(message) {
+            // Create message element
+            const messageEl = document.createElement('div');
+            messageEl.innerHTML = `
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                <span style="font-size: 32px;">🌈</span>
+                <span style="font-size: 24px; font-weight: bold;">${message.includes('ACTIVATED') ? 'RAINBOW MODE' : 'Rainbow Mode'}</span>
+              </div>
+              <div style="font-size: 16px; opacity: 0.8;">
+                ${message.includes('ACTIVATED') ? 'Colors are now cycling!' : 'Back to normal colors'}
+              </div>
+            `;
+            messageEl.style.cssText = `
+              position: fixed;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+              background: rgba(0, 0, 0, 0.95);
+              color: white;
+              padding: 24px 32px;
+              border-radius: 20px;
+              font-weight: bold;
+              z-index: 10000;
+              text-align: center;
+              border: 2px solid var(--accent-color);
+              backdrop-filter: blur(20px);
+              animation: rainbow-message 3s ease-out forwards;
+              box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+              min-width: 300px;
+            `;
+            
+            document.body.appendChild(messageEl);
+            
+            // Remove message after animation
+            setTimeout(() => {
+              if (messageEl.parentNode) {
+                messageEl.parentNode.removeChild(messageEl);
+              }
+            }, 3000);
+          }
+        }
       });
 
     </script>
@@ -1294,12 +1421,13 @@
         const glowColor = hexToRgba(color, 0.3);
         const lightGlow = hexToRgba(lightColor, 0.4);
 
-        // Update CSS custom properties - this will automatically update all elements using these variables
-        document.documentElement.style.setProperty('--accent-color', color);
-        document.documentElement.style.setProperty('--accent-light', lightColor);
-        document.documentElement.style.setProperty('--accent-dark', darkColor);
-        document.documentElement.style.setProperty('--accent-glow', glowColor);
-        document.documentElement.style.setProperty('--accent-darker', darkenColor(color, 40));
+        // Update CSS custom properties with smooth transitions
+        const root = document.documentElement;
+        root.style.setProperty('--accent-color', color);
+        root.style.setProperty('--accent-light', lightColor);
+        root.style.setProperty('--accent-dark', darkColor);
+        root.style.setProperty('--accent-glow', glowColor);
+        root.style.setProperty('--accent-darker', darkenColor(color, 40));
 
         // Update Tailwind config colors in real-time
         if (window.tailwind && window.tailwind.config) {

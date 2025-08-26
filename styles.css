@@ -158,3 +158,61 @@ animation: float 6s ease-in-out infinite;
 
 .floating:nth-child(2) { animation-delay: -2s; }
 .floating:nth-child(3) { animation-delay: -4s; }
+
+/* Rainbow mode styles - only affects accent colors, not emojis/images */
+.rainbow-mode .glass-card {
+  animation: rainbow-border 0.75s linear infinite;
+}
+
+.rainbow-mode .particles {
+  animation: float 6s ease-in-out infinite, rainbow-particle 0.375s linear infinite;
+}
+
+/* Smooth color transitions for specific accent-colored elements only */
+.glass-card,
+.hover-lift,
+.skill-progress,
+.particles,
+[class*="text-accent"],
+[class*="bg-accent"],
+[class*="border-accent"],
+.gradient-text {
+  transition: color 0.3s ease-in-out, border-color 0.3s ease-in-out, background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+@keyframes rainbow-border {
+  0% { border-color: #ff0000; }
+  16.66% { border-color: #ff8000; }
+  33.33% { border-color: #ffff00; }
+  50% { border-color: #00ff00; }
+  66.66% { border-color: #0080ff; }
+  83.33% { border-color: #8000ff; }
+  100% { border-color: #ff0000; }
+}
+
+@keyframes rainbow-particle {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+
+@keyframes rainbow-message {
+  0% { 
+    opacity: 0; 
+    transform: translate(-50%, -50%) scale(0.5); 
+  }
+  20% { 
+    opacity: 1; 
+    transform: translate(-50%, -50%) scale(1.1); 
+  }
+  30% { 
+    transform: translate(-50%, -50%) scale(1); 
+  }
+  90% { 
+    opacity: 1; 
+    transform: translate(-50%, -50%) scale(1); 
+  }
+  100% { 
+    opacity: 0; 
+    transform: translate(-50%, -50%) scale(0.8); 
+  }
+}
