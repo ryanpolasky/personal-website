@@ -346,10 +346,27 @@
         }
       }
 
-      // Enhanced scroll spy
+      // Enhanced scroll spy with smooth scrolling
       document.addEventListener('DOMContentLoaded', () => {
         const sections = document.querySelectorAll('section[id]');
         const navLinks = document.querySelectorAll('a[data-scroll]');
+
+        // Add smooth scroll behavior to navigation links
+        navLinks.forEach(link => {
+          link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetId = link.getAttribute('href').substring(1);
+            const targetSection = document.getElementById(targetId);
+            if (targetSection) {
+              const headerHeight = 80; // Account for sticky header
+              const targetPosition = targetSection.offsetTop - headerHeight;
+              window.scrollTo({
+                top: targetPosition,
+                behavior: 'smooth'
+              });
+            }
+          });
+        });
 
         const io = new IntersectionObserver((entries) => {
           entries.forEach(e => {
@@ -360,7 +377,7 @@
               link?.classList.add('nav-active');
             }
           });
-        }, { rootMargin: '-50% 0px -50% 0px', threshold: 0.01 });
+        }, { rootMargin: '-80px 0px -50% 0px', threshold: 0.01 });
 
         sections.forEach(s => io.observe(s));
 
@@ -471,7 +488,7 @@
             </p>
 
             <div class="flex gap-3 mb-6">
-              <a href="#projects"
+              <a data-scroll="projects" href="#projects"
                  class="group px-8 py-4 rounded-2xl bg-gradient-to-r from-accent to-accent-light text-white font-semibold hover:shadow-lg transition-all">
                 <span class="flex items-center gap-2">
                   View Projects
@@ -481,7 +498,7 @@
                 </span>
               </a>
 
-              <a href="#contact"
+              <a data-scroll="contact" href="#contact"
                  class="px-8 py-4 rounded-2xl border-2 border-slate-600 hover:border-accent font-semibold transition-all">
                 Get in Touch
               </a>
