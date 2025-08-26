@@ -52,4 +52,4 @@ src = "*.pdf"
 headers = { "Cache-Control" = "public, max-age=86400" }
 
 [assets]
-directory = ""
+directory = "/"
