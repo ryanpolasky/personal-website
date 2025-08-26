@@ -20,20 +20,7 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-      // Load saved color immediately to prevent flash
-      const savedColor = localStorage.getItem('accentColor') || '#4a90e2';
-      const lightColor = lightenColor(savedColor, 25);
-      const darkColor = darkenColor(savedColor, 25);
-      const glowColor = hexToRgba(savedColor, 0.3);
-      
-      // Set CSS variables immediately
-      document.documentElement.style.setProperty('--accent-color', savedColor);
-      document.documentElement.style.setProperty('--accent-light', lightColor);
-      document.documentElement.style.setProperty('--accent-dark', darkColor);
-      document.documentElement.style.setProperty('--accent-glow', glowColor);
-      document.documentElement.style.setProperty('--accent-darker', darkenColor(savedColor, 40));
-
-      // Helper functions (moved up to be available immediately)
+      // Helper functions (defined first)
       function lightenColor(hex, percent) {
         const num = parseInt(hex.replace("#", ""), 16);
         const amt = Math.round(2.55 * percent);
@@ -62,6 +49,22 @@
         const b = parseInt(hex.slice(5, 7), 16);
         return `rgba(${r}, ${g}, ${b}, ${alpha})`;
       }
+
+      // Available color options
+      const colorOptions = ['#4a90e2', '#af52de', '#30d158', '#ff9500', '#ff453a', '#e91e63', '#00bcd4', '#f8bbd9'];
+      
+      // Pick a random color on every page load
+      const savedColor = colorOptions[Math.floor(Math.random() * colorOptions.length)];
+      const lightColor = lightenColor(savedColor, 25);
+      const darkColor = darkenColor(savedColor, 25);
+      const glowColor = hexToRgba(savedColor, 0.3);
+      
+      // Set CSS variables immediately
+      document.documentElement.style.setProperty('--accent-color', savedColor);
+      document.documentElement.style.setProperty('--accent-light', lightColor);
+      document.documentElement.style.setProperty('--accent-dark', darkColor);
+      document.documentElement.style.setProperty('--accent-glow', glowColor);
+      document.documentElement.style.setProperty('--accent-darker', darkenColor(savedColor, 40));
 
       tailwind.config = {
         darkMode: 'class',
@@ -1416,62 +1419,64 @@
       document.head.appendChild(style);
 
       // Color picker functionality
-      const colorOptions = document.querySelectorAll('.color-option');
-      const colorPalette = document.getElementById('colorPalette');
-      const colorPickerBtn = document.getElementById('colorPickerBtn');
-      let paletteOpen = false;
+      document.addEventListener('DOMContentLoaded', () => {
+        const colorOptionElements = document.querySelectorAll('.color-option');
+        const colorPalette = document.getElementById('colorPalette');
+        const colorPickerBtn = document.getElementById('colorPickerBtn');
+        let paletteOpen = false;
 
-      // Color is already loaded at the top of the script
-      updateAccentColor(savedColor);
+        // Apply the saved/random color
+        updateAccentColor(savedColor);
 
-      // Toggle palette visibility
-      colorPickerBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        paletteOpen = !paletteOpen;
-        
-        if (paletteOpen) {
-          colorPalette.classList.remove('opacity-0', 'pointer-events-none');
-          colorPalette.classList.add('opacity-100', 'pointer-events-auto');
-          colorPickerBtn.setAttribute('aria-expanded', 'true');
-        } else {
-          colorPalette.classList.add('opacity-0', 'pointer-events-none');
-          colorPalette.classList.remove('opacity-100', 'pointer-events-auto');
-          colorPickerBtn.setAttribute('aria-expanded', 'false');
-        }
-      });
-
-      // Close palette when clicking outside
-      document.addEventListener('click', (e) => {
-        if (!colorPalette.contains(e.target) && !colorPickerBtn.contains(e.target)) {
-          paletteOpen = false;
-          colorPalette.classList.add('opacity-0', 'pointer-events-none');
-          colorPalette.classList.remove('opacity-100', 'pointer-events-auto');
-          colorPickerBtn.setAttribute('aria-expanded', 'false');
-        }
-      });
-
-      // Handle color selection
-      colorOptions.forEach(option => {
-        option.addEventListener('click', (e) => {
-          e.preventDefault();
+        // Toggle palette visibility
+        colorPickerBtn.addEventListener('click', (e) => {
           e.stopPropagation();
-          const newColor = e.currentTarget.dataset.color;
-          updateAccentColor(newColor);
-          localStorage.setItem('accentColor', newColor);
+          paletteOpen = !paletteOpen;
           
-          // Close palette after selection
-          paletteOpen = false;
-          colorPalette.classList.add('opacity-0', 'pointer-events-none');
-          colorPalette.classList.remove('opacity-100', 'pointer-events-auto');
-          colorPickerBtn.setAttribute('aria-expanded', 'false');
+          if (paletteOpen) {
+            colorPalette.classList.remove('opacity-0', 'pointer-events-none');
+            colorPalette.classList.add('opacity-100', 'pointer-events-auto');
+            colorPickerBtn.setAttribute('aria-expanded', 'true');
+          } else {
+            colorPalette.classList.add('opacity-0', 'pointer-events-none');
+            colorPalette.classList.remove('opacity-100', 'pointer-events-auto');
+            colorPickerBtn.setAttribute('aria-expanded', 'false');
+          }
         });
 
-        // Keyboard navigation
-        option.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            option.click();
+        // Close palette when clicking outside
+        document.addEventListener('click', (e) => {
+          if (!colorPalette.contains(e.target) && !colorPickerBtn.contains(e.target)) {
+            paletteOpen = false;
+            colorPalette.classList.add('opacity-0', 'pointer-events-none');
+            colorPalette.classList.remove('opacity-100', 'pointer-events-auto');
+            colorPickerBtn.setAttribute('aria-expanded', 'false');
           }
+        });
+
+        // Handle color selection
+        colorOptionElements.forEach(option => {
+          option.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const newColor = e.currentTarget.dataset.color;
+            updateAccentColor(newColor);
+            localStorage.setItem('accentColor', newColor);
+            
+            // Close palette after selection
+            paletteOpen = false;
+            colorPalette.classList.add('opacity-0', 'pointer-events-none');
+            colorPalette.classList.remove('opacity-100', 'pointer-events-auto');
+            colorPickerBtn.setAttribute('aria-expanded', 'false');
+          });
+
+          // Keyboard navigation
+          option.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              option.click();
+            }
+          });
         });
       });
 
@@ -1558,8 +1563,6 @@
         const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
         return luminance > 0.5 ? '#000000' : '#ffffff';
       }
-
-      // Helper functions are now defined at the top of the script
     </script>
   </body>
 </html>
