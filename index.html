@@ -276,80 +276,22 @@
 
           function activateRainbowMode() {
             rainbowMode = true;
-            let colorIndex = 0;
             
-            // Show activation message
-            showRainbowMessage('ACTIVATED');
-            
-            // Start rainbow cycling
-            rainbowInterval = setInterval(() => {
-              updateAccentColor(rainbowColors[colorIndex]);
-              colorIndex = (colorIndex + 1) % rainbowColors.length;
-            }, 200); // Change color every 200ms
-            
-            // Add rainbow class to body for additional effects
+            // Add rainbow class to body for CSS-based rainbow effects
             document.body.classList.add('rainbow-mode');
           }
 
           function deactivateRainbowMode() {
             rainbowMode = false;
             
-            if (rainbowInterval) {
-              clearInterval(rainbowInterval);
-              rainbowInterval = null;
-            }
-            
-            // Show deactivation message
-            showRainbowMessage('DISABLED');
-            
-            // Return to saved color or random color
-            const savedColor = localStorage.getItem('accentColor') || colorOptions[Math.floor(Math.random() * colorOptions.length)];
-            updateAccentColor(savedColor);
+            // Return to the current saved color (don't randomize)
+            const currentSavedColor = localStorage.getItem('accentColor') || savedColor;
+            updateAccentColor(currentSavedColor);
             
             // Remove rainbow class
             document.body.classList.remove('rainbow-mode');
           }
 
-          function showRainbowMessage(message) {
-            // Create message element
-            const messageEl = document.createElement('div');
-            messageEl.innerHTML = `
-              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
-                <span style="font-size: 32px;">🌈</span>
-                <span style="font-size: 24px; font-weight: bold;">${message.includes('ACTIVATED') ? 'RAINBOW MODE' : 'Rainbow Mode'}</span>
-              </div>
-              <div style="font-size: 16px; opacity: 0.8;">
-                ${message.includes('ACTIVATED') ? 'Colors are now cycling!' : 'Back to normal colors'}
-              </div>
-            `;
-            messageEl.style.cssText = `
-              position: fixed;
-              top: 50%;
-              left: 50%;
-              transform: translate(-50%, -50%);
-              background: rgba(0, 0, 0, 0.95);
-              color: white;
-              padding: 24px 32px;
-              border-radius: 20px;
-              font-weight: bold;
-              z-index: 10000;
-              text-align: center;
-              border: 2px solid var(--accent-color);
-              backdrop-filter: blur(20px);
-              animation: rainbow-message 3s ease-out forwards;
-              box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-              min-width: 300px;
-            `;
-            
-            document.body.appendChild(messageEl);
-            
-            // Remove message after animation
-            setTimeout(() => {
-              if (messageEl.parentNode) {
-                messageEl.parentNode.removeChild(messageEl);
-              }
-            }, 3000);
-          }
         }
       });
 

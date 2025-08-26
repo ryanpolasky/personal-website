@@ -159,13 +159,29 @@ animation: float 6s ease-in-out infinite;
 .floating:nth-child(2) { animation-delay: -2s; }
 .floating:nth-child(3) { animation-delay: -4s; }
 
-/* Rainbow mode styles - only affects accent colors, not emojis/images */
+/* Rainbow mode styles - CSS-only for performance */
+.rainbow-mode {
+  --rainbow-speed: 2s;
+}
+
 .rainbow-mode .glass-card {
-  animation: rainbow-border 0.75s linear infinite;
+  animation: rainbow-border var(--rainbow-speed) linear infinite;
 }
 
 .rainbow-mode .particles {
-  animation: float 6s ease-in-out infinite, rainbow-particle 0.375s linear infinite;
+  animation: float 6s ease-in-out infinite, rainbow-particle var(--rainbow-speed) linear infinite;
+}
+
+.rainbow-mode .gradient-text {
+  animation: rainbow-text var(--rainbow-speed) linear infinite;
+}
+
+.rainbow-mode .skill-progress {
+  animation: skill-glow 2s ease-in-out infinite alternate, rainbow-skill var(--rainbow-speed) linear infinite;
+}
+
+.rainbow-mode [class*="shadow-glow"] {
+  animation: rainbow-glow var(--rainbow-speed) linear infinite;
 }
 
 /* Smooth color transitions for specific accent-colored elements only */
@@ -182,11 +198,17 @@ animation: float 6s ease-in-out infinite;
 
 @keyframes rainbow-border {
   0% { border-color: #ff0000; }
-  16.66% { border-color: #ff8000; }
-  33.33% { border-color: #ffff00; }
-  50% { border-color: #00ff00; }
-  66.66% { border-color: #0080ff; }
-  83.33% { border-color: #8000ff; }
+  8.33% { border-color: #ff8000; }
+  16.66% { border-color: #ffff00; }
+  25% { border-color: #80ff00; }
+  33.33% { border-color: #00ff00; }
+  41.66% { border-color: #00ff80; }
+  50% { border-color: #00ffff; }
+  58.33% { border-color: #0080ff; }
+  66.66% { border-color: #0000ff; }
+  75% { border-color: #8000ff; }
+  83.33% { border-color: #ff00ff; }
+  91.66% { border-color: #ff0080; }
   100% { border-color: #ff0000; }
 }
 
@@ -195,24 +217,61 @@ animation: float 6s ease-in-out infinite;
   100% { filter: hue-rotate(360deg); }
 }
 
-@keyframes rainbow-message {
+@keyframes rainbow-text {
   0% { 
-    opacity: 0; 
-    transform: translate(-50%, -50%) scale(0.5); 
+    background: linear-gradient(135deg, #ff0000, #ff8000);
+    -webkit-background-clip: text;
+    background-clip: text;
   }
-  20% { 
-    opacity: 1; 
-    transform: translate(-50%, -50%) scale(1.1); 
+  16.66% { 
+    background: linear-gradient(135deg, #ffff00, #80ff00);
+    -webkit-background-clip: text;
+    background-clip: text;
   }
-  30% { 
-    transform: translate(-50%, -50%) scale(1); 
+  33.33% { 
+    background: linear-gradient(135deg, #00ff00, #00ff80);
+    -webkit-background-clip: text;
+    background-clip: text;
   }
-  90% { 
-    opacity: 1; 
-    transform: translate(-50%, -50%) scale(1); 
+  50% { 
+    background: linear-gradient(135deg, #00ffff, #0080ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+  66.66% { 
+    background: linear-gradient(135deg, #0000ff, #8000ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+  83.33% { 
+    background: linear-gradient(135deg, #ff00ff, #ff0080);
+    -webkit-background-clip: text;
+    background-clip: text;
   }
   100% { 
-    opacity: 0; 
-    transform: translate(-50%, -50%) scale(0.8); 
+    background: linear-gradient(135deg, #ff0000, #ff8000);
+    -webkit-background-clip: text;
+    background-clip: text;
   }
 }
+
+@keyframes rainbow-skill {
+  0% { background: linear-gradient(90deg, #ff0000, #ff8000); }
+  16.66% { background: linear-gradient(90deg, #ffff00, #80ff00); }
+  33.33% { background: linear-gradient(90deg, #00ff00, #00ff80); }
+  50% { background: linear-gradient(90deg, #00ffff, #0080ff); }
+  66.66% { background: linear-gradient(90deg, #0000ff, #8000ff); }
+  83.33% { background: linear-gradient(90deg, #ff00ff, #ff0080); }
+  100% { background: linear-gradient(90deg, #ff0000, #ff8000); }
+}
+
+@keyframes rainbow-glow {
+  0% { box-shadow: 0 0 30px rgba(255, 0, 0, 0.3); }
+  16.66% { box-shadow: 0 0 30px rgba(255, 255, 0, 0.3); }
+  33.33% { box-shadow: 0 0 30px rgba(0, 255, 0, 0.3); }
+  50% { box-shadow: 0 0 30px rgba(0, 255, 255, 0.3); }
+  66.66% { box-shadow: 0 0 30px rgba(0, 0, 255, 0.3); }
+  83.33% { box-shadow: 0 0 30px rgba(255, 0, 255, 0.3); }
+  100% { box-shadow: 0 0 30px rgba(255, 0, 0, 0.3); }
+}
+
