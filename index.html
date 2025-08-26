@@ -417,7 +417,9 @@
             const targetSection = document.getElementById(targetId);
             if (targetSection) {
               const headerHeight = 80; // Account for sticky header
-              const targetPosition = targetSection.offsetTop - headerHeight;
+              // Add extra offset for all sections except home to scroll lower
+              const extraOffset = targetId === 'home' ? 0 : 30;
+              const targetPosition = targetSection.offsetTop - headerHeight + extraOffset;
               window.scrollTo({
                 top: targetPosition,
                 behavior: 'smooth'
