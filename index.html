@@ -97,7 +97,6 @@
             animation: {
               'float': 'float 6s ease-in-out infinite',
               'glow': 'glow 2s ease-in-out infinite alternate',
-              'matrix': 'matrix 20s linear infinite',
               'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
               'bounce-slow': 'bounce 3s infinite',
               'spin-slow': 'spin 8s linear infinite',
@@ -113,10 +112,6 @@
               glow: {
                 'from': { boxShadow: '0 0 20px var(--accent-glow)' },
                 'to': { boxShadow: '0 0 30px var(--accent-glow)' }
-              },
-              matrix: {
-                '0%': { transform: 'translateY(-100%)' },
-                '100%': { transform: 'translateY(100vh)' }
               },
               fadeUp: {
                 '0%': { opacity: '0', transform: 'translateY(30px)' },
@@ -160,24 +155,6 @@
         // Professional theme is always active
         applyTheme();
       };
-
-      // Enhanced matrix rain effect (adds to CSS background)
-      function createMatrix() {
-        const container = document.querySelector('.matrix-bg');
-        if (!container) return;
-        
-        const chars = '01010110100101ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-        for (let i = 0; i < 30; i++) {
-          const char = document.createElement('div');
-          char.className = 'matrix-char';
-          char.textContent = chars[Math.floor(Math.random() * chars.length)];
-          char.style.left = Math.random() * 100 + '%';
-          char.style.animationDelay = Math.random() * 20 + 's';
-          char.style.animationDuration = (Math.random() * 10 + 10) + 's';
-          container.appendChild(char);
-        }
-      }
 
       // Enhanced particle system (adds to CSS particles)
       function createParticles() {
@@ -233,7 +210,6 @@
         sections.forEach(s => io.observe(s));
 
         // Initialize effects
-        createMatrix();
         createParticles();
 
         // Animate elements on scroll
@@ -254,9 +230,6 @@
   </head>
 
   <body class="bg-bg text-slate-100 font-sans overflow-x-hidden">
-    <!-- Matrix Background -->
-    <div class="matrix-bg"></div>
-
     <!-- Grid Overlay -->
     <div class="fixed inset-0 grid-bg opacity-[0.3] pointer-events-none"></div>
 
