@@ -98,6 +98,10 @@
             color: var(--green);
             margin-right: 0.5rem;
         }
+        
+        .prompt .directory {
+            color: var(--cyan);
+        }
 
         #command-input {
             background: none;
@@ -252,7 +256,7 @@
         <div id="terminal-body" onclick="document.getElementById('command-input').focus();">
             <div id="output"></div>
             <div class="input-line">
-                <span class="prompt">$ ryans-thoughts ></span>
+                <span class="prompt">$ ryans-thoughts:<span class="directory" id="current-dir">/</span> ></span>
                 <input type="text" id="command-input" autocomplete="off" autofocus>
                 <span class="cursor" id="cursor"></span>
             </div>
@@ -267,11 +271,33 @@
 
             // Load blog posts from external JSON file
             let posts = [];
+            let currentDirectory = '/';
+            let postsByYear = {};
+            let availableYears = [];
+            
             try {
                 const response = await fetch('blog-posts.json');
                 const allPosts = await response.json();
                 // Filter out template entries
                 posts = allPosts.filter(post => !post._template);
+                
+                // Organize posts by year
+                posts.forEach(post => {
+                    const year = new Date(post.date).getFullYear().toString();
+                    if (!postsByYear[year]) {
+                        postsByYear[year] = [];
+                    }
+                    postsByYear[year].push(post);
+                });
+                
+                // Get available years and sort them (newest first)
+                availableYears = Object.keys(postsByYear).sort((a, b) => b - a);
+                
+                // Start in the most recent year
+                if (availableYears.length > 0) {
+                    currentDirectory = `/${availableYears[0]}`;
+                }
+                
             } catch (error) {
                 console.error('Failed to load blog posts:', error);
                 printError('Failed to load blog posts. Please check that blog-posts.json exists.');
@@ -280,9 +306,11 @@
             const commands = {
                 help: () => {
                     printLine("Available commands:");
-                    printLine("  <span class='post-title'>ls [options]</span> - List all blog posts");
+                    printLine("  <span class='post-title'>ls [options]</span> - List directories/posts");
                     printLine("    -t        sort by modification time (newest first)");
                     printLine("    -r        reverse order while sorting");
+                    printLine("  <span class='post-title'>cd [directory]</span> - Change directory (e.g., cd 2025, cd ..)");
+                    printLine("  <span class='post-title'>pwd</span>         - Show current directory");
                     printLine("  <span class='post-title'>cat [filename]</span> - Read a specific post (e.g., cat hello-world.md)");
                     printLine("  <span class='post-title'>clear</span>       - Clear the terminal screen");
                     printLine("  <span class='post-title'>help</span>        - Show this help message");
@@ -291,14 +319,9 @@
                     printLine("  • Use <span class='post-title'>Tab</span> for auto-completion");
                     printLine("  • Type partial filenames and press Tab to complete");
                     printLine("  • Use <span class='post-title'>ls -t</span> to see posts by recency");
-                    printLine("  • Use <span class='post-title'>ls -tr</span> to see oldest posts first");
+                    printLine("  • Navigate between years with <span class='post-title'>cd</span>");
                 },
                 ls: (args) => {
-                    if (posts.length === 0) {
-                        printLine("No posts found.");
-                        return;
-                    }
-                    
                     // Parse arguments for sorting options
                     const sortByTime = args.includes('-t');
                     const reverseSort = args.includes('-r');
@@ -313,31 +336,62 @@
                         return;
                     }
                     
-                    // Create a copy of posts for sorting
-                    let sortedPosts = [...posts];
-                    
-                    if (sortByTime) {
-                        // Sort by modification time (newest first)
-                        sortedPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
-                    } else {
-                        // Default: sort alphabetically by filename (like real ls)
-                        sortedPosts.sort((a, b) => a.title.localeCompare(b.title));
-                    }
-                    
-                    // Apply reverse if requested
-                    if (reverseSort) {
-                        sortedPosts.reverse();
-                    }
-                    
                     let fileList = '';
-                    sortedPosts.forEach(post => {
-                        // Simulate file permissions, owner, size, date, and title
-                        const perms = '-rw-r--r--';
-                        const owner = 'ryan';
-                        const size = (post.content.length * 2).toString().padStart(5, ' ');
-                        const date = new Date(post.date).toLocaleDateString('en-US', { month: 'short', day: '2-digit' });
-                        fileList += `${perms} 1 ${owner} ${owner} ${size} ${date} <span class="post-title">${post.title}</span>\n`;
-                    });
+                    
+                    if (currentDirectory === '/') {
+                        // Root directory - show years as directories
+                        let sortedYears = [...availableYears];
+                        
+                        if (!sortByTime) {
+                            // Default: sort alphabetically
+                            sortedYears.sort();
+                        }
+                        // Note: sortByTime keeps the default newest-first order
+                        
+                        if (reverseSort) {
+                            sortedYears.reverse();
+                        }
+                        
+                        sortedYears.forEach(year => {
+                            const perms = 'drwxr-xr-x';
+                            const owner = 'ryan';
+                            const size = '4096';
+                            const date = 'Jan 01'; // Generic date for directories
+                            fileList += `${perms} 2 ${owner} ${owner} ${size.padStart(5, ' ')} ${date} <span class="post-title">${year}/</span>\n`;
+                        });
+                    } else {
+                        // In a year directory - show posts for that year
+                        const year = currentDirectory.substring(1); // Remove leading '/'
+                        const yearPosts = postsByYear[year] || [];
+                        
+                        if (yearPosts.length === 0) {
+                            printLine("No posts found in this directory.");
+                            return;
+                        }
+                        
+                        let sortedPosts = [...yearPosts];
+                        
+                        if (sortByTime) {
+                            // Sort by modification time (newest first)
+                            sortedPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
+                        } else {
+                            // Default: sort alphabetically by filename
+                            sortedPosts.sort((a, b) => a.title.localeCompare(b.title));
+                        }
+                        
+                        if (reverseSort) {
+                            sortedPosts.reverse();
+                        }
+                        
+                        sortedPosts.forEach(post => {
+                            const perms = '-rw-r--r--';
+                            const owner = 'ryan';
+                            const size = (post.content.length * 2).toString().padStart(5, ' ');
+                            const date = new Date(post.date).toLocaleDateString('en-US', { month: 'short', day: '2-digit' });
+                            fileList += `${perms} 1 ${owner} ${owner} ${size} ${date} <span class="post-title">${post.title}</span>\n`;
+                        });
+                    }
+                    
                     printLine(fileList.trim());
                 },
                 cat: (args) => {
@@ -346,7 +400,18 @@
                         printError("Usage: cat [filename]");
                         return;
                     }
-                    const post = posts.find(p => p.title === filename);
+                    
+                    // Find post in current directory
+                    let post = null;
+                    if (currentDirectory === '/') {
+                        printError(`cat: ${filename}: Is a directory`);
+                        return;
+                    } else {
+                        const year = currentDirectory.substring(1);
+                        const yearPosts = postsByYear[year] || [];
+                        post = yearPosts.find(p => p.title === filename);
+                    }
+                    
                     if (post) {
                         printLine(`<span class="post-date">Posted on: ${post.date}</span>`);
                         printLine("---");
@@ -377,6 +442,38 @@
                         printError(`cat: ${filename}: No such file or directory`);
                     }
                 },
+                cd: (args) => {
+                    const target = args[0];
+                    if (!target) {
+                        // cd with no arguments goes to root
+                        currentDirectory = '/';
+                        return;
+                    }
+                    
+                    if (target === '..') {
+                        // Go up one directory
+                        if (currentDirectory !== '/') {
+                            currentDirectory = '/';
+                        }
+                    } else if (target === '/' || target === '~') {
+                        // Go to root
+                        currentDirectory = '/';
+                    } else {
+                        // Try to cd into a year directory
+                        if (currentDirectory === '/') {
+                            if (availableYears.includes(target)) {
+                                currentDirectory = `/${target}`;
+                            } else {
+                                printError(`cd: ${target}: No such file or directory`);
+                            }
+                        } else {
+                            printError(`cd: ${target}: No such file or directory`);
+                        }
+                    }
+                },
+                pwd: () => {
+                    printLine(currentDirectory);
+                },
                 clear: () => {
                     output.innerHTML = '';
                 }
@@ -399,8 +496,15 @@
             function printCommand(command) {
                 const line = document.createElement('div');
                 line.classList.add('line');
-                line.innerHTML = `<span class="prompt">$ ryans-thoughts ></span>${command}`;
+                line.innerHTML = `<span class="prompt">$ ryans-thoughts:<span class="directory">${currentDirectory}</span> ></span>${command}`;
                 output.appendChild(line);
+            }
+            
+            function updatePrompt() {
+                const currentDirElement = document.getElementById('current-dir');
+                if (currentDirElement) {
+                    currentDirElement.textContent = currentDirectory;
+                }
             }
 
             function scrollToBottom() {
@@ -418,8 +522,21 @@
                     // Complete command names
                     return Object.keys(commands).filter(cmd => cmd.startsWith(currentArg));
                 } else if (command === 'cat' && parts.length === 2) {
-                    // Complete filenames for cat command
-                    return posts.map(p => p.title).filter(title => title.startsWith(currentArg));
+                    // Complete filenames for cat command in current directory
+                    if (currentDirectory === '/') {
+                        return []; // No files in root directory
+                    } else {
+                        const year = currentDirectory.substring(1);
+                        const yearPosts = postsByYear[year] || [];
+                        return yearPosts.map(p => p.title).filter(title => title.startsWith(currentArg));
+                    }
+                } else if (command === 'cd' && parts.length === 2) {
+                    // Complete directory names for cd command
+                    if (currentDirectory === '/') {
+                        return availableYears.filter(year => year.startsWith(currentArg));
+                    } else {
+                        return ['..'].filter(dir => dir.startsWith(currentArg));
+                    }
                 }
                 return [];
             }
@@ -494,6 +611,7 @@
 
                         if (commands[command]) {
                             commands[command](args);
+                            updatePrompt(); // Update prompt after command execution
                         } else {
                             printError(`command not found: ${command}`);
                         }
@@ -514,6 +632,7 @@
                 printLine("Type '<span class='post-title'>help</span>' to see a list of available commands.");
                 printLine("Use <span class='post-title'>Tab</span> for auto-completion.");
                 printLine("");
+                updatePrompt();
                 printCommand('ls -t');
                 commands.ls(['-t']);
             }
