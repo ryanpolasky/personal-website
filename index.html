@@ -59,7 +59,7 @@
       const darkColor = darkenColor(savedColor, 25);
       const glowColor = hexToRgba(savedColor, 0.3);
       
-      // Set CSS variables immediately
+      // Set CSS variables immediately before any content loads
       document.documentElement.style.setProperty('--accent-color', savedColor);
       document.documentElement.style.setProperty('--accent-light', lightColor);
       document.documentElement.style.setProperty('--accent-dark', darkColor);
@@ -82,10 +82,10 @@
                 glow: '#202022',
               },
               accent: {
-                DEFAULT: 'var(--accent-color)',
-                light: 'var(--accent-light)',
-                dark: 'var(--accent-dark)',
-                glow: 'var(--accent-glow)',
+                DEFAULT: 'var(--accent-color, #4a90e2)',
+                light: 'var(--accent-light, #6ba3e8)',
+                dark: 'var(--accent-dark, #357abd)',
+                glow: 'var(--accent-glow, rgba(74, 144, 226, 0.3))',
               },
               secondary: {
                 blue: 'var(--accent-color)',
@@ -150,7 +150,7 @@
     <style>
       /* CSS variables will be set by JavaScript immediately */
 
-      /* Matrix rain effect */
+      /* Instant background effects - show immediately */
       .matrix-bg {
         position: fixed;
         top: 0;
@@ -160,15 +160,39 @@
         pointer-events: none;
         z-index: -1;
         opacity: 0.03;
+        background: 
+          radial-gradient(circle at 20% 30%, var(--accent-color, #4a90e2) 0%, transparent 50%),
+          radial-gradient(circle at 80% 70%, var(--accent-light, #6ba3e8) 0%, transparent 50%),
+          radial-gradient(circle at 40% 80%, var(--accent-dark, #357abd) 0%, transparent 50%);
       }
 
       .matrix-char {
         position: absolute;
-        color: var(--accent-color);
+        color: var(--accent-color, #4a90e2);
         font-family: 'JetBrains Mono', monospace;
         font-size: 14px;
         animation: matrix 20s linear infinite;
-        text-shadow: 0 0 8px var(--accent-glow);
+        text-shadow: 0 0 8px var(--accent-glow, rgba(74, 144, 226, 0.3));
+      }
+
+      /* CSS-only particles for instant display */
+      .matrix-bg::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: 
+          radial-gradient(2px 2px at 20px 30px, var(--accent-color, #4a90e2), transparent),
+          radial-gradient(2px 2px at 40px 70px, var(--accent-light, #6ba3e8), transparent),
+          radial-gradient(1px 1px at 90px 40px, var(--accent-color, #4a90e2), transparent),
+          radial-gradient(1px 1px at 130px 80px, var(--accent-dark, #357abd), transparent),
+          radial-gradient(2px 2px at 160px 30px, var(--accent-color, #4a90e2), transparent);
+        background-repeat: repeat;
+        background-size: 200px 100px;
+        animation: float 6s ease-in-out infinite;
+        opacity: 0.4;
       }
 
       /* Professional glassmorphism */
@@ -269,9 +293,10 @@
         position: absolute;
         width: 2px;
         height: 2px;
-        background: var(--accent-color);
+        background: var(--accent-color, #4a90e2);
         border-radius: 50%;
         animation: float 6s ease-in-out infinite;
+        box-shadow: 0 0 6px var(--accent-glow, rgba(74, 144, 226, 0.3));
       }
 
       /* Interactive elements */
@@ -345,12 +370,14 @@
         applyTheme();
       };
 
-      // Matrix rain effect
+      // Enhanced matrix rain effect (adds to CSS background)
       function createMatrix() {
         const container = document.querySelector('.matrix-bg');
+        if (!container) return;
+        
         const chars = '01010110100101ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-        for (let i = 0; i < 50; i++) {
+        for (let i = 0; i < 30; i++) {
           const char = document.createElement('div');
           char.className = 'matrix-char';
           char.textContent = chars[Math.floor(Math.random() * chars.length)];
@@ -361,10 +388,12 @@
         }
       }
 
-      // Particle system
+      // Enhanced particle system (adds to CSS particles)
       function createParticles() {
         const hero = document.querySelector('#home');
-        for (let i = 0; i < 20; i++) {
+        if (!hero) return;
+        
+        for (let i = 0; i < 15; i++) {
           const particle = document.createElement('div');
           particle.className = 'particles floating';
           particle.style.left = Math.random() * 100 + '%';
@@ -487,11 +516,28 @@
     </header>
 
     <!-- Hero Section -->
-    <section id="home" class="relative min-h-[75vh] flex items-center justify-center overflow-hidden">
-      <!-- Subtle Background Effects -->
+    <section id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden pb-16">
+      <!-- Instant Background Effects -->
       <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
-        <div class="absolute top-1/4 right-1/4 w-64 h-64 rounded-full bg-accent/10 blur-3xl"></div>
-        <div class="absolute bottom-1/4 left-1/4 w-48 h-48 rounded-full bg-secondary-purple/10 blur-3xl"></div>
+        <!-- Large diffused glows -->
+        <div class="absolute top-10 right-1/6 w-96 h-96 rounded-full animate-pulse-slow" 
+             style="background: radial-gradient(circle, var(--accent-glow, rgba(74, 144, 226, 0.08)) 0%, transparent 70%); filter: blur(60px);"></div>
+        <div class="absolute bottom-20 left-1/6 w-80 h-80 rounded-full animate-pulse-slow" 
+             style="background: radial-gradient(circle, var(--accent-dark, rgba(53, 122, 189, 0.06)) 0%, transparent 70%); filter: blur(80px); animation-delay: 2s;"></div>
+        <div class="absolute top-1/3 left-2/3 w-72 h-72 rounded-full animate-pulse-slow" 
+             style="background: radial-gradient(circle, var(--accent-light, rgba(107, 163, 232, 0.05)) 0%, transparent 70%); filter: blur(70px); animation-delay: 4s;"></div>
+        
+        <!-- Medium ambient glows -->
+        <div class="absolute top-2/3 right-1/3 w-60 h-60 rounded-full animate-pulse-slow" 
+             style="background: radial-gradient(circle, var(--accent-color, rgba(74, 144, 226, 0.04)) 0%, transparent 60%); filter: blur(50px); animation-delay: 1s;"></div>
+        <div class="absolute bottom-1/3 left-1/2 w-52 h-52 rounded-full animate-pulse-slow" 
+             style="background: radial-gradient(circle, var(--accent-glow, rgba(74, 144, 226, 0.03)) 0%, transparent 60%); filter: blur(40px); animation-delay: 3s;"></div>
+        
+        <!-- Subtle corner accents -->
+        <div class="absolute top-0 left-0 w-40 h-40 rounded-full animate-pulse-slow" 
+             style="background: radial-gradient(circle, var(--accent-light, rgba(107, 163, 232, 0.02)) 0%, transparent 50%); filter: blur(30px); animation-delay: 5s;"></div>
+        <div class="absolute bottom-0 right-0 w-44 h-44 rounded-full animate-pulse-slow" 
+             style="background: radial-gradient(circle, var(--accent-dark, rgba(53, 122, 189, 0.02)) 0%, transparent 50%); filter: blur(35px); animation-delay: 6s;"></div>
       </div>
 
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 relative z-10">
@@ -548,7 +594,8 @@
             <div class="relative">
               <div class="absolute inset-0 bg-gradient-to-r from-accent to-secondary-blue rounded-3xl blur animate-glow"></div>
               <img src="./assets/images/my-avatar.png" alt="Ryan Polasky"
-                   class="relative w-80 h-80 rounded-3xl object-cover ring-2 ring-accent/50 hover-lift" />
+                   class="relative w-80 h-80 rounded-3xl object-cover hover-lift" 
+                   style="border: 2px solid var(--accent-glow, #4a90e2);" />
 
               <!-- Floating tech icons -->
               <div class="absolute -top-4 -right-4 w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent floating">
@@ -568,6 +615,8 @@
 
     <!-- About Section -->
     <section id="about" class="py-12 relative">
+      <!-- Subtle gradient overlay at the top -->
+      <div class="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-bg/80 to-transparent pointer-events-none"></div>
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
           <h2 class="text-4xl font-black mb-6">
@@ -632,7 +681,7 @@
 
     <!-- Experience Section -->
     <section id="experience" class="py-12 relative">
-      <div class="absolute inset-0 bg-gradient-to-b from-transparent via-bg-soft/50 to-transparent"></div>
+      <div class="absolute inset-0 bg-gradient-to-b from-bg-soft/50 via-bg-soft/30 to-bg-soft/50"></div>
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div class="text-center mb-12">
           <h2 class="text-4xl font-black mb-6">
