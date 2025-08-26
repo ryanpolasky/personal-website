@@ -29,29 +29,30 @@
               mono: ['JetBrains Mono', 'Menlo', 'Monaco', 'Courier New', 'monospace']
             },
             colors: {
-              // Dark theme (cyberpunk)
+              // Professional dark theme
               bg: {
-                DEFAULT: '#000000',
-                soft: '#1c1c1e',
-                card: '#2c2c2e',
-                glow: '#3a3a3c',
+                DEFAULT: '#0a0a0b',
+                soft: '#141416',
+                card: '#1a1a1c',
+                glow: '#202022',
               },
               accent: {
-                DEFAULT: '#007aff',
-                light: '#5ac8fa',
-                dark: '#0051d5',
-                glow: 'rgba(0, 122, 255, 0.4)',
+                DEFAULT: 'var(--accent-color, #4a90e2)',
+                light: 'var(--accent-light, #6ba3e8)',
+                dark: 'var(--accent-dark, #3a7bc8)',
+                glow: 'var(--accent-glow, rgba(74, 144, 226, 0.3))',
               },
-              cyber: {
-                blue: '#5ac8fa',
-                green: '#30d158',
-                purple: '#af52de',
-                orange: '#ff9500',
+              secondary: {
+                blue: 'var(--accent-color, #4a90e2)',
+                green: 'var(--accent-light, #6ba3e8)',
+                purple: 'var(--accent-dark, #3a7bc8)',
+                orange: 'var(--accent-glow, rgba(74, 144, 226, 0.8))',
+                gray: '#8e8e93',
               },
               // Light theme colors
               light: {
                 bg: '#ffffff',
-                soft: '#f2f2f7',
+                soft: '#f8f9fa',
                 card: '#ffffff',
                 text: '#1d1d1f',
                 muted: '#6e6e73',
@@ -95,20 +96,20 @@
               },
               'blink-caret': {
                 'from, to': { borderColor: 'transparent' },
-                '50%': { borderColor: '#ff0080' }
+                '50%': { borderColor: 'var(--accent-color)' }
               }
             },
             boxShadow: {
-              'glow-pink': '0 0 40px rgba(255, 0, 128, 0.3)',
-              'glow-blue': '0 0 40px rgba(0, 212, 255, 0.3)',
-              'glow-green': '0 0 40px rgba(0, 255, 136, 0.3)',
-              'inner-glow': 'inset 0 0 20px rgba(255, 0, 128, 0.1)',
-              'cyber': '0 0 20px rgba(255, 0, 128, 0.4), 0 0 40px rgba(255, 0, 128, 0.2), 0 0 60px rgba(255, 0, 128, 0.1)',
+              'glow-blue': '0 0 30px rgba(74, 144, 226, 0.2)',
+              'glow-green': '0 0 30px rgba(112, 192, 184, 0.2)',
+              'glow-purple': '0 0 30px rgba(139, 126, 200, 0.2)',
+              'inner-glow': 'inset 0 0 15px rgba(74, 144, 226, 0.1)',
+              'professional': '0 0 15px rgba(74, 144, 226, 0.3), 0 0 30px rgba(74, 144, 226, 0.1)',
             },
             backgroundImage: {
               'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
               'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-              'cyber-grid': 'linear-gradient(rgba(255, 0, 128, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 0, 128, 0.1) 1px, transparent 1px)',
+              'professional-grid': 'linear-gradient(rgba(74, 144, 226, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(74, 144, 226, 0.05) 1px, transparent 1px)',
             }
           },
         },
@@ -116,6 +117,13 @@
     </script>
 
     <style>
+      :root {
+        --accent-color: #4a90e2;
+        --accent-light: #6ba3e8;
+        --accent-dark: #3a7bc8;
+        --accent-glow: rgba(74, 144, 226, 0.3);
+      }
+
       /* Matrix rain effect */
       .matrix-bg {
         position: fixed;
@@ -130,24 +138,24 @@
 
       .matrix-char {
         position: absolute;
-        color: #ff0080;
+        color: var(--accent-color);
         font-family: 'JetBrains Mono', monospace;
         font-size: 14px;
         animation: matrix 20s linear infinite;
-        text-shadow: 0 0 10px rgba(255, 0, 128, 0.8);
+        text-shadow: 0 0 8px var(--accent-glow);
       }
 
-      /* Theme-aware glassmorphism */
+      /* Professional glassmorphism */
       .glass {
-        background: rgba(44, 44, 46, 0.8);
+        background: rgba(26, 26, 28, 0.85);
         backdrop-filter: blur(20px);
-        border: 1px solid rgba(0, 122, 255, 0.1);
+        border: 1px solid var(--accent-glow);
       }
 
       .glass-card {
-        background: rgba(44, 44, 46, 0.6);
+        background: rgba(26, 26, 28, 0.7);
         backdrop-filter: blur(20px);
-        border: 1px solid rgba(0, 122, 255, 0.2);
+        border: 1px solid var(--accent-glow);
         position: relative;
         overflow: hidden;
       }
@@ -159,7 +167,7 @@
         left: -100%;
         width: 100%;
         height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(0, 122, 255, 0.1), transparent);
+        background: linear-gradient(90deg, transparent, var(--accent-glow), transparent);
         transition: left 0.5s;
       }
 
@@ -167,42 +175,17 @@
         left: 100%;
       }
 
-      /* Professional theme */
-      .professional .glass {
-        background: rgba(28, 28, 30, 0.9);
-        border: 1px solid rgba(99, 99, 102, 0.2);
-      }
-
-      .professional .glass-card {
-        background: rgba(28, 28, 30, 0.8);
-        border: 1px solid rgba(99, 99, 102, 0.2);
-      }
-
-      /* Cyberpunk grid */
-      .cyber-grid {
+      /* Professional grid */
+      .professional-grid {
         background-image:
-          linear-gradient(rgba(255, 0, 128, 0.1) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(255, 0, 128, 0.1) 1px, transparent 1px);
+          linear-gradient(var(--accent-glow) 1px, transparent 1px),
+          linear-gradient(90deg, var(--accent-glow) 1px, transparent 1px);
         background-size: 50px 50px;
       }
 
-      /* Subtle gradient text */
+      /* Professional gradient text */
       .holo-text {
-        background: linear-gradient(135deg, #007aff, #5ac8fa);
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-      }
-
-      .dark .holo-text {
-        background: linear-gradient(135deg, #007aff, #34c759);
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-      }
-
-      .professional .holo-text {
-        background: linear-gradient(135deg, #007aff, #34c759);
+        background: linear-gradient(135deg, var(--accent-color), var(--accent-light));
         -webkit-background-clip: text;
         background-clip: text;
         -webkit-text-fill-color: transparent;
@@ -222,7 +205,7 @@
         content: '';
         position: absolute;
         inset: -2px;
-        background: linear-gradient(45deg, #ff0080, #00d4ff, #8855ff, #00ff88);
+        background: linear-gradient(45deg, var(--accent-color), var(--accent-light), var(--accent-dark), var(--accent-color));
         border-radius: inherit;
         z-index: -1;
         opacity: 0;
@@ -236,7 +219,7 @@
       /* Typing effect */
       .typing-effect {
         overflow: hidden;
-        border-right: 3px solid #ff0080;
+        border-right: 3px solid var(--accent-color);
         white-space: nowrap;
         margin: 0 auto;
         animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite;
@@ -252,12 +235,12 @@
       }
 
       ::-webkit-scrollbar-thumb {
-        background: linear-gradient(45deg, #ff0080, #00d4ff);
+        background: linear-gradient(45deg, var(--accent-color), var(--accent-light));
         border-radius: 4px;
       }
 
       ::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(45deg, #ff3399, #33ddff);
+        background: linear-gradient(45deg, var(--accent-light), var(--accent-color));
       }
 
       /* Particle system */
@@ -265,7 +248,7 @@
         position: absolute;
         width: 2px;
         height: 2px;
-        background: #ff0080;
+        background: var(--accent-color);
         border-radius: 50%;
         animation: float 6s ease-in-out infinite;
       }
@@ -276,30 +259,30 @@
       }
 
       .hover-lift:hover {
-        transform: translateY(-10px) scale(1.02);
-        box-shadow: 0 20px 40px rgba(255, 0, 128, 0.3);
+        transform: translateY(-8px) scale(1.01);
+        box-shadow: 0 15px 30px var(--accent-glow);
       }
 
       /* Terminal-style text */
       .terminal {
         font-family: 'JetBrains Mono', monospace;
-        background: #0a0a0f;
-        color: #00ff88;
+        background: #0a0a0b;
+        color: var(--accent-light);
         padding: 1rem;
         border-radius: 8px;
-        border: 1px solid #00ff88;
+        border: 1px solid var(--accent-light);
         position: relative;
       }
 
       .terminal::before {
         content: '> ';
-        color: #ff0080;
+        color: var(--accent-color);
       }
 
       /* Skills progress bars */
       .skill-bar {
         height: 4px;
-        background: rgba(255, 0, 128, 0.2);
+        background: var(--accent-glow);
         border-radius: 2px;
         overflow: hidden;
         position: relative;
@@ -307,15 +290,15 @@
 
       .skill-progress {
         height: 100%;
-        background: linear-gradient(90deg, #ff0080, #00d4ff);
+        background: linear-gradient(90deg, var(--accent-color), var(--accent-light));
         border-radius: 2px;
         position: relative;
         animation: skill-glow 2s ease-in-out infinite alternate;
       }
 
       @keyframes skill-glow {
-        0% { box-shadow: 0 0 5px rgba(255, 0, 128, 0.5); }
-        100% { box-shadow: 0 0 15px rgba(255, 0, 128, 0.8), 0 0 25px rgba(0, 212, 255, 0.4); }
+        0% { box-shadow: 0 0 4px var(--accent-glow); }
+        100% { box-shadow: 0 0 12px var(--accent-glow), 0 0 20px var(--accent-glow); }
       }
 
       /* Floating elements */
@@ -344,7 +327,7 @@
       // Matrix rain effect
       function createMatrix() {
         const container = document.querySelector('.matrix-bg');
-        const chars = '01アカサタナハマヤラワンABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const chars = '01010110100101ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
         for (let i = 0; i < 50; i++) {
           const char = document.createElement('div');
@@ -414,8 +397,8 @@
     <!-- Matrix Background -->
     <div class="matrix-bg"></div>
 
-    <!-- Cyberpunk Grid Overlay -->
-    <div class="fixed inset-0 cyber-grid opacity-5 pointer-events-none"></div>
+    <!-- Professional Grid Overlay -->
+    <div class="fixed inset-0 professional-grid opacity-3 pointer-events-none"></div>
 
     <!-- Header -->
     <header class="sticky top-0 z-50 glass">
@@ -433,6 +416,52 @@
             <a data-scroll="contact" href="#contact" class="relative hover:text-accent transition-colors px-2 py-1 rounded">Contact</a>
           </nav>
           <div class="flex items-center gap-3">
+            <!-- Color Picker -->
+            <div class="relative">
+              <button id="colorPickerBtn" class="p-2 rounded-xl glass hover:shadow-glow-blue transition-all hover-lift" aria-label="Change Theme Color" aria-expanded="false" aria-haspopup="true">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM7 3V1m0 18v2m8-10a4 4 0 00-4-4H7m4 8a4 4 0 004-4V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v8a4 4 0 004 4z"></path>
+                </svg>
+              </button>
+              
+              <!-- Color Palette -->
+              <div id="colorPalette" class="absolute top-full right-0 mt-2 p-8 glass rounded-3xl opacity-0 pointer-events-none transition-all z-50 shadow-2xl border-2 border-white/10 min-w-max" role="menu" aria-labelledby="colorPickerBtn">
+                <div class="text-center mb-6">
+                  <h3 class="text-sm font-semibold text-white mb-1">Theme Colors</h3>
+                  <p class="text-xs text-slate-400">Choose your accent color</p>
+                </div>
+                <div class="grid grid-cols-4 gap-4 mb-6">
+                  <button class="color-option w-14 h-14 rounded-2xl border-3 border-white/30 hover:scale-110 hover:border-white/60 transition-all duration-200 focus:outline-none focus:ring-3 focus:ring-white/50 shadow-lg relative overflow-hidden group" data-color="#4a90e2" style="background: linear-gradient(135deg, #4a90e2, #6ba3e8);" aria-label="Blue theme" role="menuitem">
+                    <div class="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  </button>
+                  <button class="color-option w-14 h-14 rounded-2xl border-3 border-white/30 hover:scale-110 hover:border-white/60 transition-all duration-200 focus:outline-none focus:ring-3 focus:ring-white/50 shadow-lg relative overflow-hidden group" data-color="#007aff" style="background: linear-gradient(135deg, #007aff, #5ac8fa);" aria-label="Apple blue theme" role="menuitem">
+                    <div class="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  </button>
+                  <button class="color-option w-14 h-14 rounded-2xl border-3 border-white/30 hover:scale-110 hover:border-white/60 transition-all duration-200 focus:outline-none focus:ring-3 focus:ring-white/50 shadow-lg relative overflow-hidden group" data-color="#5ac8fa" style="background: linear-gradient(135deg, #5ac8fa, #64d2ff);" aria-label="Light blue theme" role="menuitem">
+                    <div class="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  </button>
+                  <button class="color-option w-14 h-14 rounded-2xl border-3 border-white/30 hover:scale-110 hover:border-white/60 transition-all duration-200 focus:outline-none focus:ring-3 focus:ring-white/50 shadow-lg relative overflow-hidden group" data-color="#af52de" style="background: linear-gradient(135deg, #af52de, #bf5af2);" aria-label="Purple theme" role="menuitem">
+                    <div class="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  </button>
+                  <button class="color-option w-14 h-14 rounded-2xl border-3 border-white/30 hover:scale-110 hover:border-white/60 transition-all duration-200 focus:outline-none focus:ring-3 focus:ring-white/50 shadow-lg relative overflow-hidden group" data-color="#ff9500" style="background: linear-gradient(135deg, #ff9500, #ffb340);" aria-label="Orange theme" role="menuitem">
+                    <div class="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  </button>
+                  <button class="color-option w-14 h-14 rounded-2xl border-3 border-white/30 hover:scale-110 hover:border-white/60 transition-all duration-200 focus:outline-none focus:ring-3 focus:ring-white/50 shadow-lg relative overflow-hidden group" data-color="#30d158" style="background: linear-gradient(135deg, #30d158, #64de85);" aria-label="Green theme" role="menuitem">
+                    <div class="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  </button>
+                  <button class="color-option w-14 h-14 rounded-2xl border-3 border-white/30 hover:scale-110 hover:border-white/60 transition-all duration-200 focus:outline-none focus:ring-3 focus:ring-white/50 shadow-lg relative overflow-hidden group" data-color="#ff453a" style="background: linear-gradient(135deg, #ff453a, #ff6961);" aria-label="Red theme" role="menuitem">
+                    <div class="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  </button>
+                  <button class="color-option w-14 h-14 rounded-2xl border-3 border-white/30 hover:scale-110 hover:border-white/60 transition-all duration-200 focus:outline-none focus:ring-3 focus:ring-white/50 shadow-lg relative overflow-hidden group" data-color="#ff6b35" style="background: linear-gradient(135deg, #ff6b35, #ff8a65);" aria-label="Orange red theme" role="menuitem">
+                    <div class="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  </button>
+                </div>
+                <div class="pt-4 border-t border-white/10">
+                  <p class="text-xs text-slate-500 text-center">Color persists across sessions</p>
+                </div>
+              </div>
+            </div>
+
             <a href="https://github.com/ryanpolasky" target="_blank" rel="noreferrer"
                class="p-2 rounded-xl glass hover:shadow-glow-pink transition-all hover-lift" aria-label="GitHub">
               <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
@@ -470,8 +499,8 @@
             <p class="text-xl text-slate-300 max-w-2xl mb-8 leading-relaxed">
               Junior Software Engineer @ UT Dallas ('26). Recent Apple intern crafting
               <span class="text-accent font-semibold">AI-powered tooling</span>,
-              <span class="text-cyber-blue font-semibold">scalable backend systems</span>, and
-              <span class="text-cyber-green font-semibold">developer productivity tools</span> that actually ship.
+              <span class="text-secondary-blue font-semibold">scalable backend systems</span>, and
+              <span class="text-secondary-green font-semibold">developer productivity tools</span> that actually ship.
             </p>
 
             <div class="flex gap-3 mb-6">
@@ -497,13 +526,13 @@
             </div>
 
             <div class="terminal" style="width: 100%; max-width: 600px;">
-              <span class="text-cyber-green">skills:</span> Python | Java | Swift | C++ | PostgreSQL | Redis | Docker | Kubernetes | AWS/GCP | Vertex AI | RAG
+              <span class="text-accent">skills:</span> Python | Java | Swift | C++ | PostgreSQL | Redis | Docker | Kubernetes | AWS/GCP | Vertex AI | RAG
             </div>
           </div>
 
           <div class="flex justify-center lg:justify-end relative lg:col-span-2">
             <div class="relative">
-              <div class="absolute inset-0 bg-gradient-to-r from-accent to-cyber-blue rounded-3xl blur animate-glow"></div>
+              <div class="absolute inset-0 bg-gradient-to-r from-accent to-secondary-blue rounded-3xl blur animate-glow"></div>
               <img src="./assets/images/my-avatar.png" alt="Ryan Polasky"
                    class="relative w-80 h-80 rounded-3xl object-cover ring-2 ring-accent/50 hover-lift" />
 
@@ -530,7 +559,7 @@
           <h2 class="text-4xl font-black mb-6">
             <span class="holo-text">About Me</span>
           </h2>
-          <div class="w-24 h-1 bg-gradient-to-r from-accent to-cyber-blue mx-auto rounded-full"></div>
+          <div class="w-24 h-1 bg-gradient-to-r from-accent to-accent-light mx-auto rounded-full"></div>
         </div>
 
         <div class="glass-card p-10 rounded-3xl hover-lift">
@@ -551,8 +580,8 @@
 
               <div class="flex items-center gap-4 text-sm font-mono">
                 <span class="px-3 py-1 rounded-full bg-accent/20 text-accent">Problem Solver</span>
-                <span class="px-3 py-1 rounded-full bg-cyber-blue/20 text-cyber-blue">AI Engineer</span>
-                <span class="px-3 py-1 rounded-full bg-cyber-green/20 text-cyber-green">DevOps Enthusiast</span>
+                <span class="px-3 py-1 rounded-full bg-secondary-blue/20 text-secondary-blue">AI Engineer</span>
+                <span class="px-3 py-1 rounded-full bg-secondary-green/20 text-secondary-green">DevOps Enthusiast</span>
               </div>
             </div>
 
@@ -565,13 +594,13 @@
               </div>
 
               <div class="glass p-4 rounded-2xl text-center">
-                <div class="text-2xl font-black text-cyber-blue mb-2">🎓</div>
+                <div class="text-2xl font-black text-secondary-blue mb-2">🎓</div>
                 <div class="font-bold text-white">Education</div>
                 <div class="text-slate-400 text-sm">CS @ UT Dallas '26</div>
               </div>
 
               <div class="glass p-4 rounded-2xl text-center">
-                <div class="text-2xl font-black text-cyber-green mb-2">💼</div>
+                <div class="text-2xl font-black text-secondary-green mb-2">💼</div>
                 <div class="font-bold text-white">Experience</div>
                 <div class="text-slate-400 text-sm">2x Apple Intern</div>
               </div>
@@ -589,17 +618,17 @@
           <h2 class="text-4xl font-black mb-6">
             <span class="holo-text">Experience</span>
           </h2>
-          <div class="w-24 h-1 bg-gradient-to-r from-accent to-cyber-blue mx-auto rounded-full"></div>
+          <div class="w-24 h-1 bg-gradient-to-r from-accent to-accent-light mx-auto rounded-full"></div>
         </div>
 
         <div class="relative">
           <!-- Timeline line -->
-          <div class="absolute left-8 top-0 bottom-0 w-1 bg-gradient-to-b from-accent via-cyber-blue to-cyber-green rounded-full z-0"></div>
+          <div class="absolute left-8 top-0 bottom-0 w-1 bg-gradient-to-b from-accent via-accent-light to-accent-dark rounded-full z-0"></div>
 
           <div class="space-y-12">
               <!-- Experience 1 -->
-              <div class="relative flex items-start gap-8">
-              <div class="flex-shrink-0 w-16 h-16 bg-gradient-to-r from-cyber-green to-accent rounded-2xl flex items-center justify-center shadow-glow-green animate-glow z-10 relative">
+              <div class="relative flex items-start gap-8 z-10">
+              <div class="flex-shrink-0 w-16 h-16 bg-gradient-to-r from-accent-light to-accent rounded-2xl flex items-center justify-center shadow-glow-green animate-glow z-20 relative">
                 <span class="text-2xl font-black">🎯</span>
               </div>
               <div class="glass-card p-8 rounded-3xl hover-lift flex-1 z-10 relative">
@@ -618,20 +647,20 @@
                     <p><span class="text-accent font-semibold">6.87% escalation rate</span> through independent research & advanced troubleshooting—well below department average.</p>
                   </div>
                   <div class="flex items-start gap-3">
-                    <span class="text-cyber-blue text-xl">▶</span>
-                    <p><span class="text-cyber-blue font-semibold">0.27m average call wrap time</span> while maintaining premium-quality documentation standards.</p>
+                    <span class="text-accent text-xl">▶</span>
+                    <p><span class="text-accent font-semibold">0.27m average call wrap time</span> while maintaining premium-quality documentation standards.</p>
                   </div>
                   <div class="flex items-start gap-3">
-                    <span class="text-cyber-green text-xl">▶</span>
-                    <p><span class="text-cyber-green font-semibold">15% above department average CSAT</span>; AppleCare Excellence Award recipient (2024).</p>
+                    <span class="text-accent text-xl">▶</span>
+                    <p><span class="text-accent font-semibold">15% above department average CSAT</span>; AppleCare Excellence Award recipient (2024).</p>
                   </div>
                 </div>
               </div>
             </div>
 
             <!-- Experience 2 -->
-            <div class="relative flex items-start gap-8">
-              <div class="flex-shrink-0 w-16 h-16 bg-gradient-to-r from-accent to-accent-light rounded-2xl flex items-center justify-center shadow-glow-pink animate-glow z-10 relative">
+            <div class="relative flex items-start gap-8 z-10">
+              <div class="flex-shrink-0 w-16 h-16 bg-gradient-to-r from-accent to-accent-light rounded-2xl flex items-center justify-center shadow-glow-pink animate-glow z-20 relative">
                 <span class="text-2xl font-black">📱</span>
               </div>
               <div class="glass-card p-8 rounded-3xl hover-lift flex-1 z-10 relative">
@@ -646,24 +675,24 @@
                 </div>
                 <div class="space-y-3 text-slate-300">
                   <div class="flex items-start gap-3">
-                    <span class="text-cyber-green text-xl">▶</span>
+                    <span class="text-accent text-xl">▶</span>
                     <p>Automated parsing, grouping, and analysis of <span class="text-accent font-semibold">thousands of on-device tests</span> with intelligent categorization systems.</p>
                   </div>
                   <div class="flex items-start gap-3">
-                    <span class="text-cyber-blue text-xl">▶</span>
-                    <p>Integrated <span class="text-cyber-blue font-semibold">LLMs into test triage workflows</span> to dramatically speed up root-cause analysis and reduce manual investigation time by 4,800%.</p>
+                    <span class="text-accent text-xl">▶</span>
+                    <p>Integrated <span class="text-accent font-semibold">LLMs into test triage workflows</span> to dramatically speed up root-cause analysis and reduce manual investigation time by 4,800%.</p>
                   </div>
                   <div class="flex items-start gap-3">
-                    <span class="text-cyber-purple text-xl">▶</span>
-                    <p>Unified bug report formats for <span class="text-cyber-purple font-semibold">succinct, actionable communications</span> that teams actually use.</p>
+                    <span class="text-accent text-xl">▶</span>
+                    <p>Unified bug report formats for <span class="text-accent font-semibold">succinct, actionable communications</span> that teams actually use.</p>
                   </div>
                 </div>
               </div>
             </div>
 
             <!-- Experience 3 -->
-            <div class="relative flex items-start gap-8">
-              <div class="flex-shrink-0 w-16 h-16 bg-gradient-to-r from-cyber-blue to-cyber-purple rounded-2xl flex items-center justify-center shadow-glow-blue animate-glow z-10 relative">
+            <div class="relative flex items-start gap-8 z-10">
+              <div class="flex-shrink-0 w-16 h-16 bg-gradient-to-r from-accent to-accent-dark rounded-2xl flex items-center justify-center shadow-glow-blue animate-glow z-20 relative">
                 <span class="text-2xl font-black">⚡</span>
               </div>
               <div class="glass-card p-8 rounded-3xl hover-lift flex-1 z-10 relative">
@@ -682,24 +711,24 @@
                     <p>Built an <span class="text-accent font-semibold">LLM-powered chat interface + Python package</span> to generate SQL/NoSQL queries from natural language—no more syntax debugging.</p>
                   </div>
                   <div class="flex items-start gap-3">
-                    <span class="text-cyber-green text-xl">▶</span>
-                    <p>Migrated critical services from <span class="text-cyber-green font-semibold">Java 11 → JDK 21</span>, resolving dependency conflicts and security vulnerabilities.</p>
+                    <span class="text-accent text-xl">▶</span>
+                    <p>Migrated critical services from <span class="text-accent font-semibold">Java 11 → JDK 21</span>, resolving dependency conflicts and security vulnerabilities.</p>
                   </div>
                   <div class="flex items-start gap-3">
-                    <span class="text-cyber-blue text-xl">▶</span>
-                    <p>Designed robust <span class="text-cyber-blue font-semibold">AWS/GCP workflows and CI/CD pipelines</span> for reliable deploys and lightning-fast feedback loops.</p>
+                    <span class="text-accent text-xl">▶</span>
+                    <p>Designed robust <span class="text-accent font-semibold">AWS/GCP workflows and CI/CD pipelines</span> for reliable deploys and lightning-fast feedback loops.</p>
                   </div>
                   <div class="flex items-start gap-3">
-                    <span class="text-cyber-purple text-xl">▶</span>
-                    <p>Optimized an iOS log analyzer (MVVM) to <span class="text-cyber-purple font-semibold">render thousands of events in real-time</span> without performance hiccups.</p>
+                    <span class="text-accent text-xl">▶</span>
+                    <p>Optimized an iOS log analyzer (MVVM) to <span class="text-accent font-semibold">render thousands of events in real-time</span> without performance hiccups.</p>
                   </div>
                 </div>
               </div>
             </div>
 
             <!-- Experience 4 -->
-            <div class="relative flex items-start gap-8">
-              <div class="flex-shrink-0 w-16 h-16 bg-gradient-to-r from-cyber-purple to-cyber-orange rounded-2xl flex items-center justify-center shadow-cyber animate-glow z-10 relative">
+            <div class="relative flex items-start gap-8 z-10">
+              <div class="flex-shrink-0 w-16 h-16 bg-gradient-to-r from-accent-dark to-accent-light rounded-2xl flex items-center justify-center shadow-professional animate-glow z-20 relative">
                 <span class="text-2xl font-black">🏥</span>
               </div>
               <div class="glass-card p-8 rounded-3xl hover-lift flex-1 z-10 relative">
@@ -718,8 +747,8 @@
                     <p>Repaired, imaged, and deployed <span class="text-accent font-semibold">hundreds of machines</span> for critical healthcare system expansion.</p>
                   </div>
                   <div class="flex items-start gap-3">
-                    <span class="text-cyber-green text-xl">▶</span>
-                    <p>Handled urgent hardware deliveries and set a <span class="text-cyber-green font-semibold">department intake record (300+ devices)</span> during high-demand periods.</p>
+                    <span class="text-accent text-xl">▶</span>
+                    <p>Handled urgent hardware deliveries and set a <span class="text-accent font-semibold">department intake record (300+ devices)</span> during high-demand periods.</p>
                   </div>
                 </div>
               </div>
@@ -737,7 +766,7 @@
           <h2 class="text-4xl font-black mb-6">
             <span class="holo-text">Featured Projects</span>
           </h2>
-          <div class="w-24 h-1 bg-gradient-to-r from-accent to-cyber-blue mx-auto rounded-full mb-6"></div>
+          <div class="w-24 h-1 bg-gradient-to-r from-accent to-accent-light mx-auto rounded-full mb-6"></div>
           <a href="https://github.com/ryanpolasky" target="_blank" rel="noreferrer"
              class="inline-flex items-center gap-2 text-lg font-semibold text-accent hover:text-accent-light transition-colors px-4 py-2 rounded-xl">
             View Public GitHub
@@ -849,7 +878,7 @@
           <h2 class="text-4xl font-black mb-6">
             <span class="holo-text">Skills & Technologies</span>
           </h2>
-          <div class="w-24 h-1 bg-gradient-to-r from-accent to-cyber-blue mx-auto rounded-full"></div>
+          <div class="w-24 h-1 bg-gradient-to-r from-accent to-accent-light mx-auto rounded-full"></div>
         </div>
 
         <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-8">
@@ -858,7 +887,7 @@
             <div class="absolute inset-0 bg-gradient-to-br from-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
             <div class="relative">
               <div class="flex items-center gap-4 mb-6">
-                <div class="w-16 h-16 bg-gradient-to-r from-accent to-accent-light rounded-2xl flex items-center justify-center shadow-glow-pink">
+                <div class="w-16 h-16 bg-gradient-to-r from-accent to-accent-light rounded-2xl flex items-center justify-center shadow-glow-blue">
                   <span class="text-3xl">💻</span>
                 </div>
                 <h3 class="text-2xl font-bold text-white">Languages</h3>
@@ -907,7 +936,7 @@
             <div class="absolute inset-0 bg-gradient-to-br from-cyber-blue/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
             <div class="relative">
               <div class="flex items-center gap-4 mb-6">
-                <div class="w-16 h-16 bg-gradient-to-r from-cyber-blue to-cyber-purple rounded-2xl flex items-center justify-center shadow-glow-blue">
+                <div class="w-16 h-16 bg-gradient-to-r from-accent to-accent-light rounded-2xl flex items-center justify-center shadow-glow-blue">
                   <span class="text-3xl">🗄️</span>
                 </div>
                 <h3 class="text-2xl font-bold text-white">Data</h3>
@@ -956,7 +985,7 @@
             <div class="absolute inset-0 bg-gradient-to-br from-cyber-green/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
             <div class="relative">
               <div class="flex items-center gap-4 mb-6">
-                <div class="w-16 h-16 bg-gradient-to-r from-cyber-green to-accent rounded-2xl flex items-center justify-center shadow-glow-green">
+                <div class="w-16 h-16 bg-gradient-to-r from-accent to-accent-light rounded-2xl flex items-center justify-center shadow-glow-blue">
                   <span class="text-3xl">🤖</span>
                 </div>
                 <h3 class="text-2xl font-bold text-white">AI/LLMs</h3>
@@ -1005,7 +1034,7 @@
             <div class="absolute inset-0 bg-gradient-to-br from-cyber-purple/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
             <div class="relative">
               <div class="flex items-center gap-4 mb-6">
-                <div class="w-16 h-16 bg-gradient-to-r from-cyber-purple to-cyber-orange rounded-2xl flex items-center justify-center shadow-cyber">
+                <div class="w-16 h-16 bg-gradient-to-r from-accent to-accent-light rounded-2xl flex items-center justify-center shadow-glow-blue">
                   <span class="text-3xl">☁️</span>
                 </div>
                 <h3 class="text-2xl font-bold text-white">DevOps</h3>
@@ -1060,7 +1089,7 @@
           <h2 class="text-4xl font-black mb-6">
             <span class="holo-text">What People Say</span>
           </h2>
-          <div class="w-24 h-1 bg-gradient-to-r from-accent to-cyber-blue mx-auto rounded-full mb-6"></div>
+          <div class="w-24 h-1 bg-gradient-to-r from-accent to-accent-light mx-auto rounded-full mb-6"></div>
           <p class="text-slate-400 font-mono">Full references available upon request</p>
         </div>
 
@@ -1170,7 +1199,7 @@
           <h2 class="text-5xl font-black mb-6">
             <span class="holo-text">Let's Build Something Epic</span>
           </h2>
-          <div class="w-24 h-1 bg-gradient-to-r from-accent to-cyber-blue mx-auto rounded-full mb-6"></div>
+          <div class="w-24 h-1 bg-gradient-to-r from-accent to-accent-light mx-auto rounded-full mb-6"></div>
           <p class="text-xl text-slate-300 max-w-2xl mx-auto">
             Want to collaborate or just chat about tech? Drop me a message — I reply faster than a Redis cache hit.
           </p>
@@ -1369,6 +1398,179 @@
         }
       `;
       document.head.appendChild(style);
+
+      // Color picker functionality
+      const colorOptions = document.querySelectorAll('.color-option');
+      const colorPalette = document.getElementById('colorPalette');
+      const colorPickerBtn = document.getElementById('colorPickerBtn');
+      let paletteOpen = false;
+
+      // Load saved color or default
+      const savedColor = localStorage.getItem('accentColor') || '#4a90e2';
+      updateAccentColor(savedColor);
+
+      // Toggle palette visibility
+      colorPickerBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        paletteOpen = !paletteOpen;
+        
+        if (paletteOpen) {
+          colorPalette.classList.remove('opacity-0', 'pointer-events-none');
+          colorPalette.classList.add('opacity-100', 'pointer-events-auto');
+          colorPickerBtn.setAttribute('aria-expanded', 'true');
+        } else {
+          colorPalette.classList.add('opacity-0', 'pointer-events-none');
+          colorPalette.classList.remove('opacity-100', 'pointer-events-auto');
+          colorPickerBtn.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      // Close palette when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!colorPalette.contains(e.target) && !colorPickerBtn.contains(e.target)) {
+          paletteOpen = false;
+          colorPalette.classList.add('opacity-0', 'pointer-events-none');
+          colorPalette.classList.remove('opacity-100', 'pointer-events-auto');
+          colorPickerBtn.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      // Handle color selection
+      colorOptions.forEach(option => {
+        option.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const newColor = e.currentTarget.dataset.color;
+          updateAccentColor(newColor);
+          localStorage.setItem('accentColor', newColor);
+          
+          // Close palette after selection
+          paletteOpen = false;
+          colorPalette.classList.add('opacity-0', 'pointer-events-none');
+          colorPalette.classList.remove('opacity-100', 'pointer-events-auto');
+          colorPickerBtn.setAttribute('aria-expanded', 'false');
+        });
+
+        // Keyboard navigation
+        option.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            option.click();
+          }
+        });
+      });
+
+      function updateAccentColor(color) {
+        // Calculate lighter and darker variants
+        const lightColor = lightenColor(color, 25);
+        const darkColor = darkenColor(color, 25);
+        const glowColor = hexToRgba(color, 0.3);
+        const lightGlow = hexToRgba(lightColor, 0.4);
+
+        // Update CSS custom properties - this will automatically update all elements using these variables
+        document.documentElement.style.setProperty('--accent-color', color);
+        document.documentElement.style.setProperty('--accent-light', lightColor);
+        document.documentElement.style.setProperty('--accent-dark', darkColor);
+        document.documentElement.style.setProperty('--accent-glow', glowColor);
+
+        // Update Tailwind config colors in real-time
+        if (window.tailwind && window.tailwind.config) {
+          window.tailwind.config.theme.extend.colors.accent.DEFAULT = color;
+          window.tailwind.config.theme.extend.colors.accent.light = lightColor;
+          window.tailwind.config.theme.extend.colors.accent.dark = darkColor;
+          window.tailwind.config.theme.extend.colors.accent.glow = glowColor;
+          
+          // Update secondary colors to use accent variants
+          window.tailwind.config.theme.extend.colors.secondary.blue = color;
+          window.tailwind.config.theme.extend.colors.secondary.green = lightColor;
+          window.tailwind.config.theme.extend.colors.secondary.purple = darkColor;
+          window.tailwind.config.theme.extend.colors.secondary.orange = glowColor;
+        }
+
+        // Force update of all elements that might not be using CSS variables
+        const elementsToUpdate = [
+          '.text-accent', '.bg-accent', '.border-accent',
+          '.text-secondary-blue', '.text-secondary-green', '.text-secondary-purple',
+          '.bg-secondary-blue', '.bg-secondary-green', '.bg-secondary-purple',
+          '.border-secondary-blue', '.border-secondary-green', '.border-secondary-purple'
+        ];
+
+        elementsToUpdate.forEach(selector => {
+          document.querySelectorAll(selector).forEach(el => {
+            if (selector.includes('text-')) {
+              if (selector.includes('accent')) el.style.color = color;
+              else if (selector.includes('blue')) el.style.color = color;
+              else if (selector.includes('green')) el.style.color = lightColor;
+              else if (selector.includes('purple')) el.style.color = darkColor;
+            } else if (selector.includes('bg-')) {
+              if (selector.includes('accent')) el.style.backgroundColor = color;
+              else if (selector.includes('blue')) el.style.backgroundColor = color;
+              else if (selector.includes('green')) el.style.backgroundColor = lightColor;
+              else if (selector.includes('purple')) el.style.backgroundColor = darkColor;
+            } else if (selector.includes('border-')) {
+              if (selector.includes('accent')) el.style.borderColor = color;
+              else if (selector.includes('blue')) el.style.borderColor = color;
+              else if (selector.includes('green')) el.style.borderColor = lightColor;
+              else if (selector.includes('purple')) el.style.borderColor = darkColor;
+            }
+          });
+        });
+
+        // Update gradient backgrounds
+        document.querySelectorAll('[class*="from-accent"], [class*="to-accent"]').forEach(el => {
+          const classes = el.className;
+          if (classes.includes('from-accent') && classes.includes('to-accent-light')) {
+            el.style.background = `linear-gradient(to right, ${color}, ${lightColor})`;
+          } else if (classes.includes('from-accent-light') && classes.includes('to-accent')) {
+            el.style.background = `linear-gradient(to right, ${lightColor}, ${color})`;
+          } else if (classes.includes('from-accent') && classes.includes('to-secondary-blue')) {
+            el.style.background = `linear-gradient(to right, ${color}, ${color})`;
+          }
+        });
+
+        // Update box shadows and glows
+        document.querySelectorAll('.shadow-glow-blue, .shadow-glow-green, .shadow-glow-purple, .shadow-professional').forEach(el => {
+          el.style.boxShadow = `0 0 15px ${glowColor}, 0 0 30px ${hexToRgba(color, 0.1)}`;
+        });
+      }
+
+      function getContrastColor(hexColor) {
+        // Calculate luminance and return black or white for best contrast
+        const r = parseInt(hexColor.slice(1, 3), 16);
+        const g = parseInt(hexColor.slice(3, 5), 16);
+        const b = parseInt(hexColor.slice(5, 7), 16);
+        const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+        return luminance > 0.5 ? '#000000' : '#ffffff';
+      }
+
+      function lightenColor(hex, percent) {
+        const num = parseInt(hex.replace("#", ""), 16);
+        const amt = Math.round(2.55 * percent);
+        const R = (num >> 16) + amt;
+        const G = (num >> 8 & 0x00FF) + amt;
+        const B = (num & 0x0000FF) + amt;
+        return "#" + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
+          (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
+          (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
+      }
+
+      function darkenColor(hex, percent) {
+        const num = parseInt(hex.replace("#", ""), 16);
+        const amt = Math.round(2.55 * percent);
+        const R = (num >> 16) - amt;
+        const G = (num >> 8 & 0x00FF) - amt;
+        const B = (num & 0x0000FF) - amt;
+        return "#" + (0x1000000 + (R > 255 ? 255 : R < 0 ? 0 : R) * 0x10000 +
+          (G > 255 ? 255 : G < 0 ? 0 : G) * 0x100 +
+          (B > 255 ? 255 : B < 0 ? 0 : B)).toString(16).slice(1);
+      }
+
+      function hexToRgba(hex, alpha) {
+        const r = parseInt(hex.slice(1, 3), 16);
+        const g = parseInt(hex.slice(3, 5), 16);
+        const b = parseInt(hex.slice(5, 7), 16);
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+      }
     </script>
   </body>
 </html>
