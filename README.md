@@ -36,14 +36,16 @@ This is my personal portfolio website built with modern web technologies. It fea
 ## Color Themes
 
 The website features a customizable color picker with multiple accent color options:
-- Blue (default)
-- Apple Blue
-- Light Blue
+- Blue
 - Purple
-- Orange
 - Green
+- Orange
 - Red
-- Orange Red
+- Magenta
+- Cyan
+- Pink
+
+Colors are randomly selected on each page load for a fresh experience every time!
 
 ## Local Development
 
