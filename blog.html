@@ -160,15 +160,20 @@
 
         .attachment-image {
             text-align: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
         }
 
         .attachment-image img {
-            max-width: 100%;
-            max-height: 400px;
+            width: 350px !important;
+            height: 350px !important;
+            max-width: 80% !important;
+            max-height: 350px !important;
             border-radius: 8px;
             cursor: pointer;
             transition: opacity 0.2s;
+            object-fit: cover !important;
+            display: block !important;
+            margin: 0 auto !important;
         }
 
         .attachment-image img:hover {
@@ -179,6 +184,8 @@
             color: var(--cyan);
             font-style: italic;
             margin-top: 0.5rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
         }
 
         .attachment-spotify {
@@ -427,7 +434,7 @@
                             if (post.picture) {
                                 const imageId = `image-${post.id}`;
                                 printLine('<div class="attachment-image">');
-                                printLine(`<img src="${post.picture.path}" alt="${post.picture.caption || 'Image'}" onclick="openImageModal('${imageId}', '${post.picture.path}', '${post.picture.caption || ''}')">`);
+                                printLine(`<img src="${post.picture.path}" alt="${post.picture.caption || 'Image'}" style="width: 350px !important; height: 350px !important; max-width: 80% !important; max-height: 350px !important; object-fit: cover !important; display: block !important; margin: 0 auto !important; border-radius: 8px; cursor: pointer;" onclick="openImageModal('${imageId}', '${post.picture.path}', '${post.picture.caption || ''}')">`);
                                 if (post.picture.caption) {
                                     printLine(`<div class="attachment-caption">${post.picture.caption}</div>`);
                                 }
