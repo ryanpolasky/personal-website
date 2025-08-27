@@ -447,6 +447,9 @@
                             
                             printLine('</div>');
                         }
+                        
+                        // Scroll to the start of the post instead of the bottom
+                        setTimeout(scrollToPostStart, 50); // Small delay to ensure content is rendered
                     } else {
                         printError(`cat: ${filename}: No such file or directory`);
                     }
@@ -518,6 +521,24 @@
 
             function scrollToBottom() {
                 terminalBody.scrollTop = terminalBody.scrollHeight;
+            }
+
+            function scrollToPostStart() {
+                // Find the most recent post-date element and scroll to it
+                const postDateElements = output.querySelectorAll('.post-date');
+                if (postDateElements.length > 0) {
+                    const lastPostDate = postDateElements[postDateElements.length - 1];
+                    // Get the previous element (should be the cat command line)
+                    const previousElement = lastPostDate.parentElement.previousElementSibling;
+                    if (previousElement) {
+                        previousElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    } else {
+                        lastPostDate.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                } else {
+                    // Fallback: scroll to bottom if no post-date found
+                    scrollToBottom();
+                }
             }
 
             // --- Tab Auto-completion ---
