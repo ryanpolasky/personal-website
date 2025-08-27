@@ -422,7 +422,10 @@
                     }
                     
                     if (post) {
-                        printLine(`<span class="post-date">Posted on: ${post.date}</span>`);
+                        const moodEmoji = post.emoji || '';
+                        const mood = post.mood || '';
+                        const moodText = mood ? ` • Mood: ${mood}` : '';
+                        printLine(`<span class="post-date">Posted on: ${post.date}${moodText} ${moodEmoji}</span>`);
                         printLine("---");
                         printLine(post.content);
                         
