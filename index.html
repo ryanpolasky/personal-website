@@ -215,6 +215,7 @@
         // Initialize easter eggs
         initLateNightMode();
         initKonamiCode();
+        initMacOSDetection();
 
         // Animate elements on scroll
         const animateOnScroll = new IntersectionObserver((entries) => {
@@ -290,7 +291,6 @@
           };
         }
 
-        // Konami Code Implementation
         function initKonamiCode() {
           const konamiSequence = [
             'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown',
@@ -302,7 +302,6 @@
           let rainbowInterval = null;
 
           document.addEventListener('keydown', (e) => {
-            // Check if this key is part of the Konami sequence
             const isKonamiKey = konamiSequence.includes(e.code);
             
             if (isKonamiKey) {
@@ -351,6 +350,67 @@
             document.body.classList.remove('rainbow-mode');
           }
 
+        }
+
+        function initMacOSDetection() {
+          // Check if user is on macOS
+          const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0 || 
+                       navigator.userAgent.toUpperCase().indexOf('MAC') >= 0;
+          
+          if (isMac) {
+            console.log('🍎 macOS detected! Showing Mac easter egg...');
+            showMacOSPopup();
+          }
+        }
+
+        function showMacOSPopup() {
+          console.log('🍎 showMacOSPopup() called');
+          
+          const popup = document.createElement('div');
+          popup.id = 'macOSPopup';
+          popup.className = 'fixed bottom-4 right-4 z-50 glass-card p-6 rounded-2xl max-w-sm shadow-xl border border-white/20 animate-slide-in';
+          popup.innerHTML = `
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 bg-gradient-to-r from-slate-800 to-slate-700 rounded-xl flex items-center justify-center border-2 border-accent flex-shrink-0">
+                <span class="text-lg">🍎</span>
+              </div>
+              <div class="flex-1">
+                <h4 class="font-bold text-white mb-2">Nice Mac!</h4>
+                <p class="text-sm text-slate-300 leading-relaxed mb-3">
+                  Did you know my code is on all Macs newer than 2024? Pretty cool, right?
+                </p>
+                <button id="dismissMacPopup" class="text-xs text-accent hover:text-accent-light transition-colors font-medium">
+                  That's awesome!
+                </button>
+              </div>
+              <button id="closeMacPopup" class="text-slate-400 hover:text-white transition-colors ml-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
+            </div>
+          `;
+
+          document.body.appendChild(popup);
+          console.log('🍎 Mac popup added to DOM');
+
+          // Auto-dismiss after 15 seconds
+          const autoDismiss = setTimeout(() => {
+            console.log('🍎 Auto-dismissing Mac popup after 15 seconds');
+            dismissMacPopup();
+          }, 15000);
+
+          // Manual dismiss handlers
+          function dismissMacPopup() {
+            clearTimeout(autoDismiss);
+            popup.style.animation = 'fadeOut 0.3s ease-out forwards';
+            setTimeout(() => {
+              if (popup.parentNode) popup.parentNode.removeChild(popup);
+            }, 300);
+          }
+
+          document.getElementById('dismissMacPopup').addEventListener('click', dismissMacPopup);
+          document.getElementById('closeMacPopup').addEventListener('click', dismissMacPopup);
         }
       });
 
