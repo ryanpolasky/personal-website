@@ -6,7 +6,7 @@
     <title>Ryan Polasky - Software Engineer</title>
 
     <meta name="description" content="Ryan Polasky - Junior Software Engineer focused on backend, AI/LLM systems, and reliable tooling. UT Dallas '26. Apple intern.">
-    <meta property="og:title" content="Ryan Polasky - Software Engineer" />
+    <meta property="og:title" content="Ryan Polasky - SWE 👨‍💻" />
     <meta property="og:description" content="Backend • AI/LLMs • DevOps • iOS/macOS tooling" />
     <meta property="og:type" content="website" />
     <meta property="og:image" content="/assets/images/og_ryan.jpg" />
@@ -18,7 +18,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <script>
-      // Helper functions (defined first)
       function lightenColor(hex, percent) {
         const num = parseInt(hex.replace("#", ""), 16);
         const amt = Math.round(2.55 * percent);
@@ -60,7 +59,6 @@
       const darkColor = darkenColor(savedColor, 25);
       const glowColor = hexToRgba(savedColor, 0.3);
       
-      // Set CSS variables immediately before any content loads
       document.documentElement.style.setProperty('--accent-color', savedColor);
       document.documentElement.style.setProperty('--accent-light', lightColor);
       document.documentElement.style.setProperty('--accent-dark', darkColor);
@@ -78,11 +76,9 @@
       applyTheme();
 
       window.toggleTheme = () => {
-        // Professional theme is always active
         applyTheme();
       };
 
-      // Enhanced particle system (adds to CSS particles)
       function createParticles() {
         const hero = document.querySelector('#home');
         if (!hero) return;
