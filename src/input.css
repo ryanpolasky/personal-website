@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Your custom CSS goes here */
 .glass {
   background: rgba(20, 20, 22, 0.8);
   backdrop-filter: blur(16px);
