@@ -49,8 +49,20 @@ Colors are randomly selected on each page load for a fresh experience every time
 ## Local Development
 
 1. Clone the repository
-2. Open `index.html` in your browser
-3. No build process required - it's a static HTML file
+2. Install dependencies: `npm install`
+3. Build CSS: `npm run build` (or `npm run build:debug` for verbose output)
+4. Open `index.html` in your browser
+
+### Build Process
+
+This project uses Tailwind CSS for styling. The build process compiles the utility classes from `src/input.css` into the final `styles.css` file.
+
+**Available Scripts:**
+- `npm run build` - Build CSS for production
+- `npm run build:debug` - Build CSS with verbose logging
+- `npm run watch` - Watch for changes and rebuild automatically
+
+**Note:** Make sure to run the build command after making changes to HTML files or Tailwind classes to ensure all utility classes are generated properly.
 
 ## About & Contact
 
