@@ -30,7 +30,6 @@ This is my personal portfolio website built with modern web technologies. It fea
 - **Styling**: Tailwind CSS
 - **Fonts**: Inter (sans-serif), JetBrains Mono (monospace)
 - **Form Handling**: Formspree
-- **Icons**: Custom SVG icons
 - **Animations**: CSS animations and transitions
 
 ## Color Themes
@@ -53,11 +52,14 @@ Colors are randomly selected on each page load for a fresh experience every time
 2. Open `index.html` in your browser
 3. No build process required - it's a static HTML file
 
-## Contact
+## About & Contact
+
+You're more than welcome to clone this repository, steal the code, say you wrote it yourself! It's open source for a 
+reason! If you have any questions, you can reach me via any of the following:
 
 - **Email**: ryanpolasky@hotmail.com
 - **LinkedIn**: [ryan-polasky](https://www.linkedin.com/in/ryan-polasky/)
-- **GitHub**: [ryanpolasky](https://github.com/ryanpolasky)
+- **Discord**: [eggyb0i](https://discordapp.com/users/209393428570570752)
 
 ## License
 
