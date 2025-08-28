@@ -215,7 +215,74 @@
         // Initialize effects
         createParticles();
 
-        // Konami code for rainbow mode
+        // Show late night popup notification
+        function showLateNightPopup() {
+          console.log('🌙 showLateNightPopup() called');
+          
+          console.log('🌙 Creating popup element...');
+
+          const popup = document.createElement('div');
+          popup.id = 'lateNightPopup';
+          popup.className = 'fixed bottom-4 right-4 z-50 glass-card p-6 rounded-2xl max-w-sm shadow-xl border border-white/20 animate-slide-in';
+          popup.innerHTML = `
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 bg-gradient-to-r from-slate-800 to-slate-700 rounded-xl flex items-center justify-center border-2 border-accent flex-shrink-0">
+                <span class="text-lg">🌙</span>
+              </div>
+              <div class="flex-1">
+                <h4 class="font-bold text-white mb-2">Late Night Mode</h4>
+                <p class="text-sm text-slate-300 leading-relaxed mb-3">
+                  I noticed it's pretty late for you—I've applied a blue light filter and warmed up the colors for your eyes' sake.
+                </p>
+                <button id="dismissPopup" class="text-xs text-accent hover:text-accent-light transition-colors font-medium">
+                  Got it, thanks! ✨
+                </button>
+              </div>
+              <button id="closePopup" class="text-slate-400 hover:text-white transition-colors ml-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
+            </div>
+          `;
+
+          document.body.appendChild(popup);
+          console.log('🌙 Popup added to DOM');
+
+          // Auto-dismiss after 15 seconds
+          const autoDismiss = setTimeout(() => {
+            console.log('🌙 Auto-dismissing popup after 15 seconds');
+            dismissPopup();
+          }, 15000);
+
+          // Manual dismiss handlers
+          function dismissPopup() {
+            clearTimeout(autoDismiss);
+            popup.style.animation = 'fadeOut 0.3s ease-out forwards';
+            setTimeout(() => {
+              if (popup.parentNode) popup.parentNode.removeChild(popup);
+            }, 300);
+          }
+
+          document.getElementById('dismissPopup').addEventListener('click', dismissPopup);
+          document.getElementById('closePopup').addEventListener('click', dismissPopup);
+
+          // Add fadeOut animation
+          if (!document.querySelector('#fadeOutStyle')) {
+            const fadeOutStyle = document.createElement('style');
+            fadeOutStyle.id = 'fadeOutStyle';
+            fadeOutStyle.textContent = `
+              @keyframes fadeOut {
+                from { opacity: 1; transform: translateY(0); }
+                to { opacity: 0; transform: translateY(100%); }
+              }
+            `;
+            document.head.appendChild(fadeOutStyle);
+          }
+        }
+
+        // Initialize easter eggs
+        initLateNightMode();
         initKonamiCode();
 
         // Animate elements on scroll
@@ -230,6 +297,67 @@
         document.querySelectorAll('.glass-card, .hover-lift').forEach(el => {
           animateOnScroll.observe(el);
         });
+
+        // Late Night Mode Implementation
+        function initLateNightMode() {
+          function checkLateNightMode() {
+            const hour = new Date().getHours();
+            console.log(`🌙 Current hour: ${hour}`);
+            
+            if (hour >= 21 || hour <= 5) { // 9 PM to 5 AM
+              console.log('🌙 Time is within late night hours, activating mode');
+              activateLateNightMode();
+            } else {
+              console.log('🌙 Time is outside late night hours, deactivating mode');
+              deactivateLateNightMode();
+            }
+          }
+
+          function activateLateNightMode() {
+            if (document.body.classList.contains('late-night-mode')) {
+              console.log('🌙 Late night mode already active, skipping');
+              return; // Already active
+            }
+            
+            console.log('🌙 Activating late night mode...');
+            document.body.classList.add('late-night-mode');
+            console.log('🌙 Late night mode activated! Time to code by moonlight...');
+            
+            // Switch to warm red/orange accent for eye comfort
+            console.log('🌙 Updating accent color to warm orange-red');
+            updateAccentColor('#ff6b35'); // Warm orange-red
+            
+            console.log('🌙 Calling showLateNightPopup()...');
+            showLateNightPopup();
+          }
+
+          function deactivateLateNightMode() {
+            document.body.classList.remove('late-night-mode');
+            
+            // Restore original accent color
+            const originalColor = localStorage.getItem('accentColor') || savedColor;
+            updateAccentColor(originalColor);
+          }
+
+          // Check on page load
+          checkLateNightMode();
+
+          // Check every minute in case user stays on page past threshold
+          setInterval(checkLateNightMode, 60000);
+
+          // Console command for testing
+          window.toggleLateNightMode = function() {
+            console.log('🌙 toggleLateNightMode() called');
+            if (document.body.classList.contains('late-night-mode')) {
+              console.log('🌙 Currently active, deactivating...');
+              deactivateLateNightMode();
+              console.log('🌅 Late night mode deactivated');
+            } else {
+              console.log('🌙 Currently inactive, activating...');
+              activateLateNightMode();
+            }
+          };
+        }
 
         // Konami Code Implementation
         function initKonamiCode() {
@@ -385,12 +513,12 @@
             <h1 class="text-5xl sm:text-7xl font-black tracking-tight leading-none mb-8">
               <span class="block">Hey, I'm</span>
                 <span class="gradient-text">Ryan</span><span class="text-accent animate-pulse">.</span>
-              <span class="block text-2xl sm:text-3xl font-normal mt-4">
+              <span class="block text-2xl sm:text-3xl font-normal mt-4 hero-subtitle">
                 I like to build cool things :)
               </span>
             </h1>
 
-            <p class="text-xl text-slate-300 max-w-2xl mb-8 leading-relaxed">
+            <p class="text-xl text-slate-300 max-w-2xl mb-8 leading-relaxed hero-description">
               Junior Software Engineer @ UT Dallas ('26). 2x Apple intern crafting
               <span class="text-accent-light font-semibold">AI-powered tooling</span>,
               <span class="text-accent-light font-semibold">scalable backend systems</span>, and
@@ -460,13 +588,13 @@
           <div class="grid lg:grid-cols-3 gap-8 items-center">
             <!-- Main content -->
             <div class="lg:col-span-2 space-y-6 flex flex-col justify-center">
-              <p class="text-lg text-slate-300 leading-relaxed">
+              <p class="text-lg text-slate-300 leading-relaxed section-description">
                 I'm a fourth-year CS student at the University of Texas at Dallas, graduating May 2026. I specialize in solving the
                 <span class="text-accent font-semibold">unglamorous problems</span> that make teams 10x faster - think intelligent log analysis,
                 bulletproof CI/CD pipelines, test automation that actually works, and AI-powered query generation.
               </p>
 
-              <p class="text-lg text-slate-300 leading-relaxed">
+              <p class="text-lg text-slate-300 leading-relaxed section-description">
                 At Apple, I built <span class="text-accent font-semibold">LLM-powered tooling</span> for the Camera & Photos team,
                 automated thousands of test failures with smart triage systems, and designed cloud workflows that ship fast and break nothing.
                 I balance velocity with reliability, security with usability, and always prioritize crystal-clear communication.
@@ -1005,7 +1133,7 @@
                 </div>
               </div>
 
-              <blockquote class="text-lg text-slate-300 leading-relaxed mb-6 flex-grow">
+              <blockquote class="text-lg text-slate-300 leading-relaxed mb-6 flex-grow testimonial-text">
                 "Ryan's learning agility is remarkable… he tackles each new challenge with focus and enthusiasm. Strong communicator with clear, impactful presentations."
               </blockquote>
 
@@ -1035,7 +1163,7 @@
                 </div>
               </div>
 
-              <blockquote class="text-lg text-slate-300 leading-relaxed mb-6 flex-grow">
+              <blockquote class="text-lg text-slate-300 leading-relaxed mb-6 flex-grow testimonial-text">
                 "Technical skills and innovative thinking stood out. An invaluable team member and incredibly supportive teammate."
               </blockquote>
 
@@ -1065,7 +1193,7 @@
                 </div>
               </div>
 
-              <blockquote class="text-lg text-slate-300 leading-relaxed mb-6 flex-grow">
+              <blockquote class="text-lg text-slate-300 leading-relaxed mb-6 flex-grow testimonial-text">
                 "Tackles challenges with a positive attitude and consistently delivers high‑quality results that exceed expectations."
               </blockquote>
 
@@ -1093,7 +1221,7 @@
             <span class="gradient-text">Let's Build Something Epic</span>
           </h2>
           <div class="w-24 h-1 bg-gradient-to-r from-accent to-accent-light mx-auto rounded-full mb-6"></div>
-          <p class="text-xl text-slate-300 max-w-2xl mx-auto">
+          <p class="text-xl text-slate-300 max-w-2xl mx-auto contact-description">
             Want to collaborate or just chat about tech? Drop me a message - I reply faster than a Redis cache hit.
           </p>
         </div>
@@ -1285,11 +1413,92 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
       });
 
-      // Add nav-active class styling
+      // Add nav-active class styling and late night mode
       const style = document.createElement('style');
       style.textContent = `
         .nav-active {
           color: var(--accent-color) !important;
+        }
+        
+        /* Late Night Mode Styles - Eye-friendly with blue light filter */
+        .late-night-mode {
+          --accent-color: #ff6b35;
+          --accent-light: #ff8a5b;
+          --accent-dark: #e55a2b;
+          --accent-glow: rgba(255, 107, 53, 0.3);
+          --accent-darker: #cc4a22;
+        }
+        
+        .late-night-mode::before {
+          content: '';
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          /* Warm amber overlay to reduce blue light */
+          background: linear-gradient(135deg, 
+            rgba(255, 140, 0, 0.08) 0%, 
+            rgba(255, 69, 0, 0.06) 50%, 
+            rgba(255, 140, 0, 0.08) 100%);
+          pointer-events: none;
+          z-index: 1;
+          mix-blend-mode: multiply;
+        }
+        
+        .late-night-mode::after {
+          content: '';
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          /* Additional sepia-like overlay */
+          background: rgba(255, 200, 150, 0.04);
+          pointer-events: none;
+          z-index: 2;
+          mix-blend-mode: overlay;
+        }
+        
+        /* Warmer text colors for better readability */
+        .late-night-mode .text-slate-300 {
+          color: #f1f5f9 !important;
+        }
+        
+        .late-night-mode .text-slate-400 {
+          color: #cbd5e1 !important;
+        }
+        
+        /* Slightly warmer glass effects */
+        .late-night-mode .glass-card {
+          background: rgba(20, 15, 10, 0.85) !important;
+          border-color: rgba(255, 140, 0, 0.2) !important;
+        }
+        
+        .late-night-mode .glass {
+          background: rgba(25, 20, 15, 0.8) !important;
+          border-color: rgba(255, 140, 0, 0.15) !important;
+        }
+        
+        /* Night-themed text variants */
+        .late-night-mode .hero-subtitle {
+          color: #a1a1aa !important;
+        }
+        
+        .late-night-mode .hero-description {
+          color: #9ca3af !important;
+        }
+        
+        .late-night-mode .section-description {
+          color: #9ca3af !important;
+        }
+        
+        .late-night-mode .testimonial-text {
+          color: #a1a1aa !important;
+        }
+        
+        .late-night-mode .contact-description {
+          color: #9ca3af !important;
         }
       `;
       document.head.appendChild(style);
@@ -1361,75 +1570,14 @@
         const lightColor = lightenColor(color, 25);
         const darkColor = darkenColor(color, 25);
         const glowColor = hexToRgba(color, 0.3);
-        const lightGlow = hexToRgba(lightColor, 0.4);
 
-        // Update CSS custom properties with smooth transitions
+        // Update CSS custom properties only - this is safe and won't break CSS
         const root = document.documentElement;
         root.style.setProperty('--accent-color', color);
         root.style.setProperty('--accent-light', lightColor);
         root.style.setProperty('--accent-dark', darkColor);
         root.style.setProperty('--accent-glow', glowColor);
         root.style.setProperty('--accent-darker', darkenColor(color, 40));
-
-        // Update Tailwind config colors in real-time
-        if (window.tailwind && window.tailwind.config) {
-          window.tailwind.config.theme.extend.colors.accent.DEFAULT = color;
-          window.tailwind.config.theme.extend.colors.accent.light = lightColor;
-          window.tailwind.config.theme.extend.colors.accent.dark = darkColor;
-          window.tailwind.config.theme.extend.colors.accent.glow = glowColor;
-          
-          // Update secondary colors to use accent variants
-          window.tailwind.config.theme.extend.colors.secondary.blue = color;
-          window.tailwind.config.theme.extend.colors.secondary.green = lightColor;
-          window.tailwind.config.theme.extend.colors.secondary.purple = darkColor;
-          window.tailwind.config.theme.extend.colors.secondary.orange = glowColor;
-        }
-
-        // Force update of all elements that might not be using CSS variables
-        const elementsToUpdate = [
-          '.text-accent', '.bg-accent', '.border-accent',
-          '.text-secondary-blue', '.text-secondary-green', '.text-secondary-purple',
-          '.bg-secondary-blue', '.bg-secondary-green', '.bg-secondary-purple',
-          '.border-secondary-blue', '.border-secondary-green', '.border-secondary-purple'
-        ];
-
-        elementsToUpdate.forEach(selector => {
-          document.querySelectorAll(selector).forEach(el => {
-            if (selector.includes('text-')) {
-              if (selector.includes('accent')) el.style.color = color;
-              else if (selector.includes('blue')) el.style.color = color;
-              else if (selector.includes('green')) el.style.color = lightColor;
-              else if (selector.includes('purple')) el.style.color = darkColor;
-            } else if (selector.includes('bg-')) {
-              if (selector.includes('accent')) el.style.backgroundColor = color;
-              else if (selector.includes('blue')) el.style.backgroundColor = color;
-              else if (selector.includes('green')) el.style.backgroundColor = lightColor;
-              else if (selector.includes('purple')) el.style.backgroundColor = darkColor;
-            } else if (selector.includes('border-')) {
-              if (selector.includes('accent')) el.style.borderColor = color;
-              else if (selector.includes('blue')) el.style.borderColor = color;
-              else if (selector.includes('green')) el.style.borderColor = lightColor;
-              else if (selector.includes('purple')) el.style.borderColor = darkColor;
-            }
-          });
-        });
-
-        // Update gradient backgrounds
-        document.querySelectorAll('[class*="from-accent"], [class*="to-accent"]').forEach(el => {
-          const classes = el.className;
-          if (classes.includes('from-accent') && classes.includes('to-accent-light')) {
-            el.style.background = `linear-gradient(to right, ${color}, ${lightColor})`;
-          } else if (classes.includes('from-accent-light') && classes.includes('to-accent')) {
-            el.style.background = `linear-gradient(to right, ${lightColor}, ${color})`;
-          } else if (classes.includes('from-accent') && classes.includes('to-secondary-blue')) {
-            el.style.background = `linear-gradient(to right, ${color}, ${color})`;
-          }
-        });
-
-        // Update box shadows and glows
-        document.querySelectorAll('.shadow-glow').forEach(el => {
-          el.style.boxShadow = `0 0 30px ${glowColor}`;
-        });
       }
 
       function getContrastColor(hexColor) {
