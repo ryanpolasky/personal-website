@@ -98,6 +98,14 @@
         }
       }
 
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          document.title = "Come back soon! 👋";
+        } else {
+          document.title = "Ryan Polasky - SWE 👨‍💻";
+        }
+      });
+
       // Enhanced scroll spy with smooth scrolling
       document.addEventListener('DOMContentLoaded', () => {
         const sections = document.querySelectorAll('section[id]');
