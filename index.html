@@ -144,10 +144,7 @@
 
         // Show late night popup notification
         function showLateNightPopup() {
-          const popup = document.createElement('div');
-          popup.id = 'lateNightPopup';
-          popup.className = 'fixed bottom-4 right-4 z-50 glass-card p-6 rounded-2xl max-w-sm shadow-xl border border-white/20 animate-slide-in';
-          popup.innerHTML = `
+          const content = `
             <div class="flex items-start gap-3">
               <div class="w-10 h-10 bg-gradient-to-r from-slate-800 to-slate-700 rounded-xl flex items-center justify-center border-2 border-accent flex-shrink-0">
                 <span class="text-lg">🌙</span>
@@ -157,11 +154,11 @@
                 <p class="text-sm text-slate-300 leading-relaxed mb-3">
                   I noticed it's pretty late for you, so I've gone ahead & warmed up the colors for your eyes' sake.
                 </p>
-                <button id="dismissPopup" class="text-xs text-accent hover:text-accent-light transition-colors font-medium">
+                <button class="dismiss-btn text-xs text-accent hover:text-accent-light transition-colors font-medium">
                   Got it, thanks!
                 </button>
               </div>
-              <button id="closePopup" class="text-slate-400 hover:text-white transition-colors ml-2">
+              <button class="close-btn text-slate-400 hover:text-white transition-colors ml-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
@@ -169,37 +166,20 @@
             </div>
           `;
 
-          document.body.appendChild(popup);
-
-          // Auto-dismiss after 15 seconds
-          const autoDismiss = setTimeout(() => {
-            dismissPopup();
-          }, 15000);
-
-          // Manual dismiss handlers
-          function dismissPopup() {
-            clearTimeout(autoDismiss);
-            popup.style.animation = 'fadeOut 0.3s ease-out forwards';
-            setTimeout(() => {
-              if (popup.parentNode) popup.parentNode.removeChild(popup);
-            }, 300);
-          }
-
-          document.getElementById('dismissPopup').addEventListener('click', dismissPopup);
-          document.getElementById('closePopup').addEventListener('click', dismissPopup);
-
-          // Add fadeOut animation
-          if (!document.querySelector('#fadeOutStyle')) {
-            const fadeOutStyle = document.createElement('style');
-            fadeOutStyle.id = 'fadeOutStyle';
-            fadeOutStyle.textContent = `
-              @keyframes fadeOut {
-                from { opacity: 1; transform: translateY(0); }
-                to { opacity: 0; transform: translateY(100%); }
-              }
-            `;
-            document.head.appendChild(fadeOutStyle);
-          }
+          const popupId = window.popupManager.show(content);
+          
+          // Add event listeners after popup is created
+          setTimeout(() => {
+            const popup = document.getElementById(`popup-${popupId}`);
+            if (popup) {
+              popup.querySelector('.dismiss-btn').addEventListener('click', () => {
+                window.popupManager.dismiss(popupId);
+              });
+              popup.querySelector('.close-btn').addEventListener('click', () => {
+                window.popupManager.dismiss(popupId);
+              });
+            }
+          }, 50);
         }
 
         // Initialize easter eggs
@@ -341,10 +321,7 @@
         }
 
         function showMacOSPopup() {
-          const popup = document.createElement('div');
-          popup.id = 'macOSPopup';
-          popup.className = 'fixed bottom-4 right-4 z-50 glass-card p-6 rounded-2xl max-w-sm shadow-xl border border-white/20 animate-slide-in';
-          popup.innerHTML = `
+          const content = `
             <div class="flex items-start gap-3">
               <div class="w-10 h-10 bg-gradient-to-r from-slate-800 to-slate-700 rounded-xl flex items-center justify-center border-2 border-accent flex-shrink-0">
                 <span class="text-lg">🍎</span>
@@ -354,11 +331,11 @@
                 <p class="text-sm text-slate-300 leading-relaxed mb-3">
                   Did you know my code is on all Macs newer than 2024? Pretty cool, right?
                 </p>
-                <button id="dismissMacPopup" class="text-xs text-accent hover:text-accent-light transition-colors font-medium">
+                <button class="dismiss-btn text-xs text-accent hover:text-accent-light transition-colors font-medium">
                   That's awesome!
                 </button>
               </div>
-              <button id="closeMacPopup" class="text-slate-400 hover:text-white transition-colors ml-2">
+              <button class="close-btn text-slate-400 hover:text-white transition-colors ml-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
@@ -366,24 +343,20 @@
             </div>
           `;
 
-          document.body.appendChild(popup);
-
-          // Auto-dismiss after 15 seconds
-          const autoDismiss = setTimeout(() => {
-            dismissMacPopup();
-          }, 15000);
-
-          // Manual dismiss handlers
-          function dismissMacPopup() {
-            clearTimeout(autoDismiss);
-            popup.style.animation = 'fadeOut 0.3s ease-out forwards';
-            setTimeout(() => {
-              if (popup.parentNode) popup.parentNode.removeChild(popup);
-            }, 300);
-          }
-
-          document.getElementById('dismissMacPopup').addEventListener('click', dismissMacPopup);
-          document.getElementById('closeMacPopup').addEventListener('click', dismissMacPopup);
+          const popupId = window.popupManager.show(content);
+          
+          // Add event listeners after popup is created
+          setTimeout(() => {
+            const popup = document.getElementById(`popup-${popupId}`);
+            if (popup) {
+              popup.querySelector('.dismiss-btn').addEventListener('click', () => {
+                window.popupManager.dismiss(popupId);
+              });
+              popup.querySelector('.close-btn').addEventListener('click', () => {
+                window.popupManager.dismiss(popupId);
+              });
+            }
+          }, 50);
         }
       });
 
@@ -1464,8 +1437,110 @@
         .late-night-mode .contact-description {
           color: #9ca3af !important;
         }
+        
+        /* Popup stacking system */
+        .popup-stack {
+          position: fixed;
+          bottom: 1rem;
+          right: 1rem;
+          z-index: 1000;
+          pointer-events: none;
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+          max-width: 24rem;
+        }
+        
+        .popup-stack .popup-item {
+          pointer-events: auto;
+          transform: translateY(0);
+          transition: all 0.3s ease;
+        }
+        
+        .popup-stack .popup-item.popup-entering {
+          transform: translateY(100%);
+          opacity: 0;
+        }
+        
+        .popup-stack .popup-item.popup-exiting {
+          transform: translateY(100%);
+          opacity: 0;
+        }
       `;
       document.head.appendChild(style);
+
+      // Popup management system
+      class PopupManager {
+        constructor() {
+          this.popups = new Map();
+          this.container = null;
+          this.nextId = 1;
+          this.createContainer();
+        }
+        
+        createContainer() {
+          this.container = document.createElement('div');
+          this.container.className = 'popup-stack';
+          document.body.appendChild(this.container);
+        }
+        
+        show(content, options = {}) {
+          const id = this.nextId++;
+          const popup = document.createElement('div');
+          popup.id = `popup-${id}`;
+          popup.className = 'popup-item glass-card p-6 rounded-2xl shadow-xl border border-white/20 animate-slide-in popup-entering';
+          popup.innerHTML = content;
+          
+          // Add to container
+          this.container.appendChild(popup);
+          this.popups.set(id, popup);
+          
+          // Animate in
+          requestAnimationFrame(() => {
+            popup.classList.remove('popup-entering');
+          });
+          
+          // Auto-dismiss after specified time
+          const autoDismissTime = options.autoDismiss || 15000;
+          const autoDismissTimer = setTimeout(() => {
+            this.dismiss(id);
+          }, autoDismissTime);
+          
+          // Store timer for potential cancellation
+          popup.dataset.autoDismissTimer = autoDismissTimer;
+          
+          return id;
+        }
+        
+        dismiss(id) {
+          const popup = this.popups.get(id);
+          if (!popup) return;
+          
+          // Clear auto-dismiss timer
+          if (popup.dataset.autoDismissTimer) {
+            clearTimeout(parseInt(popup.dataset.autoDismissTimer));
+          }
+          
+          // Animate out
+          popup.classList.add('popup-exiting');
+          
+          setTimeout(() => {
+            if (popup.parentNode) {
+              popup.parentNode.removeChild(popup);
+            }
+            this.popups.delete(id);
+          }, 300);
+        }
+        
+        dismissAll() {
+          for (const id of this.popups.keys()) {
+            this.dismiss(id);
+          }
+        }
+      }
+      
+      // Global popup manager instance
+      window.popupManager = new PopupManager();
 
       // Color picker functionality
       document.addEventListener('DOMContentLoaded', () => {
