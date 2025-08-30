@@ -144,10 +144,6 @@
 
         // Show late night popup notification
         function showLateNightPopup() {
-          console.log('🌙 showLateNightPopup() called');
-          
-          console.log('🌙 Creating popup element...');
-
           const popup = document.createElement('div');
           popup.id = 'lateNightPopup';
           popup.className = 'fixed bottom-4 right-4 z-50 glass-card p-6 rounded-2xl max-w-sm shadow-xl border border-white/20 animate-slide-in';
@@ -174,11 +170,9 @@
           `;
 
           document.body.appendChild(popup);
-          console.log('🌙 Popup added to DOM');
 
           // Auto-dismiss after 15 seconds
           const autoDismiss = setTimeout(() => {
-            console.log('🌙 Auto-dismissing popup after 15 seconds');
             dismissPopup();
           }, 15000);
 
@@ -230,32 +224,24 @@
         function initLateNightMode() {
           function checkLateNightMode() {
             const hour = new Date().getHours();
-            console.log(`🌙 Current hour: ${hour}`);
-            
+
             if (hour >= 21 || hour <= 5) { // 9 PM to 5 AM
-              console.log('🌙 Time is within late night hours, activating mode');
               activateLateNightMode();
             } else {
-              console.log('🌙 Time is outside late night hours, deactivating mode');
               deactivateLateNightMode();
             }
           }
 
           function activateLateNightMode() {
             if (document.body.classList.contains('late-night-mode')) {
-              console.log('🌙 Late night mode already active, skipping');
               return; // Already active
             }
             
-            console.log('🌙 Activating late night mode...');
             document.body.classList.add('late-night-mode');
-            console.log('🌙 Late night mode activated! Time to code by moonlight...');
-            
+
             // Switch to warm red/orange accent for eye comfort
-            console.log('🌙 Updating accent color to warm orange-red');
             updateAccentColor('#ff6b35'); // Warm orange-red
             
-            console.log('🌙 Calling showLateNightPopup()...');
             showLateNightPopup();
           }
 
@@ -275,13 +261,9 @@
 
           // Console command for testing
           window.toggleLateNightMode = function() {
-            console.log('🌙 toggleLateNightMode() called');
             if (document.body.classList.contains('late-night-mode')) {
-              console.log('🌙 Currently active, deactivating...');
               deactivateLateNightMode();
-              console.log('🌅 Late night mode deactivated');
             } else {
-              console.log('🌙 Currently inactive, activating...');
               activateLateNightMode();
             }
           };
@@ -354,14 +336,11 @@
                        navigator.userAgent.toUpperCase().indexOf('MAC') >= 0;
           
           if (isMac) {
-            console.log('🍎 macOS detected! Showing Mac easter egg...');
             showMacOSPopup();
           }
         }
 
         function showMacOSPopup() {
-          console.log('🍎 showMacOSPopup() called');
-          
           const popup = document.createElement('div');
           popup.id = 'macOSPopup';
           popup.className = 'fixed bottom-4 right-4 z-50 glass-card p-6 rounded-2xl max-w-sm shadow-xl border border-white/20 animate-slide-in';
@@ -371,7 +350,7 @@
                 <span class="text-lg">🍎</span>
               </div>
               <div class="flex-1">
-                <h4 class="font-bold text-white mb-2">Nice Mac!</h4>
+                <h4 class="font-bold text-white mb-2">Nice Apple device!</h4>
                 <p class="text-sm text-slate-300 leading-relaxed mb-3">
                   Did you know my code is on all Macs newer than 2024? Pretty cool, right?
                 </p>
@@ -388,11 +367,9 @@
           `;
 
           document.body.appendChild(popup);
-          console.log('🍎 Mac popup added to DOM');
 
           // Auto-dismiss after 15 seconds
           const autoDismiss = setTimeout(() => {
-            console.log('🍎 Auto-dismissing Mac popup after 15 seconds');
             dismissMacPopup();
           }, 15000);
 
