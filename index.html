@@ -1310,8 +1310,9 @@
 
     <!-- Scroll to Top Button -->
     <button id="scrollTop"
-            class="fixed bottom-8 right-8fa p-4 glass rounded-2xl shadow-cyber hover-lift neon-border transition-all opacity-0 pointer-events-none z-50">
-      <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            class="fixed bottom-8 left-8 p-4 rounded-2xl hover-lift z-50 transition-all duration-500 ease-in-out opacity-0 pointer-events-none"
+            style="position: fixed !important; background: rgba(0, 0, 0, 0.6) !important; backdrop-filter: blur(16px) !important; border: 1px solid var(--accent-color) !important;">
+      <svg class="w-6 h-6 text-accent transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
       </svg>
     </button>
@@ -1342,14 +1343,40 @@
 
       // Scroll to top functionality
       const scrollTopBtn = document.getElementById('scrollTop');
+      let scrollTimeout;
 
       window.addEventListener('scroll', () => {
-        if (window.pageYOffset > 300) {
-          scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none');
-          scrollTopBtn.classList.add('opacity-100');
+        // Clear any existing timeout
+        clearTimeout(scrollTimeout);
+        
+        // Hide button with smooth fade while scrolling
+        if (window.pageYOffset > 100) {
+          scrollTopBtn.classList.add('opacity-0', 'pointer-events-none');
+          scrollTopBtn.classList.remove('opacity-70', 'opacity-100');
+          
+          // Show button with smooth fade after user stops scrolling for 800ms
+          scrollTimeout = setTimeout(() => {
+            scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none');
+            scrollTopBtn.classList.add('opacity-70');
+          }, 800);
         } else {
           scrollTopBtn.classList.add('opacity-0', 'pointer-events-none');
+          scrollTopBtn.classList.remove('opacity-70', 'opacity-100');
+        }
+      });
+      
+      // Add hover effect to make it more visible when needed
+      scrollTopBtn.addEventListener('mouseenter', () => {
+        if (!scrollTopBtn.classList.contains('opacity-0')) {
+          scrollTopBtn.classList.remove('opacity-70');
+          scrollTopBtn.classList.add('opacity-100');
+        }
+      });
+      
+      scrollTopBtn.addEventListener('mouseleave', () => {
+        if (!scrollTopBtn.classList.contains('opacity-0')) {
           scrollTopBtn.classList.remove('opacity-100');
+          scrollTopBtn.classList.add('opacity-70');
         }
       });
 
