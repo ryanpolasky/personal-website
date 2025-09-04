@@ -457,10 +457,10 @@
             <h1 class="text-5xl sm:text-7xl font-black tracking-tight leading-none mb-8">
               <span class="block">Hey, I'm</span>
                 <span class="gradient-text">Ryan</span><span class="text-accent animate-pulse">.</span>
-              <span class="block text-2xl sm:text-3xl font-normal mt-4 hero-subtitle">
-                I like to build cool things :)
-              </span>
             </h1>
+            <h2 class="block text-2xl sm:text-3xl font-normal mt-4 hero-subtitle">
+              I like to build cool things :)
+            </h2>
 
             <p class="text-xl text-slate-300 max-w-2xl mb-8 leading-relaxed hero-description">
               Junior Software Engineer @ UT Dallas ('26). 2x Apple intern crafting
@@ -1346,37 +1346,15 @@
       let scrollTimeout;
 
       window.addEventListener('scroll', () => {
-        // Clear any existing timeout
         clearTimeout(scrollTimeout);
-        
-        // Hide button with smooth fade while scrolling
+
         if (window.pageYOffset > 100) {
-          scrollTopBtn.classList.add('opacity-0', 'pointer-events-none');
-          scrollTopBtn.classList.remove('opacity-70', 'opacity-100');
-          
-          // Show button with smooth fade after user stops scrolling for 800ms
+          scrollTopBtn.classList.remove('show');
           scrollTimeout = setTimeout(() => {
-            scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none');
-            scrollTopBtn.classList.add('opacity-70');
+            scrollTopBtn.classList.add('show');
           }, 800);
         } else {
-          scrollTopBtn.classList.add('opacity-0', 'pointer-events-none');
-          scrollTopBtn.classList.remove('opacity-70', 'opacity-100');
-        }
-      });
-      
-      // Add hover effect to make it more visible when needed
-      scrollTopBtn.addEventListener('mouseenter', () => {
-        if (!scrollTopBtn.classList.contains('opacity-0')) {
-          scrollTopBtn.classList.remove('opacity-70');
-          scrollTopBtn.classList.add('opacity-100');
-        }
-      });
-      
-      scrollTopBtn.addEventListener('mouseleave', () => {
-        if (!scrollTopBtn.classList.contains('opacity-0')) {
-          scrollTopBtn.classList.remove('opacity-100');
-          scrollTopBtn.classList.add('opacity-70');
+          scrollTopBtn.classList.remove('show');
         }
       });
 
