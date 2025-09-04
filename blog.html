@@ -665,13 +665,7 @@
             // --- Initial Load ---
 
             function initialLoad() {
-                printLine("Welcome to Ryan's Thoughts!");
-                printLine("Type '<span class='post-title'>help</span>' to see a list of available commands.");
-                printLine("Use <span class='post-title'>Tab</span> for auto-completion.");
-                printLine("");
                 updatePrompt();
-                printCommand('ls -t');
-                commands.ls(['-t']);
             }
 
             // --- Image Modal Functions ---
