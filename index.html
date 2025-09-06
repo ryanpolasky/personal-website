@@ -260,24 +260,31 @@
           let rainbowInterval = null;
 
           document.addEventListener('keydown', (e) => {
+            // Check if user is typing in a form field
+            const isInFormField = e.target.tagName === 'INPUT' || 
+                                  e.target.tagName === 'TEXTAREA' || 
+                                  e.target.isContentEditable;
+          
+            // Skip Konami code handling if user is typing in a form
+            if (isInFormField) {
+              return;
+            }
+          
             const isKonamiKey = konamiSequence.includes(e.code);
-            
+          
             if (isKonamiKey) {
-              // Prevent default behavior (scrolling) for Konami code keys
-              e.preventDefault();
-              
               // Add the pressed key to user sequence
               userSequence.push(e.code);
-              
+            
               // Keep only the last 10 keys (length of Konami code)
               if (userSequence.length > konamiSequence.length) {
                 userSequence.shift();
               }
-              
+            
               // Check if sequence matches Konami code
               if (userSequence.length === konamiSequence.length) {
                 const matches = userSequence.every((key, index) => key === konamiSequence[index]);
-                
+              
                 if (matches) {
                   if (!rainbowMode) {
                     activateRainbowMode();
@@ -450,10 +457,10 @@
             <h1 class="text-5xl sm:text-7xl font-black tracking-tight leading-none mb-8">
               <span class="block">Hey, I'm</span>
                 <span class="gradient-text">Ryan</span><span class="text-accent animate-pulse">.</span>
-              <span class="block text-2xl sm:text-3xl font-normal mt-4 hero-subtitle">
-                I like to build cool things :)
-              </span>
             </h1>
+            <h2 class="block text-2xl sm:text-3xl font-normal mt-4 hero-subtitle">
+              I like to build cool things :)
+            </h2>
 
             <p class="text-xl text-slate-300 max-w-2xl mb-8 leading-relaxed hero-description">
               Junior Software Engineer @ UT Dallas ('26). 2x Apple intern crafting
@@ -1186,7 +1193,7 @@
               </div>
 
               <div class="relative">
-                <textarea required name="message" placeholder="Your message (the more epic, the better!)" rows="6"
+                <textarea required name="message" placeholder="Your message" rows="6"
                           class="w-full p-4 rounded-2xl bg-bg/60 border-2 border-white/10 text-white placeholder-slate-400 outline-none focus:border-accent transition-colors backdrop-blur-sm resize-none"></textarea>
               </div>
 
@@ -1303,8 +1310,9 @@
 
     <!-- Scroll to Top Button -->
     <button id="scrollTop"
-            class="fixed bottom-8 right-8fa p-4 glass rounded-2xl shadow-cyber hover-lift neon-border transition-all opacity-0 pointer-events-none z-50">
-      <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            class="fixed bottom-8 left-8 p-4 rounded-2xl hover-lift z-50 transition-all duration-500 ease-in-out opacity-0 pointer-events-none"
+            style="position: fixed !important; background: rgba(0, 0, 0, 0.6) !important; backdrop-filter: blur(16px) !important; border: 1px solid var(--accent-color) !important;">
+      <svg class="w-6 h-6 text-accent transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
       </svg>
     </button>
@@ -1335,14 +1343,18 @@
 
       // Scroll to top functionality
       const scrollTopBtn = document.getElementById('scrollTop');
+      let scrollTimeout;
 
       window.addEventListener('scroll', () => {
-        if (window.pageYOffset > 300) {
-          scrollTopBtn.classList.remove('opacity-0', 'pointer-events-none');
-          scrollTopBtn.classList.add('opacity-100');
+        clearTimeout(scrollTimeout);
+
+        if (window.pageYOffset > 100) {
+          scrollTopBtn.classList.remove('show');
+          scrollTimeout = setTimeout(() => {
+            scrollTopBtn.classList.add('show');
+          }, 800);
         } else {
-          scrollTopBtn.classList.add('opacity-0', 'pointer-events-none');
-          scrollTopBtn.classList.remove('opacity-100');
+          scrollTopBtn.classList.remove('show');
         }
       });
 
