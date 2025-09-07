@@ -131,5 +131,22 @@
             "artist": "Femi Tahiru",
             "link": "https://open.spotify.com/track/2urfbYYv9JPE0JOz32yenY"
         }
+    },
+    {
+        "id": "pokemon",
+        "title": "pokemon.md",
+        "date": "2025-09-07",
+        "mood": "The very best, like no one ever was",
+        "emoji": "\uD83E\uDD96",
+        "content": "I've realized over the last few months that minimizing my hobbies and passions to appear less \"nerdy\" doesn't reflect the person I want to be. In an effort to combat that, I've recently thrown myself back into my old hobby of collecting Pokémon cards.\n\nI grew up on the Pokémon games, with HeartGold being my first and forever favorite of the main series. Truly a masterpiece, and I stand by that stance with every fiber of my being. Totodile & Feraligatr have been my favorite Pokémon ever since, & I still love 'em.\n\nAnyway, yesterday I went to the Dallas Card Show. Bought a couple cards, traded a couple cards, the works. Overall, had a really solid time. Truthfully, I hoped to find someone to share the hobby with, but fell short of that goal by a ways. Such is life. I've never been one to let that get me down in the past, nor do I plan on becoming reliant on external sources for all happiness--I feel that's a dangerous pitfall of socializing.\n\nHowever, I was able to give away some cards to a lil' trainer that was just starting out in the hobby. I'd seen videos online of people doing the same, and, ever since seeing them, had wanted to do the same. I couldn't have expected, though, just how nice it felt to be able to do that. The cards, although somewhat rare, weren't terribly expensive.\n\nIt cost me very little, and yet, to the kid, meant so much. The way his face lit up, the way he showed the cards off to his parents. Hell, the way the parents' eyes lit up looking at their smiling son. I'm no benevolent, gifting savant or anything, but man, I plan on doing that again.\n\nI hope one day I can inspire someone to pass it forward. No expectation, simply hope. Hope for a more connected world, for compassionate children.\n\nThey're up next, after all.",
+        "picture": {
+            "path": "assets/blog/pokemon.png",
+            "caption": "depending on who sees this, this is either a flex or embarrassing."
+        },
+        "spotify": {
+            "title": "Ecruteak City",
+            "artist": "Super Lofi 64",
+            "link": "https://open.spotify.com/track/06ipmxCPwyoZ9KdliVQ5PQ"
+        }
     }
 ]
