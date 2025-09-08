@@ -325,6 +325,9 @@
                     printLine("  <span class='post-title'>cd [directory]</span> - Change directory (e.g., cd 2025, cd ..)");
                     printLine("  <span class='post-title'>pwd</span>         - Show current directory");
                     printLine("  <span class='post-title'>cat [filename]</span> - Read a specific post (e.g., cat hello-world.md)");
+                    printLine("  <span class='post-title'>tree</span>        - Display directory structure as a tree");
+                    printLine("  <span class='post-title'>date</span>        - Show current date and time");
+                    printLine("  <span class='post-title'>whoami</span>      - Display current user information");
                     printLine("  <span class='post-title'>clear</span>       - Clear the terminal screen");
                     printLine("  <span class='post-title'>help</span>        - Show this help message");
                     printLine("  <span class='post-title'>exit</span>        - Exit to home page");
@@ -499,6 +502,59 @@
                 },
                 exit: () => {
                     window.location.href = 'index.html';
+                },
+                date: () => {
+                    const now = new Date();
+                    const options = {
+                        weekday: 'short',
+                        year: 'numeric',
+                        month: 'short',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        timeZoneName: 'short'
+                    };
+                    printLine(now.toLocaleDateString('en-US', options));
+                },
+                whoami: () => {
+                    printLine("ryan polasky");
+                    printLine("");
+                    printLine("software dev & cs student");
+                    printLine("location: north dakota, usa");
+                    printLine("email: ryanpolasky@hotmail.com");
+                },
+                tree: () => {
+                    printLine(".");
+                    
+                    if (availableYears.length === 0) {
+                        printLine("└── (no posts found)");
+                        return;
+                    }
+                    
+                    // Sort years for consistent display (newest first)
+                    const sortedYears = [...availableYears].sort((a, b) => b - a);
+                    
+                    sortedYears.forEach((year, yearIndex) => {
+                        const isLastYear = yearIndex === sortedYears.length - 1;
+                        const yearPrefix = isLastYear ? "└── " : "├── ";
+                        const postPrefix = isLastYear ? "    " : "│   ";
+                        
+                        const yearPosts = postsByYear[year] || [];
+                        const postCount = yearPosts.length;
+                        
+                        printLine(`${yearPrefix}<span class="post-title">${year}/</span> (${postCount} post${postCount !== 1 ? 's' : ''})`);
+                        
+                        // Sort posts by date (newest first)
+                        const sortedPosts = [...yearPosts].sort((a, b) => new Date(b.date) - new Date(a.date));
+                        
+                        sortedPosts.forEach((post, postIndex) => {
+                            const isLastPost = postIndex === sortedPosts.length - 1;
+                            const filePrefix = isLastPost ? "└── " : "├── ";
+                            
+                            printLine(`${postPrefix}${filePrefix}<span class="post-title">${post.title}</span>`);
+                        });
+                    });
                 }
             };
 
