@@ -347,13 +347,17 @@
                     printLine("  • Navigate between years with <span class='post-title'>cd</span>");
                 },
                 ls: (args) => {
+                    // Separate path from options
+                    const options = args.filter(arg => arg.startsWith('-'));
+                    const pathArgs = args.filter(arg => !arg.startsWith('-'));
+                    
                     // Parse arguments for sorting options
-                    const sortByTime = args.includes('-t');
-                    const reverseSort = args.includes('-r');
-                    const showHelp = args.includes('--help') || args.includes('-h');
+                    const sortByTime = options.includes('-t');
+                    const reverseSort = options.includes('-r');
+                    const showHelp = options.includes('--help') || options.includes('-h');
                     
                     if (showHelp) {
-                        printLine("Usage: ls [options]");
+                        printLine("Usage: ls [options] [path]");
                         printLine("Options:");
                         printLine("  -t        sort by modification time (newest first)");
                         printLine("  -r        reverse order while sorting");
@@ -361,9 +365,27 @@
                         return;
                     }
                     
+                    // Determine target directory
+                    let targetDirectory = currentDirectory;
+                    if (pathArgs.length > 0) {
+                        const resolved = resolvePath(pathArgs[0]);
+                        if (!resolved) {
+                            printError(`ls: ${pathArgs[0]}: Invalid path`);
+                            return;
+                        }
+                        
+                        if (resolved.filename) {
+                            // Path points to a file, not a directory
+                            printError(`ls: ${pathArgs[0]}: Not a directory`);
+                            return;
+                        }
+                        
+                        targetDirectory = resolved.directory;
+                    }
+                    
                     let fileList = '';
                     
-                    if (currentDirectory === '/') {
+                    if (targetDirectory === '/') {
                         // Root directory - show years as directories
                         let sortedYears = [...availableYears];
                         
@@ -386,7 +408,7 @@
                         });
                     } else {
                         // In a year directory - show posts for that year
-                        const year = currentDirectory.substring(1); // Remove leading '/'
+                        const year = targetDirectory.substring(1); // Remove leading '/'
                         const yearPosts = postsByYear[year] || [];
                         
                         if (yearPosts.length === 0) {
@@ -420,19 +442,34 @@
                     printLine(fileList.trim());
                 },
                 cat: (args) => {
-                    const filename = args[0];
-                    if (!filename) {
+                    const inputPath = args[0];
+                    if (!inputPath) {
                         printError("Usage: cat [filename]");
                         return;
                     }
                     
-                    // Find post in current directory
+                    // Resolve the path
+                    const resolved = resolvePath(inputPath);
+                    if (!resolved) {
+                        printError(`cat: ${inputPath}: Invalid path`);
+                        return;
+                    }
+                    
+                    const { directory, filename } = resolved;
+                    
+                    // Check if we're trying to cat a directory
+                    if (!filename) {
+                        printError(`cat: ${inputPath}: Is a directory`);
+                        return;
+                    }
+                    
+                    // Find post in the resolved directory
                     let post = null;
-                    if (currentDirectory === '/') {
-                        printError(`cat: ${filename}: Is a directory`);
+                    if (directory === '/') {
+                        printError(`cat: ${inputPath}: No such file or directory`);
                         return;
                     } else {
-                        const year = currentDirectory.substring(1);
+                        const year = directory.substring(1);
                         const yearPosts = postsByYear[year] || [];
                         post = yearPosts.find(p => p.title === filename);
                     }
@@ -675,6 +712,67 @@
                 }
             };
 
+            // --- Path Resolution Helper ---
+            
+            function resolvePath(inputPath, currentDir = currentDirectory) {
+                // Handle absolute paths (start with /)
+                if (inputPath.startsWith('/')) {
+                    const parts = inputPath.split('/').filter(part => part);
+                    if (parts.length === 0) {
+                        return { directory: '/', filename: null };
+                    } else if (parts.length === 1) {
+                        // Could be a directory or file
+                        if (availableYears.includes(parts[0])) {
+                            return { directory: `/${parts[0]}`, filename: null };
+                        } else {
+                            return { directory: '/', filename: parts[0] };
+                        }
+                    } else if (parts.length === 2) {
+                        return { directory: `/${parts[0]}`, filename: parts[1] };
+                    } else {
+                        return null; // Invalid path
+                    }
+                }
+                
+                // Handle relative paths
+                const parts = inputPath.split('/').filter(part => part);
+                let resolvedDir = currentDir;
+                let filename = null;
+                
+                for (let i = 0; i < parts.length; i++) {
+                    const part = parts[i];
+                    
+                    if (part === '..') {
+                        // Go up one directory
+                        if (resolvedDir !== '/') {
+                            resolvedDir = '/';
+                        }
+                    } else if (part === '.' || part === '') {
+                        // Stay in current directory
+                        continue;
+                    } else {
+                        // This is either a directory or filename
+                        if (i === parts.length - 1) {
+                            // Last part - could be directory or file
+                            if (resolvedDir === '/' && availableYears.includes(part)) {
+                                resolvedDir = `/${part}`;
+                            } else {
+                                filename = part;
+                            }
+                        } else {
+                            // Not last part - must be a directory
+                            if (resolvedDir === '/' && availableYears.includes(part)) {
+                                resolvedDir = `/${part}`;
+                            } else {
+                                return null; // Invalid path
+                            }
+                        }
+                    }
+                }
+                
+                return { directory: resolvedDir, filename: filename };
+            }
+
             // --- Terminal Helper Functions ---
 
             function printLine(text) {
@@ -735,21 +833,101 @@
                 if (parts.length === 1) {
                     // Complete command names
                     return Object.keys(commands).filter(cmd => cmd.startsWith(currentArg));
-                } else if (command === 'cat' && parts.length === 2) {
-                    // Complete filenames for cat command in current directory
-                    if (currentDirectory === '/') {
-                        return []; // No files in root directory
+                } else if ((command === 'cat' || command === 'ls') && parts.length === 2) {
+                    // Complete paths for cat and ls commands
+                    if (currentArg.includes('/')) {
+                        // Path completion
+                        const lastSlash = currentArg.lastIndexOf('/');
+                        const pathPrefix = currentArg.substring(0, lastSlash + 1);
+                        const namePrefix = currentArg.substring(lastSlash + 1);
+                        
+                        // Try to resolve the directory part
+                        const dirPath = pathPrefix === '/' ? '/' : pathPrefix.slice(0, -1);
+                        const resolved = resolvePath(dirPath);
+                        
+                        if (!resolved) return [];
+                        
+                        const { directory } = resolved;
+                        let completions = [];
+                        
+                        if (directory === '/') {
+                            // Complete with year directories
+                            completions = availableYears
+                                .filter(year => year.startsWith(namePrefix))
+                                .map(year => pathPrefix + year + '/');
+                        } else {
+                            // Complete with files in year directory
+                            const year = directory.substring(1);
+                            const yearPosts = postsByYear[year] || [];
+                            completions = yearPosts
+                                .map(p => p.title)
+                                .filter(title => title.startsWith(namePrefix))
+                                .map(title => pathPrefix + title);
+                            
+                            // Also add .. if we're not at root
+                            if (namePrefix === '' || '..'.startsWith(namePrefix)) {
+                                completions.push(pathPrefix + '../');
+                            }
+                        }
+                        
+                        return completions;
                     } else {
-                        const year = currentDirectory.substring(1);
-                        const yearPosts = postsByYear[year] || [];
-                        return yearPosts.map(p => p.title).filter(title => title.startsWith(currentArg));
+                        // Simple name completion in current directory
+                        if (command === 'cat') {
+                            if (currentDirectory === '/') {
+                                // In root, complete with year directories for relative paths
+                                return availableYears
+                                    .filter(year => year.startsWith(currentArg))
+                                    .map(year => year + '/');
+                            } else {
+                                const year = currentDirectory.substring(1);
+                                const yearPosts = postsByYear[year] || [];
+                                return yearPosts.map(p => p.title).filter(title => title.startsWith(currentArg));
+                            }
+                        } else if (command === 'ls') {
+                            if (currentDirectory === '/') {
+                                return availableYears
+                                    .filter(year => year.startsWith(currentArg))
+                                    .map(year => year + '/');
+                            } else {
+                                return ['../'].filter(dir => dir.startsWith(currentArg));
+                            }
+                        }
                     }
                 } else if (command === 'cd' && parts.length === 2) {
                     // Complete directory names for cd command
-                    if (currentDirectory === '/') {
-                        return availableYears.filter(year => year.startsWith(currentArg));
+                    if (currentArg.includes('/')) {
+                        // Path completion for cd
+                        const lastSlash = currentArg.lastIndexOf('/');
+                        const pathPrefix = currentArg.substring(0, lastSlash + 1);
+                        const namePrefix = currentArg.substring(lastSlash + 1);
+                        
+                        const dirPath = pathPrefix === '/' ? '/' : pathPrefix.slice(0, -1);
+                        const resolved = resolvePath(dirPath);
+                        
+                        if (!resolved) return [];
+                        
+                        const { directory } = resolved;
+                        let completions = [];
+                        
+                        if (directory === '/') {
+                            completions = availableYears
+                                .filter(year => year.startsWith(namePrefix))
+                                .map(year => pathPrefix + year + '/');
+                        } else {
+                            if (namePrefix === '' || '..'.startsWith(namePrefix)) {
+                                completions.push(pathPrefix + '../');
+                            }
+                        }
+                        
+                        return completions;
                     } else {
-                        return ['..'].filter(dir => dir.startsWith(currentArg));
+                        // Simple directory completion
+                        if (currentDirectory === '/') {
+                            return availableYears.filter(year => year.startsWith(currentArg));
+                        } else {
+                            return ['..'].filter(dir => dir.startsWith(currentArg));
+                        }
                     }
                 }
                 return [];
