@@ -2028,9 +2028,9 @@ video {
     padding: 1.5rem;
   }
   
-  /* Hide timeline line on mobile */
+  /* Show timeline line on mobile */
   .timeline-line-mobile-hidden {
-    display: none;
+    display: block;
   }
   
   /* Show emoji in mobile experience headers */
@@ -2121,6 +2121,11 @@ video {
     display: inline-block;
     margin-right: 0.5rem;
     font-size: 1.5rem;
+  }
+  
+  /* Show timeline line on tablet */
+  .timeline-line-mobile-hidden {
+    display: block;
   }
   
   /* Additional tablet spacing */
