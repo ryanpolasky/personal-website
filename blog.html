@@ -284,6 +284,10 @@
             let postsByYear = {};
             let availableYears = [];
             
+            // Command history
+            let commandHistory = JSON.parse(localStorage.getItem('terminal-history') || '[]');
+            let historyIndex = commandHistory.length;
+            
             try {
                 const response = await fetch('blog-posts.json');
                 const allPosts = await response.json();
@@ -644,6 +648,17 @@
                     if (commandStr) {
                         printCommand(commandStr); // Echo the command
 
+                        // Add to command history
+                        if (commandHistory[commandHistory.length - 1] !== commandStr) {
+                            commandHistory.push(commandStr);
+                            // Keep only last 100 commands
+                            if (commandHistory.length > 100) {
+                                commandHistory = commandHistory.slice(-100);
+                            }
+                            localStorage.setItem('terminal-history', JSON.stringify(commandHistory));
+                        }
+                        historyIndex = commandHistory.length;
+
                         const [command, ...args] = commandStr.split(/\s+/);
 
                         if (commands[command]) {
@@ -659,6 +674,31 @@
                 } else if (e.key === 'Tab') {
                     e.preventDefault();
                     handleTabCompletion();
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    if (historyIndex > 0) {
+                        historyIndex--;
+                        commandInput.value = commandHistory[historyIndex];
+                        // Move cursor to end
+                        setTimeout(() => {
+                            commandInput.setSelectionRange(commandInput.value.length, commandInput.value.length);
+                            updateCursorPosition();
+                        }, 0);
+                    }
+                } else if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    if (historyIndex < commandHistory.length - 1) {
+                        historyIndex++;
+                        commandInput.value = commandHistory[historyIndex];
+                    } else if (historyIndex === commandHistory.length - 1) {
+                        historyIndex++;
+                        commandInput.value = '';
+                    }
+                    // Move cursor to end
+                    setTimeout(() => {
+                        commandInput.setSelectionRange(commandInput.value.length, commandInput.value.length);
+                        updateCursorPosition();
+                    }, 0);
                 }
             });
 
