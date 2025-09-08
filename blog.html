@@ -280,7 +280,7 @@
 
             // Load blog posts from external JSON file
             let posts = [];
-            let currentDirectory = '/';
+            let currentDirectory = `/${new Date().getFullYear()}`;
             let postsByYear = {};
             let availableYears = [];
             
@@ -306,9 +306,14 @@
                 // Get available years and sort them (newest first)
                 availableYears = Object.keys(postsByYear).sort((a, b) => b - a);
                 
-                // Start in the most recent year
+                // Start in the most recent year, but only if it exists in the data
                 if (availableYears.length > 0) {
-                    currentDirectory = `/${availableYears[0]}`;
+                    const currentYear = new Date().getFullYear().toString();
+                    if (availableYears.includes(currentYear)) {
+                        currentDirectory = `/${currentYear}`;
+                    } else {
+                        currentDirectory = `/${availableYears[0]}`;
+                    }
                 }
                 
             } catch (error) {
@@ -328,6 +333,9 @@
                     printLine("  <span class='post-title'>tree</span>        - Display directory structure as a tree");
                     printLine("  <span class='post-title'>date</span>        - Show current date and time");
                     printLine("  <span class='post-title'>whoami</span>      - Display current user information");
+                    printLine("  <span class='post-title'>echo [text]</span> - Display a line of text");
+                    printLine("  <span class='post-title'>cal</span>         - Show calendar with post dates highlighted");
+                    printLine("  <span class='post-title'>uptime</span>      - Show blog uptime since first post");
                     printLine("  <span class='post-title'>clear</span>       - Clear the terminal screen");
                     printLine("  <span class='post-title'>help</span>        - Show this help message");
                     printLine("  <span class='post-title'>exit</span>        - Exit to home page");
@@ -555,6 +563,115 @@
                             printLine(`${postPrefix}${filePrefix}<span class="post-title">${post.title}</span>`);
                         });
                     });
+                },
+                echo: (args) => {
+                    if (args.length === 0) {
+                        printLine("");
+                    } else {
+                        printLine(args.join(' '));
+                    }
+                },
+                cal: () => {
+                    const now = new Date();
+                    const currentMonth = now.getMonth();
+                    const currentYear = now.getFullYear();
+                    
+                    // Get all post dates for highlighting
+                    const postDates = new Set();
+                    posts.forEach(post => {
+                        const postDate = new Date(post.date);
+                        if (postDate.getMonth() === currentMonth && postDate.getFullYear() === currentYear) {
+                            postDates.add(postDate.getDate());
+                        }
+                    });
+                    
+                    // Month names
+                    const monthNames = [
+                        'January', 'February', 'March', 'April', 'May', 'June',
+                        'July', 'August', 'September', 'October', 'November', 'December'
+                    ];
+                    
+                    // Calendar header
+                    const monthYear = `${monthNames[currentMonth]} ${currentYear}`;
+                    const padding = Math.floor((20 - monthYear.length) / 2);
+                    printLine(' '.repeat(padding) + monthYear);
+                    printLine('Su Mo Tu We Th Fr Sa');
+                    
+                    // Get first day of month and number of days
+                    const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+                    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+                    
+                    let calendar = '';
+                    let dayCount = 1;
+                    
+                    // Build calendar grid
+                    for (let week = 0; week < 6; week++) {
+                        let weekLine = '';
+                        for (let day = 0; day < 7; day++) {
+                            if (week === 0 && day < firstDay) {
+                                weekLine += '   ';
+                            } else if (dayCount <= daysInMonth) {
+                                const dayStr = dayCount.toString().padStart(2, ' ');
+                                if (postDates.has(dayCount)) {
+                                    weekLine += `<span class="post-title">${dayStr}</span> `;
+                                } else if (dayCount === now.getDate()) {
+                                    weekLine += `<span class="post-date">${dayStr}</span> `;
+                                } else {
+                                    weekLine += `${dayStr} `;
+                                }
+                                dayCount++;
+                            } else {
+                                weekLine += '   ';
+                            }
+                        }
+                        if (weekLine.trim()) {
+                            printLine(weekLine);
+                        }
+                    }
+                    
+                    printLine("");
+                    printLine(`<span class="post-title">Highlighted dates</span> have blog posts`);
+                    printLine(`<span class="post-date">Today</span> is highlighted in blue`);
+                },
+                uptime: () => {
+                    if (posts.length === 0) {
+                        printLine("No posts found - blog uptime unknown");
+                        return;
+                    }
+                    
+                    // Find the earliest post date
+                    const earliestPost = posts.reduce((earliest, post) => {
+                        const postDate = new Date(post.date);
+                        const earliestDate = new Date(earliest.date);
+                        return postDate < earliestDate ? post : earliest;
+                    });
+                    
+                    const startDate = new Date(earliestPost.date);
+                    const now = new Date();
+                    const uptimeMs = now - startDate;
+                    
+                    // Calculate time components
+                    const days = Math.floor(uptimeMs / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((uptimeMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((uptimeMs % (1000 * 60 * 60)) / (1000 * 60));
+                    
+                    // Format uptime string
+                    let uptimeStr = '';
+                    if (days > 0) {
+                        uptimeStr += `${days} day${days !== 1 ? 's' : ''}, `;
+                    }
+                    if (hours > 0 || days > 0) {
+                        uptimeStr += `${hours} hour${hours !== 1 ? 's' : ''}, `;
+                    }
+                    uptimeStr += `${minutes} minute${minutes !== 1 ? 's' : ''}`;
+                    
+                    const totalPosts = posts.length;
+                    const avgPostsPerDay = (totalPosts / days).toFixed(2);
+                    
+                    printLine(`Blog uptime: ${uptimeStr}`);
+                    printLine(`Since: <span class="post-date">${earliestPost.date}</span> (first post: <span class="post-title">${earliestPost.title}</span>)`);
+                    printLine(`Total posts: <span class="post-title">${totalPosts}</span>`);
+                    printLine(`Average: <span class="post-date">${avgPostsPerDay}</span> posts per day`);
                 }
             };
 
