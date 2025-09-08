@@ -462,17 +462,17 @@
       </div>
 
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 relative z-10">
-        <div class="grid lg:grid-cols-5 gap-12 items-center">
-          <div class="text-center lg:text-left lg:col-span-3">
+        <div class="grid lg:grid-cols-5 gap-8 lg:gap-12 items-center">
+          <div class="text-center lg:text-left lg:col-span-3 hero-mobile-padding">
             <div class="inline-block px-3 py-1 rounded-full glass mb-4">
               <span class="text-accent font-medium text-sm">Available May 2026</span>
             </div>
 
-            <h1 class="text-5xl sm:text-7xl font-black tracking-tight leading-none mb-8">
+            <h1 class="text-4xl mobile-text-5xl sm:text-7xl font-black tracking-tight leading-none mb-8">
               <span class="block">Hey, I'm</span>
                 <span class="gradient-text">Ryan</span><span class="text-accent animate-pulse">.</span>
             </h1>
-            <h2 class="block text-2xl sm:text-3xl font-normal mt-4 hero-subtitle">
+            <h2 class="block text-xl sm:text-2xl lg:text-3xl font-normal mt-4 hero-subtitle">
               I like to build cool things :)
             </h2>
 
@@ -483,7 +483,7 @@
               <span class="text-accent-light font-semibold">developer productivity tools</span> that actually ship.
             </p>
 
-            <div class="flex gap-3 mb-6">
+            <div class="flex gap-3 mb-6 mobile-button-stack sm:flex-row sm:gap-3 sm:px-0">
               <a data-scroll="projects" href="#projects"
                  class="group px-8 py-4 rounded-2xl text-white font-semibold hover:shadow-lg transition-all"
                  style="background: linear-gradient(to right, var(--accent-darker), var(--accent-dark));">
@@ -508,21 +508,21 @@
           </div>
 
           <div class="flex justify-center lg:justify-end relative lg:col-span-2">
-            <div class="relative">
+            <div class="relative mobile-floating-adjust">
               <div class="absolute inset-0 bg-gradient-to-r from-accent to-secondary-blue rounded-3xl blur animate-glow"></div>
               <img src="./assets/images/my-avatar.png" alt="Ryan Polasky"
-                   class="relative w-80 h-80 rounded-3xl object-cover hover-lift" 
+                   class="relative w-64 mobile-avatar sm:w-80 sm:h-80 h-64 rounded-3xl object-cover hover-lift" 
                    style="border: 2px solid var(--accent-glow, #4a90e2);" />
 
               <!-- Floating tech icons -->
-              <div class="absolute -top-4 -right-4 w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent floating">
-                <span class="text-2xl">⚡</span>
+              <div class="absolute -top-4 -right-4 w-12 sm:w-16 h-12 sm:h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent floating">
+                <span class="text-xl sm:text-2xl">⚡</span>
               </div>
-              <div class="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent floating">
-                <span class="text-2xl">🚀</span>
+              <div class="absolute -bottom-4 -left-4 w-12 sm:w-16 h-12 sm:h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent floating">
+                <span class="text-xl sm:text-2xl">🚀</span>
               </div>
-              <div class="absolute top-1/2 -left-8 w-12 h-12 bg-gradient-to-r from-slate-800 to-slate-700 rounded-xl flex items-center justify-center border-2 border-accent floating">
-                <span class="text-xl">💻</span>
+              <div class="absolute top-1/2 -left-6 sm:-left-8 w-10 sm:w-12 h-10 sm:h-12 bg-gradient-to-r from-slate-800 to-slate-700 rounded-xl flex items-center justify-center border-2 border-accent floating">
+                <span class="text-lg sm:text-xl">💻</span>
               </div>
             </div>
           </div>
@@ -609,18 +609,20 @@
 
         <div class="relative">
           <!-- Timeline line -->
-          <div class="absolute left-8 top-0 bottom-0 w-1 bg-gradient-to-b from-accent via-accent-light to-accent-dark rounded-full z-0"></div>
+          <div class="absolute left-8 top-0 bottom-0 w-1 bg-gradient-to-b from-accent via-accent-light to-accent-dark rounded-full z-0 timeline-line-mobile-hidden lg:block"></div>
 
-          <div class="space-y-12">
+          <div class="space-y-12 lg:space-y-16">
               <!-- Experience 1 -->
-              <div class="relative flex items-start gap-8 z-10">
-              <div class="flex-shrink-0 w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent shadow-glow animate-glow z-20 relative">
+              <div class="relative experience-mobile z-10">
+              <div class="flex-shrink-0 timeline-icon w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent shadow-glow animate-glow z-20 relative">
                 <span class="text-2xl font-black">🎯</span>
               </div>
-              <div class="glass-card p-8 rounded-3xl hover-lift flex-1 z-10 relative">
+              <div class="glass-card timeline-content p-8 rounded-3xl hover-lift flex-1 z-10 relative">
                 <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
                   <div>
-                    <h3 class="text-2xl font-bold text-white mb-2">At‑Home Advisor</h3>
+                    <h3 class="text-2xl font-bold text-white mb-2">
+                      <span class="mobile-experience-emoji">🎯</span>At‑Home Advisor
+                    </h3>
                     <p class="text-xl font-semibold text-accent">Apple</p>
                   </div>
                   <div class="px-4 py-2 rounded-full bg-accent/20 text-accent font-mono text-sm">
@@ -645,14 +647,16 @@
             </div>
 
             <!-- Experience 2 -->
-            <div class="relative flex items-start gap-8 z-10">
-              <div class="flex-shrink-0 w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent shadow-glow animate-glow z-20 relative">
+            <div class="relative experience-mobile z-10">
+              <div class="flex-shrink-0 timeline-icon w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent shadow-glow animate-glow z-20 relative">
                 <span class="text-2xl font-black">📱</span>
               </div>
-              <div class="glass-card p-8 rounded-3xl hover-lift flex-1 z-10 relative">
+              <div class="glass-card timeline-content p-8 rounded-3xl hover-lift flex-1 z-10 relative">
                 <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
                   <div>
-                    <h3 class="text-2xl font-bold text-white mb-2">Camera API Test Automation Intern</h3>
+                    <h3 class="text-2xl font-bold text-white mb-2">
+                      <span class="mobile-experience-emoji">📱</span>Camera API Test Automation Intern
+                    </h3>
                     <p class="text-xl font-semibold text-accent">Apple</p>
                   </div>
                   <div class="px-4 py-2 rounded-full bg-accent/20 text-accent font-mono text-sm">
@@ -677,14 +681,16 @@
             </div>
 
             <!-- Experience 3 -->
-            <div class="relative flex items-start gap-8 z-10">
-              <div class="flex-shrink-0 w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent shadow-glow animate-glow z-20 relative">
+            <div class="relative experience-mobile z-10">
+              <div class="flex-shrink-0 timeline-icon w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent shadow-glow animate-glow z-20 relative">
                 <span class="text-2xl font-black">⚡</span>
               </div>
-              <div class="glass-card p-8 rounded-3xl hover-lift flex-1 z-10 relative">
+              <div class="glass-card timeline-content p-8 rounded-3xl hover-lift flex-1 z-10 relative">
                 <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
                   <div>
-                    <h3 class="text-2xl font-bold text-white mb-2">WTE Tools Engineer Intern</h3>
+                    <h3 class="text-2xl font-bold text-white mb-2">
+                      <span class="mobile-experience-emoji">⚡</span>WTE Tools Engineer Intern
+                    </h3>
                     <p class="text-xl font-semibold text-accent">Apple</p>
                   </div>
                   <div class="px-4 py-2 rounded-full bg-accent/20 text-accent font-mono text-sm">
@@ -713,14 +719,16 @@
             </div>
 
             <!-- Experience 4 -->
-            <div class="relative flex items-start gap-8 z-10">
-              <div class="flex-shrink-0 w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent shadow-glow animate-glow z-20 relative">
+            <div class="relative experience-mobile z-10">
+              <div class="flex-shrink-0 timeline-icon w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent shadow-glow animate-glow z-20 relative">
                 <span class="text-2xl font-black">🏥</span>
               </div>
-              <div class="glass-card p-8 rounded-3xl hover-lift flex-1 z-10 relative">
+              <div class="glass-card timeline-content p-8 rounded-3xl hover-lift flex-1 z-10 relative">
                 <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
                   <div>
-                    <h3 class="text-2xl font-bold text-white mb-2">IT Intern</h3>
+                    <h3 class="text-2xl font-bold text-white mb-2">
+                      <span class="mobile-experience-emoji">🏥</span>IT Intern
+                    </h3>
                     <p class="text-xl font-semibold text-accent">Altru Health System</p>
                   </div>
                   <div class="px-4 py-2 rounded-full bg-accent/20 text-accent font-mono text-sm">
@@ -762,7 +770,7 @@
           </a>
         </div>
 
-        <div class="grid lg:grid-cols-2 xl:grid-cols-3 gap-8">
+        <div class="grid mobile-grid-single md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
           <!-- Project 1 -->
           <article class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden">
             <div class="relative">
@@ -864,7 +872,7 @@
           <div class="w-24 h-1 bg-gradient-to-r from-accent to-accent-light mx-auto rounded-full"></div>
         </div>
 
-        <div class="grid md:grid-cols-2 xl:grid-cols-4 gap-8">
+        <div class="grid mobile-grid-single md:grid-cols-2 xl:grid-cols-4 gap-6 lg:gap-8">
           <!-- Languages -->
           <div class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden">
             <div class="absolute inset-0 bg-gradient-to-br from-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -1076,7 +1084,7 @@
           <p class="text-slate-400 font-mono">Full references available upon request</p>
         </div>
 
-        <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
+        <div class="grid mobile-grid-single md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
           <!-- Testimonial 1 -->
           <figure class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden">
             <div class="absolute inset-0 bg-gradient-to-br from-slate-800/20 to-slate-900/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -1185,9 +1193,9 @@
           </p>
         </div>
 
-        <div class="grid lg:grid-cols-3 gap-8 items-start">
+        <div class="grid mobile-grid-single lg:grid-cols-3 gap-6 lg:gap-8 items-start">
           <!-- Contact Form -->
-          <div class="lg:col-span-2 glass-card p-10 rounded-3xl hover-lift">
+          <div class="lg:col-span-2 glass-card mobile-p-6 lg:p-10 rounded-3xl hover-lift">
             <h3 class="text-2xl font-bold text-white mb-8 flex items-center gap-3">
               <div class="w-12 h-12 bg-gradient-to-r from-slate-800 to-slate-700 rounded-xl flex items-center justify-center border-2 border-accent">
                 <span class="text-xl">💬</span>
@@ -1226,7 +1234,7 @@
           </div>
 
           <!-- Quick Contact -->
-          <div class="glass-card p-8 rounded-3xl hover-lift">
+          <div class="glass-card mobile-p-6 lg:p-8 rounded-3xl hover-lift">
             <h3 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
               <div class="w-12 h-12 bg-gradient-to-r from-slate-800 to-slate-700 rounded-xl flex items-center justify-center border-2 border-accent">
                 <span class="text-xl">⚡</span>

@@ -2004,3 +2004,163 @@ video {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
+
+/* Mobile-first responsive improvements */
+@media (max-width: 767px) {
+  /* Hero section mobile spacing */
+  .hero-mobile-padding {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  /* Experience timeline mobile layout */
+  .experience-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .experience-mobile .timeline-icon {
+    display: none;
+  }
+  
+  .experience-mobile .timeline-content {
+    padding: 1.5rem;
+  }
+  
+  /* Hide timeline line on mobile */
+  .timeline-line-mobile-hidden {
+    display: none;
+  }
+  
+  /* Show emoji in mobile experience headers */
+  .mobile-experience-emoji {
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 1.5rem;
+  }
+  
+  /* Mobile button improvements */
+  .mobile-button-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .mobile-button-stack a {
+    text-align: center;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+  
+  /* Mobile grid improvements */
+  .mobile-grid-single {
+    grid-template-columns: 1fr;
+  }
+  
+  /* Mobile text sizing */
+  .mobile-text-4xl {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+  
+  .mobile-text-5xl {
+    font-size: 3rem;
+    line-height: 1;
+  }
+  
+  /* Mobile spacing adjustments */
+  .mobile-space-y-6 > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 2rem;
+    margin-bottom: 0;
+  }
+  
+  /* Mobile padding adjustments */
+  .mobile-p-6 {
+    padding: 1.5rem;
+  }
+  
+  .mobile-px-4 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  /* Mobile avatar sizing */
+  .mobile-avatar {
+    width: 16rem;
+    height: 16rem;
+  }
+  
+  /* Mobile floating elements adjustment */
+  .mobile-floating-adjust .floating {
+    transform: scale(0.8);
+  }
+}
+
+/* Tablet improvements */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .experience-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .experience-mobile .timeline-icon {
+    display: none;
+  }
+  
+  .experience-mobile .timeline-content {
+    flex: 1;
+    padding: 2rem;
+  }
+  
+  /* Show mobile emoji on tablet */
+  .mobile-experience-emoji {
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 1.5rem;
+  }
+  
+  /* Additional tablet spacing */
+  .space-y-12 > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 3.5rem;
+  }
+}
+
+/* Desktop - restore original timeline layout */
+@media (min-width: 1024px) {
+  .mobile-experience-emoji {
+    display: none;
+  }
+  
+  /* Reset desktop experience layout to original */
+  .experience-mobile {
+    display: flex;
+    align-items: flex-start;
+    gap: 2rem;
+  }
+  
+  .experience-mobile .timeline-icon {
+    display: flex;
+    width: 4rem;
+    height: 4rem;
+    flex-shrink: 0;
+  }
+  
+  .experience-mobile .timeline-content {
+    flex: 1;
+    padding: 2rem;
+  }
+  
+  /* Show timeline line on desktop */
+  .timeline-line-mobile-hidden {
+    display: block;
+  }
+  
+  /* Enhanced desktop spacing */
+  .space-y-12 > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 4rem;
+  }
+}
