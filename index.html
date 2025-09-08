@@ -53,8 +53,8 @@
       // Rainbow colors for special mode
       const rainbowColors = ['#ff0000', '#ff8000', '#ffff00', '#80ff00', '#00ff00', '#00ff80', '#00ffff', '#0080ff', '#0000ff', '#8000ff', '#ff00ff', '#ff0080'];
       
-      // Pick a random color on every page load
-      const savedColor = colorOptions[Math.floor(Math.random() * colorOptions.length)];
+      // Default to warm orange-red color
+      const savedColor = '#ff6b35';
       const lightColor = lightenColor(savedColor, 25);
       const darkColor = darkenColor(savedColor, 25);
       const glowColor = hexToRgba(savedColor, 0.3);
@@ -219,18 +219,29 @@
             
             document.body.classList.add('late-night-mode');
 
-            // Switch to warm red/orange accent for eye comfort
-            updateAccentColor('#ff6b35'); // Warm orange-red
+            // Check if user has manually selected a color
+            const hasManualSelection = localStorage.getItem('manualColorSelection') === 'true';
+            if (hasManualSelection) {
+              // Add class to prevent CSS override but keep current manual color
+              document.body.classList.add('manual-color-override');
+            } else {
+              // Switch to warm color for automatic mode
+              updateAccentColor('#ff6b35'); // Warm orange-red
+            }
             
             showLateNightPopup();
           }
 
           function deactivateLateNightMode() {
             document.body.classList.remove('late-night-mode');
+            document.body.classList.remove('manual-color-override');
             
-            // Restore original accent color
-            const originalColor = localStorage.getItem('accentColor') || savedColor;
-            updateAccentColor(originalColor);
+            // Only restore original color if user hasn't manually selected a color
+            const hasManualSelection = localStorage.getItem('manualColorSelection') === 'true';
+            if (!hasManualSelection) {
+              const originalColor = localStorage.getItem('accentColor') || savedColor;
+              updateAccentColor(originalColor);
+            }
           }
 
           // Check on page load
@@ -313,6 +324,9 @@
             
             // Remove rainbow class
             document.body.classList.remove('rainbow-mode');
+            
+            // Mark as manual selection to preserve user choice
+            localStorage.setItem('manualColorSelection', 'true');
           }
 
         }
@@ -1371,7 +1385,7 @@
         }
         
         /* Late Night Mode Styles - Eye-friendly with blue light filter */
-        .late-night-mode {
+        .late-night-mode:not(.manual-color-override) {
           --accent-color: #ff6b35;
           --accent-light: #ff8a5b;
           --accent-dark: #e55a2b;
@@ -1599,6 +1613,12 @@
             const newColor = e.currentTarget.dataset.color;
             updateAccentColor(newColor);
             localStorage.setItem('accentColor', newColor);
+            localStorage.setItem('manualColorSelection', 'true');
+            
+            // Add manual override class if late night mode is active
+            if (document.body.classList.contains('late-night-mode')) {
+              document.body.classList.add('manual-color-override');
+            }
             
             // Close palette after selection
             paletteOpen = false;
