@@ -2082,6 +2082,11 @@ video {
     padding: 1.5rem;
   }
   
+  /* Contact section mobile padding override */
+  .contact-mobile-padding {
+    padding: 2rem !important;
+  }
+  
   .mobile-px-4 {
     padding-left: 1rem;
     padding-right: 1rem;
@@ -2096,6 +2101,28 @@ video {
   /* Mobile floating elements adjustment */
   .mobile-floating-adjust .floating {
     transform: scale(0.8);
+  }
+  
+  /* Mobile tags layout - responsive flex that wraps naturally */
+  .mobile-tags-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .mobile-tag-item {
+    padding: 0.375rem 0.75rem;
+    border-radius: 9999px;
+    background-color: rgba(var(--accent-color-rgb, 74, 144, 226), 0.2);
+    color: var(--accent-color, #4a90e2);
+    font-family: JetBrains Mono, Menlo, Monaco, Courier New, monospace;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-align: center;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
 }
 
@@ -2167,5 +2194,10 @@ video {
   /* Enhanced desktop spacing */
   .space-y-12 > :not([hidden]) ~ :not([hidden]) {
     margin-top: 4rem;
+  }
+  
+  /* Contact section desktop padding */
+  .contact-mobile-padding {
+    padding: 2.5rem !important;
   }
 }
