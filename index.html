@@ -53,8 +53,8 @@
       // Rainbow colors for special mode
       const rainbowColors = ['#ff0000', '#ff8000', '#ffff00', '#80ff00', '#00ff00', '#00ff80', '#00ffff', '#0080ff', '#0000ff', '#8000ff', '#ff00ff', '#ff0080'];
       
-      // Default to warm orange-red color
-      const savedColor = '#ff6b35';
+      // Always pick random color on page load
+      const savedColor = colorOptions[Math.floor(Math.random() * colorOptions.length)];
       const lightColor = lightenColor(savedColor, 25);
       const darkColor = darkenColor(savedColor, 25);
       const glowColor = hexToRgba(savedColor, 0.3);
@@ -225,7 +225,7 @@
               // Add class to prevent CSS override but keep current manual color
               document.body.classList.add('manual-color-override');
             } else {
-              // Switch to warm color for automatic mode
+              // Switch to warm color for automatic mode and update the CSS variables
               updateAccentColor('#ff6b35'); // Warm orange-red
             }
             
@@ -236,11 +236,12 @@
             document.body.classList.remove('late-night-mode');
             document.body.classList.remove('manual-color-override');
             
-            // Only restore original color if user hasn't manually selected a color
+            // Only restore to random color if user hasn't manually selected a color
             const hasManualSelection = localStorage.getItem('manualColorSelection') === 'true';
             if (!hasManualSelection) {
-              const originalColor = localStorage.getItem('accentColor') || savedColor;
-              updateAccentColor(originalColor);
+              // Pick a new random color when exiting late night mode
+              const newRandomColor = colorOptions[Math.floor(Math.random() * colorOptions.length)];
+              updateAccentColor(newRandomColor);
             }
           }
 
