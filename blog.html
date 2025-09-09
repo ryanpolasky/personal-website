@@ -114,6 +114,10 @@
             flex-grow: 1;
             outline: none;
             caret-color: var(--foreground); /* Show default cursor */
+            autocomplete: off;
+            autocorrect: off;
+            autocapitalize: off;
+            spellcheck: false;
         }
 
         /* Remove custom cursor - use browser default */
@@ -250,6 +254,44 @@
             text-align: center;
             margin-top: 1rem;
             font-style: italic;
+        }
+
+        /* Mobile responsive styles */
+        @media (max-width: 768px) {
+            .input-line {
+                display: flex;
+                flex-wrap: nowrap;
+                align-items: center;
+            }
+            
+            .prompt {
+                flex-shrink: 0;
+                margin-right: 0.5rem;
+                font-size: 14px;
+            }
+            
+            #command-input {
+                flex-grow: 1;
+                min-width: 0;
+                font-size: 14px;
+            }
+            
+            /* Hide custom cursor on mobile since it won't position correctly */
+            .cursor {
+                display: none !important;
+            }
+            
+            /* Adjust terminal for mobile */
+            #terminal {
+                width: calc(100% - 1rem);
+                height: 95vh;
+                max-height: none;
+            }
+            
+            #terminal-body {
+                padding: 0.75rem;
+                font-size: 14px;
+            }
         }
     </style>
 </head>
