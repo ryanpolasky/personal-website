@@ -479,7 +479,13 @@
                         
                         if (sortByTime) {
                             // Sort by modification time (newest first)
-                            sortedPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
+                            sortedPosts.sort((a, b) => {
+                                const [yearA, monthA, dayA] = a.date.split('-').map(Number);
+                                const [yearB, monthB, dayB] = b.date.split('-').map(Number);
+                                const dateA = new Date(yearA, monthA - 1, dayA);
+                                const dateB = new Date(yearB, monthB - 1, dayB);
+                                return dateB - dateA;
+                            });
                         } else {
                             // Default: sort alphabetically by filename
                             sortedPosts.sort((a, b) => a.title.localeCompare(b.title));
@@ -493,7 +499,10 @@
                             const perms = '-rw-r--r--';
                             const owner = 'ryan';
                             const size = (post.content.length * 2).toString().padStart(5, ' ');
-                            const date = new Date(post.date).toLocaleDateString('en-US', { month: 'short', day: '2-digit' });
+                            // Parse date as local date to avoid timezone issues
+                            const [year, month, day] = post.date.split('-').map(Number);
+                            const postDate = new Date(year, month - 1, day); // month is 0-indexed
+                            const date = postDate.toLocaleDateString('en-US', { month: 'short', day: '2-digit' });
                             fileList += `${perms} 1 ${owner} ${owner} ${size} ${date} <span class="post-title">${post.title}</span>\n`;
                         });
                     }
@@ -654,7 +663,13 @@
                         printLine(`${yearPrefix}<span class="post-title">${year}/</span> (${postCount} post${postCount !== 1 ? 's' : ''})`);
                         
                         // Sort posts by date (newest first)
-                        const sortedPosts = [...yearPosts].sort((a, b) => new Date(b.date) - new Date(a.date));
+                        const sortedPosts = [...yearPosts].sort((a, b) => {
+                            const [yearA, monthA, dayA] = a.date.split('-').map(Number);
+                            const [yearB, monthB, dayB] = b.date.split('-').map(Number);
+                            const dateA = new Date(yearA, monthA - 1, dayA);
+                            const dateB = new Date(yearB, monthB - 1, dayB);
+                            return dateB - dateA;
+                        });
                         
                         sortedPosts.forEach((post, postIndex) => {
                             const isLastPost = postIndex === sortedPosts.length - 1;
@@ -679,7 +694,9 @@
                     // Get all post dates for highlighting
                     const postDates = new Set();
                     posts.forEach(post => {
-                        const postDate = new Date(post.date);
+                        // Parse date as local date to avoid timezone issues
+                        const [year, month, day] = post.date.split('-').map(Number);
+                        const postDate = new Date(year, month - 1, day); // month is 0-indexed
                         if (postDate.getMonth() === currentMonth && postDate.getFullYear() === currentYear) {
                             postDates.add(postDate.getDate());
                         }
@@ -741,12 +758,15 @@
                     
                     // Find the earliest post date
                     const earliestPost = posts.reduce((earliest, post) => {
-                        const postDate = new Date(post.date);
-                        const earliestDate = new Date(earliest.date);
+                        const [yearA, monthA, dayA] = post.date.split('-').map(Number);
+                        const [yearB, monthB, dayB] = earliest.date.split('-').map(Number);
+                        const postDate = new Date(yearA, monthA - 1, dayA);
+                        const earliestDate = new Date(yearB, monthB - 1, dayB);
                         return postDate < earliestDate ? post : earliest;
                     });
                     
-                    const startDate = new Date(earliestPost.date);
+                    const [year, month, day] = earliestPost.date.split('-').map(Number);
+                    const startDate = new Date(year, month - 1, day);
                     const now = new Date();
                     const uptimeMs = now - startDate;
                     
