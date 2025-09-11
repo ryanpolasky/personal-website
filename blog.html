@@ -209,6 +209,23 @@
             background-color: #3a3c4a;
         }
 
+        .attachment-other-song {
+            background-color: #2a2c3a;
+            padding: 0.4rem 0.75rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--red);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-bottom: 1rem;
+        }
+
+        .attachment-other-song:hover {
+            background-color: #3a3c4a;
+        }
+
         .spotify-icon {
             font-size: 1.2em;
         }
@@ -525,7 +542,7 @@
                         printLine(post.content);
                         
                         // Display attachments if they exist
-                        if (post.picture || post.spotify) {
+                        if (post.picture || post.spotify || post.other_song) {
                             printLine('<div class="attachments">');
                             printLine('<div class="attachment-title">📎 Attachments</div>');
                             
@@ -541,6 +558,10 @@
                             
                             if (post.spotify) {
                                 printLine(`<div class="attachment-spotify" onclick="window.open('${post.spotify.link}', '_blank')"><span class="spotify-icon">🎵</span><div class="spotify-info">${post.spotify.title} - <span class="spotify-artist">${post.spotify.artist}</span></div></div>`);
+                            }
+                            
+                            if (post.other_song) {
+                                printLine(`<div class="attachment-other-song" onclick="window.open('${post.other_song.link}', '_blank')"><span class="spotify-icon">🎵</span><div class="spotify-info">${post.other_song.title} - <span class="spotify-artist">${post.other_song.artist}</span></div></div>`);
                             }
                             
                             printLine('</div>');

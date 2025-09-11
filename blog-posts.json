@@ -15,6 +15,11 @@
             "title": "Song Title",
             "artist": "Artist Name",
             "link": "https://open.spotify.com/track/your-track-id"
+        },
+        "other_song": {
+            "title": "Song Title",
+            "artist": "Artist Name",
+            "link": "https://open.spotify.com/track/your-track-id"
         }
     },
     {
@@ -138,7 +143,7 @@
         "date": "2025-09-07",
         "mood": "The very best, like no one ever was",
         "emoji": "\uD83E\uDD96",
-        "content": "I've realized over the last few months that minimizing my hobbies and passions to appear less \"nerdy\" doesn't reflect the person I want to be. In an effort to combat that, I've recently thrown myself back into my old hobby of collecting Pokémon cards.\n\nI grew up on the Pokémon games, with HeartGold being my first and forever favorite of the main series. Truly a masterpiece, and I stand by that stance with every fiber of my being. Totodile & Feraligatr have been my favorite Pokémon ever since, & I still love 'em.\n\nAnyway, yesterday I went to the Dallas Card Show. Bought a couple cards, traded a couple cards, the works. Overall, had a really solid time. Truthfully, I hoped to find someone to share the hobby with, but fell short of that goal by a ways. Such is life. I've never been one to let that get me down in the past, nor do I plan on becoming reliant on external sources for all happiness--I feel that's a dangerous pitfall of socializing.\n\nHowever, I was able to give away some cards to a lil' trainer that was just starting out in the hobby. I'd seen videos online of people doing the same, and, ever since seeing them, had wanted to do the same. I couldn't have expected, though, just how nice it felt to be able to do that. The cards, although somewhat rare, weren't terribly expensive.\n\nIt cost me very little, and yet, to the kid, meant so much. The way his face lit up, the way he showed the cards off to his parents. Hell, the way the parents' eyes lit up looking at their smiling son. I'm no benevolent, gifting savant or anything, but man, I plan on doing that again.\n\nI hope one day I can inspire someone to pass it forward. No expectation, simply hope. Hope for a more connected world, for compassionate children.\n\nThey're up next, after all.",
+        "content": "I've realized over the last few months that minimizing my hobbies and passions to appear less \"nerdy\" doesn't reflect the person I want to be. In an effort to combat that, I've recently thrown myself back into my old hobby of collecting Pokémon cards.\n\nI grew up on the Pokémon games, with HeartGold being my first and forever favorite of the main series. Truly a masterpiece, and I stand by that stance with every fiber of my being. Totodile & Feraligatr have been my favorite Pokémon ever since, & I still love 'em.\n\nAnyway, yesterday I went to the Dallas Card Show. Bought a couple cards, traded a couple cards, the works. Overall, had a really solid time. Truthfully, I hoped to find someone to share the hobby with, but fell short of that goal by a ways. Such is life. I've never been one to let that get me down in the past, nor do I plan on becoming reliant on external sources for all happiness--I feel that's a dangerous pitfall of socializing.\n\nHowever, I was able to give away some cards to a lil' trainer that was just starting out in the hobby. I'd seen videos online of people doing the same, and, ever since seeing them, had wanted to do the same. I couldn't have expected, though, just how nice it felt to be able to do that. The cards, although somewhat rare, weren't terribly expensive.\n\nIt cost me very little, and yet, to the kid, meant so much. The way his face lit up, the way he showed the cards off to his parents. Hell, the way the parents' eyes lit up looking at their smiling son. I'm no benevolent, gifting savant or anything, but man, I plan on doing that again.\n\nI hope one day I can inspire someone to pass it forward. No expectation, simply hope. Hope for a more connected world, for compassionate children.\n\nThey're up next after all.",
         "picture": {
             "path": "assets/blog/pokemon.png",
             "caption": "depending on who sees this, this is either a flex or embarrassing."
@@ -147,6 +152,23 @@
             "title": "Ecruteak City",
             "artist": "Super Lofi 64",
             "link": "https://open.spotify.com/track/06ipmxCPwyoZ9KdliVQ5PQ"
+        }
+    },
+    {
+        "id": "minecraft",
+        "title": "minecraft.md",
+        "date": "2025-09-11",
+        "mood": "Melancholic",
+        "emoji": "⛏\uFE0F",
+        "content": "While this post may be disguised as ramblings about the hit 2009 indie release Minecraft, it's actually the deranged 3 A.M. ramblings of a student who should surely be sleeping.\n\nIn all fairness, I am actually playing Minecraft right now. Well, \"playing\" may be putting it generously, as I've probably been AFK for nearly 45 minutes exploring the deepest crevices of my own mind. As Patrick Star would say, \"The inner machinations of my mind are an enigma.\" At least, that's what I've always thought he said in that episode, I've never fact checked myself.\n\nAnyway. I'm currently sitting in my little abode, quite literally carved into the side of a floating hunk of rock in The End, the game's liminal dimension that houses the final boss. Due to a particular mod I'm playing with, there is ambient breeze blowing and a rather ethereal track playing quietly.\n\nYou know, it's rather odd. It's hours like these where I find myself thinking back, reminiscing, if you will, about my childhood. How many times in my life have I been seated in front of a very similar screen playing this game? How many hours have I spent mining, crafting, building, and so forth? How many times did my parents walk into my room in the wee hours of the night to find me wide awake playing this very game on a school night, often before big tests?\n\nA silly thought, I know. Rather funny to think back on these specific situations. But truthfully, it's a bit harrowing. The more I grow, the more the focus of this nostalgia drifts away from the tenderness of these moments. It instead ebbs ever closer to the thought of \"these nights aren't coming back.\"\n\nI know, I know, rather dreary route for this entry to take, and for that I apologize. But I do mean the sentiment. There won't be another time in which the biggest worry of my life is if my few pieces of coal can finish smelting my iron.\n\nI'm well aware of the truths of this universe, that this gripe of mine simply boils down to \"part of growing up.\" And I know it, you know it - there's no going back. And yet, it's 3 A.M, I'm AFK in Minecraft...\n\nAnd I think I just want to stay here a little longer.\n\nI wrote more code just to share today's song, as it's what's playing in The End right now. Quite a beautiful song imho, would love if you gave it a listen.",
+        "picture": {
+            "path": "assets/blog/minecraft.png",
+            "caption": "probably silly to some, but isn't this beautiful?"
+        },
+        "other_song": {
+            "title": "Eternal Garden",
+            "artist": "Dan Henig",
+            "link": "https://www.youtube.com/watch?v=sOg2KWnO1c4"
         }
     }
 ]
