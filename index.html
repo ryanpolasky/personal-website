@@ -221,35 +221,57 @@
             if (document.body.classList.contains('late-night-mode')) {
               return; // Already active
             }
-            
+        
             document.body.classList.add('late-night-mode');
 
-            // Check if user has manually selected a color
-            const hasManualSelection = localStorage.getItem('manualColorSelection') === 'true';
+            // Check if user has manually selected a color this session
+            const hasManualSelection = window.manualColorSelection === true;
             if (hasManualSelection) {
               // Add class to prevent CSS override but keep current manual color
               document.body.classList.add('manual-color-override');
             } else {
               // Switch to warm color for automatic mode and update the CSS variables
               updateAccentColor('#ff6b35'); // Warm orange-red
+              window.lateNightColor = '#ff6b35';
             }
-            
+        
             showLateNightPopup();
           }
 
           function deactivateLateNightMode() {
             document.body.classList.remove('late-night-mode');
             document.body.classList.remove('manual-color-override');
-            
+        
             // Only restore to random color if user hasn't manually selected a color
-            const hasManualSelection = localStorage.getItem('manualColorSelection') === 'true';
+            const hasManualSelection = window.manualColorSelection === true;
             if (!hasManualSelection) {
               // Pick a new random color when exiting late night mode
               const newRandomColor = colorOptions[Math.floor(Math.random() * colorOptions.length)];
               updateAccentColor(newRandomColor);
+              // Clear the late night color since we're back to random
+              window.lateNightColor = null;
             }
           }
 
+          // Initialize session variables
+          window.manualColorSelection = false;
+          window.lateNightColor = null;
+        
+          // Set initial color based on late night mode status
+          function setInitialColor() {
+            const hour = new Date().getHours();
+            const isLateNight = hour >= 21 || hour <= 5;
+        
+            if (isLateNight) {
+              // Use late night color
+              updateAccentColor('#ff6b35');
+              window.lateNightColor = '#ff6b35';
+            }
+            // Otherwise use the already set random color from page load
+          }
+        
+          setInitialColor();
+        
           // Check on page load
           checkLateNightMode();
 
@@ -324,15 +346,24 @@
           function deactivateRainbowMode() {
             rainbowMode = false;
             
-            // Return to the current saved color (don't randomize)
-            const currentSavedColor = localStorage.getItem('accentColor') || savedColor;
-            updateAccentColor(currentSavedColor);
+            // Return to appropriate color based on current mode
+            const hour = new Date().getHours();
+            const isLateNight = hour >= 21 || hour <= 5;
+            
+            if (isLateNight && !window.manualColorSelection) {
+              updateAccentColor('#ff6b35');
+            } else if (!window.manualColorSelection) {
+              // Return to a random color
+              const newRandomColor = colorOptions[Math.floor(Math.random() * colorOptions.length)];
+              updateAccentColor(newRandomColor);
+            }
+            // If manual selection exists, keep current color
             
             // Remove rainbow class
             document.body.classList.remove('rainbow-mode');
             
             // Mark as manual selection to preserve user choice
-            localStorage.setItem('manualColorSelection', 'true');
+            window.manualColorSelection = true;
           }
 
         }
@@ -1625,8 +1656,7 @@
             e.stopPropagation();
             const newColor = e.currentTarget.dataset.color;
             updateAccentColor(newColor);
-            localStorage.setItem('accentColor', newColor);
-            localStorage.setItem('manualColorSelection', 'true');
+            window.manualColorSelection = true;
             
             // Add manual override class if late night mode is active
             if (document.body.classList.contains('late-night-mode')) {
