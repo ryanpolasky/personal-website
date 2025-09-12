@@ -620,6 +620,27 @@
               <span class="block">Hey, I'm</span>
                 <span class="gradient-text">Ryan</span><span class="text-accent animate-pulse">.</span>
             </h1>
+
+            <!-- Avatar folds under header text on mobile/tablet -->
+            <div class="flex justify-center relative lg:hidden mb-8">
+              <div class="relative mobile-floating-adjust">
+                <div class="absolute inset-0 bg-gradient-to-r from-accent to-secondary-blue rounded-3xl blur animate-glow"></div>
+                <img src="./assets/images/my-avatar.png" alt="Ryan Polasky"
+                     class="relative w-64 mobile-avatar sm:w-80 sm:h-80 h-64 rounded-3xl object-cover hover-lift" 
+                     style="border: 2px solid var(--accent-glow, #4a90e2);" />
+                <!-- Floating tech icons -->
+                <div class="absolute -top-4 -right-4 w-12 sm:w-16 h-12 sm:h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent floating">
+                  <span class="text-xl sm:text-2xl">⚡</span>
+                </div>
+                <div class="absolute -bottom-4 -left-4 w-12 sm:w-16 h-12 sm:h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent floating">
+                  <span class="text-xl sm:text-2xl">🚀</span>
+                </div>
+                <div class="absolute top-1/2 -left-6 sm:-left-8 w-10 sm:w-12 h-10 sm:h-12 bg-gradient-to-r from-slate-800 to-slate-700 rounded-xl flex items-center justify-center border-2 border-accent floating">
+                  <span class="text-lg sm:text-xl">💻</span>
+                </div>
+              </div>
+            </div>
+
             <h2 class="block text-2xl sm:text-3xl font-normal mt-4 mb-4 hero-subtitle">
               I like to build cool things :)
             </h2>
@@ -652,9 +673,10 @@
                 Download Résumé
               </a>
             </div>
+
           </div>
 
-          <div class="flex justify-center lg:justify-end relative lg:col-span-2">
+          <div class="hidden lg:flex justify-center lg:justify-end relative lg:col-span-2">
             <div class="relative mobile-floating-adjust">
               <div class="absolute inset-0 bg-gradient-to-r from-accent to-secondary-blue rounded-3xl blur animate-glow"></div>
               <img src="./assets/images/my-avatar.png" alt="Ryan Polasky"
