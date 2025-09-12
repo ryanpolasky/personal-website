@@ -528,7 +528,7 @@
               <svg class="hamburger-icon w-6 h-6 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M4 12h16M4 17h16"></path>
               </svg>
-              <svg class="close-icon w-6 h-6 absolute inset-0 m-2 transition-all duration-300 opacity-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="close-icon w-6 h-6 absolute top-1 left-1 transition-all duration-300 opacity-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-top: -1.5rem;">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
               </svg>
             </button>
@@ -1870,7 +1870,11 @@
 
         openBtn?.addEventListener('click', (e) => {
           e.preventDefault();
-          openSidebar();
+          if (document.body.classList.contains('sidebar-open')) {
+            closeSidebar();
+          } else {
+            openSidebar();
+          }
         });
 
         closeBtn?.addEventListener('click', (e) => {
