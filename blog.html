@@ -451,12 +451,22 @@
             // Encrypt content for storage
             async function encryptContent(content, password) {
                 try {
-                    // Validate inputs
-                    if (typeof content !== 'string' || typeof password !== 'string') {
-                        throw new Error('Content and password must be strings');
+                    // Convert content to string if it's an object
+                    let contentStr;
+                    if (typeof content === 'object') {
+                        contentStr = JSON.stringify(content);
+                    } else if (typeof content === 'string') {
+                        contentStr = content;
+                    } else {
+                        throw new Error('Content must be a string or object');
                     }
                     
-                    if (content.length === 0) {
+                    // Validate inputs
+                    if (typeof password !== 'string') {
+                        throw new Error('Password must be a string');
+                    }
+                    
+                    if (contentStr.length === 0) {
                         throw new Error('Content cannot be empty');
                     }
                     
@@ -465,7 +475,7 @@
                     }
                     
                     const encoder = new TextEncoder();
-                    const data = encoder.encode(content);
+                    const data = encoder.encode(contentStr);
                     
                     // Generate random salt and IV
                     const salt = crypto.getRandomValues(new Uint8Array(16));
@@ -495,8 +505,14 @@
                 }
             }
             
-            // Expose encryptContent to global scope for console use
+            // Helper function to encrypt objects directly
+            async function encryptObject(obj, password) {
+                return await encryptContent(obj, password);
+            }
+            
+            // Expose encryption functions to global scope for console use
             window.encryptContent = encryptContent;
+            window.encryptObject = encryptObject;
             
             // Decrypt content for display
             async function decryptContent(encryptedContent, password) {
@@ -658,54 +674,95 @@
                         if (post) {
                             let contentToDisplay = post.content;
                             
+                            let moodEmoji = '';
+                            let mood = '';
+                            let attachments = null;
+                        
                             // Check if post is encrypted
-                            if (post.encrypted_content) {
+                            if (post.encrypted_content || post.encrypted_metadata) {
                                 const key = await promptForDecryptionKey();
                                 if (key === null) {
                                     printLine("sudo: authentication cancelled");
                                     return;
                                 }
-                                
-                                const decryptedContent = await decryptContent(post.encrypted_content, key);
-                                if (decryptedContent === null) {
-                                    printError("sudo: incorrect password");
-                                    return;
-                                }
-                                
-                                contentToDisplay = decryptedContent;
-                            }
                             
-                            const moodEmoji = post.emoji || '';
-                            const mood = post.mood || '';
+                                if (post.encrypted_content) {
+                                    const decryptedContent = await decryptContent(post.encrypted_content, key);
+                                    if (decryptedContent === null) {
+                                        printError("sudo: incorrect password");
+                                        return;
+                                    }
+                                    contentToDisplay = decryptedContent;
+                                }
+                            
+                                if (post.encrypted_metadata) {
+                                    const decryptedMetadata = await decryptContent(post.encrypted_metadata, key);
+                                    if (decryptedMetadata === null) {
+                                        printError("sudo: incorrect password");
+                                        return;
+                                    }
+                                
+                                    try {
+                                        const metadata = JSON.parse(decryptedMetadata);
+                                        moodEmoji = metadata.emoji || '';
+                                        mood = metadata.mood || '';
+                                        attachments = {
+                                            picture: metadata.picture,
+                                            spotify: metadata.spotify,
+                                            other_song: metadata.other_song
+                                        };
+                                    } catch (e) {
+                                        printError("sudo: failed to parse encrypted metadata");
+                                        return;
+                                    }
+                                } else {
+                                    moodEmoji = post.emoji || '';
+                                    mood = post.mood || '';
+                                    attachments = {
+                                        picture: post.picture,
+                                        spotify: post.spotify,
+                                        other_song: post.other_song
+                                    };
+                                }
+                            } else {
+                                moodEmoji = post.emoji || '';
+                                mood = post.mood || '';
+                                attachments = {
+                                    picture: post.picture,
+                                    spotify: post.spotify,
+                                    other_song: post.other_song
+                                };
+                            }
+                        
                             const moodText = mood ? ` • Mood: ${mood}` : '';
                             printLine(`<span class="post-date">Posted on: ${post.date}${moodText} ${moodEmoji}</span>`);
                             printLine("---");
                             printLine(contentToDisplay);
                             
                             // Display attachments if they exist
-                            if (post.picture || post.spotify || post.other_song) {
+                            if (attachments && (attachments.picture || attachments.spotify || attachments.other_song)) {
                                 printLine('<div class="attachments">');
                                 printLine('<div class="attachment-title">📎 Attachments</div>');
-                                
-                                if (post.picture) {
+                            
+                                if (attachments.picture) {
                                     const imageId = `image-${post.id}`;
                                     printLine('<div class="attachment-image">');
-                                    const escapedCaption = (post.picture.caption || '').replace(/'/g, "\\'").replace(/"/g, '\\"');
-                                    printLine(`<img src="${post.picture.path}" alt="${post.picture.caption || 'Image'}" style="width: 350px !important; height: 350px !important; max-width: 80% !important; max-height: 350px !important; object-fit: cover !important; display: block !important; margin: 0 auto !important; border-radius: 8px; cursor: pointer;" onclick="openImageModal('${imageId}', '${post.picture.path}', '${escapedCaption}')">`);
-                                    if (post.picture.caption) {
-                                        printLine(`<div class="attachment-caption">${post.picture.caption}</div>`);
+                                    const escapedCaption = (attachments.picture.caption || '').replace(/'/g, "\\'").replace(/"/g, '\\"');
+                                    printLine(`<img src="${attachments.picture.path}" alt="${attachments.picture.caption || 'Image'}" style="width: 350px !important; height: 350px !important; max-width: 80% !important; max-height: 350px !important; object-fit: cover !important; display: block !important; margin: 0 auto !important; border-radius: 8px; cursor: pointer;" onclick="openImageModal('${imageId}', '${attachments.picture.path}', '${escapedCaption}')">`);
+                                    if (attachments.picture.caption) {
+                                        printLine(`<div class="attachment-caption">${attachments.picture.caption}</div>`);
                                     }
                                     printLine('</div>');
                                 }
-                                
-                                if (post.spotify) {
-                                    printLine(`<div class="attachment-spotify" onclick="window.open('${post.spotify.link}', '_blank')"><span class="spotify-icon">🎵</span><div class="spotify-info">${post.spotify.title} - <span class="spotify-artist">${post.spotify.artist}</span></div></div>`);
+                            
+                                if (attachments.spotify) {
+                                    printLine(`<div class="attachment-spotify" onclick="window.open('${attachments.spotify.link}', '_blank')"><span class="spotify-icon">🎵</span><div class="spotify-info">${attachments.spotify.title} - <span class="spotify-artist">${attachments.spotify.artist}</span></div></div>`);
                                 }
-                                
-                                if (post.other_song) {
-                                    printLine(`<div class="attachment-other-song" onclick="window.open('${post.other_song.link}', '_blank')"><span class="spotify-icon">🎵</span><div class="spotify-info">${post.other_song.title} - <span class="spotify-artist">${post.other_song.artist}</span></div></div>`);
+                            
+                                if (attachments.other_song) {
+                                    printLine(`<div class="attachment-other-song" onclick="window.open('${attachments.other_song.link}', '_blank')"><span class="spotify-icon">🎵</span><div class="spotify-info">${attachments.other_song.title} - <span class="spotify-artist">${attachments.other_song.artist}</span></div></div>`);
                                 }
-                                
+                            
                                 printLine('</div>');
                             }
                             
@@ -835,9 +892,22 @@
                         
                         sortedPosts.forEach(post => {
                             // Show different permissions for encrypted posts
-                            const perms = post.encrypted_content ? '-rw-------' : '-rw-r--r--';
+                            const perms = (post.encrypted_content || post.encrypted_metadata) ? '-rw-------' : '-rw-r--r--';
                             const owner = 'ryan';
-                            const size = (post.content.length * 2).toString().padStart(5, ' ');
+                            
+                            // Calculate size based on available content
+                            let contentLength = 0;
+                            if (post.content) {
+                                contentLength = post.content.length;
+                            } else if (post.encrypted_content) {
+                                // Estimate content length from encrypted data (base64 is ~4/3 larger than original)
+                                contentLength = Math.floor(post.encrypted_content.length * 3 / 4);
+                            } else {
+                                // Fallback for posts with no content
+                                contentLength = 50; // Default estimate
+                            }
+                            const size = (contentLength * 2).toString().padStart(5, ' ');
+                            
                             // Parse date as local date to avoid timezone issues
                             const [year, month, day] = post.date.split('-').map(Number);
                             const postDate = new Date(year, month - 1, day); // month is 0-indexed
@@ -884,41 +954,51 @@
                     if (post) {
                         let contentToDisplay = post.content;
                         
+                        let moodEmoji = '';
+                        let mood = '';
+                        let attachments = null;
+                        
                         // Check if post is encrypted
-                        if (post.encrypted_content) {
+                        if (post.encrypted_content || post.encrypted_metadata) {
                             printError(`cat: ${filename}: Permission denied`);
                             return;
                         }
                         
-                        const moodEmoji = post.emoji || '';
-                        const mood = post.mood || '';
+                        moodEmoji = post.emoji || '';
+                        mood = post.mood || '';
+                        attachments = {
+                            picture: post.picture,
+                            spotify: post.spotify,
+                            other_song: post.other_song
+                        };
+                        
                         const moodText = mood ? ` • Mood: ${mood}` : '';
                         printLine(`<span class="post-date">Posted on: ${post.date}${moodText} ${moodEmoji}</span>`);
                         printLine("---");
                         printLine(contentToDisplay);
                         
                         // Display attachments if they exist
-                        if (post.picture || post.spotify || post.other_song) {
+                        if (attachments && (attachments.picture || attachments.spotify || attachments.other_song)) {
                             printLine('<div class="attachments">');
                             printLine('<div class="attachment-title">📎 Attachments</div>');
                             
-                            if (post.picture) {
+                            if (attachments.picture) {
                                 const imageId = `image-${post.id}`;
                                 printLine('<div class="attachment-image">');
-                                const escapedCaption = (post.picture.caption || '').replace(/'/g, "\\'").replace(/"/g, '\\"');
-                                printLine(`<img src="${post.picture.path}" alt="${post.picture.caption || 'Image'}" style="width: 350px !important; height: 350px !important; max-width: 80% !important; max-height: 350px !important; object-fit: cover !important; display: block !important; margin: 0 auto !important; border-radius: 8px; cursor: pointer;" onclick="openImageModal('${imageId}', '${post.picture.path}', '${escapedCaption}')">`);
-                                if (post.picture.caption) {
-                                    printLine(`<div class="attachment-caption">${post.picture.caption}</div>`);
+                                const escapedCaption = (attachments.picture.caption || '').replace(/'/g, "\\'").replace(/"/g, '\\"');
+                                printLine(`<img src="${attachments.picture.path}" alt="${attachments.picture.caption || 'Image'}" style="width: 350px !important; height: 350px !important; max-width: 80% !important; max-height: 350px !important; object-fit: cover !important; display: block !important; margin: 0 auto !important; border-radius: 8px; cursor: pointer;" onclick="openImageModal('${imageId}', '${attachments.picture.path}', '${escapedCaption}')">`);
+                                if (attachments.picture.caption) {
+                                    printLine(`<div class="attachment-caption">${attachments.picture.caption}</div>`);
                                 }
                                 printLine('</div>');
                             }
                             
-                            if (post.spotify) {
-                                printLine(`<div class="attachment-spotify" onclick="window.open('${post.spotify.link}', '_blank')"><span class="spotify-icon">🎵</span><div class="spotify-info">${post.spotify.title} - <span class="spotify-artist">${post.spotify.artist}</span></div></div>`);
+                            if (attachments.spotify) {
+                                printLine(`<div class="attachment-spotify" onclick="window.open('${attachments.spotify.link}', '_blank')"><span class="spotify-icon">🎵</span><div class="spotify-info">${attachments.spotify.title} - <span class="spotify-artist">${attachments.spotify.artist}</span></div></div>`);
                             }
                             
-                            if (post.other_song) {
-                                printLine(`<div class="attachment-other-song" onclick="window.open('${post.other_song.link}', '_blank')"><span class="spotify-icon">🎵</span><div class="spotify-info">${post.other_song.title} - <span class="spotify-artist">${post.other_song.artist}</span></div></div>`);
+                            if (attachments.other_song) {
+                                printLine(`<div class="attachment-other-song" onclick="window.open('${attachments.other_song.link}', '_blank')"><span class="spotify-icon">🎵</span><div class="spotify-info">${attachments.other_song.title} - <span class="spotify-artist">${attachments.other_song.artist}</span></div></div>`);
                             }
                             
                             printLine('</div>');
