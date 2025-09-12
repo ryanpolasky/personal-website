@@ -1918,6 +1918,39 @@
           if (e.key === 'Escape') closeSidebar();
         });
       });
+      
+      // Clear contact form after successful submission
+      document.addEventListener('DOMContentLoaded', () => {
+        const contactForm = document.querySelector('#contact form');
+        if (contactForm) {
+          contactForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = new FormData(contactForm);
+            try {
+              const response = await fetch(contactForm.action, {
+                method: contactForm.method,
+                body: formData,
+                headers: { 'Accept': 'application/json' },
+              });
+              if (response.ok) {
+                contactForm.reset(); // Clear only after success
+                // Optional: show popup confirmation
+                window.popupManager?.show(
+                  `<div class="flex items-center gap-3">
+                    <span class="text-lg">✅</span>
+                    <span class="text-sm text-slate-300">Message sent successfully!</span>
+                  </div>`,
+                  { autoDismiss: 5000 }
+                );
+              } else {
+                console.error('Formspree error:', await response.text());
+              }
+            } catch (err) {
+              console.error('Submission failed:', err);
+            }
+          });
+        }
+      });
     </script>
   </body>
 </html>
