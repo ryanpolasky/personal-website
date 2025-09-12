@@ -119,9 +119,11 @@
             const targetId = link.getAttribute('href').substring(1);
             const targetSection = document.getElementById(targetId);
             if (targetSection) {
-              const headerHeight = 80; // Account for sticky header
-              // Add extra offset for all sections except home to scroll lower
-              const extraOffset = targetId === 'home' ? 0 : 30;
+              const isMobile = window.innerWidth < 1024;
+              // Use slightly smaller header height on mobile, full height on desktop
+              const headerHeight = isMobile ? 56 : 80;
+              // Add extra positive offset on mobile so section isn't cut off
+              const extraOffset = targetId === 'home' ? 0 : (isMobile ? 20 : 30);
               const targetPosition = targetSection.offsetTop - headerHeight + extraOffset;
               window.scrollTo({
                 top: targetPosition,

@@ -149,6 +149,8 @@ html,
   /* 1 */
   -webkit-text-size-adjust: 100%;
   /* 2 */
+  /* Always reserve space for vertical scrollbar to prevent layout shift */
+  scrollbar-gutter: stable;
   -moz-tab-size: 4;
   /* 3 */
   -o-tab-size: 4;
@@ -174,6 +176,8 @@ body {
   /* 1 */
   line-height: inherit;
   /* 2 */
+  /* Always reserve space for scrollbar to prevent layout shift */
+  overflow-y: scroll;
 }
 
 /*
