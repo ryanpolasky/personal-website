@@ -421,6 +421,161 @@
             let postsByYear = {};
             let availableYears = [];
             
+            // AES-256-GCM encryption/decryption functions using Web Crypto API
+            
+            // Derive a key from password using PBKDF2
+            async function deriveKey(password, salt) {
+                const encoder = new TextEncoder();
+                const keyMaterial = await crypto.subtle.importKey(
+                    'raw',
+                    encoder.encode(password),
+                    { name: 'PBKDF2' },
+                    false,
+                    ['deriveKey']
+                );
+                
+                return crypto.subtle.deriveKey(
+                    {
+                        name: 'PBKDF2',
+                        salt: salt,
+                        iterations: 100000,
+                        hash: 'SHA-256'
+                    },
+                    keyMaterial,
+                    { name: 'AES-GCM', length: 256 },
+                    false,
+                    ['encrypt', 'decrypt']
+                );
+            }
+            
+            // Encrypt content for storage
+            async function encryptContent(content, password) {
+                try {
+                    // Validate inputs
+                    if (typeof content !== 'string' || typeof password !== 'string') {
+                        throw new Error('Content and password must be strings');
+                    }
+                    
+                    if (content.length === 0) {
+                        throw new Error('Content cannot be empty');
+                    }
+                    
+                    if (password.length === 0) {
+                        throw new Error('Password cannot be empty');
+                    }
+                    
+                    const encoder = new TextEncoder();
+                    const data = encoder.encode(content);
+                    
+                    // Generate random salt and IV
+                    const salt = crypto.getRandomValues(new Uint8Array(16));
+                    const iv = crypto.getRandomValues(new Uint8Array(12));
+                    
+                    // Derive key from password
+                    const key = await deriveKey(password, salt);
+                    
+                    // Encrypt the data
+                    const encrypted = await crypto.subtle.encrypt(
+                        { name: 'AES-GCM', iv: iv },
+                        key,
+                        data
+                    );
+                    
+                    // Combine salt + iv + encrypted data
+                    const combined = new Uint8Array(salt.length + iv.length + encrypted.byteLength);
+                    combined.set(salt, 0);
+                    combined.set(iv, salt.length);
+                    combined.set(new Uint8Array(encrypted), salt.length + iv.length);
+                    
+                    // Return as base64
+                    return btoa(String.fromCharCode(...combined));
+                } catch (e) {
+                    console.error('Encryption failed:', e);
+                    return null;
+                }
+            }
+            
+            // Expose encryptContent to global scope for console use
+            window.encryptContent = encryptContent;
+            
+            // Decrypt content for display
+            async function decryptContent(encryptedContent, password) {
+                try {
+                    // Decode from base64
+                    const combined = new Uint8Array(
+                        atob(encryptedContent).split('').map(char => char.charCodeAt(0))
+                    );
+                    
+                    // Extract salt, IV, and encrypted data
+                    const salt = combined.slice(0, 16);
+                    const iv = combined.slice(16, 28);
+                    const encrypted = combined.slice(28);
+                    
+                    // Derive key from password
+                    const key = await deriveKey(password, salt);
+                    
+                    // Decrypt the data
+                    const decrypted = await crypto.subtle.decrypt(
+                        { name: 'AES-GCM', iv: iv },
+                        key,
+                        encrypted
+                    );
+                    
+                    // Convert back to string
+                    const decoder = new TextDecoder();
+                    return decoder.decode(decrypted);
+                } catch (e) {
+                    console.error('Decryption failed:', e);
+                    return null; // Invalid password or corrupted data
+                }
+            }
+            
+            // Prompt user for decryption key (sudo-style)
+            function promptForDecryptionKey() {
+                return new Promise((resolve) => {
+                    // Hide the main command input
+                    const inputLineElement = document.querySelector('.input-line');
+                    inputLineElement.style.display = 'none';
+                    
+                    // Create sudo password prompt line
+                    const sudoLine = document.createElement('div');
+                    sudoLine.classList.add('input-line');
+                    sudoLine.innerHTML = `
+                        <span class="prompt">[sudo] password:</span>
+                        <input type="password" id="sudo-input" autocomplete="off" style="
+                            background: none;
+                            border: none;
+                            color: var(--foreground);
+                            font-family: 'Fira Code', monospace;
+                            font-size: 16px;
+                            flex-grow: 1;
+                            outline: none;
+                            caret-color: var(--foreground);
+                        ">
+                    `;
+                    
+                    output.appendChild(sudoLine);
+                    const sudoInput = sudoLine.querySelector('#sudo-input');
+                    sudoInput.focus();
+                    scrollToBottom();
+                    
+                    sudoInput.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter') {
+                            const key = sudoInput.value;
+                            sudoLine.remove();
+                            inputLineElement.style.display = 'flex';
+                            commandInput.focus();
+                            resolve(key);
+                        } else if (e.key === 'Escape') {
+                            sudoLine.remove();
+                            inputLineElement.style.display = 'flex';
+                            commandInput.focus();
+                            resolve(null);
+                        }
+                    });
+                });
+            }
+            
             // Command history
             let commandHistory = JSON.parse(localStorage.getItem('terminal-history') || '[]');
             let historyIndex = commandHistory.length;
@@ -459,6 +614,110 @@
             }
 
             const commands = {
+                sudo: async (args) => {
+                    if (args.length < 2) {
+                        printError("Usage: sudo [command] [arguments...]");
+                        return;
+                    }
+                    
+                    const [command, ...commandArgs] = args;
+                    
+                    if (command === 'cat') {
+                        const inputPath = commandArgs[0];
+                        if (!inputPath) {
+                            printError("Usage: sudo cat [filename]");
+                            return;
+                        }
+                        
+                        // Resolve the path
+                        const resolved = resolvePath(inputPath);
+                        if (!resolved) {
+                            printError(`sudo: cat: ${inputPath}: Invalid path`);
+                            return;
+                        }
+                        
+                        const { directory, filename } = resolved;
+                        
+                        // Check if we're trying to cat a directory
+                        if (!filename) {
+                            printError(`sudo: cat: ${inputPath}: Is a directory`);
+                            return;
+                        }
+                        
+                        // Find post in the resolved directory
+                        let post = null;
+                        if (directory === '/') {
+                            printError(`sudo: cat: ${inputPath}: No such file or directory`);
+                            return;
+                        } else {
+                            const year = directory.substring(1);
+                            const yearPosts = postsByYear[year] || [];
+                            post = yearPosts.find(p => p.title === filename);
+                        }
+                        
+                        if (post) {
+                            let contentToDisplay = post.content;
+                            
+                            // Check if post is encrypted
+                            if (post.encrypted_content) {
+                                const key = await promptForDecryptionKey();
+                                if (key === null) {
+                                    printLine("sudo: authentication cancelled");
+                                    return;
+                                }
+                                
+                                const decryptedContent = await decryptContent(post.encrypted_content, key);
+                                if (decryptedContent === null) {
+                                    printError("sudo: incorrect password");
+                                    return;
+                                }
+                                
+                                contentToDisplay = decryptedContent;
+                            }
+                            
+                            const moodEmoji = post.emoji || '';
+                            const mood = post.mood || '';
+                            const moodText = mood ? ` • Mood: ${mood}` : '';
+                            printLine(`<span class="post-date">Posted on: ${post.date}${moodText} ${moodEmoji}</span>`);
+                            printLine("---");
+                            printLine(contentToDisplay);
+                            
+                            // Display attachments if they exist
+                            if (post.picture || post.spotify || post.other_song) {
+                                printLine('<div class="attachments">');
+                                printLine('<div class="attachment-title">📎 Attachments</div>');
+                                
+                                if (post.picture) {
+                                    const imageId = `image-${post.id}`;
+                                    printLine('<div class="attachment-image">');
+                                    const escapedCaption = (post.picture.caption || '').replace(/'/g, "\\'").replace(/"/g, '\\"');
+                                    printLine(`<img src="${post.picture.path}" alt="${post.picture.caption || 'Image'}" style="width: 350px !important; height: 350px !important; max-width: 80% !important; max-height: 350px !important; object-fit: cover !important; display: block !important; margin: 0 auto !important; border-radius: 8px; cursor: pointer;" onclick="openImageModal('${imageId}', '${post.picture.path}', '${escapedCaption}')">`);
+                                    if (post.picture.caption) {
+                                        printLine(`<div class="attachment-caption">${post.picture.caption}</div>`);
+                                    }
+                                    printLine('</div>');
+                                }
+                                
+                                if (post.spotify) {
+                                    printLine(`<div class="attachment-spotify" onclick="window.open('${post.spotify.link}', '_blank')"><span class="spotify-icon">🎵</span><div class="spotify-info">${post.spotify.title} - <span class="spotify-artist">${post.spotify.artist}</span></div></div>`);
+                                }
+                                
+                                if (post.other_song) {
+                                    printLine(`<div class="attachment-other-song" onclick="window.open('${post.other_song.link}', '_blank')"><span class="spotify-icon">🎵</span><div class="spotify-info">${post.other_song.title} - <span class="spotify-artist">${post.other_song.artist}</span></div></div>`);
+                                }
+                                
+                                printLine('</div>');
+                            }
+                            
+                            // Scroll to the start of the post instead of the bottom
+                            setTimeout(scrollToPostStart, 50); // Small delay to ensure content is rendered
+                        } else {
+                            printError(`sudo: cat: ${filename}: No such file or directory`);
+                        }
+                    } else {
+                        printError(`sudo: ${command}: command not found`);
+                    }
+                },
                 help: () => {
                     printLine("Available commands:");
                     printLine("  <span class='post-title'>ls [options]</span> - List directories/posts");
@@ -482,6 +741,7 @@
                     printLine("  • Type partial filenames and press Tab to complete");
                     printLine("  • Use <span class='post-title'>ls -t</span> to see posts by recency");
                     printLine("  • Navigate between years with <span class='post-title'>cd</span>");
+                    printLine("  • Use <span class='post-title'>sudo cat</span> for encrypted posts");
                 },
                 ls: (args) => {
                     // Separate path from options
@@ -574,7 +834,8 @@
                         }
                         
                         sortedPosts.forEach(post => {
-                            const perms = '-rw-r--r--';
+                            // Show different permissions for encrypted posts
+                            const perms = post.encrypted_content ? '-rw-------' : '-rw-r--r--';
                             const owner = 'ryan';
                             const size = (post.content.length * 2).toString().padStart(5, ' ');
                             // Parse date as local date to avoid timezone issues
@@ -587,7 +848,7 @@
                     
                     printLine(fileList.trim());
                 },
-                cat: (args) => {
+                cat: async (args) => {
                     const inputPath = args[0];
                     if (!inputPath) {
                         printError("Usage: cat [filename]");
@@ -621,12 +882,20 @@
                     }
                     
                     if (post) {
+                        let contentToDisplay = post.content;
+                        
+                        // Check if post is encrypted
+                        if (post.encrypted_content) {
+                            printError(`cat: ${filename}: Permission denied`);
+                            return;
+                        }
+                        
                         const moodEmoji = post.emoji || '';
                         const mood = post.mood || '';
                         const moodText = mood ? ` • Mood: ${mood}` : '';
                         printLine(`<span class="post-date">Posted on: ${post.date}${moodText} ${moodEmoji}</span>`);
                         printLine("---");
-                        printLine(post.content);
+                        printLine(contentToDisplay);
                         
                         // Display attachments if they exist
                         if (post.picture || post.spotify || post.other_song) {
@@ -995,6 +1264,61 @@
                 if (parts.length === 1) {
                     // Complete command names
                     return Object.keys(commands).filter(cmd => cmd.startsWith(currentArg));
+                } else if (command === 'sudo' && parts.length === 3) {
+                    // Handle sudo cat completion
+                    const subCommand = parts[1];
+                    if (subCommand === 'cat') {
+                        const currentArg = parts[2];
+                        if (currentArg.includes('/')) {
+                            // Path completion for sudo cat
+                            const lastSlash = currentArg.lastIndexOf('/');
+                            const pathPrefix = currentArg.substring(0, lastSlash + 1);
+                            const namePrefix = currentArg.substring(lastSlash + 1);
+                            
+                            // Try to resolve the directory part
+                            const dirPath = pathPrefix === '/' ? '/' : pathPrefix.slice(0, -1);
+                            const resolved = resolvePath(dirPath);
+                            
+                            if (!resolved) return [];
+                            
+                            const { directory } = resolved;
+                            let completions = [];
+                            
+                            if (directory === '/') {
+                                // Complete with year directories
+                                completions = availableYears
+                                    .filter(year => year.startsWith(namePrefix))
+                                    .map(year => pathPrefix + year + '/');
+                            } else {
+                                // Complete with files in year directory
+                                const year = directory.substring(1);
+                                const yearPosts = postsByYear[year] || [];
+                                completions = yearPosts
+                                    .map(p => p.title)
+                                    .filter(title => title.startsWith(namePrefix))
+                                    .map(title => pathPrefix + title);
+                                
+                                // Also add .. if we're not at root
+                                if (namePrefix === '' || '..'.startsWith(namePrefix)) {
+                                    completions.push(pathPrefix + '../');
+                                }
+                            }
+                            
+                            return completions;
+                        } else {
+                            // Simple name completion in current directory for sudo cat
+                            if (currentDirectory === '/') {
+                                // In root, complete with year directories for relative paths
+                                return availableYears
+                                    .filter(year => year.startsWith(currentArg))
+                                    .map(year => year + '/');
+                            } else {
+                                const year = currentDirectory.substring(1);
+                                const yearPosts = postsByYear[year] || [];
+                                return yearPosts.map(p => p.title).filter(title => title.startsWith(currentArg));
+                            }
+                        }
+                    }
                 } else if ((command === 'cat' || command === 'ls') && parts.length === 2) {
                     // Complete paths for cat and ls commands
                     if (currentArg.includes('/')) {
@@ -1056,6 +1380,10 @@
                             }
                         }
                     }
+                } else if (command === 'sudo' && parts.length === 2) {
+                    // Complete sudo subcommands
+                    const subCommands = ['cat'];
+                    return subCommands.filter(cmd => cmd.startsWith(currentArg));
                 } else if (command === 'cd' && parts.length === 2) {
                     // Complete directory names for cd command
                     if (currentArg.includes('/')) {
@@ -1155,7 +1483,7 @@
             commandInput.addEventListener('keyup', updateCursorPosition);
             commandInput.addEventListener('click', updateCursorPosition);
 
-            commandInput.addEventListener('keydown', (e) => {
+            commandInput.addEventListener('keydown', async (e) => {
                 if (e.key === 'Enter') {
                     const commandStr = commandInput.value.trim();
                     if (commandStr) {
@@ -1175,7 +1503,7 @@
                         const [command, ...args] = commandStr.split(/\s+/);
 
                         if (commands[command]) {
-                            commands[command](args);
+                            await commands[command](args);
                             updatePrompt(); // Update prompt after command execution
                         } else {
                             printError(`command not found: ${command}`);
