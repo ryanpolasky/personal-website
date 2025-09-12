@@ -147,8 +147,38 @@
         // Initialize effects
         createParticles();
 
+        // Popup frequency management
+        function shouldShowPopup(popupType) {
+          const lastShown = localStorage.getItem(`popup_${popupType}_last_shown`);
+          if (!lastShown) return true;
+          
+          const lastShownDate = new Date(lastShown);
+          const today = new Date();
+          
+          // Check if it's been at least 24 hours
+          const timeDiff = today.getTime() - lastShownDate.getTime();
+          const hoursDiff = timeDiff / (1000 * 3600);
+          
+          return hoursDiff >= 24;
+        }
+
+        function markPopupShown(popupType) {
+          localStorage.setItem(`popup_${popupType}_last_shown`, new Date().toISOString());
+        }
+
+        // Global function to clear popup storage for testing
+        window.clearPopupStorage = function() {
+          localStorage.removeItem('popup_late_night_last_shown');
+          localStorage.removeItem('popup_macos_last_shown');
+          console.log('Popup storage cleared! Refresh to see popups again.');
+        };
+
         // Show late night popup notification
         function showLateNightPopup() {
+          // Check if we should show this popup
+          if (!shouldShowPopup('late_night')) {
+            return;
+          }
           const content = `
             <div class="flex items-start gap-3">
               <div class="w-10 h-10 bg-gradient-to-r from-slate-800 to-slate-700 rounded-xl flex items-center justify-center border-2 border-accent flex-shrink-0">
@@ -172,6 +202,9 @@
           `;
 
           const popupId = window.popupManager.show(content);
+          
+          // Mark this popup as shown
+          markPopupShown('late_night');
           
           // Add event listeners after popup is created
           setTimeout(() => {
@@ -379,6 +412,11 @@
         }
 
         function showMacOSPopup() {
+          // Check if we should show this popup
+          if (!shouldShowPopup('macos')) {
+            return;
+          }
+          
           const content = `
             <div class="flex items-start gap-3">
               <div class="w-10 h-10 bg-gradient-to-r from-slate-800 to-slate-700 rounded-xl flex items-center justify-center border-2 border-accent flex-shrink-0">
@@ -402,6 +440,9 @@
           `;
 
           const popupId = window.popupManager.show(content);
+          
+          // Mark this popup as shown
+          markPopupShown('macos');
           
           // Add event listeners after popup is created
           setTimeout(() => {
