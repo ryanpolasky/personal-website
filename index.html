@@ -466,14 +466,69 @@
     <!-- Grid Overlay -->
     <div class="fixed inset-0 grid-bg opacity-[0.3] pointer-events-none"></div>
 
+    <!-- Sidebar (mobile/tablet) -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 glass border-r border-white/10 lg:hidden" style="transform: translateX(-100%); transition: transform 0.3s ease;">
+      <div class="flex items-center justify-between p-4 border-b border-white/10">
+        <h2 class="text-xl font-bold gradient-text">Menu</h2>
+        <button id="closeSidebar" class="p-2 rounded-lg hover:bg-white/10 transition-colors" aria-label="Close menu">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+      <nav class="p-4 space-y-2">
+        <a data-scroll="home" href="#home" class="block py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">Home</a>
+        <a data-scroll="about" href="#about" class="block py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">About</a>
+        <a data-scroll="experience" href="#experience" class="block py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">Experience</a>
+        <a data-scroll="projects" href="#projects" class="block py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">Projects</a>
+        <a data-scroll="skills" href="#skills" class="block py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">Skills</a>
+        <a data-scroll="testimonials" href="#testimonials" class="block py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">Testimonials</a>
+        <a data-scroll="contact" href="#contact" class="block py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">Contact</a>
+
+        <div class="pt-4 mt-2 border-t border-white/10"></div>
+        <div class="space-y-3">
+          <div class="relative">
+            <button id="colorPickerBtnMobile" class="w-full flex items-center justify-between p-3 rounded-xl glass hover:shadow-glow transition-all" aria-label="Change Theme Color" aria-expanded="false" aria-haspopup="true">
+              <span class="font-medium">Theme color</span>
+              <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 279.682 279.682" xml:space="preserve" fill="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path style="fill:#ffffff;" d="M143.25,55.486c-41.06,0-74.465,33.405-74.465,74.465c0,16.824,5.511,32.711,15.938,45.939 c1.998,2.536,4.15,5.033,6.23,7.448c6.212,7.208,12.078,14.017,14.166,21.675c0.045,0.165,0.438,1.773,0.38,7.247l-0.01,0.791 c-0.063,4.444-0.147,10.528,4.352,15.091c3.081,3.125,7.399,4.645,13.204,4.645h40.272c6.268,0,10.774-1.534,13.776-4.689 c4.061-4.267,3.789-9.779,3.608-13.427c-0.032-0.645-0.066-1.296-0.074-1.944c-0.065-5.48,0.345-7.025,0.362-7.09 c2.121-7.657,8.993-15.732,15.057-22.855c2.023-2.377,3.934-4.622,5.714-6.879c10.431-13.23,15.944-29.12,15.944-45.951 C217.705,88.892,184.305,55.486,143.25,55.486z M189.982,166.614c-1.607,2.036-3.429,4.178-5.358,6.445 c-7.07,8.307-15.084,17.722-18.089,28.572c-0.429,1.546-0.988,4.395-0.905,11.273c0.01,0.835,0.049,1.675,0.091,2.507 c0.032,0.657,0.075,1.523,0.071,2.209c-0.528,0.086-1.325,0.166-2.475,0.166h-40.272c-1.276,0-2.022-0.135-2.405-0.237 c-0.198-0.977-0.17-3.007-0.152-4.287l0.012-0.844c0.072-6.919-0.483-9.789-0.907-11.348c-2.98-10.936-10.575-19.749-17.275-27.524 c-2.066-2.398-4.019-4.664-5.813-6.942c-8.32-10.557-12.718-23.232-12.718-36.654c0-32.789,26.676-59.465,59.465-59.465 c32.783,0,59.455,26.676,59.455,59.465C202.705,143.379,198.306,156.058,189.982,166.614z"></path> <path style="fill:#ffffff;" d="M161.766,239.564h-37.041c-7.995,0-14.5,6.505-14.5,14.5v11.117c0,7.995,6.505,14.5,14.5,14.5 h37.041c7.995,0,14.5-6.505,14.5-14.5v-11.117C176.266,246.069,169.761,239.564,161.766,239.564z M161.266,264.682h-36.041v-10.117 h36.041V264.682z"></path> <path style="fill:#ffffff;" d="M143.245,45.779c4.143,0,7.5-3.357,7.5-7.5V7.5c0-4.143-3.357-7.5-7.5-7.5 c-4.143,0-7.5,3.357-7.5,7.5v30.779C135.745,42.422,139.103,45.779,143.245,45.779z"></path> <path style="fill:#ffffff;" d="M241.917,34.598c-2.858-2.995-7.606-3.106-10.604-0.248l-22.77,21.73 c-2.997,2.859-3.107,7.607-0.248,10.604c1.474,1.544,3.448,2.322,5.427,2.322c1.86,0,3.725-0.688,5.177-2.074l22.77-21.731 C244.666,42.342,244.776,37.594,241.917,34.598z"></path> <path style="fill:#ffffff;" d="M264.273,109.599c-0.004,0-0.008,0-0.012,0l-29.311,0.047c-4.143,0.007-7.495,3.37-7.488,7.512 c0.007,4.139,3.363,7.488,7.5,7.488c0.004,0,0.008,0,0.012,0l29.311-0.047c4.143-0.007,7.495-3.37,7.488-7.512 C271.767,112.948,268.41,109.599,264.273,109.599z"></path> <path style="fill:#ffffff;" d="M74.386,64.684c2.859-2.996,2.749-7.743-0.248-10.604l-22.77-21.73 c-2.994-2.858-7.742-2.749-10.604,0.248c-2.859,2.996-2.749,7.743,0.248,10.604l22.77,21.731c1.452,1.386,3.315,2.074,5.177,2.074 C70.937,67.006,72.912,66.228,74.386,64.684z"></path> <path style="fill:#ffffff;" d="M44.729,109.646l-29.31-0.047c-0.004,0-0.008,0-0.012,0c-4.137,0-7.493,3.351-7.5,7.488 c-0.007,4.142,3.346,7.505,7.488,7.512l29.31,0.047c0.004,0,0.008,0,0.012,0c4.137,0,7.493-3.351,7.5-7.488 C52.225,113.016,48.872,109.652,44.729,109.646z"></path> </g> </g></svg>
+            </button>
+            <div id="colorPaletteMobile" class="absolute top-full left-0 mt-2 p-6 glass rounded-2xl opacity-0 pointer-events-none transition-all z-50 shadow-xl border border-white/20 min-w-max" role="menu" aria-labelledby="colorPickerBtnMobile">
+              <div class="grid grid-cols-4 gap-3">
+                <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#4a90e2" style="background: linear-gradient(135deg, #4a90e2, #6ba3e8);" aria-label="Blue theme" role="menuitem"></button>
+                <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#af52de" style="background: linear-gradient(135deg, #af52de, #bf5af2);" aria-label="Purple theme" role="menuitem"></button>
+                <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#30d158" style="background: linear-gradient(135deg, #30d158, #64de85);" aria-label="Green theme" role="menuitem"></button>
+                <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#ff9500" style="background: linear-gradient(135deg, #ff9500, #ffb340);" aria-label="Orange theme" role="menuitem"></button>
+                <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#ff453a" style="background: linear-gradient(135deg, #ff453a, #ff6961);" aria-label="Red theme" role="menuitem"></button>
+                <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#e91e63" style="background: linear-gradient(135deg, #e91e63, #f06292);" aria-label="Pink theme" role="menuitem"></button>
+                <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#00bcd4" style="background: linear-gradient(135deg, #00bcd4, #4dd0e1);" aria-label="Cyan theme" role="menuitem"></button>
+                <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#f8bbd9" style="background: linear-gradient(135deg, #f8bbd9, #fce4ec);" aria-label="Pastel pink theme" role="menuitem"></button>
+              </div>
+            </div>
+          </div>
+
+          <a href="https://github.com/ryanpolasky" target="_blank" rel="noreferrer" class="flex items-center gap-3 p-3 rounded-xl glass hover:shadow-glow transition-all" aria-label="GitHub">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 .5a12 12 0 0 0-3.79 23.4c.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.74.08-.73.08-.73 1.2.09 1.83 1.23 1.83 1.23 1.07 1.83 2.81 1.3 3.5.99.11-.78.42-1.3.76-1.6-2.66-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.16 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.3-1.55 3.3-1.23 3.3-1.23.66 1.64.24 2.86.12 3.16.77.84 1.24 1.9 1.24 3.22 0 4.61-2.81 5.62-5.49 5.92.43.37.82 1.1.82 2.22v3.29c0 .32.21.69.83.57A12 12 0 0 0 12 .5Z"/>
+            </svg>
+            <span class="font-medium">GitHub</span>
+          </a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Overlay for sidebar -->
+    <div id="sidebarOverlay" class="fixed inset-0 z-40 bg-black/50 opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden" aria-hidden="true"></div>
+
     <!-- Header -->
     <header class="sticky top-0 z-50 glass">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
-          <a href="#home" class="font-black tracking-tight text-2xl">
-            <span class="gradient-text">Ryan</span><span class="text-accent animate-pulse">.</span>
-          </a>
-          <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
+          <div class="flex items-center gap-4">
+            <a href="#home" class="font-black tracking-tight text-2xl">
+              <span class="gradient-text">Ryan</span><span class="text-accent animate-pulse">.</span>
+            </a>
+          </div>
+          <nav class="hidden lg:flex items-center gap-8 text-sm font-medium">
             <a data-scroll="home" href="#home" class="relative hover:text-accent transition-colors px-2 py-1 rounded">Home</a>
             <a data-scroll="about" href="#about" class="relative hover:text-accent transition-colors px-2 py-1 rounded">About</a>
             <a data-scroll="experience" href="#experience" class="relative hover:text-accent transition-colors px-2 py-1 rounded">Experience</a>
@@ -484,7 +539,7 @@
           </nav>
           <div class="flex items-center gap-3">
             <!-- Color Picker -->
-            <div class="relative">
+            <div class="relative hidden lg:block">
               <button id="colorPickerBtn" class="p-2 rounded-xl glass hover:shadow-glow transition-all hover-lift" aria-label="Change Theme Color" aria-expanded="false" aria-haspopup="true">
                 <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 279.682 279.682" xml:space="preserve" fill="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path style="fill:#ffffff;" d="M143.25,55.486c-41.06,0-74.465,33.405-74.465,74.465c0,16.824,5.511,32.711,15.938,45.939 c1.998,2.536,4.15,5.033,6.23,7.448c6.212,7.208,12.078,14.017,14.166,21.675c0.045,0.165,0.438,1.773,0.38,7.247l-0.01,0.791 c-0.063,4.444-0.147,10.528,4.352,15.091c3.081,3.125,7.399,4.645,13.204,4.645h40.272c6.268,0,10.774-1.534,13.776-4.689 c4.061-4.267,3.789-9.779,3.608-13.427c-0.032-0.645-0.066-1.296-0.074-1.944c-0.065-5.48,0.345-7.025,0.362-7.09 c2.121-7.657,8.993-15.732,15.057-22.855c2.023-2.377,3.934-4.622,5.714-6.879c10.431-13.23,15.944-29.12,15.944-45.951 C217.705,88.892,184.305,55.486,143.25,55.486z M189.982,166.614c-1.607,2.036-3.429,4.178-5.358,6.445 c-7.07,8.307-15.084,17.722-18.089,28.572c-0.429,1.546-0.988,4.395-0.905,11.273c0.01,0.835,0.049,1.675,0.091,2.507 c0.032,0.657,0.075,1.523,0.071,2.209c-0.528,0.086-1.325,0.166-2.475,0.166h-40.272c-1.276,0-2.022-0.135-2.405-0.237 c-0.198-0.977-0.17-3.007-0.152-4.287l0.012-0.844c0.072-6.919-0.483-9.789-0.907-11.348c-2.98-10.936-10.575-19.749-17.275-27.524 c-2.066-2.398-4.019-4.664-5.813-6.942c-8.32-10.557-12.718-23.232-12.718-36.654c0-32.789,26.676-59.465,59.465-59.465 c32.783,0,59.455,26.676,59.455,59.465C202.705,143.379,198.306,156.058,189.982,166.614z"></path> <path style="fill:#ffffff;" d="M161.766,239.564h-37.041c-7.995,0-14.5,6.505-14.5,14.5v11.117c0,7.995,6.505,14.5,14.5,14.5 h37.041c7.995,0,14.5-6.505,14.5-14.5v-11.117C176.266,246.069,169.761,239.564,161.766,239.564z M161.266,264.682h-36.041v-10.117 h36.041V264.682z"></path> <path style="fill:#ffffff;" d="M143.245,45.779c4.143,0,7.5-3.357,7.5-7.5V7.5c0-4.143-3.357-7.5-7.5-7.5 c-4.143,0-7.5,3.357-7.5,7.5v30.779C135.745,42.422,139.103,45.779,143.245,45.779z"></path> <path style="fill:#ffffff;" d="M241.917,34.598c-2.858-2.995-7.606-3.106-10.604-0.248l-22.77,21.73 c-2.997,2.859-3.107,7.607-0.248,10.604c1.474,1.544,3.448,2.322,5.427,2.322c1.86,0,3.725-0.688,5.177-2.074l22.77-21.731 C244.666,42.342,244.776,37.594,241.917,34.598z"></path> <path style="fill:#ffffff;" d="M264.273,109.599c-0.004,0-0.008,0-0.012,0l-29.311,0.047c-4.143,0.007-7.495,3.37-7.488,7.512 c0.007,4.139,3.363,7.488,7.5,7.488c0.004,0,0.008,0,0.012,0l29.311-0.047c4.143-0.007,7.495-3.37,7.488-7.512 C271.767,112.948,268.41,109.599,264.273,109.599z"></path> <path style="fill:#ffffff;" d="M74.386,64.684c2.859-2.996,2.749-7.743-0.248-10.604l-22.77-21.73 c-2.994-2.858-7.742-2.749-10.604,0.248c-2.859,2.996-2.749,7.743,0.248,10.604l22.77,21.731c1.452,1.386,3.315,2.074,5.177,2.074 C70.937,67.006,72.912,66.228,74.386,64.684z"></path> <path style="fill:#ffffff;" d="M44.729,109.646l-29.31-0.047c-0.004,0-0.008,0-0.012,0c-4.137,0-7.493,3.351-7.5,7.488 c-0.007,4.142,3.346,7.505,7.488,7.512l29.31,0.047c0.004,0,0.008,0,0.012,0c4.137,0,7.493-3.351,7.5-7.488 C52.225,113.016,48.872,109.652,44.729,109.646z"></path> </g> </g></svg>
               </button>
@@ -505,11 +560,16 @@
             </div>
 
             <a href="https://github.com/ryanpolasky" target="_blank" rel="noreferrer"
-               class="p-2 rounded-xl glass hover:shadow-glow transition-all hover-lift" aria-label="GitHub">
+               class="hidden lg:inline-flex p-2 rounded-xl glass hover:shadow-glow transition-all hover-lift" aria-label="GitHub">
               <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 .5a12 12 0 0 0-3.79 23.4c.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.74.08-.73.08-.73 1.2.09 1.83 1.23 1.83 1.23 1.07 1.83 2.81 1.3 3.5.99.11-.78.42-1.3.76-1.6-2.66-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.16 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.3-1.55 3.3-1.23 3.3-1.23.66 1.64.24 2.86.12 3.16.77.84 1.24 1.9 1.24 3.22 0 4.61-2.81 5.62-5.49 5.92.43.37.82 1.1.82 2.22v3.29c0 .32.21.69.83.57A12 12 0 0 0 12 .5Z"/>
               </svg>
             </a>
+            <button id="hamburgerBtn" class="lg:hidden p-3 rounded-xl hover:bg-white/10 transition-colors" aria-label="Open menu" aria-expanded="false" aria-controls="sidebar">
+              <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M4 12h16M4 17h16"></path>
+              </svg>
+            </button>
           </div>
         </div>
       </div>
@@ -1579,6 +1639,26 @@
           transform: translateY(100%);
           opacity: 0;
         }
+
+        /* Mobile sidebar */
+        body.sidebar-open {
+          overflow: hidden;
+        }
+        body.sidebar-open #sidebar {
+          transform: translateX(0) !important;
+        }
+        body.sidebar-open #sidebarOverlay {
+          opacity: 1 !important;
+          pointer-events: auto !important;
+        }
+
+        /* Responsive utility fallbacks for desktop visibility */
+        @media (min-width: 1024px) {
+          .lg\:flex { display: flex; }
+          .lg\:block { display: block; }
+          .lg\:inline-flex { display: inline-flex; }
+          .lg\:hidden { display: none; }
+        }
       `;
       document.head.appendChild(style);
 
@@ -1657,69 +1737,79 @@
 
       // Color picker functionality
       document.addEventListener('DOMContentLoaded', () => {
-        const colorOptionElements = document.querySelectorAll('.color-option');
-        const colorPalette = document.getElementById('colorPalette');
-        const colorPickerBtn = document.getElementById('colorPickerBtn');
-        let paletteOpen = false;
-
-        // Apply the saved/random color
+        // Apply the saved/random color once
         updateAccentColor(savedColor);
 
-        // Toggle palette visibility
-        colorPickerBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          paletteOpen = !paletteOpen;
-          
-          if (paletteOpen) {
+        function setupColorPicker(btnId, paletteId) {
+          const colorPickerBtn = document.getElementById(btnId);
+          const colorPalette = document.getElementById(paletteId);
+          if (!colorPickerBtn || !colorPalette) return;
+
+          let paletteOpen = false;
+
+          function openPalette() {
             colorPalette.classList.remove('opacity-0', 'pointer-events-none');
             colorPalette.classList.add('opacity-100', 'pointer-events-auto');
             colorPickerBtn.setAttribute('aria-expanded', 'true');
-          } else {
+            paletteOpen = true;
+          }
+
+          function closePalette() {
             colorPalette.classList.add('opacity-0', 'pointer-events-none');
             colorPalette.classList.remove('opacity-100', 'pointer-events-auto');
             colorPickerBtn.setAttribute('aria-expanded', 'false');
-          }
-        });
-
-        // Close palette when clicking outside
-        document.addEventListener('click', (e) => {
-          if (!colorPalette.contains(e.target) && !colorPickerBtn.contains(e.target)) {
             paletteOpen = false;
-            colorPalette.classList.add('opacity-0', 'pointer-events-none');
-            colorPalette.classList.remove('opacity-100', 'pointer-events-auto');
-            colorPickerBtn.setAttribute('aria-expanded', 'false');
           }
-        });
 
-        // Handle color selection
-        colorOptionElements.forEach(option => {
-          option.addEventListener('click', (e) => {
-            e.preventDefault();
+          // Toggle palette visibility
+          colorPickerBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            const newColor = e.currentTarget.dataset.color;
-            updateAccentColor(newColor);
-            window.manualColorSelection = true;
-            
-            // Add manual override class if late night mode is active
-            if (document.body.classList.contains('late-night-mode')) {
-              document.body.classList.add('manual-color-override');
+            if (paletteOpen) {
+              closePalette();
+            } else {
+              openPalette();
             }
-            
-            // Close palette after selection
-            paletteOpen = false;
-            colorPalette.classList.add('opacity-0', 'pointer-events-none');
-            colorPalette.classList.remove('opacity-100', 'pointer-events-auto');
-            colorPickerBtn.setAttribute('aria-expanded', 'false');
           });
 
-          // Keyboard navigation
-          option.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              option.click();
+          // Close palette when clicking outside
+          document.addEventListener('click', (e) => {
+            if (!colorPalette.contains(e.target) && !colorPickerBtn.contains(e.target)) {
+              if (paletteOpen) closePalette();
             }
           });
-        });
+
+          // Handle color selection (scoped to this palette)
+          colorPalette.querySelectorAll('.color-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              const newColor = e.currentTarget.dataset.color;
+              updateAccentColor(newColor);
+              window.manualColorSelection = true;
+              
+              // Add manual override class if late night mode is active
+              if (document.body.classList.contains('late-night-mode')) {
+                document.body.classList.add('manual-color-override');
+              }
+              
+              // Close palette after selection
+              closePalette();
+            });
+
+            // Keyboard navigation
+            option.addEventListener('keydown', (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                option.click();
+              }
+            });
+          });
+        }
+
+        // Setup for desktop header picker
+        setupColorPicker('colorPickerBtn', 'colorPalette');
+        // Setup for mobile/tablet sidebar picker
+        setupColorPicker('colorPickerBtnMobile', 'colorPaletteMobile');
       });
 
       function updateAccentColor(color) {
@@ -1745,6 +1835,45 @@
         const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
         return luminance > 0.5 ? '#000000' : '#ffffff';
       }
+
+      // Sidebar toggle
+      document.addEventListener('DOMContentLoaded', () => {
+        const openBtn = document.getElementById('hamburgerBtn');
+        const closeBtn = document.getElementById('closeSidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+
+        function openSidebar() {
+          document.body.classList.add('sidebar-open');
+          if (openBtn) openBtn.setAttribute('aria-expanded', 'true');
+        }
+
+        function closeSidebar() {
+          document.body.classList.remove('sidebar-open');
+          if (openBtn) openBtn.setAttribute('aria-expanded', 'false');
+        }
+
+        openBtn?.addEventListener('click', (e) => {
+          e.preventDefault();
+          openSidebar();
+        });
+
+        closeBtn?.addEventListener('click', (e) => {
+          e.preventDefault();
+          closeSidebar();
+        });
+
+        overlay?.addEventListener('click', closeSidebar);
+
+        // Close on navigation
+        document.querySelectorAll('#sidebar a[data-scroll]').forEach(link => {
+          link.addEventListener('click', () => closeSidebar());
+        });
+
+        // Close on Esc
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') closeSidebar();
+        });
+      });
     </script>
   </body>
 </html>
