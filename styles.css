@@ -2418,6 +2418,19 @@ video {
   .space-y-12 > :not([hidden]) ~ :not([hidden]) {
     margin-top: 3.5rem;
   }
+
+  /* Center action buttons horizontally on tablets */
+  .mobile-button-stack {
+    flex-direction: row;
+    justify-content: center;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .mobile-button-stack a {
+    flex: 1 1 auto;
+    text-align: center;
+  }
 }
 
 /* Desktop - restore original timeline layout */
