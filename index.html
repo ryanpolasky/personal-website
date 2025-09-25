@@ -283,13 +283,14 @@
         
             // Only restore to random color if user hasn't manually selected a color
             const hasManualSelection = window.manualColorSelection === true;
-            if (!hasManualSelection) {
+            const wasInLateNightMode = window.lateNightColor !== null;
+            if (!hasManualSelection && wasInLateNightMode) {
               // Pick a new random color when exiting late night mode
               const newRandomColor = colorOptions[Math.floor(Math.random() * colorOptions.length)];
               updateAccentColor(newRandomColor);
-              // Clear the late night color since we're back to random
-              window.lateNightColor = null;
             }
+            // Clear the late night color since we're back to random
+            window.lateNightColor = null;
           }
 
           // Initialize session variables
