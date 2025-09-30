@@ -659,6 +659,12 @@
     </style>
 </head>
 <body>
+    <div id="desktop-only-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background-color:#000;z-index:9999;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:24px;text-align:center;padding:20px;">
+        <div style="margin-bottom:20px;">
+            🎧 This page is <strong>desktop only</strong>.<br/> Please visit on a larger screen.
+        </div>
+        <a href="index.html" style="padding:12px 24px;background-color:#1db954;color:#fff;font-weight:700;border-radius:24px;text-decoration:none;transition:background-color 0.2s;">Return Home</a>
+    </div>
     <div class="container">
         <!-- Sidebar -->
         <div class="sidebar">
@@ -743,7 +749,7 @@
                     <div class="track-header">Popular</div>
 
                     <!-- The first 5 tracks will be rendered via JS -->
-                    <div id="show-more-container" style="padding: 16px; text-align: center;">
+                    <div id="show-more-container" style="padding: 16px; text-align: left;">
                         <button id="show-more-btn" style="background:none;border:none;color:#b3b3b3;font-weight:600;cursor:pointer;">
                             Show More
                         </button>
@@ -849,6 +855,8 @@
         </div>
     </div>
 
+    <audio id="audio-player" preload="auto"></audio>
+
     <script>
         // Track data
         const tracks = [
@@ -858,7 +866,7 @@
                 album: 'kintsugi',
                 duration: '2:44',
                 cover: 'assets/spotify/kintsugi.jpg',
-                audio: 'assets/spotify/audio/kintsugi.mp3'
+                audio: '/assets/spotify/audio/kintsugi.mp3'
             },
             {
                 title: 'ride on time - lofi',
@@ -866,7 +874,7 @@
                 album: 'ride on time - lofi',
                 duration: '2:40',
                 cover: 'assets/spotify/rideontime.jpg',
-                audio: 'assets/spotify/audio/rideontime.mp3'
+                audio: '/assets/spotify/audio/rideontime.mp3'
             },
             {
                 title: 'dropped',
@@ -874,7 +882,7 @@
                 album: 'dropped',
                 duration: '2:05',
                 cover: 'assets/spotify/dropped.jpg',
-                audio: 'assets/spotify/audio/dropped.mp3'
+                audio: '/assets/spotify/audio/dropped.mp3'
             },
             {
                 title: 'gazing',
@@ -882,7 +890,7 @@
                 album: 'gazing',
                 duration: '1:59',
                 cover: 'assets/spotify/gazing.jpg',
-                audio: 'assets/spotify/audio/gazing.mp3'
+                audio: '/assets/spotify/audio/gazing.mp3'
             },
             {
                 title: 'ripple',
@@ -890,7 +898,7 @@
                 album: 'ripple',
                 duration: '1:42',
                 cover: 'assets/spotify/ripple.jpg',
-                audio: 'assets/spotify/audio/ripple.mp3'
+                audio: '/assets/spotify/audio/ripple.mp3'
             },
             {
                 title: 'mistral hues - demo',
@@ -898,7 +906,7 @@
                 album: 'mistral hues - demo',
                 duration: '2:41',
                 cover: 'assets/spotify/mistralhues.jpg',
-                audio: 'assets/spotify/audio/mistralhues.mp3'
+                audio: '/assets/spotify/audio/mistralhues.mp3'
             }
         ];
 
@@ -925,8 +933,15 @@
             currentTrackIndex = index;
             const track = tracks[index];
 
-            currentAudio = new Audio(track.audio);
-            currentAudio.play();
+            // Use the shared audio element
+            currentAudio = document.getElementById('audio-player');
+            currentAudio.pause();
+            currentAudio.src = "./" + track.audio; // ensure relative path works
+            currentAudio.currentTime = 0;
+            currentAudio.load();
+            currentAudio.play().catch(err => {
+                console.warn("Autoplay prevented, user gesture required:", err);
+            });
             isPlaying = true;
 
             // Show playback bar and adjust main content padding
@@ -1280,6 +1295,23 @@
             // render first 5 tracks
             renderInitialTracks();
         });
+
+        // Desktop-only enforcement
+        function checkDesktop() {
+            const overlay = document.getElementById('desktop-only-overlay');
+            const artistName = document.querySelector('.artist-name');
+            if (artistName) {
+                const compressed = artistName.clientWidth < 400; // threshold for compression
+                if (compressed) {
+                    overlay.style.display = 'flex';
+                } else {
+                    overlay.style.display = 'none';
+                }
+            }
+        }
+
+        window.addEventListener('resize', checkDesktop);
+        window.addEventListener('DOMContentLoaded', checkDesktop);
     </script>
 </body>
 </html>
