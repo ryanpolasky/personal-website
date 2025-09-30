@@ -161,7 +161,7 @@
         .play-icon {
             width: 32px;
             height: 32px;
-            margin-left: 3px;
+            margin-left: 1px;
         }
 
         .shuffle-button {
@@ -654,7 +654,7 @@
         .artist-pick-play-icon {
             width: 20px;
             height: 20px;
-            margin-left: 2px;
+            margin-left: 0px;
         }
     </style>
 </head>
@@ -850,9 +850,9 @@
                             <div class="artist-pick-info">
                                 <div class="artist-pick-label">Popular release</div>
                                 <div class="artist-pick-title">kintsugi</div>
-                                <div class="artist-pick-description">A beautiful blend of lo-fi beats and ambient textures that captures the essence of finding beauty in brokenness.</div>
+                                <div class="artist-pick-description">"kintsugi" is my latest piece, a lo-fi beat with ambient textures that aims to capture the essence of finding beauty in brokenness.</div>
                             </div>
-                            <button class="artist-pick-play" onclick="event.stopPropagation(); playTrack(0);">
+                            <button class="artist-pick-play" onclick="event.stopPropagation(); toggleArtistPickPlay();">
                                 <svg class="artist-pick-play-icon" viewBox="0 0 24 24" fill="currentColor">
                                     <path d="M8 5v14l11-7z"/>
                                 </svg>
@@ -1098,6 +1098,8 @@
                 playPauseBtn.innerHTML = '<svg class="icon-lg" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
                 mainPlayBtn.innerHTML = '<svg class="play-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
             }
+
+            updateArtistPickButton();
         }
 
         function nextTrack() {
@@ -1279,6 +1281,25 @@
 
         function showFakeSpotifyPopup() {
             alert("This isn't really Spotify. You know that, right? 😅");
+        }
+
+        function toggleArtistPickPlay() {
+            if (currentTrackIndex === 0) {
+                togglePlayPause();
+            } else {
+                playTrack(0);
+            }
+            updateArtistPickButton();
+        }
+
+        function updateArtistPickButton() {
+            const btn = document.querySelector('.artist-pick-play');
+            if (!btn) return;
+            if (currentTrackIndex === 0 && isPlaying) {
+                btn.innerHTML = '<svg class="artist-pick-play-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/></svg>';
+            } else {
+                btn.innerHTML = '<svg class="artist-pick-play-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+            }
         }
     </script>
 </body>
