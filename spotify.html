@@ -266,7 +266,7 @@
         }
 
         .track-item.playing {
-            background-color: #282828;
+            /* remove persistent background, only text/icon stays green */
         }
 
         .track-item.highlighted {
@@ -1234,7 +1234,7 @@
             });
             
             // Add highlight to clicked track only if it's not currently playing
-            if (currentTrackIndex !== index) {
+            if (currentTrackIndex === -1 || currentTrackIndex !== index) {
                 document.querySelectorAll('.track-item')[index].classList.add('highlighted');
             }
         }
