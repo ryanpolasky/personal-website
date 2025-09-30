@@ -742,104 +742,11 @@
                 <div class="track-list">
                     <div class="track-header">Popular</div>
 
-                    <div class="track-item" onclick="highlightTrack(0)" ondblclick="playTrack(0)">
-                        <div class="track-number">
-                            <span class="track-number-text">1</span>
-                            <svg class="track-number-play-icon" viewBox="0 0 24 24" fill="currentColor" onclick="event.stopPropagation(); playTrack(0);">
-                                <path d="M8 5v14l11-7z"/>
-                            </svg>
-                            <svg class="track-number-pause-icon" viewBox="0 0 24 24" fill="currentColor" onclick="event.stopPropagation(); togglePlayPause();">
-                                <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
-                            </svg>
-                        </div>
-                        <div class="track-info">
-                            <img src="assets/spotify/kintsugi.jpg" alt="Track 1" class="track-cover">
-                            <div class="track-details">
-                                <div class="track-title">kintsugi</div>
-                                <div class="track-artist">plasky</div>
-                            </div>
-                        </div>
-                        <div class="track-duration">2:44</div>
-                    </div>
-
-                    <div class="track-item" onclick="highlightTrack(1)" ondblclick="playTrack(1)">
-                        <div class="track-number">
-                            <span class="track-number-text">2</span>
-                            <svg class="track-number-play-icon" viewBox="0 0 24 24" fill="currentColor" onclick="event.stopPropagation(); playTrack(1);">
-                                <path d="M8 5v14l11-7z"/>
-                            </svg>
-                            <svg class="track-number-pause-icon" viewBox="0 0 24 24" fill="currentColor" onclick="event.stopPropagation(); togglePlayPause();">
-                                <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
-                            </svg>
-                        </div>
-                        <div class="track-info">
-                            <img src="assets/spotify/rideontime.jpg" alt="Track 2" class="track-cover">
-                            <div class="track-details">
-                                <div class="track-title">ride on time - lofi</div>
-                                <div class="track-artist">plasky</div>
-                            </div>
-                        </div>
-                        <div class="track-duration">2:40</div>
-                    </div>
-
-                    <div class="track-item" onclick="highlightTrack(2)" ondblclick="playTrack(2)">
-                        <div class="track-number">
-                            <span class="track-number-text">3</span>
-                            <svg class="track-number-play-icon" viewBox="0 0 24 24" fill="currentColor" onclick="event.stopPropagation(); playTrack(2);">
-                                <path d="M8 5v14l11-7z"/>
-                            </svg>
-                            <svg class="track-number-pause-icon" viewBox="0 0 24 24" fill="currentColor" onclick="event.stopPropagation(); togglePlayPause();">
-                                <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
-                            </svg>
-                        </div>
-                        <div class="track-info">
-                            <img src="assets/spotify/dropped.jpg" alt="Track 3" class="track-cover">
-                            <div class="track-details">
-                                <div class="track-title">dropped</div>
-                                <div class="track-artist">plasky</div>
-                            </div>
-                        </div>
-                        <div class="track-duration">2:05</div>
-                    </div>
-
-                    <div class="track-item" onclick="highlightTrack(3)" ondblclick="playTrack(3)">
-                        <div class="track-number">
-                            <span class="track-number-text">4</span>
-                            <svg class="track-number-play-icon" viewBox="0 0 24 24" fill="currentColor" onclick="event.stopPropagation(); playTrack(3);">
-                                <path d="M8 5v14l11-7z"/>
-                            </svg>
-                            <svg class="track-number-pause-icon" viewBox="0 0 24 24" fill="currentColor" onclick="event.stopPropagation(); togglePlayPause();">
-                                <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
-                            </svg>
-                        </div>
-                        <div class="track-info">
-                            <img src="assets/spotify/gazing.jpg" alt="Track 4" class="track-cover">
-                            <div class="track-details">
-                                <div class="track-title">gazing</div>
-                                <div class="track-artist">plasky</div>
-                            </div>
-                        </div>
-                        <div class="track-duration">1:59</div>
-                    </div>
-
-                    <div class="track-item" onclick="highlightTrack(4)" ondblclick="playTrack(4)">
-                        <div class="track-number">
-                            <span class="track-number-text">5</span>
-                            <svg class="track-number-play-icon" viewBox="0 0 24 24" fill="currentColor" onclick="event.stopPropagation(); playTrack(4);">
-                                <path d="M8 5v14l11-7z"/>
-                            </svg>
-                            <svg class="track-number-pause-icon" viewBox="0 0 24 24" fill="currentColor" onclick="event.stopPropagation(); togglePlayPause();">
-                                <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
-                            </svg>
-                        </div>
-                        <div class="track-info">
-                            <img src="assets/spotify/ripple.jpg" alt="Track 5" class="track-cover">
-                            <div class="track-details">
-                                <div class="track-title">ripple</div>
-                                <div class="track-artist">plasky</div>
-                            </div>
-                        </div>
-                        <div class="track-duration">1:42</div>
+                    <!-- The first 5 tracks will be rendered via JS -->
+                    <div id="show-more-container" style="padding: 16px; text-align: center;">
+                        <button id="show-more-btn" style="background:none;border:none;color:#b3b3b3;font-weight:600;cursor:pointer;">
+                            Show More
+                        </button>
                     </div>
 
                     <!-- Artist Pick Section -->
@@ -984,6 +891,14 @@
                 duration: '1:42',
                 cover: 'assets/spotify/ripple.jpg',
                 audio: 'assets/spotify/audio/ripple.mp3'
+            },
+            {
+                title: 'mistral hues - demo',
+                artist: 'plasky',
+                album: 'mistral hues - demo',
+                duration: '2:41',
+                cover: 'assets/spotify/mistralhues.jpg',
+                audio: 'assets/spotify/audio/mistralhues.mp3'
             }
         ];
 
@@ -1301,6 +1216,70 @@
                 btn.innerHTML = '<svg class="artist-pick-play-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
             }
         }
+
+        // Show More functionality
+        let displayedCount = 5;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const trackListEl = document.querySelector('.track-list');
+            const showMoreBtn = document.getElementById('show-more-btn');
+
+            function renderTrack(i) {
+                const track = tracks[i];
+                const trackItem = document.createElement('div');
+                trackItem.className = 'track-item';
+                trackItem.setAttribute('onclick', `highlightTrack(${i})`);
+                trackItem.setAttribute('ondblclick', `playTrack(${i})`);
+                trackItem.innerHTML = `
+                    <div class="track-number">
+                        <span class="track-number-text">${i+1}</span>
+                        <svg class="track-number-play-icon" viewBox="0 0 24 24" fill="currentColor" onclick="event.stopPropagation(); playTrack(${i});"><path d="M8 5v14l11-7z"/></svg>
+                        <svg class="track-number-pause-icon" viewBox="0 0 24 24" fill="currentColor" onclick="event.stopPropagation(); togglePlayPause();"><path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/></svg>
+                    </div>
+                    <div class="track-info">
+                        <img src="${track.cover}" alt="Track ${i+1}" class="track-cover">
+                        <div class="track-details">
+                            <div class="track-title">${track.title}</div>
+                            <div class="track-artist">${track.artist}</div>
+                        </div>
+                    </div>
+                    <div class="track-duration">${track.duration}</div>
+                `;
+                const showMoreContainer = document.getElementById('show-more-container');
+                trackListEl.insertBefore(trackItem, showMoreContainer);
+            }
+
+            function renderInitialTracks() {
+                const end = Math.min(5, tracks.length);
+                for (let i = 0; i < end; i++) {
+                    renderTrack(i);
+                }
+                displayedCount = end;
+                if (displayedCount >= tracks.length) {
+                    showMoreBtn.style.display = 'none';
+                }
+            }
+
+            function renderMoreTracks() {
+                const nextIndex = displayedCount;
+                const end = Math.min(displayedCount + 5, tracks.length);
+                for (let i = nextIndex; i < end; i++) {
+                    renderTrack(i);
+                }
+                displayedCount = end;
+                if (displayedCount >= tracks.length) {
+                    showMoreBtn.style.display = 'none';
+                }
+            }
+
+            showMoreBtn.addEventListener('click', renderMoreTracks);
+            if (tracks.length <= 5) {
+                showMoreBtn.style.display = 'none';
+            }
+
+            // render first 5 tracks
+            renderInitialTracks();
+        });
     </script>
 </body>
 </html>
