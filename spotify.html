@@ -484,6 +484,95 @@
             width: 20px;
             height: 20px;
         }
+
+        /* Artist Pick Section */
+        .artist-pick {
+            margin-top: 48px;
+        }
+
+        .artist-pick-header {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .artist-pick-card {
+            background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+            border-radius: 8px;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .artist-pick-card:hover {
+            background: linear-gradient(135deg, #3d3d3d 0%, #2a2a2a 100%);
+        }
+
+        .artist-pick-cover {
+            width: 120px;
+            height: 120px;
+            border-radius: 8px;
+            object-fit: cover;
+            box-shadow: 0 8px 24px rgba(0,0,0,.5);
+        }
+
+        .artist-pick-info {
+            flex: 1;
+        }
+
+        .artist-pick-label {
+            font-size: 12px;
+            color: #b3b3b3;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
+        }
+
+        .artist-pick-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+
+        .artist-pick-description {
+            font-size: 16px;
+            color: #b3b3b3;
+            line-height: 1.4;
+        }
+
+        .artist-pick-play {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: #1db954;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s, background-color 0.2s;
+            opacity: 0;
+            transition: opacity 0.2s, transform 0.2s, background-color 0.2s;
+        }
+
+        .artist-pick-card:hover .artist-pick-play {
+            opacity: 1;
+        }
+
+        .artist-pick-play:hover {
+            transform: scale(1.06);
+            background-color: #1ed760;
+        }
+
+        .artist-pick-play-icon {
+            width: 20px;
+            height: 20px;
+            margin-left: 2px;
+        }
     </style>
 </head>
 <body>
@@ -639,6 +728,24 @@
                         <div class="track-album">ripple</div>
                         <div class="track-duration">1:42</div>
                     </div>
+
+                    <!-- Artist Pick Section -->
+                    <div class="artist-pick">
+                        <h2 class="artist-pick-header">Artist Pick</h2>
+                        <div class="artist-pick-card" onclick="playTrack(0)">
+                            <img src="assets/spotify/kintsugi.jpg" alt="Artist Pick" class="artist-pick-cover">
+                            <div class="artist-pick-info">
+                                <div class="artist-pick-label">Popular release</div>
+                                <div class="artist-pick-title">kintsugi</div>
+                                <div class="artist-pick-description">A beautiful blend of lo-fi beats and ambient textures that captures the essence of finding beauty in brokenness.</div>
+                            </div>
+                            <button class="artist-pick-play" onclick="event.stopPropagation(); playTrack(0);">
+                                <svg class="artist-pick-play-icon" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -713,39 +820,39 @@
                 album: 'kintsugi',
                 duration: '2:44',
                 cover: 'assets/spotify/kintsugi.jpg',
-                audio: 'assets/spotify/song1.mp3'
+                audio: 'assets/spotify/audio/kintsugi.mp3'
             },
             {
-                title: 'Song Title 2',
-                artist: 'Your Name',
-                album: 'Album Name 2',
-                duration: '4:12',
-                cover: 'assets/spotify/cover2.jpg',
-                audio: 'assets/spotify/song2.mp3'
+                title: 'ride on time - lofi',
+                artist: 'plasky',
+                album: 'ride on time - lofi',
+                duration: '2:40',
+                cover: 'assets/spotify/rideontime.jpg',
+                audio: 'assets/spotify/audio/rideontime.mp3'
             },
             {
-                title: 'Song Title 3',
-                artist: 'Your Name',
-                album: 'Album Name 3',
-                duration: '3:28',
-                cover: 'assets/spotify/cover3.jpg',
-                audio: 'assets/spotify/song3.mp3'
+                title: 'dropped',
+                artist: 'plasky',
+                album: 'dropped',
+                duration: '2:05',
+                cover: 'assets/spotify/dropped.jpg',
+                audio: 'assets/spotify/audio/dropped.mp3'
             },
             {
-                title: 'Song Title 4',
-                artist: 'Your Name',
-                album: 'Album Name 4',
-                duration: '5:03',
-                cover: 'assets/spotify/cover4.jpg',
-                audio: 'assets/spotify/song4.mp3'
+                title: 'gazing',
+                artist: 'plasky',
+                album: 'gazing',
+                duration: '1:59',
+                cover: 'assets/spotify/gazing.jpg',
+                audio: 'assets/spotify/audio/gazing.mp3'
             },
             {
-                title: 'Song Title 5',
-                artist: 'Your Name',
-                album: 'Album Name 5',
-                duration: '3:56',
-                cover: 'assets/spotify/cover5.jpg',
-                audio: 'assets/spotify/song5.mp3'
+                title: 'ripple',
+                artist: 'plasky',
+                album: 'ripple',
+                duration: '1:42',
+                cover: 'assets/spotify/ripple.jpg',
+                audio: 'assets/spotify/audio/ripple.mp3'
             }
         ];
 
