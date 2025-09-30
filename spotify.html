@@ -178,6 +178,43 @@
             transform: scale(1.04);
         }
 
+        .shuffle-button.active {
+            color: #1db954 !important;
+            position: relative;
+        }
+
+        .shuffle-button.active::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            background-color: #1db954;
+            border-radius: 50%;
+        }
+
+        .shuffle-button.active svg {
+            fill: #1db954 !important;
+        }
+
+        .control-buttons .shuffle-button.active {
+            position: relative;
+        }
+
+        .control-buttons .shuffle-button.active::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            background-color: #1db954;
+            border-radius: 50%;
+        }
+
         .follow-button {
             padding: 8px 16px;
             border-radius: 20px;
@@ -772,7 +809,7 @@
 
         <div class="player-controls">
             <div class="control-buttons">
-                <button class="control-btn" onclick="shuffle()">
+                <button class="control-btn shuffle-button" onclick="shuffle()">
                     <svg fill="#9e9e9e" height="18px" width="18px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve" stroke="#9e9e9e">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
@@ -888,6 +925,9 @@
         let isPlaying = false;
         let isMuted = false;
         let previousVolume = 1;
+        let isShuffled = false;
+        let shuffledIndices = [];
+        let shufflePosition = 0;
 
         function formatTime(seconds) {
             const mins = Math.floor(seconds / 60);
@@ -978,20 +1018,32 @@
         }
 
         function nextTrack() {
-            if (currentTrackIndex < tracks.length - 1) {
-                playTrack(currentTrackIndex + 1);
+            if (isShuffled) {
+                shufflePosition = (shufflePosition + 1) % shuffledIndices.length;
+                playTrack(shuffledIndices[shufflePosition]);
             } else {
-                playTrack(0);
+                if (currentTrackIndex < tracks.length - 1) {
+                    playTrack(currentTrackIndex + 1);
+                } else {
+                    playTrack(0);
+                }
             }
         }
 
         function previousTrack() {
             if (currentAudio && currentAudio.currentTime > 3) {
                 currentAudio.currentTime = 0;
-            } else if (currentTrackIndex > 0) {
-                playTrack(currentTrackIndex - 1);
             } else {
-                playTrack(tracks.length - 1);
+                if (isShuffled) {
+                    shufflePosition = shufflePosition > 0 ? shufflePosition - 1 : shuffledIndices.length - 1;
+                    playTrack(shuffledIndices[shufflePosition]);
+                } else {
+                    if (currentTrackIndex > 0) {
+                        playTrack(currentTrackIndex - 1);
+                    } else {
+                        playTrack(tracks.length - 1);
+                    }
+                }
             }
         }
 
@@ -1093,8 +1145,36 @@
         }
 
         function shuffle() {
-            // Implement shuffle functionality
-            console.log('Shuffle clicked');
+            isShuffled = !isShuffled;
+            const shuffleButtons = document.querySelectorAll('.shuffle-button');
+            
+            if (isShuffled) {
+                // Create shuffled array of track indices
+                shuffledIndices = [...Array(tracks.length).keys()];
+                for (let i = shuffledIndices.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [shuffledIndices[i], shuffledIndices[j]] = [shuffledIndices[j], shuffledIndices[i]];
+                }
+                
+                // If a track is currently playing, find its position in the shuffled array
+                if (currentTrackIndex !== -1) {
+                    shufflePosition = shuffledIndices.indexOf(currentTrackIndex);
+                }
+                
+                // Update button appearance to show shuffle is active
+                shuffleButtons.forEach(btn => {
+                    btn.classList.add('active');
+                });
+            } else {
+                // Turn off shuffle
+                shuffledIndices = [];
+                shufflePosition = 0;
+                
+                // Reset button appearance
+                shuffleButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                });
+            }
         }
 
         function repeat() {
