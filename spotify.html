@@ -74,6 +74,11 @@
             flex: 1;
             background-color: #121212;
             overflow-y: auto;
+            padding-bottom: 0px;
+            transition: padding-bottom 0.3s ease;
+        }
+
+        .main-content.player-active {
             padding-bottom: 90px;
         }
 
@@ -294,10 +299,14 @@
             height: 90px;
             background-color: #181818;
             border-top: 1px solid #282828;
-            display: flex;
+            display: none;
             align-items: center;
             padding: 0 16px;
             gap: 16px;
+        }
+
+        .playback-bar.visible {
+            display: flex;
         }
 
         .now-playing {
@@ -764,9 +773,27 @@
         <div class="player-controls">
             <div class="control-buttons">
                 <button class="control-btn" onclick="shuffle()">
-                    <svg class="icon" viewBox="0 0 16 16" fill="currentColor">
-                        <path d="M13.151.922a.75.75 0 10-1.06 1.06L13.109 3H11.16a3.75 3.75 0 00-2.873 1.34l-6.173 7.356A2.25 2.25 0 00.39 13.5H0V15h.391a3.75 3.75 0 002.873-1.34l6.173-7.356a2.25 2.25 0 011.724-.804h1.947l-1.017 1.018a.75.75 0 001.06 1.06L15.98 4.75a.75.75 0 000-1.06l-2.829-2.828zm-4.432 7.794a3.75 3.75 0 00-.722-.016l-2.788 3.329a2.25 2.25 0 01-1.724.804H2.109l1.017-1.018a.75.75 0 00-1.06-1.06L.237 13.584a.75.75 0 000 1.06l2.829 2.828a.75.75 0 101.06-1.06L2.109 15H3.485a3.75 3.75 0 002.873-1.34l2.788-3.329a2.25 2.25 0 011.537-.832z"/>
-                    </svg>
+                    <svg fill="#9e9e9e" height="18px" width="18px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve" stroke="#9e9e9e">
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                            <g id="SVGRepo_iconCarrier">
+                                <g>
+                                    <g>
+                                        <path d="M512,387.67L405.406,281.024v84.694h-10.435c-48.766,0-80.203-28.752-108.698-68.925 c-7.856,12.825-16.14,26.159-25.113,39.387c32.329,41.052,73.081,73.424,133.81,73.424h10.435v84.686L512,387.67z"></path>
+                                    </g>
+                                </g>
+                                <g>
+                                    <g>
+                                        <path d="M512,124.355L405.406,17.71v84.695h-10.435c-92.763,0-138.917,75.524-179.637,142.158 c-39.73,65.009-74.04,121.155-142.191,121.155H0v43.886h73.143c92.763,0,138.917-75.524,179.637-142.158 c39.73-65.011,74.04-121.157,142.191-121.157h10.435v84.686L512,124.355z"></path>
+                                    </g>
+                                </g>
+                                <g>
+                                    <g>
+                                        <path d="M73.143,102.404H0v43.886h73.143c48.766,0,80.203,28.752,108.698,68.925c7.856-12.825,16.14-26.159,25.113-39.387 C174.624,134.774,133.872,102.404,73.143,102.404z"></path>
+                                    </g>
+                                </g>
+                            </g>
+                        </svg>
                 </button>
                 <button class="control-btn" onclick="previousTrack()">
                     <svg class="icon" viewBox="0 0 16 16" fill="currentColor">
@@ -880,6 +907,10 @@
             currentAudio.play();
             isPlaying = true;
 
+            // Show playback bar and adjust main content padding
+            document.querySelector('.playback-bar').classList.add('visible');
+            document.querySelector('.main-content').classList.add('player-active');
+
             // Update now playing
             document.querySelector('.now-playing-cover').src = track.cover;
             document.querySelector('.now-playing-title').textContent = track.title;
@@ -907,7 +938,13 @@
         }
 
         function playFirstTrack() {
-            playTrack(0);
+            if (currentTrackIndex === -1) {
+                // Nothing has been played yet, play first track
+                playTrack(0);
+            } else {
+                // Something is already loaded, just toggle play/pause
+                togglePlayPause();
+            }
         }
 
         function togglePlayPause() {
@@ -929,10 +966,14 @@
 
         function updatePlayButton() {
             const playPauseBtn = document.querySelector('.play-pause');
+            const mainPlayBtn = document.querySelector('.play-button');
+            
             if (isPlaying) {
                 playPauseBtn.innerHTML = '<svg class="icon-lg" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/></svg>';
+                mainPlayBtn.innerHTML = '<svg class="play-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/></svg>';
             } else {
                 playPauseBtn.innerHTML = '<svg class="icon-lg" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+                mainPlayBtn.innerHTML = '<svg class="play-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
             }
         }
 
@@ -962,17 +1003,22 @@
             document.querySelector('.time.current').textContent = formatTime(currentAudio.currentTime);
         }
 
-        function seekTo(event) {
-            if (!currentAudio) return;
+        let isDraggingProgress = false;
+        let isDraggingVolume = false;
+        let progressBar = null;
+        let volumeBar = null;
 
-            const progressBar = event.currentTarget;
+        function seekTo(event) {
+            if (!currentAudio || !progressBar) return;
+
             const rect = progressBar.getBoundingClientRect();
-            const percent = (event.clientX - rect.left) / rect.width;
+            const percent = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
             currentAudio.currentTime = percent * currentAudio.duration;
         }
 
         function setVolume(event) {
-            const volumeBar = event.currentTarget;
+            if (!volumeBar) return;
+
             const rect = volumeBar.getBoundingClientRect();
             const percent = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
             
@@ -990,18 +1036,59 @@
             }
         }
 
+        // Progress bar drag functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            progressBar = document.querySelector('.progress-bar');
+            volumeBar = document.querySelector('.volume-bar');
+
+            // Progress bar events
+            progressBar.addEventListener('mousedown', function(e) {
+                isDraggingProgress = true;
+                seekTo(e);
+                e.preventDefault();
+            });
+
+            // Volume bar events
+            volumeBar.addEventListener('mousedown', function(e) {
+                isDraggingVolume = true;
+                setVolume(e);
+                e.preventDefault();
+            });
+
+            // Global mouse events
+            document.addEventListener('mousemove', function(e) {
+                if (isDraggingProgress) {
+                    seekTo(e);
+                }
+                if (isDraggingVolume) {
+                    setVolume(e);
+                }
+            });
+
+            document.addEventListener('mouseup', function() {
+                isDraggingProgress = false;
+                isDraggingVolume = false;
+            });
+        });
+
         function toggleMute() {
             if (!currentAudio) return;
+
+            const volumeBtn = document.querySelector('.volume-controls .control-btn');
 
             if (isMuted) {
                 currentAudio.volume = previousVolume;
                 document.querySelector('.volume-fill').style.width = (previousVolume * 100) + '%';
                 isMuted = false;
+                // Show volume icon
+                volumeBtn.innerHTML = '<svg class="icon" viewBox="0 0 16 16" fill="currentColor"><path d="M9.741.85a.75.75 0 01.375.65v13a.75.75 0 01-1.125.65l-6.925-4a3.642 3.642 0 01-1.33-4.967 3.639 3.639 0 011.33-1.332l6.925-4a.75.75 0 01.75 0zm-6.924 5.3a2.139 2.139 0 000 3.7l5.8 3.35V2.8l-5.8 3.35zm8.683 4.29V5.56a2.75 2.75 0 010 4.88z"/><path d="M11.5 13.614a5.752 5.752 0 000-11.228v1.55a4.252 4.252 0 010 8.127v1.55z"/></svg>';
             } else {
                 previousVolume = currentAudio.volume;
                 currentAudio.volume = 0;
                 document.querySelector('.volume-fill').style.width = '0%';
                 isMuted = true;
+                // Show muted icon
+                volumeBtn.innerHTML = '<svg class="icon" viewBox="0 0 16 16" fill="currentColor"><path d="M13.86 5.47a.75.75 0 00-1.061 0l-1.47 1.47-1.47-1.47A.75.75 0 008.8 6.53L10.269 8l-1.47 1.47a.75.75 0 101.061 1.061L11.33 9.06l1.47 1.47a.75.75 0 101.061-1.061L12.39 8l1.47-1.47a.75.75 0 000-1.061z"/><path d="M10.116 1.5A.75.75 0 008.991.85l-6.925 4a3.642 3.642 0 00-1.33 4.967 3.639 3.639 0 001.33 1.332l6.925 4a.75.75 0 001.125-.649v-1.906a4.73 4.73 0 01-1.5-.694v1.3L2.817 9.852a2.141 2.141 0 010-3.704l5.8-3.35v1.3c.45-.313.956-.55 1.5-.694V1.5z"/></svg>';
             }
         }
 
