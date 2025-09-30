@@ -244,22 +244,15 @@
         }
 
         .track-header {
-            display: grid;
-            grid-template-columns: 40px 1fr 1fr 40px;
-            gap: 16px;
-            padding: 8px 16px;
-            border-bottom: 1px solid #282828;
-            color: #b3b3b3;
-            font-size: 12px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 8px;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            padding: 0 16px;
         }
 
         .track-item {
             display: grid;
-            grid-template-columns: 40px 1fr 1fr 40px;
+            grid-template-columns: 40px 1fr 40px;
             gap: 16px;
             padding: 8px 16px;
             border-radius: 4px;
@@ -276,10 +269,51 @@
             background-color: #282828;
         }
 
+        .track-item.highlighted {
+            background-color: #282828;
+        }
+
         .track-number {
             color: #b3b3b3;
             font-size: 16px;
             text-align: center;
+            position: relative;
+        }
+
+        .track-number-text {
+            display: block;
+        }
+
+        .track-number-play-icon,
+        .track-number-pause-icon {
+            display: none;
+            width: 16px;
+            height: 16px;
+            margin: 0 auto;
+        }
+
+        .track-item:hover .track-number-text {
+            display: none;
+        }
+
+        .track-item:hover .track-number-play-icon {
+            display: block;
+        }
+
+        .track-item.playing:hover .track-number-play-icon {
+            display: none;
+        }
+
+        .track-item.playing:hover .track-number-pause-icon {
+            display: block;
+        }
+
+        .track-item.playing.paused:hover .track-number-play-icon {
+            display: block;
+        }
+
+        .track-item.playing.paused:hover .track-number-pause-icon {
+            display: none;
         }
 
         .track-item.playing .track-number {
@@ -706,20 +740,18 @@
                 </div>
 
                 <div class="track-list">
-                    <div class="track-header">
-                        <div>#</div>
-                        <div>Title</div>
-                        <div>Album</div>
-                        <div>
-                            <svg class="icon" viewBox="0 0 16 16" fill="currentColor">
-                                <path d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8z"/>
-                                <path d="M8 3.25a.75.75 0 01.75.75v3.25H11a.75.75 0 010 1.5H7.25V4A.75.75 0 018 3.25z"/>
+                    <div class="track-header">Popular</div>
+
+                    <div class="track-item" onclick="highlightTrack(0)" ondblclick="playTrack(0)">
+                        <div class="track-number">
+                            <span class="track-number-text">1</span>
+                            <svg class="track-number-play-icon" viewBox="0 0 24 24" fill="currentColor" onclick="event.stopPropagation(); playTrack(0);">
+                                <path d="M8 5v14l11-7z"/>
+                            </svg>
+                            <svg class="track-number-pause-icon" viewBox="0 0 24 24" fill="currentColor" onclick="event.stopPropagation(); togglePlayPause();">
+                                <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
                             </svg>
                         </div>
-                    </div>
-
-                    <div class="track-item" onclick="playTrack(0)">
-                        <div class="track-number">1</div>
                         <div class="track-info">
                             <img src="assets/spotify/kintsugi.jpg" alt="Track 1" class="track-cover">
                             <div class="track-details">
@@ -727,12 +759,19 @@
                                 <div class="track-artist">plasky</div>
                             </div>
                         </div>
-                        <div class="track-album">kintsugi</div>
                         <div class="track-duration">2:44</div>
                     </div>
 
-                    <div class="track-item" onclick="playTrack(1)">
-                        <div class="track-number">2</div>
+                    <div class="track-item" onclick="highlightTrack(1)" ondblclick="playTrack(1)">
+                        <div class="track-number">
+                            <span class="track-number-text">2</span>
+                            <svg class="track-number-play-icon" viewBox="0 0 24 24" fill="currentColor" onclick="event.stopPropagation(); playTrack(1);">
+                                <path d="M8 5v14l11-7z"/>
+                            </svg>
+                            <svg class="track-number-pause-icon" viewBox="0 0 24 24" fill="currentColor" onclick="event.stopPropagation(); togglePlayPause();">
+                                <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+                            </svg>
+                        </div>
                         <div class="track-info">
                             <img src="assets/spotify/rideontime.jpg" alt="Track 2" class="track-cover">
                             <div class="track-details">
@@ -740,12 +779,19 @@
                                 <div class="track-artist">plasky</div>
                             </div>
                         </div>
-                        <div class="track-album">ride on time - lofi</div>
                         <div class="track-duration">2:40</div>
                     </div>
 
-                    <div class="track-item" onclick="playTrack(2)">
-                        <div class="track-number">3</div>
+                    <div class="track-item" onclick="highlightTrack(2)" ondblclick="playTrack(2)">
+                        <div class="track-number">
+                            <span class="track-number-text">3</span>
+                            <svg class="track-number-play-icon" viewBox="0 0 24 24" fill="currentColor" onclick="event.stopPropagation(); playTrack(2);">
+                                <path d="M8 5v14l11-7z"/>
+                            </svg>
+                            <svg class="track-number-pause-icon" viewBox="0 0 24 24" fill="currentColor" onclick="event.stopPropagation(); togglePlayPause();">
+                                <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+                            </svg>
+                        </div>
                         <div class="track-info">
                             <img src="assets/spotify/dropped.jpg" alt="Track 3" class="track-cover">
                             <div class="track-details">
@@ -753,12 +799,19 @@
                                 <div class="track-artist">plasky</div>
                             </div>
                         </div>
-                        <div class="track-album">dropped</div>
                         <div class="track-duration">2:05</div>
                     </div>
 
-                    <div class="track-item" onclick="playTrack(3)">
-                        <div class="track-number">4</div>
+                    <div class="track-item" onclick="highlightTrack(3)" ondblclick="playTrack(3)">
+                        <div class="track-number">
+                            <span class="track-number-text">4</span>
+                            <svg class="track-number-play-icon" viewBox="0 0 24 24" fill="currentColor" onclick="event.stopPropagation(); playTrack(3);">
+                                <path d="M8 5v14l11-7z"/>
+                            </svg>
+                            <svg class="track-number-pause-icon" viewBox="0 0 24 24" fill="currentColor" onclick="event.stopPropagation(); togglePlayPause();">
+                                <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+                            </svg>
+                        </div>
                         <div class="track-info">
                             <img src="assets/spotify/gazing.jpg" alt="Track 4" class="track-cover">
                             <div class="track-details">
@@ -766,12 +819,19 @@
                                 <div class="track-artist">plasky</div>
                             </div>
                         </div>
-                        <div class="track-album">gazing</div>
                         <div class="track-duration">1:59</div>
                     </div>
 
-                    <div class="track-item" onclick="playTrack(4)">
-                        <div class="track-number">5</div>
+                    <div class="track-item" onclick="highlightTrack(4)" ondblclick="playTrack(4)">
+                        <div class="track-number">
+                            <span class="track-number-text">5</span>
+                            <svg class="track-number-play-icon" viewBox="0 0 24 24" fill="currentColor" onclick="event.stopPropagation(); playTrack(4);">
+                                <path d="M8 5v14l11-7z"/>
+                            </svg>
+                            <svg class="track-number-pause-icon" viewBox="0 0 24 24" fill="currentColor" onclick="event.stopPropagation(); togglePlayPause();">
+                                <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+                            </svg>
+                        </div>
                         <div class="track-info">
                             <img src="assets/spotify/ripple.jpg" alt="Track 5" class="track-cover">
                             <div class="track-details">
@@ -779,7 +839,6 @@
                                 <div class="track-artist">plasky</div>
                             </div>
                         </div>
-                        <div class="track-album">ripple</div>
                         <div class="track-duration">1:42</div>
                     </div>
 
@@ -969,10 +1028,15 @@
             document.querySelectorAll('.track-item').forEach((item, i) => {
                 if (i === index) {
                     item.classList.add('playing');
+                    item.classList.remove('highlighted');
                 } else {
                     item.classList.remove('playing');
                 }
+                item.classList.remove('paused');
             });
+            if (!isPlaying) {
+                document.querySelectorAll('.track-item')[index].classList.add('paused');
+            }
 
             // Update play button
             updatePlayButton();
@@ -1008,6 +1072,17 @@
                 currentAudio.play();
                 isPlaying = true;
             }
+
+            // Update playing/paused state on track-item
+            document.querySelectorAll('.track-item').forEach((item, i) => {
+                if (i === currentTrackIndex) {
+                    if (isPlaying) {
+                        item.classList.remove('paused');
+                    } else {
+                        item.classList.add('paused');
+                    }
+                }
+            });
 
             updatePlayButton();
         }
@@ -1149,6 +1224,18 @@
                 isMuted = true;
                 // Show muted icon
                 volumeBtn.innerHTML = '<svg class="icon" viewBox="0 0 16 16" fill="currentColor"><path d="M13.86 5.47a.75.75 0 00-1.061 0l-1.47 1.47-1.47-1.47A.75.75 0 008.8 6.53L10.269 8l-1.47 1.47a.75.75 0 101.061 1.061L11.33 9.06l1.47 1.47a.75.75 0 101.061-1.061L12.39 8l1.47-1.47a.75.75 0 000-1.061z"/><path d="M10.116 1.5A.75.75 0 008.991.85l-6.925 4a3.642 3.642 0 00-1.33 4.967 3.639 3.639 0 001.33 1.332l6.925 4a.75.75 0 001.125-.649v-1.906a4.73 4.73 0 01-1.5-.694v1.3L2.817 9.852a2.141 2.141 0 010-3.704l5.8-3.35v1.3c.45-.313.956-.55 1.5-.694V1.5z"/></svg>';
+            }
+        }
+
+        function highlightTrack(index) {
+            // Remove highlight from all tracks
+            document.querySelectorAll('.track-item').forEach(item => {
+                item.classList.remove('highlighted');
+            });
+            
+            // Add highlight to clicked track only if it's not currently playing
+            if (currentTrackIndex !== index) {
+                document.querySelectorAll('.track-item')[index].classList.add('highlighted');
             }
         }
 
