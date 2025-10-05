@@ -2,6 +2,8 @@
 
 A modern, responsive portfolio website showcasing my work as a Junior Software Engineer.
 
+![Site Preview](assets/images/site-preview.png)
+
 ## About
 
 This is my personal portfolio website built with modern web technologies. It features a dark theme with customizable accent colors, smooth animations, and a professional design.
