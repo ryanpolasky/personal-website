@@ -90,6 +90,19 @@
             z-index: -1;
         }
 
+        /* Floating orb animation */
+        @keyframes orbFloat {
+            0% {
+                transform: translate3d(0, 0, 0) scale(1);
+            }
+            50% {
+                transform: translate3d(12px, -10px, 0) scale(1.03);
+            }
+            100% {
+                transform: translate3d(0, 0, 0) scale(1);
+            }
+        }
+
         /* Ambient gradient orbs for depth */
         .orb {
             position: fixed;
@@ -101,18 +114,24 @@
             pointer-events: none;
             mix-blend-mode: screen;
             z-index: -1;
+            animation: orbFloat 28s ease-in-out infinite;
+            will-change: transform;
         }
 
         .orb--sunset {
             top: -120px;
             right: -80px;
             background: radial-gradient(circle at 30% 20%, #f97316 0, #fb7185 36%, rgba(252, 165, 165, 0) 70%);
+            animation-duration: 30s;
+            animation-delay: -8s;
         }
 
         .orb--blue {
             bottom: -140px;
             left: -100px;
             background: radial-gradient(circle at 20% 40%, #38bdf8 0, #4f46e5 30%, rgba(129, 140, 248, 0) 70%);
+            animation-duration: 34s;
+            animation-delay: -16s;
         }
 
         .back-btn {
@@ -198,6 +217,45 @@
             position: relative;
         }
 
+        .site-title {
+            margin-top: 4.5rem;
+            margin-bottom: 2.5rem;
+            text-align: center;
+        }
+
+        .site-title-text {
+            display: inline-block;
+            font-size: clamp(1.85rem, 4vw, 2.4rem);
+            letter-spacing: 0.22em;
+            text-transform: lowercase;
+            font-weight: 500;
+            background: linear-gradient(
+                135deg,
+                #e0c3fc,
+                #d5a7fc,
+                #fbc2eb,
+                #fad0c4,
+                #a8edea
+            );
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            padding-inline: 0.4rem;
+            text-shadow: 0 4px 20px rgba(167, 139, 250, 0.5);
+            filter: drop-shadow(0 2px 8px rgba(251, 194, 235, 0.4));
+        }
+
+        @media (max-width: 640px) {
+            .site-title {
+                margin-top: 3.25rem;
+                margin-bottom: 1.9rem;
+            }
+
+            .site-title-text {
+                letter-spacing: 0.14em;
+            }
+        }
+
         .gallery {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -222,6 +280,11 @@
                 transition: none !important;
                 animation: none !important;
                 transform: none !important;
+            }
+
+            .orb {
+                animation: none !important;
+                transform: translate3d(0, 0, 0) scale(1) !important;
             }
         }
 
@@ -340,6 +403,10 @@
 
     <main class="page">
         <div class="page-inner">
+            <header class="site-title">
+                <h1 class="site-title-text">ryan's sky pics</h1>
+            </header>
+
             <div class="gallery" id="gallery"></div>
         </div>
     </main>
@@ -347,27 +414,27 @@
     <script>
         // YYYY-MM-DD
         const photos = [
-            { file: 'sky1.jpg', location: 'Richardson, TX', date: '2025-11-10' },
-            { file: 'sky2.jpg', location: 'Addison, TX', date: '2025-10-23' },
-            { file: 'sky3.jpg', location: 'Richardson, TX', date: '2025-09-18' },
-            { file: 'sky4.jpg', location: 'Richardson, TX', date: '2024-05-17' },
-            { file: 'sky5.jpg', location: 'Yosemite, CA', date: '2025-08-09' },
-            { file: 'sky6.jpg', location: 'Newark, DE', date: '2025-11-01' },
-            { file: 'sky7.jpg', location: 'Santa Clara, CA', date: '2025-08-06' },
-            { file: 'sky8.jpg', location: 'Sunnyvale, CA', date: '2024-06-25' },
-            { file: 'sky9.jpg', location: 'Sunnyvale, CA', date: '2024-11-05' },
-            { file: 'sky10.jpg', location: 'Dallas, TX', date: '2025-09-02' },
-            { file: 'sky11.jpg', location: 'Island Park, MT', date: '2025-08-16'},
-            { file: 'sky12.jpg', location: 'Grand Forks, ND', date: '2025-02-23' },
-            { file: 'sky13.jpg', location: 'Acantilado del Amanecer, MX', date: '2024-12-19' },
-            { file: 'sky14.jpg', location: 'Grand Forks, ND', date: '2024-06-07' },
-            { file: 'sky15.jpg', location: 'Richardson, TX', date: '2024-04-08' },
-            { file: 'sky16.jpg', location: 'San Juan, PR', date: '2023-11-22' },
-            { file: 'sky17.jpg', location: 'Miami, FL', date: '2023-11-19' },
-            { file: 'sky18.jpg', location: 'Grand Forks, ND', date: '2023-05-20' },
-            { file: 'sky19.jpg', location: 'Richardson, TX', date: '2023-02-21' },
-            { file: 'sky20.jpg', location: 'Grand Forks, ND', date: '2023-01-14' },
-            { file: 'sky21.jpg', location: 'Grand Forks, ND', date: '2022-02-16' },
+            { file: 'sky1.webp', location: 'Richardson, TX', date: '2025-11-10' },
+            { file: 'sky2.webp', location: 'Addison, TX', date: '2025-10-23' },
+            { file: 'sky3.webp', location: 'Richardson, TX', date: '2025-09-18' },
+            { file: 'sky4.webp', location: 'Richardson, TX', date: '2024-05-17' },
+            { file: 'sky5.webp', location: 'Yosemite, CA', date: '2025-08-09' },
+            { file: 'sky6.webp', location: 'Newark, DE', date: '2025-11-01' },
+            { file: 'sky7.webp', location: 'Santa Clara, CA', date: '2025-08-06' },
+            { file: 'sky8.webp', location: 'Sunnyvale, CA', date: '2024-06-25' },
+            { file: 'sky9.webp', location: 'Sunnyvale, CA', date: '2024-11-05' },
+            { file: 'sky10.webp', location: 'Dallas, TX', date: '2025-09-02' },
+            { file: 'sky11.webp', location: 'Island Park, MT', date: '2025-08-16' },
+            { file: 'sky12.webp', location: 'Grand Forks, ND', date: '2025-02-23' },
+            { file: 'sky13.webp', location: 'Acantilado del Amanecer, MX', date: '2024-12-19' },
+            { file: 'sky14.webp', location: 'Grand Forks, ND', date: '2024-06-07' },
+            { file: 'sky15.webp', location: 'Richardson, TX', date: '2024-04-08' },
+            { file: 'sky16.webp', location: 'San Juan, PR', date: '2023-11-22' },
+            { file: 'sky17.webp', location: 'Miami, FL', date: '2023-11-19' },
+            { file: 'sky18.webp', location: 'Grand Forks, ND', date: '2023-05-20' },
+            { file: 'sky19.webp', location: 'Richardson, TX', date: '2023-02-21' },
+            { file: 'sky20.webp', location: 'Grand Forks, ND', date: '2023-01-14' },
+            { file: 'sky21.webp', location: 'Grand Forks, ND', date: '2022-02-16' },
         ];
 
         const basePath = './assets/photography/';
@@ -388,7 +455,6 @@
             try {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(cache));
             } catch {
-                // ignore
             }
         }
 
@@ -420,15 +486,49 @@
 
         photos.sort((a, b) => new Date(b.date) - new Date(a.date));
 
+        const supportsIO = 'IntersectionObserver' in window;
+
+        const transparentPlaceholder =
+            'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
+
+        let imgObserver = null;
+        if (supportsIO) {
+            imgObserver = new IntersectionObserver((entries, obs) => {
+                for (const entry of entries) {
+                    if (!entry.isIntersecting) continue;
+
+                    const img = entry.target;
+                    const realSrc = img.dataset.src;
+                    if (realSrc) {
+                        img.src = realSrc;
+                        img.removeAttribute('data-src');
+                    }
+                    obs.unobserve(img);
+                }
+            }, {
+                root: null,
+                rootMargin: '200px 0px',
+                threshold: 0.01,
+            });
+        }
+
         photos.forEach(({ file, location, date }, index) => {
             const item = document.createElement('div');
             item.className = 'gallery-item';
             item.style.setProperty('--index', index);
 
             const img = document.createElement('img');
-            img.src = basePath + file;
+            img.dataset.src = basePath + file;
+            img.src = transparentPlaceholder;
             img.alt = `${location}, ${formatDate(date)}`;
             img.loading = 'lazy';
+            img.decoding = 'async';
+
+            if (imgObserver) {
+                imgObserver.observe(img);
+            } else {
+                img.src = basePath + file;
+            }
 
             const captionBar = document.createElement('div');
             captionBar.className = 'caption-bar';
