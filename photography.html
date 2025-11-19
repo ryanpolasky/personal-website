@@ -391,6 +391,90 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+        .footer {
+            margin-top: 1rem;
+            padding: 2.5rem 1.5rem 1.5rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .footer-content {
+            display: inline-block;
+            padding: 1rem 1.8rem;
+            border-radius: 999px;
+            background: linear-gradient(
+                120deg,
+                rgba(255, 255, 255, 0.92),
+                rgba(248, 250, 252, 0.92)
+            );
+            border: 1px solid rgba(167, 139, 250, 0.3);
+            box-shadow:
+                0 8px 32px rgba(167, 139, 250, 0.15),
+                0 0 0 1px rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            transition: all var(--transition-fast);
+        }
+
+        .footer-content:hover {
+            border-color: rgba(167, 139, 250, 0.5);
+            box-shadow:
+                0 12px 40px rgba(167, 139, 250, 0.25),
+                0 0 0 1px rgba(255, 255, 255, 0.95);
+            transform: translateY(-2px);
+        }
+
+        .footer-text {
+            font-size: 0.82rem;
+            color: #475569;
+            line-height: 1.5;
+            letter-spacing: 0.01em;
+        }
+
+        .footer-link {
+            color: #8b5cf6;
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            transition: color var(--transition-fast);
+        }
+
+        .footer-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, #8b5cf6, #ec4899);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform var(--transition-fast);
+        }
+
+        .footer-link:hover {
+            color: #7c3aed;
+        }
+
+        .footer-link:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        @media (max-width: 640px) {
+            .footer {
+                margin-top: 2.5rem;
+                padding: 2rem 0.75rem 1.25rem;
+            }
+
+            .footer-content {
+                padding: 0.9rem 1.4rem;
+            }
+
+            .footer-text {
+                font-size: 0.78rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -408,6 +492,13 @@
             </header>
 
             <div class="gallery" id="gallery"></div>
+            <footer class="footer">
+                <div class="footer-content">
+                    <p class="footer-text">
+                        if you like one of these pictures a lot for some reason and want the high-res version, please <a href="mailto:ryanpolasky@hotmail.com" class="footer-link">email me here</a>!
+                    </p>
+                </div>
+            </footer>
         </div>
     </main>
 
