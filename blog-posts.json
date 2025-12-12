@@ -207,5 +207,22 @@
             "artist": "Joji",
             "link": "https://open.spotify.com/track/2ZfF7kN4JPGRQ8EQChB04J"
         }
+    },
+    {
+        "id": "armor",
+        "title": "armor.md",
+        "date": "2025-12-12",
+        "mood": "Protective",
+        "emoji": "\uD83D\uDEE1\uFE0F",
+        "content": "Hey again. Long time no post. Real short one today.\n\nBeen working a lot on myself lately, both in therapy & out. Born from my work in therapy & the love of my newfound Texas friends is what I hold as a rather large breakthrough in my own thinking model - I finally learned to step back from my April self and see him clearly.\n\nNot in a dissociative or avoidant way, but in a way that lets me look at him with some distance. With honesty. With compassion. Just stepping back from my past. Turning to it, recognizing it for what it was:\n\nA young, naïve, and trusting version of myself doing the best he could with the information and love he had access to.\n\nI wish I was there for him. I wish he had the man I've become since then in his corner. Fighting for him, sheltering him, showing him that it's okay to be knocked down so long as you get up. God, how I wish I could've been there for him.\n\nThis mental distance isn't just for pitying myself, however. It led to perhaps one of my most profound sources of motivation: If he was able to push through & succeed even then, what do I have to complain about? What excuse do I have to do anything but succeed?\n\nIt’s not about shaming myself into success. It’s about honoring the work that he already put in and making sure it wasn’t for nothing.\n\nJust food for thought.\n\nDon't let the length of the path make you forget the miles you've walked.",
+        "picture": {
+            "path": "assets/blog/armor.jpg",
+            "caption": "this was my view while thinkin about this blog post. happy holidays y'all."
+        },
+        "spotify": {
+            "title": "Aerie",
+            "artist": "Lena Raine, Minecraft",
+            "link": "https://open.spotify.com/track/0eCyLXuQvl6P09iymEGTXS"
+        }
     }
 ]
