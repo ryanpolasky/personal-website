@@ -77,4 +77,4 @@ reason! If you have any questions, you can reach me via any of the following:
 
 ## License
 
-© 2025 Ryan Polasky. All rights reserved.
+© 2026 Ryan Polasky. All rights reserved.
