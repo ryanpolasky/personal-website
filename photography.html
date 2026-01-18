@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Sky</title>
     <style>
         :root {
@@ -12,9 +12,9 @@
             --card-shadow-soft: 0 18px 40px rgba(15, 23, 42, 0.18);
             --card-shadow-hover: 0 26px 60px rgba(15, 23, 42, 0.35);
             --caption-bg: linear-gradient(
-                to top,
-                rgba(8, 15, 40, 0.96),
-                rgba(8, 15, 40, 0.0)
+                    to top,
+                    rgba(8, 15, 40, 0.96),
+                    rgba(8, 15, 40, 0.0)
             );
             --caption-text: rgba(244, 244, 248, 0.98);
             --transition-fast: 0.18s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -54,9 +54,9 @@
 
         ::-webkit-scrollbar-thumb {
             background: linear-gradient(
-                180deg,
-                rgba(167, 139, 250, 0.7),
-                rgba(147, 197, 253, 0.7)
+                    180deg,
+                    rgba(167, 139, 250, 0.7),
+                    rgba(147, 197, 253, 0.7)
             );
             border-radius: 10px;
             border: 3px solid rgba(248, 250, 252, 0.4);
@@ -65,9 +65,9 @@
 
         ::-webkit-scrollbar-thumb:hover {
             background: linear-gradient(
-                180deg,
-                rgba(167, 139, 250, 0.9),
-                rgba(147, 197, 253, 0.9)
+                    180deg,
+                    rgba(167, 139, 250, 0.9),
+                    rgba(147, 197, 253, 0.9)
             );
         }
 
@@ -85,8 +85,7 @@
             pointer-events: none;
             opacity: var(--page-noise-opacity);
             mix-blend-mode: soft-light;
-            background-image:
-                url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.15' numOctaves='3' stitchTiles='noStitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.72'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.15' numOctaves='3' stitchTiles='noStitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.72'/%3E%3C/svg%3E");
             z-index: -1;
         }
 
@@ -163,16 +162,14 @@
             justify-content: center;
             background: rgba(255, 255, 255, 0.35);
             border: 1px solid rgba(148, 163, 184, 0.3);
-            box-shadow:
-                0 10px 35px rgba(15, 23, 42, 0.12),
-                0 0 0 1px rgba(255, 255, 255, 0.5);
+            box-shadow: 0 10px 35px rgba(15, 23, 42, 0.12),
+            0 0 0 1px rgba(255, 255, 255, 0.5);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            transition:
-                transform var(--transition-fast),
-                box-shadow var(--transition-fast),
-                border-color var(--transition-fast),
-                background var(--transition-fast);
+            transition: transform var(--transition-fast),
+            box-shadow var(--transition-fast),
+            border-color var(--transition-fast),
+            background var(--transition-fast);
         }
 
         .back-btn::before {
@@ -186,9 +183,8 @@
 
         .back-btn:hover {
             border-color: rgba(37, 99, 235, 0.5);
-            box-shadow:
-                0 18px 40px rgba(30, 64, 175, 0.22),
-                0 0 0 1px rgba(255, 255, 255, 0.7);
+            box-shadow: 0 18px 40px rgba(30, 64, 175, 0.22),
+            0 0 0 1px rgba(255, 255, 255, 0.7);
             transform: translateY(-1px);
             background: rgba(255, 255, 255, 0.5);
         }
@@ -229,12 +225,12 @@
             font-weight: 700;
             padding: 0.3rem 0.8rem;
             background: linear-gradient(
-                135deg,
-                #e0c3fc,
-                #d5a7fc,
-                #fbc2eb,
-                #fad0c4,
-                #a8edea
+                    135deg,
+                    #e0c3fc,
+                    #d5a7fc,
+                    #fbc2eb,
+                    #fad0c4,
+                    #a8edea
             );
             background-size: 200% 200%;
             animation: gradientShift 8s ease infinite;
@@ -251,9 +247,9 @@
             position: absolute;
             inset: -4px;
             background: linear-gradient(
-                120deg,
-                rgba(255, 255, 255, 0.85),
-                rgba(248, 250, 252, 0.85)
+                    120deg,
+                    rgba(255, 255, 255, 0.85),
+                    rgba(248, 250, 252, 0.85)
             );
             border-radius: 12px;
             z-index: -1;
@@ -261,8 +257,12 @@
         }
 
         @keyframes gradientShift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
         }
 
         .sparkle {
@@ -277,11 +277,25 @@
             z-index: -99;
         }
 
-        .sparkle:nth-child(2) { animation-delay: 0.3s; }
-        .sparkle:nth-child(3) { animation-delay: 0.6s; }
-        .sparkle:nth-child(4) { animation-delay: 0.9s; }
-        .sparkle:nth-child(5) { animation-delay: 1.2s; }
-        .sparkle:nth-child(6) { animation-delay: 1.5s; }
+        .sparkle:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+
+        .sparkle:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+
+        .sparkle:nth-child(4) {
+            animation-delay: 0.9s;
+        }
+
+        .sparkle:nth-child(5) {
+            animation-delay: 1.2s;
+        }
+
+        .sparkle:nth-child(6) {
+            animation-delay: 1.5s;
+        }
 
         @media (max-width: 640px) {
             .site-title {
@@ -300,9 +314,8 @@
             gap: 16px;
             opacity: 0;
             transform: translateY(6px);
-            transition:
-                opacity var(--transition-med),
-                transform var(--transition-med);
+            transition: opacity var(--transition-med),
+            transform var(--transition-med);
         }
 
         .gallery.loaded {
@@ -338,6 +351,7 @@
                 padding-top: 1.5rem;
                 padding-inline: 0.75rem;
             }
+
             .gallery {
                 grid-template-columns: 1fr;
                 gap: 10px;
@@ -409,9 +423,8 @@
             display: block;
             transform: scale(1.03);
             filter: saturate(1.1) contrast(1.05) brightness(1.03);
-            transition:
-                transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1),
-                filter 0.3s ease-out;
+            transition: transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1),
+            filter 0.3s ease-out;
         }
 
         .gallery-item:hover img {
@@ -427,9 +440,8 @@
             padding: 0.7rem 0.95rem 0.82rem;
             background: var(--caption-bg);
             transform: translateY(100%);
-            transition:
-                transform 0.26s cubic-bezier(0.33, 1, 0.68, 1),
-                opacity 0.26s ease-out;
+            transition: transform 0.26s cubic-bezier(0.33, 1, 0.68, 1),
+            opacity 0.26s ease-out;
             display: flex;
             align-items: flex-end;
             pointer-events: none;
@@ -452,6 +464,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+
         .footer {
             margin-top: 1rem;
             padding: 2.5rem 1.5rem 1.5rem;
@@ -464,14 +477,13 @@
             padding: 1rem 1.8rem;
             border-radius: 999px;
             background: linear-gradient(
-                120deg,
-                rgba(255, 255, 255, 0.92),
-                rgba(248, 250, 252, 0.92)
+                    120deg,
+                    rgba(255, 255, 255, 0.92),
+                    rgba(248, 250, 252, 0.92)
             );
             border: 1px solid rgba(167, 139, 250, 0.3);
-            box-shadow:
-                0 8px 32px rgba(167, 139, 250, 0.15),
-                0 0 0 1px rgba(255, 255, 255, 0.8);
+            box-shadow: 0 8px 32px rgba(167, 139, 250, 0.15),
+            0 0 0 1px rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             transition: all var(--transition-fast);
@@ -479,9 +491,8 @@
 
         .footer-content:hover {
             border-color: rgba(167, 139, 250, 0.5);
-            box-shadow:
-                0 12px 40px rgba(167, 139, 250, 0.25),
-                0 0 0 1px rgba(255, 255, 255, 0.95);
+            box-shadow: 0 12px 40px rgba(167, 139, 250, 0.25),
+            0 0 0 1px rgba(255, 255, 255, 0.95);
             transform: translateY(-2px);
         }
 
@@ -539,187 +550,188 @@
     </style>
 </head>
 <body>
-    <div class="orb orb--sunset"></div>
-    <div class="orb orb--blue"></div>
+<div class="orb orb--sunset"></div>
+<div class="orb orb--blue"></div>
 
-    <a href="index.html" class="back-btn">
-        <span>Back</span>
-    </a>
+<a href="index.html" class="back-btn">
+    <span>Back</span>
+</a>
 
-    <main class="page">
-        <div class="page-inner">
-            <header class="site-title">
-                <h1 class="site-title-text">ryan's sky pics</h1>
-                <span class="sparkle" style="top: 10%; left: 15%;"></span>
-                <span class="sparkle" style="top: 20%; right: 20%;"></span>
-                <span class="sparkle" style="bottom: 15%; left: 25%;"></span>
-                <span class="sparkle" style="top: 15%; right: 10%;"></span>
-                <span class="sparkle" style="bottom: 20%; right: 15%;"></span>
-                <span class="sparkle" style="top: 25%; left: 10%;"></span>
-            </header>
+<main class="page">
+    <div class="page-inner">
+        <header class="site-title">
+            <h1 class="site-title-text">ryan's sky pics</h1>
+            <span class="sparkle" style="top: 10%; left: 15%;"></span>
+            <span class="sparkle" style="top: 20%; right: 20%;"></span>
+            <span class="sparkle" style="bottom: 15%; left: 25%;"></span>
+            <span class="sparkle" style="top: 15%; right: 10%;"></span>
+            <span class="sparkle" style="bottom: 20%; right: 15%;"></span>
+            <span class="sparkle" style="top: 25%; left: 10%;"></span>
+        </header>
 
-            <div class="gallery" id="gallery"></div>
-            <footer class="footer">
-                <div class="footer-content">
-                    <p class="footer-text">
-                        if you like one of these pictures a lot for some reason and want the high-res version, please <a href="mailto:ryanpolasky@hotmail.com" class="footer-link">email me here</a>!
-                    </p>
-                </div>
-            </footer>
-        </div>
-    </main>
+        <div class="gallery" id="gallery"></div>
+        <footer class="footer">
+            <div class="footer-content">
+                <p class="footer-text">
+                    if you like one of these pictures a lot for some reason and want the high-res version, please <a
+                        href="mailto:ryanpolasky@hotmail.com" class="footer-link">email me here</a>!
+                </p>
+            </div>
+        </footer>
+    </div>
+</main>
 
-    <script>
-        // YYYY-MM-DD
-        const photos = [
-            { file: 'sky1.webp', location: 'Richardson, TX', date: '2025-11-10' },
-            { file: 'sky2.webp', location: 'Addison, TX', date: '2025-10-23' },
-            { file: 'sky3.webp', location: 'Richardson, TX', date: '2025-09-18' },
-            { file: 'sky4.webp', location: 'Richardson, TX', date: '2024-05-17' },
-            { file: 'sky5.webp', location: 'Yosemite, CA', date: '2025-08-09' },
-            { file: 'sky6.webp', location: 'Newark, DE', date: '2025-11-01' },
-            { file: 'sky7.webp', location: 'Santa Clara, CA', date: '2025-08-06' },
-            { file: 'sky8.webp', location: 'Sunnyvale, CA', date: '2024-06-25' },
-            { file: 'sky9.webp', location: 'Sunnyvale, CA', date: '2024-11-05' },
-            { file: 'sky10.webp', location: 'Dallas, TX', date: '2025-09-02' },
-            { file: 'sky11.webp', location: 'Island Park, MT', date: '2025-08-16' },
-            { file: 'sky12.webp', location: 'Grand Forks, ND', date: '2025-02-23' },
-            { file: 'sky13.webp', location: 'Acantilado del Amanecer, MX', date: '2024-12-19' },
-            { file: 'sky14.webp', location: 'Grand Forks, ND', date: '2024-06-07' },
-            { file: 'sky15.webp', location: 'Richardson, TX', date: '2024-04-08' },
-            { file: 'sky16.webp', location: 'San Juan, PR', date: '2023-11-22' },
-            { file: 'sky17.webp', location: 'Miami, FL', date: '2023-11-19' },
-            { file: 'sky18.webp', location: 'Grand Forks, ND', date: '2023-05-20' },
-            { file: 'sky19.webp', location: 'Richardson, TX', date: '2023-02-21' },
-            { file: 'sky20.webp', location: 'Grand Forks, ND', date: '2023-01-14' },
-            { file: 'sky21.webp', location: 'Grand Forks, ND', date: '2022-02-16' },
-            { file: 'sky22.webp', location: 'Richardson, TX', date: '2025-11-19' },
-            { file: 'sky23.webp', location: 'Cancun, MX', date: '2021-12-20' },
-            { file: 'sky24.webp', location: 'Grand Forks, ND', date: '2022-05-16' },
-        ];
+<script>
+    // YYYY-MM-DD
+    const photos = [
+        {file: 'sky1.webp', location: 'Richardson, TX', date: '2025-11-10'},
+        {file: 'sky2.webp', location: 'Addison, TX', date: '2025-10-23'},
+        {file: 'sky3.webp', location: 'Richardson, TX', date: '2025-09-18'},
+        {file: 'sky4.webp', location: 'Richardson, TX', date: '2024-05-17'},
+        {file: 'sky5.webp', location: 'Yosemite, CA', date: '2025-08-09'},
+        {file: 'sky6.webp', location: 'Newark, DE', date: '2025-11-01'},
+        {file: 'sky7.webp', location: 'Santa Clara, CA', date: '2025-08-06'},
+        {file: 'sky8.webp', location: 'Sunnyvale, CA', date: '2024-06-25'},
+        {file: 'sky9.webp', location: 'Sunnyvale, CA', date: '2024-11-05'},
+        {file: 'sky10.webp', location: 'Dallas, TX', date: '2025-09-02'},
+        {file: 'sky11.webp', location: 'Island Park, MT', date: '2025-08-16'},
+        {file: 'sky12.webp', location: 'Grand Forks, ND', date: '2025-02-23'},
+        {file: 'sky13.webp', location: 'Acantilado del Amanecer, MX', date: '2024-12-19'},
+        {file: 'sky14.webp', location: 'Grand Forks, ND', date: '2024-06-07'},
+        {file: 'sky15.webp', location: 'Richardson, TX', date: '2024-04-08'},
+        {file: 'sky16.webp', location: 'San Juan, PR', date: '2023-11-22'},
+        {file: 'sky17.webp', location: 'Miami, FL', date: '2023-11-19'},
+        {file: 'sky18.webp', location: 'Grand Forks, ND', date: '2023-05-20'},
+        {file: 'sky19.webp', location: 'Richardson, TX', date: '2023-02-21'},
+        {file: 'sky20.webp', location: 'Grand Forks, ND', date: '2023-01-14'},
+        {file: 'sky21.webp', location: 'Grand Forks, ND', date: '2022-02-16'},
+        {file: 'sky22.webp', location: 'Richardson, TX', date: '2025-11-19'},
+        {file: 'sky23.webp', location: 'Cancun, MX', date: '2021-12-20'},
+        {file: 'sky24.webp', location: 'Grand Forks, ND', date: '2022-05-16'},
+    ];
 
-        const basePath = './assets/photography/';
-        const gallery = document.getElementById('gallery');
+    const basePath = './assets/photography/';
+    const gallery = document.getElementById('gallery');
 
-        const STORAGE_KEY = 'skyGalleryFormattedDates_v2';
+    const STORAGE_KEY = 'skyGalleryFormattedDates_v2';
 
-        function loadCachedDates() {
-            try {
-                const raw = localStorage.getItem(STORAGE_KEY);
-                return raw ? JSON.parse(raw) : {};
-            } catch {
-                return {};
-            }
+    function loadCachedDates() {
+        try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            return raw ? JSON.parse(raw) : {};
+        } catch {
+            return {};
         }
+    }
 
-        function saveCachedDates(cache) {
-            try {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(cache));
-            } catch {
-            }
+    function saveCachedDates(cache) {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(cache));
+        } catch {
         }
+    }
 
-        const dateCache = loadCachedDates();
+    const dateCache = loadCachedDates();
 
-        function formatDate(isoDate) {
-            if (!isoDate) return '';
-            if (dateCache[isoDate]) return dateCache[isoDate];
+    function formatDate(isoDate) {
+        if (!isoDate) return '';
+        if (dateCache[isoDate]) return dateCache[isoDate];
 
-            const [yearStr, monthStr, dayStr] = isoDate.split('-');
-            const year = Number(yearStr);
-            const month = Number(monthStr) - 1;
-            const day = Number(dayStr);
+        const [yearStr, monthStr, dayStr] = isoDate.split('-');
+        const year = Number(yearStr);
+        const month = Number(monthStr) - 1;
+        const day = Number(dayStr);
 
-            const d = new Date(year, month, day);
-            if (Number.isNaN(d.getTime())) return isoDate;
+        const d = new Date(year, month, day);
+        if (Number.isNaN(d.getTime())) return isoDate;
 
-            const formatted = d.toLocaleDateString(undefined, {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
-            });
-
-            dateCache[isoDate] = formatted;
-            saveCachedDates(dateCache);
-
-            return formatted;
-        }
-
-        photos.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-        const supportsIO = 'IntersectionObserver' in window;
-
-        const transparentPlaceholder =
-            'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
-
-        let imgObserver = null;
-        if (supportsIO) {
-            imgObserver = new IntersectionObserver((entries, obs) => {
-                for (const entry of entries) {
-                    if (!entry.isIntersecting) continue;
-
-                    const img = entry.target;
-                    const realSrc = img.dataset.src;
-                    if (realSrc) {
-                        img.src = realSrc;
-                        img.removeAttribute('data-src');
-                    }
-                    obs.unobserve(img);
-                }
-            }, {
-                root: null,
-                rootMargin: '200px 0px',
-                threshold: 0.01,
-            });
-        }
-
-        photos.forEach(({ file, location, date }, index) => {
-            const item = document.createElement('div');
-            item.className = 'gallery-item';
-            item.style.setProperty('--index', index);
-
-            const img = document.createElement('img');
-            img.dataset.src = basePath + file;
-            img.src = transparentPlaceholder;
-            img.alt = `${location}, ${formatDate(date)}`;
-            img.loading = 'lazy';
-            img.decoding = 'async';
-
-            if (imgObserver) {
-                imgObserver.observe(img);
-            } else {
-                img.src = basePath + file;
-            }
-
-            const captionBar = document.createElement('div');
-            captionBar.className = 'caption-bar';
-
-            const captionText = document.createElement('div');
-            captionText.className = 'caption-text';
-
-            const prettyDate = formatDate(date);
-            captionText.textContent = prettyDate && location
-                ? `${prettyDate} — ${location}`
-                : location || prettyDate || '';
-
-            captionBar.appendChild(captionText);
-            item.appendChild(img);
-            item.appendChild(captionBar);
-            gallery.appendChild(item);
+        const formatted = d.toLocaleDateString(undefined, {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
         });
 
-        function activateGallery() {
-            if (!gallery) return;
-            requestAnimationFrame(() => {
-                gallery.classList.add('loaded');
-            });
+        dateCache[isoDate] = formatted;
+        saveCachedDates(dateCache);
+
+        return formatted;
+    }
+
+    photos.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    const supportsIO = 'IntersectionObserver' in window;
+
+    const transparentPlaceholder =
+        'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
+
+    let imgObserver = null;
+    if (supportsIO) {
+        imgObserver = new IntersectionObserver((entries, obs) => {
+            for (const entry of entries) {
+                if (!entry.isIntersecting) continue;
+
+                const img = entry.target;
+                const realSrc = img.dataset.src;
+                if (realSrc) {
+                    img.src = realSrc;
+                    img.removeAttribute('data-src');
+                }
+                obs.unobserve(img);
+            }
+        }, {
+            root: null,
+            rootMargin: '200px 0px',
+            threshold: 0.01,
+        });
+    }
+
+    photos.forEach(({file, location, date}, index) => {
+        const item = document.createElement('div');
+        item.className = 'gallery-item';
+        item.style.setProperty('--index', index);
+
+        const img = document.createElement('img');
+        img.dataset.src = basePath + file;
+        img.src = transparentPlaceholder;
+        img.alt = `${location}, ${formatDate(date)}`;
+        img.loading = 'lazy';
+        img.decoding = 'async';
+
+        if (imgObserver) {
+            imgObserver.observe(img);
+        } else {
+            img.src = basePath + file;
         }
 
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', activateGallery);
-        } else {
-            activateGallery();
-        }
-    </script>
+        const captionBar = document.createElement('div');
+        captionBar.className = 'caption-bar';
+
+        const captionText = document.createElement('div');
+        captionText.className = 'caption-text';
+
+        const prettyDate = formatDate(date);
+        captionText.textContent = prettyDate && location
+            ? `${prettyDate} — ${location}`
+            : location || prettyDate || '';
+
+        captionBar.appendChild(captionText);
+        item.appendChild(img);
+        item.appendChild(captionBar);
+        gallery.appendChild(item);
+    });
+
+    function activateGallery() {
+        if (!gallery) return;
+        requestAnimationFrame(() => {
+            gallery.classList.add('loaded');
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', activateGallery);
+    } else {
+        activateGallery();
+    }
+</script>
 </body>
 </html>

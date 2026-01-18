@@ -60,9 +60,18 @@
             margin-right: 8px;
             cursor: pointer;
         }
-        .button.red { background-color: var(--red); }
-        .button.yellow { background-color: var(--yellow); }
-        .button.green { background-color: var(--green); }
+
+        .button.red {
+            background-color: var(--red);
+        }
+
+        .button.yellow {
+            background-color: var(--yellow);
+        }
+
+        .button.green {
+            background-color: var(--green);
+        }
 
         /* Main content area */
         #terminal-body {
@@ -75,9 +84,11 @@
         #terminal-body::-webkit-scrollbar {
             width: 8px;
         }
+
         #terminal-body::-webkit-scrollbar-track {
             background: #2a2c3a;
         }
+
         #terminal-body::-webkit-scrollbar-thumb {
             background-color: var(--foreground);
             border-radius: 4px;
@@ -100,7 +111,7 @@
             color: var(--green);
             margin-right: 0.5rem;
         }
-        
+
         .prompt .directory {
             color: var(--cyan);
         }
@@ -126,8 +137,12 @@
         }
 
         @keyframes blink {
-            from, to { background-color: transparent; }
-            50% { background-color: var(--foreground); }
+            from, to {
+                background-color: transparent;
+            }
+            50% {
+                background-color: var(--foreground);
+            }
         }
 
         /* Specific output styling */
@@ -135,16 +150,20 @@
             color: var(--cyan);
             text-decoration: none;
         }
+
         .command-output a:hover {
             text-decoration: underline;
         }
+
         .post-title {
             color: var(--yellow);
             font-weight: 500;
         }
+
         .post-date {
             color: var(--cyan);
         }
+
         .error {
             color: var(--red);
         }
@@ -309,16 +328,20 @@
         }
 
         @keyframes modalFadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
         }
 
         @keyframes modalSlideIn {
-            from { 
+            from {
                 opacity: 0;
                 transform: translate(-50%, -50%) scale(0.8);
             }
-            to { 
+            to {
                 opacity: 1;
                 transform: translate(-50%, -50%) scale(1);
             }
@@ -330,18 +353,18 @@
                 max-width: 98%;
                 max-height: 98%;
             }
-            
+
             .image-modal img {
                 max-height: 70vh;
                 border-radius: 8px;
             }
-            
+
             .image-modal-caption {
                 font-size: 14px;
                 margin-top: 0.75rem;
                 padding: 0.5rem 0.75rem;
             }
-            
+
             .image-modal-close {
                 top: 10px;
                 right: 10px;
@@ -358,31 +381,31 @@
                 flex-wrap: nowrap;
                 align-items: center;
             }
-            
+
             .prompt {
                 flex-shrink: 0;
                 margin-right: 0.5rem;
                 font-size: 14px;
             }
-            
+
             #command-input {
                 flex-grow: 1;
                 min-width: 0;
                 font-size: 14px;
             }
-            
+
             /* Hide custom cursor on mobile since it won't position correctly */
             .cursor {
                 display: none !important;
             }
-            
+
             /* Adjust terminal for mobile */
             #terminal {
                 width: calc(100% - 1rem);
                 height: 95vh;
                 max-height: none;
             }
-            
+
             #terminal-body {
                 padding: 0.75rem;
                 font-size: 14px;
@@ -393,170 +416,170 @@
 <body>
 
 
-    <div id="terminal">
-        <div class="terminal-header">
-            <div class="button red" onclick="window.location.href='index.html'"></div>
-            <div class="button yellow"></div>
-            <div class="button green"></div>
-        </div>
-        <div id="terminal-body" onclick="document.getElementById('command-input').focus();">
-            <div id="output"></div>
-            <div class="input-line">
-                <span class="prompt">$ ryans-thoughts:<span class="directory" id="current-dir">/</span> ></span>
-                <input type="text" id="command-input" autocomplete="off" autofocus>
-                <span class="cursor" id="cursor"></span>
-            </div>
+<div id="terminal">
+    <div class="terminal-header">
+        <div class="button red" onclick="window.location.href='index.html'"></div>
+        <div class="button yellow"></div>
+        <div class="button green"></div>
+    </div>
+    <div id="terminal-body" onclick="document.getElementById('command-input').focus();">
+        <div id="output"></div>
+        <div class="input-line">
+            <span class="prompt">$ ryans-thoughts:<span class="directory" id="current-dir">/</span> ></span>
+            <input type="text" id="command-input" autocomplete="off" autofocus>
+            <span class="cursor" id="cursor"></span>
         </div>
     </div>
+</div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            const output = document.getElementById('output');
-            const commandInput = document.getElementById('command-input');
-            const terminalBody = document.getElementById('terminal-body');
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        const output = document.getElementById('output');
+        const commandInput = document.getElementById('command-input');
+        const terminalBody = document.getElementById('terminal-body');
 
-            // Load blog posts from external JSON file
-            let posts = [];
-            let currentDirectory = `/${new Date().getFullYear()}`;
-            let postsByYear = {};
-            let availableYears = [];
-            
-            // AES-256-GCM encryption/decryption functions using Web Crypto API
-            
-            // Derive a key from password using PBKDF2
-            async function deriveKey(password, salt) {
+        // Load blog posts from external JSON file
+        let posts = [];
+        let currentDirectory = `/${new Date().getFullYear()}`;
+        let postsByYear = {};
+        let availableYears = [];
+
+        // AES-256-GCM encryption/decryption functions using Web Crypto API
+
+        // Derive a key from password using PBKDF2
+        async function deriveKey(password, salt) {
+            const encoder = new TextEncoder();
+            const keyMaterial = await crypto.subtle.importKey(
+                'raw',
+                encoder.encode(password),
+                {name: 'PBKDF2'},
+                false,
+                ['deriveKey']
+            );
+
+            return crypto.subtle.deriveKey(
+                {
+                    name: 'PBKDF2',
+                    salt: salt,
+                    iterations: 100000,
+                    hash: 'SHA-256'
+                },
+                keyMaterial,
+                {name: 'AES-GCM', length: 256},
+                false,
+                ['encrypt', 'decrypt']
+            );
+        }
+
+        // Encrypt content for storage
+        async function encryptContent(content, password) {
+            try {
+                // Convert content to string if it's an object
+                let contentStr;
+                if (typeof content === 'object') {
+                    contentStr = JSON.stringify(content);
+                } else if (typeof content === 'string') {
+                    contentStr = content;
+                } else {
+                    throw new Error('Content must be a string or object');
+                }
+
+                // Validate inputs
+                if (typeof password !== 'string') {
+                    throw new Error('Password must be a string');
+                }
+
+                if (contentStr.length === 0) {
+                    throw new Error('Content cannot be empty');
+                }
+
+                if (password.length === 0) {
+                    throw new Error('Password cannot be empty');
+                }
+
                 const encoder = new TextEncoder();
-                const keyMaterial = await crypto.subtle.importKey(
-                    'raw',
-                    encoder.encode(password),
-                    { name: 'PBKDF2' },
-                    false,
-                    ['deriveKey']
+                const data = encoder.encode(contentStr);
+
+                // Generate random salt and IV
+                const salt = crypto.getRandomValues(new Uint8Array(16));
+                const iv = crypto.getRandomValues(new Uint8Array(12));
+
+                // Derive key from password
+                const key = await deriveKey(password, salt);
+
+                // Encrypt the data
+                const encrypted = await crypto.subtle.encrypt(
+                    {name: 'AES-GCM', iv: iv},
+                    key,
+                    data
                 );
-                
-                return crypto.subtle.deriveKey(
-                    {
-                        name: 'PBKDF2',
-                        salt: salt,
-                        iterations: 100000,
-                        hash: 'SHA-256'
-                    },
-                    keyMaterial,
-                    { name: 'AES-GCM', length: 256 },
-                    false,
-                    ['encrypt', 'decrypt']
+
+                // Combine salt + iv + encrypted data
+                const combined = new Uint8Array(salt.length + iv.length + encrypted.byteLength);
+                combined.set(salt, 0);
+                combined.set(iv, salt.length);
+                combined.set(new Uint8Array(encrypted), salt.length + iv.length);
+
+                // Return as base64
+                return btoa(String.fromCharCode(...combined));
+            } catch (e) {
+                console.error('Encryption failed:', e);
+                return null;
+            }
+        }
+
+        // Helper function to encrypt objects directly
+        async function encryptObject(obj, password) {
+            return await encryptContent(obj, password);
+        }
+
+        // Expose encryption functions to global scope for console use
+        window.encryptContent = encryptContent;
+        window.encryptObject = encryptObject;
+
+        // Decrypt content for display
+        async function decryptContent(encryptedContent, password) {
+            try {
+                // Decode from base64
+                const combined = new Uint8Array(
+                    atob(encryptedContent).split('').map(char => char.charCodeAt(0))
                 );
+
+                // Extract salt, IV, and encrypted data
+                const salt = combined.slice(0, 16);
+                const iv = combined.slice(16, 28);
+                const encrypted = combined.slice(28);
+
+                // Derive key from password
+                const key = await deriveKey(password, salt);
+
+                // Decrypt the data
+                const decrypted = await crypto.subtle.decrypt(
+                    {name: 'AES-GCM', iv: iv},
+                    key,
+                    encrypted
+                );
+
+                // Convert back to string
+                const decoder = new TextDecoder();
+                return decoder.decode(decrypted);
+            } catch (e) {
+                console.error('Decryption failed:', e);
+                return null; // Invalid password or corrupted data
             }
-            
-            // Encrypt content for storage
-            async function encryptContent(content, password) {
-                try {
-                    // Convert content to string if it's an object
-                    let contentStr;
-                    if (typeof content === 'object') {
-                        contentStr = JSON.stringify(content);
-                    } else if (typeof content === 'string') {
-                        contentStr = content;
-                    } else {
-                        throw new Error('Content must be a string or object');
-                    }
-                    
-                    // Validate inputs
-                    if (typeof password !== 'string') {
-                        throw new Error('Password must be a string');
-                    }
-                    
-                    if (contentStr.length === 0) {
-                        throw new Error('Content cannot be empty');
-                    }
-                    
-                    if (password.length === 0) {
-                        throw new Error('Password cannot be empty');
-                    }
-                    
-                    const encoder = new TextEncoder();
-                    const data = encoder.encode(contentStr);
-                    
-                    // Generate random salt and IV
-                    const salt = crypto.getRandomValues(new Uint8Array(16));
-                    const iv = crypto.getRandomValues(new Uint8Array(12));
-                    
-                    // Derive key from password
-                    const key = await deriveKey(password, salt);
-                    
-                    // Encrypt the data
-                    const encrypted = await crypto.subtle.encrypt(
-                        { name: 'AES-GCM', iv: iv },
-                        key,
-                        data
-                    );
-                    
-                    // Combine salt + iv + encrypted data
-                    const combined = new Uint8Array(salt.length + iv.length + encrypted.byteLength);
-                    combined.set(salt, 0);
-                    combined.set(iv, salt.length);
-                    combined.set(new Uint8Array(encrypted), salt.length + iv.length);
-                    
-                    // Return as base64
-                    return btoa(String.fromCharCode(...combined));
-                } catch (e) {
-                    console.error('Encryption failed:', e);
-                    return null;
-                }
-            }
-            
-            // Helper function to encrypt objects directly
-            async function encryptObject(obj, password) {
-                return await encryptContent(obj, password);
-            }
-            
-            // Expose encryption functions to global scope for console use
-            window.encryptContent = encryptContent;
-            window.encryptObject = encryptObject;
-            
-            // Decrypt content for display
-            async function decryptContent(encryptedContent, password) {
-                try {
-                    // Decode from base64
-                    const combined = new Uint8Array(
-                        atob(encryptedContent).split('').map(char => char.charCodeAt(0))
-                    );
-                    
-                    // Extract salt, IV, and encrypted data
-                    const salt = combined.slice(0, 16);
-                    const iv = combined.slice(16, 28);
-                    const encrypted = combined.slice(28);
-                    
-                    // Derive key from password
-                    const key = await deriveKey(password, salt);
-                    
-                    // Decrypt the data
-                    const decrypted = await crypto.subtle.decrypt(
-                        { name: 'AES-GCM', iv: iv },
-                        key,
-                        encrypted
-                    );
-                    
-                    // Convert back to string
-                    const decoder = new TextDecoder();
-                    return decoder.decode(decrypted);
-                } catch (e) {
-                    console.error('Decryption failed:', e);
-                    return null; // Invalid password or corrupted data
-                }
-            }
-            
-            // Prompt user for decryption key (sudo-style)
-            function promptForDecryptionKey() {
-                return new Promise((resolve) => {
-                    // Hide the main command input
-                    const inputLineElement = document.querySelector('.input-line');
-                    inputLineElement.style.display = 'none';
-                    
-                    // Create sudo password prompt line
-                    const sudoLine = document.createElement('div');
-                    sudoLine.classList.add('input-line');
-                    sudoLine.innerHTML = `
+        }
+
+        // Prompt user for decryption key (sudo-style)
+        function promptForDecryptionKey() {
+            return new Promise((resolve) => {
+                // Hide the main command input
+                const inputLineElement = document.querySelector('.input-line');
+                inputLineElement.style.display = 'none';
+
+                // Create sudo password prompt line
+                const sudoLine = document.createElement('div');
+                sudoLine.classList.add('input-line');
+                sudoLine.innerHTML = `
                         <span class="prompt">[sudo] password:</span>
                         <input type="password" id="sudo-input" autocomplete="off" style="
                             background: none;
@@ -569,160 +592,151 @@
                             caret-color: var(--foreground);
                         ">
                     `;
-                    
-                    output.appendChild(sudoLine);
-                    const sudoInput = sudoLine.querySelector('#sudo-input');
-                    sudoInput.focus();
-                    scrollToBottom();
-                    
-                    sudoInput.addEventListener('keydown', (e) => {
-                        if (e.key === 'Enter') {
-                            const key = sudoInput.value;
-                            sudoLine.remove();
-                            inputLineElement.style.display = 'flex';
-                            commandInput.focus();
-                            resolve(key);
-                        } else if (e.key === 'Escape') {
-                            sudoLine.remove();
-                            inputLineElement.style.display = 'flex';
-                            commandInput.focus();
-                            resolve(null);
-                        }
-                    });
-                });
-            }
-            
-            // Command history
-            let commandHistory = JSON.parse(localStorage.getItem('terminal-history') || '[]');
-            let historyIndex = commandHistory.length;
-            
-            try {
-                const response = await fetch('blog-posts.json');
-                const allPosts = await response.json();
-                // Filter out template entries
-                posts = allPosts.filter(post => !post._template);
-                
-                // Organize posts by year
-                posts.forEach(post => {
-                    const year = new Date(post.date).getFullYear().toString();
-                    if (!postsByYear[year]) {
-                        postsByYear[year] = [];
+
+                output.appendChild(sudoLine);
+                const sudoInput = sudoLine.querySelector('#sudo-input');
+                sudoInput.focus();
+                scrollToBottom();
+
+                sudoInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        const key = sudoInput.value;
+                        sudoLine.remove();
+                        inputLineElement.style.display = 'flex';
+                        commandInput.focus();
+                        resolve(key);
+                    } else if (e.key === 'Escape') {
+                        sudoLine.remove();
+                        inputLineElement.style.display = 'flex';
+                        commandInput.focus();
+                        resolve(null);
                     }
-                    postsByYear[year].push(post);
                 });
-                
-                // Get available years and sort them (newest first)
-                availableYears = Object.keys(postsByYear).sort((a, b) => b - a);
-                
-                // Start in the most recent year, but only if it exists in the data
-                if (availableYears.length > 0) {
-                    const currentYear = new Date().getFullYear().toString();
-                    if (availableYears.includes(currentYear)) {
-                        currentDirectory = `/${currentYear}`;
-                    } else {
-                        currentDirectory = `/${availableYears[0]}`;
-                    }
+            });
+        }
+
+        // Command history
+        let commandHistory = JSON.parse(localStorage.getItem('terminal-history') || '[]');
+        let historyIndex = commandHistory.length;
+
+        try {
+            const response = await fetch('blog-posts.json');
+            const allPosts = await response.json();
+            // Filter out template entries
+            posts = allPosts.filter(post => !post._template);
+
+            // Organize posts by year
+            posts.forEach(post => {
+                const year = new Date(post.date).getFullYear().toString();
+                if (!postsByYear[year]) {
+                    postsByYear[year] = [];
                 }
-                
-            } catch (error) {
-                console.error('Failed to load blog posts:', error);
-                printError('Failed to load blog posts. Please check that blog-posts.json exists.');
+                postsByYear[year].push(post);
+            });
+
+            // Get available years and sort them (newest first)
+            availableYears = Object.keys(postsByYear).sort((a, b) => b - a);
+
+            // Start in the most recent year, but only if it exists in the data
+            if (availableYears.length > 0) {
+                const currentYear = new Date().getFullYear().toString();
+                if (availableYears.includes(currentYear)) {
+                    currentDirectory = `/${currentYear}`;
+                } else {
+                    currentDirectory = `/${availableYears[0]}`;
+                }
             }
 
-            const commands = {
-                sudo: async (args) => {
-                    if (args.length < 2) {
-                        printError("Usage: sudo [command] [arguments...]");
+        } catch (error) {
+            console.error('Failed to load blog posts:', error);
+            printError('Failed to load blog posts. Please check that blog-posts.json exists.');
+        }
+
+        const commands = {
+            sudo: async (args) => {
+                if (args.length < 2) {
+                    printError("Usage: sudo [command] [arguments...]");
+                    return;
+                }
+
+                const [command, ...commandArgs] = args;
+
+                if (command === 'cat') {
+                    const inputPath = commandArgs[0];
+                    if (!inputPath) {
+                        printError("Usage: sudo cat [filename]");
                         return;
                     }
-                    
-                    const [command, ...commandArgs] = args;
-                    
-                    if (command === 'cat') {
-                        const inputPath = commandArgs[0];
-                        if (!inputPath) {
-                            printError("Usage: sudo cat [filename]");
-                            return;
-                        }
-                        
-                        // Resolve the path
-                        const resolved = resolvePath(inputPath);
-                        if (!resolved) {
-                            printError(`sudo: cat: ${inputPath}: Invalid path`);
-                            return;
-                        }
-                        
-                        const { directory, filename } = resolved;
-                        
-                        // Check if we're trying to cat a directory
-                        if (!filename) {
-                            printError(`sudo: cat: ${inputPath}: Is a directory`);
-                            return;
-                        }
-                        
-                        // Find post in the resolved directory
-                        let post = null;
-                        if (directory === '/') {
-                            printError(`sudo: cat: ${inputPath}: No such file or directory`);
-                            return;
-                        } else {
-                            const year = directory.substring(1);
-                            const yearPosts = postsByYear[year] || [];
-                            post = yearPosts.find(p => p.title === filename);
-                        }
-                        
-                        if (post) {
-                            let contentToDisplay = post.content;
-                            
-                            let moodEmoji = '';
-                            let mood = '';
-                            let attachments = null;
-                        
-                            // Check if post is encrypted
-                            if (post.encrypted_content || post.encrypted_metadata) {
-                                const key = await promptForDecryptionKey();
-                                if (key === null) {
-                                    printLine("sudo: authentication cancelled");
+
+                    // Resolve the path
+                    const resolved = resolvePath(inputPath);
+                    if (!resolved) {
+                        printError(`sudo: cat: ${inputPath}: Invalid path`);
+                        return;
+                    }
+
+                    const {directory, filename} = resolved;
+
+                    // Check if we're trying to cat a directory
+                    if (!filename) {
+                        printError(`sudo: cat: ${inputPath}: Is a directory`);
+                        return;
+                    }
+
+                    // Find post in the resolved directory
+                    let post = null;
+                    if (directory === '/') {
+                        printError(`sudo: cat: ${inputPath}: No such file or directory`);
+                        return;
+                    } else {
+                        const year = directory.substring(1);
+                        const yearPosts = postsByYear[year] || [];
+                        post = yearPosts.find(p => p.title === filename);
+                    }
+
+                    if (post) {
+                        let contentToDisplay = post.content;
+
+                        let moodEmoji = '';
+                        let mood = '';
+                        let attachments = null;
+
+                        // Check if post is encrypted
+                        if (post.encrypted_content || post.encrypted_metadata) {
+                            const key = await promptForDecryptionKey();
+                            if (key === null) {
+                                printLine("sudo: authentication cancelled");
+                                return;
+                            }
+
+                            if (post.encrypted_content) {
+                                const decryptedContent = await decryptContent(post.encrypted_content, key);
+                                if (decryptedContent === null) {
+                                    printError("sudo: incorrect password");
                                     return;
                                 }
-                            
-                                if (post.encrypted_content) {
-                                    const decryptedContent = await decryptContent(post.encrypted_content, key);
-                                    if (decryptedContent === null) {
-                                        printError("sudo: incorrect password");
-                                        return;
-                                    }
-                                    contentToDisplay = decryptedContent;
+                                contentToDisplay = decryptedContent;
+                            }
+
+                            if (post.encrypted_metadata) {
+                                const decryptedMetadata = await decryptContent(post.encrypted_metadata, key);
+                                if (decryptedMetadata === null) {
+                                    printError("sudo: incorrect password");
+                                    return;
                                 }
-                            
-                                if (post.encrypted_metadata) {
-                                    const decryptedMetadata = await decryptContent(post.encrypted_metadata, key);
-                                    if (decryptedMetadata === null) {
-                                        printError("sudo: incorrect password");
-                                        return;
-                                    }
-                                
-                                    try {
-                                        const metadata = JSON.parse(decryptedMetadata);
-                                        moodEmoji = metadata.emoji || '';
-                                        mood = metadata.mood || '';
-                                        attachments = {
-                                            picture: metadata.picture,
-                                            spotify: metadata.spotify,
-                                            other_song: metadata.other_song
-                                        };
-                                    } catch (e) {
-                                        printError("sudo: failed to parse encrypted metadata");
-                                        return;
-                                    }
-                                } else {
-                                    moodEmoji = post.emoji || '';
-                                    mood = post.mood || '';
+
+                                try {
+                                    const metadata = JSON.parse(decryptedMetadata);
+                                    moodEmoji = metadata.emoji || '';
+                                    mood = metadata.mood || '';
                                     attachments = {
-                                        picture: post.picture,
-                                        spotify: post.spotify,
-                                        other_song: post.other_song
+                                        picture: metadata.picture,
+                                        spotify: metadata.spotify,
+                                        other_song: metadata.other_song
                                     };
+                                } catch (e) {
+                                    printError("sudo: failed to parse encrypted metadata");
+                                    return;
                                 }
                             } else {
                                 moodEmoji = post.emoji || '';
@@ -733,255 +747,26 @@
                                     other_song: post.other_song
                                 };
                             }
-                        
-                            const moodText = mood ? ` • Mood: ${mood}` : '';
-                            printLine(`<span class="post-date">Posted on: ${post.date}${moodText} ${moodEmoji}</span>`);
-                            printLine("---");
-                            printLine(contentToDisplay);
-                            
-                            // Display attachments if they exist
-                            if (attachments && (attachments.picture || attachments.spotify || attachments.other_song)) {
-                                printLine('<div class="attachments">');
-                                printLine('<div class="attachment-title">📎 Attachments</div>');
-                            
-                                if (attachments.picture) {
-                                    const imageId = `image-${post.id}`;
-                                    printLine('<div class="attachment-image">');
-                                    const escapedCaption = (attachments.picture.caption || '').replace(/'/g, "\\'").replace(/"/g, '\\"');
-                                    printLine(`<img src="${attachments.picture.path}" alt="${attachments.picture.caption || 'Image'}" style="width: 350px !important; height: 350px !important; max-width: 80% !important; max-height: 350px !important; object-fit: cover !important; display: block !important; margin: 0 auto !important; border-radius: 8px; cursor: pointer;" onclick="openImageModal('${imageId}', '${attachments.picture.path}', '${escapedCaption}')">`);
-                                    if (attachments.picture.caption) {
-                                        printLine(`<div class="attachment-caption">${attachments.picture.caption}</div>`);
-                                    }
-                                    printLine('</div>');
-                                }
-                            
-                                if (attachments.spotify) {
-                                    printLine(`<div class="attachment-spotify" onclick="window.open('${attachments.spotify.link}', '_blank')"><span class="spotify-icon">🎵</span><div class="spotify-info">${attachments.spotify.title} - <span class="spotify-artist">${attachments.spotify.artist}</span></div></div>`);
-                                }
-                            
-                                if (attachments.other_song) {
-                                    printLine(`<div class="attachment-other-song" onclick="window.open('${attachments.other_song.link}', '_blank')"><span class="spotify-icon">🎵</span><div class="spotify-info">${attachments.other_song.title} - <span class="spotify-artist">${attachments.other_song.artist}</span></div></div>`);
-                                }
-                            
-                                printLine('</div>');
-                            }
-                            
-                            // Scroll to the start of the post instead of the bottom
-                            setTimeout(scrollToPostStart, 50); // Small delay to ensure content is rendered
                         } else {
-                            printError(`sudo: cat: ${filename}: No such file or directory`);
+                            moodEmoji = post.emoji || '';
+                            mood = post.mood || '';
+                            attachments = {
+                                picture: post.picture,
+                                spotify: post.spotify,
+                                other_song: post.other_song
+                            };
                         }
-                    } else {
-                        printError(`sudo: ${command}: command not found`);
-                    }
-                },
-                help: () => {
-                    printLine("Available commands:");
-                    printLine("  <span class='post-title'>ls [options]</span> - List directories/posts");
-                    printLine("    -t        sort by modification time (newest first)");
-                    printLine("    -r        reverse order while sorting");
-                    printLine("  <span class='post-title'>cd [directory]</span> - Change directory (e.g., cd 2025, cd ..)");
-                    printLine("  <span class='post-title'>pwd</span>         - Show current directory");
-                    printLine("  <span class='post-title'>cat [filename]</span> - Read a specific post (e.g., cat hello-world.md)");
-                    printLine("  <span class='post-title'>tree</span>        - Display directory structure as a tree");
-                    printLine("  <span class='post-title'>date</span>        - Show current date and time");
-                    printLine("  <span class='post-title'>whoami</span>      - Display current user information");
-                    printLine("  <span class='post-title'>echo [text]</span> - Display a line of text");
-                    printLine("  <span class='post-title'>cal</span>         - Show calendar with post dates highlighted");
-                    printLine("  <span class='post-title'>uptime</span>      - Show blog uptime since first post");
-                    printLine("  <span class='post-title'>clear</span>       - Clear the terminal screen");
-                    printLine("  <span class='post-title'>help</span>        - Show this help message");
-                    printLine("  <span class='post-title'>exit</span>        - Exit to home page");
-                    printLine("");
-                    printLine("Tips:");
-                    printLine("  • Use <span class='post-title'>Tab</span> for auto-completion");
-                    printLine("  • Type partial filenames and press Tab to complete");
-                    printLine("  • Use <span class='post-title'>ls -t</span> to see posts by recency");
-                    printLine("  • Navigate between years with <span class='post-title'>cd</span>");
-                    printLine("  • Use <span class='post-title'>sudo cat</span> for encrypted posts");
-                },
-                ls: (args) => {
-                    // Separate path from options
-                    const options = args.filter(arg => arg.startsWith('-'));
-                    const pathArgs = args.filter(arg => !arg.startsWith('-'));
-                    
-                    // Parse arguments for sorting options
-                    const sortByTime = options.includes('-t');
-                    const reverseSort = options.includes('-r');
-                    const showHelp = options.includes('--help') || options.includes('-h');
-                    
-                    if (showHelp) {
-                        printLine("Usage: ls [options] [path]");
-                        printLine("Options:");
-                        printLine("  -t        sort by modification time (newest first)");
-                        printLine("  -r        reverse order while sorting");
-                        printLine("  -h, --help show this help message");
-                        return;
-                    }
-                    
-                    // Determine target directory
-                    let targetDirectory = currentDirectory;
-                    if (pathArgs.length > 0) {
-                        const resolved = resolvePath(pathArgs[0]);
-                        if (!resolved) {
-                            printError(`ls: ${pathArgs[0]}: Invalid path`);
-                            return;
-                        }
-                        
-                        if (resolved.filename) {
-                            // Path points to a file, not a directory
-                            printError(`ls: ${pathArgs[0]}: Not a directory`);
-                            return;
-                        }
-                        
-                        targetDirectory = resolved.directory;
-                    }
-                    
-                    let fileList = '';
-                    
-                    if (targetDirectory === '/') {
-                        // Root directory - show years as directories
-                        let sortedYears = [...availableYears];
-                        
-                        if (!sortByTime) {
-                            // Default: sort alphabetically
-                            sortedYears.sort();
-                        }
-                        // Note: sortByTime keeps the default newest-first order
-                        
-                        if (reverseSort) {
-                            sortedYears.reverse();
-                        }
-                        
-                        sortedYears.forEach(year => {
-                            const perms = 'drwxr-xr-x';
-                            const owner = 'ryan';
-                            const size = '4096';
-                            const date = 'Jan 01'; // Generic date for directories
-                            fileList += `${perms} 2 ${owner} ${owner} ${size.padStart(5, ' ')} ${date} <span class="post-title">${year}/</span>\n`;
-                        });
-                    } else {
-                        // In a year directory - show posts for that year
-                        const year = targetDirectory.substring(1); // Remove leading '/'
-                        const yearPosts = postsByYear[year] || [];
-                        
-                        if (yearPosts.length === 0) {
-                            printLine("No posts found in this directory.");
-                            return;
-                        }
-                        
-                        let sortedPosts = [...yearPosts];
-                        
-                        if (sortByTime) {
-                            // Sort by modification time (newest first)
-                            sortedPosts.sort((a, b) => {
-                                const [yearA, monthA, dayA] = a.date.split('-').map(Number);
-                                const [yearB, monthB, dayB] = b.date.split('-').map(Number);
-                                const dateA = new Date(yearA, monthA - 1, dayA);
-                                const dateB = new Date(yearB, monthB - 1, dayB);
-                                return dateB - dateA;
-                            });
-                        } else {
-                            // Default: sort alphabetically by filename
-                            sortedPosts.sort((a, b) => a.title.localeCompare(b.title));
-                        }
-                        
-                        if (reverseSort) {
-                            sortedPosts.reverse();
-                        }
-                        
-                        sortedPosts.forEach(post => {
-                            // Show different permissions for encrypted posts
-                            const perms = (post.encrypted_content || post.encrypted_metadata) ? '-rw-------' : '-rw-r--r--';
-                            const owner = 'ryan';
-                            
-                            // Calculate size based on available content
-                            let contentLength = 0;
-                            if (post.content) {
-                                contentLength = post.content.length;
-                            } else if (post.encrypted_content) {
-                                // Estimate content length from encrypted data (base64 is ~4/3 larger than original)
-                                contentLength = Math.floor(post.encrypted_content.length * 3 / 4);
-                            } else {
-                                // Fallback for posts with no content
-                                contentLength = 50; // Default estimate
-                            }
-                            const size = (contentLength * 2).toString().padStart(5, ' ');
-                            
-                            // Parse date as local date to avoid timezone issues
-                            const [year, month, day] = post.date.split('-').map(Number);
-                            const postDate = new Date(year, month - 1, day); // month is 0-indexed
-                            const date = postDate.toLocaleDateString('en-US', { month: 'short', day: '2-digit' });
-                            fileList += `${perms} 1 ${owner} ${owner} ${size} ${date} <span class="post-title">${post.title}</span>\n`;
-                        });
-                    }
-                    
-                    printLine(fileList.trim());
-                },
-                cat: async (args) => {
-                    const inputPath = args[0];
-                    if (!inputPath) {
-                        printError("Usage: cat [filename]");
-                        return;
-                    }
-                    
-                    // Resolve the path
-                    const resolved = resolvePath(inputPath);
-                    if (!resolved) {
-                        printError(`cat: ${inputPath}: Invalid path`);
-                        return;
-                    }
-                    
-                    const { directory, filename } = resolved;
-                    
-                    // Check if we're trying to cat a directory
-                    if (!filename) {
-                        printError(`cat: ${inputPath}: Is a directory`);
-                        return;
-                    }
-                    
-                    // Find post in the resolved directory
-                    let post = null;
-                    if (directory === '/') {
-                        printError(`cat: ${inputPath}: No such file or directory`);
-                        return;
-                    } else {
-                        const year = directory.substring(1);
-                        const yearPosts = postsByYear[year] || [];
-                        post = yearPosts.find(p => p.title === filename);
-                    }
-                    
-                    if (post) {
-                        let contentToDisplay = post.content;
-                        
-                        let moodEmoji = '';
-                        let mood = '';
-                        let attachments = null;
-                        
-                        // Check if post is encrypted
-                        if (post.encrypted_content || post.encrypted_metadata) {
-                            printError(`cat: ${filename}: Permission denied`);
-                            return;
-                        }
-                        
-                        moodEmoji = post.emoji || '';
-                        mood = post.mood || '';
-                        attachments = {
-                            picture: post.picture,
-                            spotify: post.spotify,
-                            other_song: post.other_song
-                        };
-                        
+
                         const moodText = mood ? ` • Mood: ${mood}` : '';
                         printLine(`<span class="post-date">Posted on: ${post.date}${moodText} ${moodEmoji}</span>`);
                         printLine("---");
                         printLine(contentToDisplay);
-                        
+
                         // Display attachments if they exist
                         if (attachments && (attachments.picture || attachments.spotify || attachments.other_song)) {
                             printLine('<div class="attachments">');
                             printLine('<div class="attachment-title">📎 Attachments</div>');
-                            
+
                             if (attachments.picture) {
                                 const imageId = `image-${post.id}`;
                                 printLine('<div class="attachment-image">');
@@ -992,430 +777,632 @@
                                 }
                                 printLine('</div>');
                             }
-                            
+
                             if (attachments.spotify) {
                                 printLine(`<div class="attachment-spotify" onclick="window.open('${attachments.spotify.link}', '_blank')"><span class="spotify-icon">🎵</span><div class="spotify-info">${attachments.spotify.title} - <span class="spotify-artist">${attachments.spotify.artist}</span></div></div>`);
                             }
-                            
+
                             if (attachments.other_song) {
                                 printLine(`<div class="attachment-other-song" onclick="window.open('${attachments.other_song.link}', '_blank')"><span class="spotify-icon">🎵</span><div class="spotify-info">${attachments.other_song.title} - <span class="spotify-artist">${attachments.other_song.artist}</span></div></div>`);
                             }
-                            
+
                             printLine('</div>');
                         }
-                        
-                        // Scroll to the start of the post instead of the bottom
-                        setTimeout(scrollToPostStart, 50); // Small delay to ensure content is rendered
+
+                        setTimeout(scrollToPostStart, 50);
                     } else {
-                        printError(`cat: ${filename}: No such file or directory`);
+                        printError(`sudo: cat: ${filename}: No such file or directory`);
                     }
-                },
-                cd: (args) => {
-                    const target = args[0];
-                    if (!target) {
-                        // cd with no arguments goes to root
-                        currentDirectory = '/';
+                } else {
+                    printError(`sudo: ${command}: command not found`);
+                }
+            },
+            help: () => {
+                printLine("Available commands:");
+                printLine("  <span class='post-title'>ls [options]</span> - List directories/posts");
+                printLine("    -t        sort by modification time (newest first)");
+                printLine("    -r        reverse order while sorting");
+                printLine("  <span class='post-title'>cd [directory]</span> - Change directory (e.g., cd 2025, cd ..)");
+                printLine("  <span class='post-title'>pwd</span>         - Show current directory");
+                printLine("  <span class='post-title'>cat [filename]</span> - Read a specific post (e.g., cat hello-world.md)");
+                printLine("  <span class='post-title'>tree</span>        - Display directory structure as a tree");
+                printLine("  <span class='post-title'>date</span>        - Show current date and time");
+                printLine("  <span class='post-title'>whoami</span>      - Display current user information");
+                printLine("  <span class='post-title'>echo [text]</span> - Display a line of text");
+                printLine("  <span class='post-title'>cal</span>         - Show calendar with post dates highlighted");
+                printLine("  <span class='post-title'>uptime</span>      - Show blog uptime since first post");
+                printLine("  <span class='post-title'>clear</span>       - Clear the terminal screen");
+                printLine("  <span class='post-title'>help</span>        - Show this help message");
+                printLine("  <span class='post-title'>exit</span>        - Exit to home page");
+                printLine("");
+                printLine("Tips:");
+                printLine("  • Use <span class='post-title'>Tab</span> for auto-completion");
+                printLine("  • Type partial filenames and press Tab to complete");
+                printLine("  • Use <span class='post-title'>ls -t</span> to see posts by recency");
+                printLine("  • Navigate between years with <span class='post-title'>cd</span>");
+                printLine("  • Use <span class='post-title'>sudo cat</span> for encrypted posts");
+            },
+            ls: (args) => {
+                const optionsRaw = [];
+                const pathArgs = [];
+
+                let parsingOptions = true;
+                for (const arg of args) {
+                    if (parsingOptions) {
+                        if (arg === '--') {
+                            parsingOptions = false;
+                            continue;
+                        }
+                        if (arg.startsWith('-') && arg !== '-') {
+                            optionsRaw.push(arg);
+                            continue;
+                        }
+                        parsingOptions = false;
+                    }
+                    pathArgs.push(arg);
+                }
+
+                const options = optionsRaw.flatMap(opt => {
+                    if (opt.startsWith('--')) return [opt];
+                    return opt.slice(1).split('').map(ch => `-${ch}`);
+                });
+
+                const sortByTime = options.includes('-t');
+                const reverseSort = options.includes('-r');
+                const showHelp = options.includes('--help') || options.includes('-h');
+
+                if (showHelp) {
+                    printLine("Usage: ls [options] [path]");
+                    printLine("Options:");
+                    printLine("  -t         sort by modification time (newest first)");
+                    printLine("  -r         reverse order while sorting");
+                    printLine("  -h, --help  show this help message");
+                    return;
+                }
+
+                // Determine target directory
+                let targetDirectory = currentDirectory;
+                if (pathArgs.length > 0) {
+                    const resolved = resolvePath(pathArgs[0]);
+                    if (!resolved) {
+                        printError(`ls: ${pathArgs[0]}: Invalid path`);
                         return;
                     }
-                    
-                    if (target === '..') {
-                        // Go up one directory
-                        if (currentDirectory !== '/') {
-                            currentDirectory = '/';
-                        }
-                    } else if (target === '/' || target === '~') {
-                        // Go to root
-                        currentDirectory = '/';
-                    } else {
-                        // Try to cd into a year directory
-                        if (currentDirectory === '/') {
-                            if (availableYears.includes(target)) {
-                                currentDirectory = `/${target}`;
-                            } else {
-                                printError(`cd: ${target}: No such file or directory`);
-                            }
-                        } else {
-                            printError(`cd: ${target}: No such file or directory`);
-                        }
-                    }
-                },
-                pwd: () => {
-                    printLine(currentDirectory);
-                },
-                clear: () => {
-                    output.innerHTML = '';
-                },
-                exit: () => {
-                    window.location.href = 'index.html';
-                },
-                date: () => {
-                    const now = new Date();
-                    const options = {
-                        weekday: 'short',
-                        year: 'numeric',
-                        month: 'short',
-                        day: '2-digit',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        second: '2-digit',
-                        timeZoneName: 'short'
-                    };
-                    printLine(now.toLocaleDateString('en-US', options));
-                },
-                whoami: () => {
-                    printLine("ryan polasky");
-                    printLine("");
-                    printLine("software dev & cs student");
-                    printLine("location: north dakota, usa");
-                    printLine("email: ryanpolasky@hotmail.com");
-                },
-                tree: () => {
-                    printLine(".");
-                    
-                    if (availableYears.length === 0) {
-                        printLine("└── (no posts found)");
+
+                    if (resolved.filename) {
+                        printError(`ls: ${pathArgs[0]}: Not a directory`);
                         return;
                     }
-                    
-                    // Sort years for consistent display (newest first)
-                    const sortedYears = [...availableYears].sort((a, b) => b - a);
-                    
-                    sortedYears.forEach((year, yearIndex) => {
-                        const isLastYear = yearIndex === sortedYears.length - 1;
-                        const yearPrefix = isLastYear ? "└── " : "├── ";
-                        const postPrefix = isLastYear ? "    " : "│   ";
-                        
-                        const yearPosts = postsByYear[year] || [];
-                        const postCount = yearPosts.length;
-                        
-                        printLine(`${yearPrefix}<span class="post-title">${year}/</span> (${postCount} post${postCount !== 1 ? 's' : ''})`);
-                        
-                        // Sort posts by date (newest first)
-                        const sortedPosts = [...yearPosts].sort((a, b) => {
+
+                    targetDirectory = resolved.directory;
+                }
+
+                let fileList = '';
+
+                if (targetDirectory === '/') {
+                    let sortedYears = [...availableYears];
+
+                    if (!sortByTime) {
+                        sortedYears.sort();
+                    }
+
+                    if (reverseSort) {
+                        sortedYears.reverse();
+                    }
+
+                    sortedYears.forEach(year => {
+                        const perms = 'drwxr-xr-x';
+                        const owner = 'ryan';
+                        const size = '4096';
+                        const date = 'Jan 01';
+                        fileList += `${perms} 2 ${owner} ${owner} ${size.padStart(5, ' ')} ${date} <span class="post-title">${year}/</span>\n`;
+                    });
+                } else {
+                    // In a year directory - show posts for that year
+                    const year = targetDirectory.substring(1);
+                    const yearPosts = postsByYear[year] || [];
+
+                    if (yearPosts.length === 0) {
+                        printLine("No posts found in this directory.");
+                        return;
+                    }
+
+                    let sortedPosts = [...yearPosts];
+
+                    if (sortByTime) {
+                        // Sort by modification time (newest first)
+                        sortedPosts.sort((a, b) => {
                             const [yearA, monthA, dayA] = a.date.split('-').map(Number);
                             const [yearB, monthB, dayB] = b.date.split('-').map(Number);
                             const dateA = new Date(yearA, monthA - 1, dayA);
                             const dateB = new Date(yearB, monthB - 1, dayB);
                             return dateB - dateA;
                         });
-                        
-                        sortedPosts.forEach((post, postIndex) => {
-                            const isLastPost = postIndex === sortedPosts.length - 1;
-                            const filePrefix = isLastPost ? "└── " : "├── ";
-                            
-                            printLine(`${postPrefix}${filePrefix}<span class="post-title">${post.title}</span>`);
-                        });
-                    });
-                },
-                echo: (args) => {
-                    if (args.length === 0) {
-                        printLine("");
                     } else {
-                        printLine(args.join(' '));
+                        sortedPosts.sort((a, b) => a.title.localeCompare(b.title));
                     }
-                },
-                cal: () => {
-                    const now = new Date();
-                    const currentMonth = now.getMonth();
-                    const currentYear = now.getFullYear();
-                    
-                    // Get all post dates for highlighting
-                    const postDates = new Set();
-                    posts.forEach(post => {
-                        // Parse date as local date to avoid timezone issues
-                        const [year, month, day] = post.date.split('-').map(Number);
-                        const postDate = new Date(year, month - 1, day); // month is 0-indexed
-                        if (postDate.getMonth() === currentMonth && postDate.getFullYear() === currentYear) {
-                            postDates.add(postDate.getDate());
+
+                    if (reverseSort) {
+                        sortedPosts.reverse();
+                    }
+
+                    sortedPosts.forEach(post => {
+                        const encryptedContent = post.encrypted_content ?? post.encryptedcontent;
+                        const encryptedMetadata = post.encrypted_metadata ?? post.encryptedmetadata;
+
+                        // Show different permissions for encrypted posts
+                        const perms = (encryptedContent || encryptedMetadata) ? '-rw-------' : '-rw-r--r--';
+                        const owner = 'ryan';
+
+                        // Calculate size based on available content
+                        let contentLength = 0;
+                        if (post.content) {
+                            contentLength = post.content.length;
+                        } else if (encryptedContent) {
+                            // Estimate content length from encrypted data (base64 is ~4/3 larger than original)
+                            contentLength = Math.floor(encryptedContent.length * 3 / 4);
+                        } else {
+                            contentLength = 50;
                         }
+                        const size = (contentLength * 2).toString().padStart(5, ' ');
+
+                        const [y, m, d] = post.date.split('-').map(Number);
+                        const postDate = new Date(y, m - 1, d);
+                        const date = postDate.toLocaleDateString('en-US', {month: 'short', day: '2-digit'});
+
+                        fileList += `${perms} 1 ${owner} ${owner} ${size} ${date} <span class="post-title">${post.title}</span>\n`;
                     });
-                    
-                    // Month names
-                    const monthNames = [
-                        'January', 'February', 'March', 'April', 'May', 'June',
-                        'July', 'August', 'September', 'October', 'November', 'December'
-                    ];
-                    
-                    // Calendar header
-                    const monthYear = `${monthNames[currentMonth]} ${currentYear}`;
-                    const padding = Math.floor((20 - monthYear.length) / 2);
-                    printLine(' '.repeat(padding) + monthYear);
-                    printLine('Su Mo Tu We Th Fr Sa');
-                    
-                    // Get first day of month and number of days
-                    const firstDay = new Date(currentYear, currentMonth, 1).getDay();
-                    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-                    
-                    let calendar = '';
-                    let dayCount = 1;
-                    
-                    // Build calendar grid
-                    for (let week = 0; week < 6; week++) {
-                        let weekLine = '';
-                        for (let day = 0; day < 7; day++) {
-                            if (week === 0 && day < firstDay) {
-                                weekLine += '   ';
-                            } else if (dayCount <= daysInMonth) {
-                                const dayStr = dayCount.toString().padStart(2, ' ');
-                                if (postDates.has(dayCount)) {
-                                    weekLine += `<span class="post-title">${dayStr}</span> `;
-                                } else if (dayCount === now.getDate()) {
-                                    weekLine += `<span class="post-date">${dayStr}</span> `;
-                                } else {
-                                    weekLine += `${dayStr} `;
-                                }
-                                dayCount++;
-                            } else {
-                                weekLine += '   ';
-                            }
-                        }
-                        if (weekLine.trim()) {
-                            printLine(weekLine);
-                        }
-                    }
-                    
-                    printLine("");
-                    printLine(`<span class="post-title">Highlighted dates</span> have blog posts`);
-                    printLine(`<span class="post-date">Today</span> is highlighted in blue`);
-                },
-                uptime: () => {
-                    if (posts.length === 0) {
-                        printLine("No posts found - blog uptime unknown");
+                }
+
+                printLine(fileList.trim());
+            },
+
+            cat: async (args) => {
+                const inputPath = args[0];
+                if (!inputPath) {
+                    printError("Usage: cat [filename]");
+                    return;
+                }
+
+                // Resolve the path
+                const resolved = resolvePath(inputPath);
+                if (!resolved) {
+                    printError(`cat: ${inputPath}: Invalid path`);
+                    return;
+                }
+
+                const {directory, filename} = resolved;
+
+                // Check if we're trying to cat a directory
+                if (!filename) {
+                    printError(`cat: ${inputPath}: Is a directory`);
+                    return;
+                }
+
+                // Find post in the resolved directory
+                let post = null;
+                if (directory === '/') {
+                    printError(`cat: ${inputPath}: No such file or directory`);
+                    return;
+                } else {
+                    const year = directory.substring(1);
+                    const yearPosts = postsByYear[year] || [];
+                    post = yearPosts.find(p => p.title === filename);
+                }
+
+                if (post) {
+                    let contentToDisplay = post.content;
+
+                    let moodEmoji = '';
+                    let mood = '';
+                    let attachments = null;
+
+                    // Check if post is encrypted
+                    if (post.encrypted_content || post.encrypted_metadata) {
+                        printError(`cat: ${filename}: Permission denied`);
                         return;
                     }
-                    
-                    // Find the earliest post date
-                    const earliestPost = posts.reduce((earliest, post) => {
-                        const [yearA, monthA, dayA] = post.date.split('-').map(Number);
-                        const [yearB, monthB, dayB] = earliest.date.split('-').map(Number);
-                        const postDate = new Date(yearA, monthA - 1, dayA);
-                        const earliestDate = new Date(yearB, monthB - 1, dayB);
-                        return postDate < earliestDate ? post : earliest;
-                    });
-                    
-                    const [year, month, day] = earliestPost.date.split('-').map(Number);
-                    const startDate = new Date(year, month - 1, day);
-                    const now = new Date();
-                    const uptimeMs = now - startDate;
-                    
-                    // Calculate time components
-                    const days = Math.floor(uptimeMs / (1000 * 60 * 60 * 24));
-                    const hours = Math.floor((uptimeMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    const minutes = Math.floor((uptimeMs % (1000 * 60 * 60)) / (1000 * 60));
-                    
-                    // Format uptime string
-                    let uptimeStr = '';
-                    if (days > 0) {
-                        uptimeStr += `${days} day${days !== 1 ? 's' : ''}, `;
-                    }
-                    if (hours > 0 || days > 0) {
-                        uptimeStr += `${hours} hour${hours !== 1 ? 's' : ''}, `;
-                    }
-                    uptimeStr += `${minutes} minute${minutes !== 1 ? 's' : ''}`;
-                    
-                    const totalPosts = posts.length;
-                    const avgPostsPerDay = (totalPosts / days).toFixed(2);
-                    
-                    printLine(`Blog uptime: ${uptimeStr}`);
-                    printLine(`Since: <span class="post-date">${earliestPost.date}</span> (first post: <span class="post-title">${earliestPost.title}</span>)`);
-                    printLine(`Total posts: <span class="post-title">${totalPosts}</span>`);
-                    printLine(`Average: <span class="post-date">${avgPostsPerDay}</span> posts per day`);
-                }
-            };
 
-            // --- Path Resolution Helper ---
-            
-            function resolvePath(inputPath, currentDir = currentDirectory) {
-                // Handle absolute paths (start with /)
-                if (inputPath.startsWith('/')) {
-                    const parts = inputPath.split('/').filter(part => part);
-                    if (parts.length === 0) {
-                        return { directory: '/', filename: null };
-                    } else if (parts.length === 1) {
-                        // Could be a directory or file
-                        if (availableYears.includes(parts[0])) {
-                            return { directory: `/${parts[0]}`, filename: null };
-                        } else {
-                            return { directory: '/', filename: parts[0] };
+                    moodEmoji = post.emoji || '';
+                    mood = post.mood || '';
+                    attachments = {
+                        picture: post.picture,
+                        spotify: post.spotify,
+                        other_song: post.other_song
+                    };
+
+                    const moodText = mood ? ` • Mood: ${mood}` : '';
+                    printLine(`<span class="post-date">Posted on: ${post.date}${moodText} ${moodEmoji}</span>`);
+                    printLine("---");
+                    printLine(contentToDisplay);
+
+                    // Display attachments if they exist
+                    if (attachments && (attachments.picture || attachments.spotify || attachments.other_song)) {
+                        printLine('<div class="attachments">');
+                        printLine('<div class="attachment-title">📎 Attachments</div>');
+
+                        if (attachments.picture) {
+                            const imageId = `image-${post.id}`;
+                            printLine('<div class="attachment-image">');
+                            const escapedCaption = (attachments.picture.caption || '').replace(/'/g, "\\'").replace(/"/g, '\\"');
+                            printLine(`<img src="${attachments.picture.path}" alt="${attachments.picture.caption || 'Image'}" style="width: 350px !important; height: 350px !important; max-width: 80% !important; max-height: 350px !important; object-fit: cover !important; display: block !important; margin: 0 auto !important; border-radius: 8px; cursor: pointer;" onclick="openImageModal('${imageId}', '${attachments.picture.path}', '${escapedCaption}')">`);
+                            if (attachments.picture.caption) {
+                                printLine(`<div class="attachment-caption">${attachments.picture.caption}</div>`);
+                            }
+                            printLine('</div>');
                         }
-                    } else if (parts.length === 2) {
-                        return { directory: `/${parts[0]}`, filename: parts[1] };
+
+                        if (attachments.spotify) {
+                            printLine(`<div class="attachment-spotify" onclick="window.open('${attachments.spotify.link}', '_blank')"><span class="spotify-icon">🎵</span><div class="spotify-info">${attachments.spotify.title} - <span class="spotify-artist">${attachments.spotify.artist}</span></div></div>`);
+                        }
+
+                        if (attachments.other_song) {
+                            printLine(`<div class="attachment-other-song" onclick="window.open('${attachments.other_song.link}', '_blank')"><span class="spotify-icon">🎵</span><div class="spotify-info">${attachments.other_song.title} - <span class="spotify-artist">${attachments.other_song.artist}</span></div></div>`);
+                        }
+
+                        printLine('</div>');
+                    }
+
+                    // Scroll to the start of the post instead of the bottom
+                    setTimeout(scrollToPostStart, 50); // Small delay to ensure content is rendered
+                } else {
+                    printError(`cat: ${filename}: No such file or directory`);
+                }
+            },
+            cd: (args) => {
+                const target = args[0];
+                if (!target) {
+                    // cd with no arguments goes to root
+                    currentDirectory = '/';
+                    return;
+                }
+
+                if (target === '..') {
+                    // Go up one directory
+                    if (currentDirectory !== '/') {
+                        currentDirectory = '/';
+                    }
+                } else if (target === '/' || target === '~') {
+                    // Go to root
+                    currentDirectory = '/';
+                } else {
+                    // Try to cd into a year directory
+                    if (currentDirectory === '/') {
+                        if (availableYears.includes(target)) {
+                            currentDirectory = `/${target}`;
+                        } else {
+                            printError(`cd: ${target}: No such file or directory`);
+                        }
                     } else {
-                        return null; // Invalid path
+                        printError(`cd: ${target}: No such file or directory`);
                     }
                 }
-                
-                // Handle relative paths
+            },
+            pwd: () => {
+                printLine(currentDirectory);
+            },
+            clear: () => {
+                output.innerHTML = '';
+            },
+            exit: () => {
+                window.location.href = 'index.html';
+            },
+            date: () => {
+                const now = new Date();
+                const options = {
+                    weekday: 'short',
+                    year: 'numeric',
+                    month: 'short',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    timeZoneName: 'short'
+                };
+                printLine(now.toLocaleDateString('en-US', options));
+            },
+            whoami: () => {
+                printLine("ryan polasky");
+                printLine("");
+                printLine("software dev & cs student");
+                printLine("location: north dakota, usa");
+                printLine("email: ryanpolasky@hotmail.com");
+            },
+            tree: () => {
+                printLine(".");
+
+                if (availableYears.length === 0) {
+                    printLine("└── (no posts found)");
+                    return;
+                }
+
+                // Sort years for consistent display (newest first)
+                const sortedYears = [...availableYears].sort((a, b) => b - a);
+
+                sortedYears.forEach((year, yearIndex) => {
+                    const isLastYear = yearIndex === sortedYears.length - 1;
+                    const yearPrefix = isLastYear ? "└── " : "├── ";
+                    const postPrefix = isLastYear ? "    " : "│   ";
+
+                    const yearPosts = postsByYear[year] || [];
+                    const postCount = yearPosts.length;
+
+                    printLine(`${yearPrefix}<span class="post-title">${year}/</span> (${postCount} post${postCount !== 1 ? 's' : ''})`);
+
+                    // Sort posts by date (newest first)
+                    const sortedPosts = [...yearPosts].sort((a, b) => {
+                        const [yearA, monthA, dayA] = a.date.split('-').map(Number);
+                        const [yearB, monthB, dayB] = b.date.split('-').map(Number);
+                        const dateA = new Date(yearA, monthA - 1, dayA);
+                        const dateB = new Date(yearB, monthB - 1, dayB);
+                        return dateB - dateA;
+                    });
+
+                    sortedPosts.forEach((post, postIndex) => {
+                        const isLastPost = postIndex === sortedPosts.length - 1;
+                        const filePrefix = isLastPost ? "└── " : "├── ";
+
+                        printLine(`${postPrefix}${filePrefix}<span class="post-title">${post.title}</span>`);
+                    });
+                });
+            },
+            echo: (args) => {
+                if (args.length === 0) {
+                    printLine("");
+                } else {
+                    printLine(args.join(' '));
+                }
+            },
+            cal: () => {
+                const now = new Date();
+                const currentMonth = now.getMonth();
+                const currentYear = now.getFullYear();
+
+                // Get all post dates for highlighting
+                const postDates = new Set();
+                posts.forEach(post => {
+                    // Parse date as local date to avoid timezone issues
+                    const [year, month, day] = post.date.split('-').map(Number);
+                    const postDate = new Date(year, month - 1, day); // month is 0-indexed
+                    if (postDate.getMonth() === currentMonth && postDate.getFullYear() === currentYear) {
+                        postDates.add(postDate.getDate());
+                    }
+                });
+
+                // Month names
+                const monthNames = [
+                    'January', 'February', 'March', 'April', 'May', 'June',
+                    'July', 'August', 'September', 'October', 'November', 'December'
+                ];
+
+                // Calendar header
+                const monthYear = `${monthNames[currentMonth]} ${currentYear}`;
+                const padding = Math.floor((20 - monthYear.length) / 2);
+                printLine(' '.repeat(padding) + monthYear);
+                printLine('Su Mo Tu We Th Fr Sa');
+
+                // Get first day of month and number of days
+                const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+                const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+                let calendar = '';
+                let dayCount = 1;
+
+                // Build calendar grid
+                for (let week = 0; week < 6; week++) {
+                    let weekLine = '';
+                    for (let day = 0; day < 7; day++) {
+                        if (week === 0 && day < firstDay) {
+                            weekLine += '   ';
+                        } else if (dayCount <= daysInMonth) {
+                            const dayStr = dayCount.toString().padStart(2, ' ');
+                            if (postDates.has(dayCount)) {
+                                weekLine += `<span class="post-title">${dayStr}</span> `;
+                            } else if (dayCount === now.getDate()) {
+                                weekLine += `<span class="post-date">${dayStr}</span> `;
+                            } else {
+                                weekLine += `${dayStr} `;
+                            }
+                            dayCount++;
+                        } else {
+                            weekLine += '   ';
+                        }
+                    }
+                    if (weekLine.trim()) {
+                        printLine(weekLine);
+                    }
+                }
+
+                printLine("");
+                printLine(`<span class="post-title">Highlighted dates</span> have blog posts`);
+                printLine(`<span class="post-date">Today</span> is highlighted in blue`);
+            },
+            uptime: () => {
+                if (posts.length === 0) {
+                    printLine("No posts found - blog uptime unknown");
+                    return;
+                }
+
+                // Find the earliest post date
+                const earliestPost = posts.reduce((earliest, post) => {
+                    const [yearA, monthA, dayA] = post.date.split('-').map(Number);
+                    const [yearB, monthB, dayB] = earliest.date.split('-').map(Number);
+                    const postDate = new Date(yearA, monthA - 1, dayA);
+                    const earliestDate = new Date(yearB, monthB - 1, dayB);
+                    return postDate < earliestDate ? post : earliest;
+                });
+
+                const [year, month, day] = earliestPost.date.split('-').map(Number);
+                const startDate = new Date(year, month - 1, day);
+                const now = new Date();
+                const uptimeMs = now - startDate;
+
+                // Calculate time components
+                const days = Math.floor(uptimeMs / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((uptimeMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((uptimeMs % (1000 * 60 * 60)) / (1000 * 60));
+
+                // Format uptime string
+                let uptimeStr = '';
+                if (days > 0) {
+                    uptimeStr += `${days} day${days !== 1 ? 's' : ''}, `;
+                }
+                if (hours > 0 || days > 0) {
+                    uptimeStr += `${hours} hour${hours !== 1 ? 's' : ''}, `;
+                }
+                uptimeStr += `${minutes} minute${minutes !== 1 ? 's' : ''}`;
+
+                const totalPosts = posts.length;
+                const avgPostsPerDay = (totalPosts / days).toFixed(2);
+
+                printLine(`Blog uptime: ${uptimeStr}`);
+                printLine(`Since: <span class="post-date">${earliestPost.date}</span> (first post: <span class="post-title">${earliestPost.title}</span>)`);
+                printLine(`Total posts: <span class="post-title">${totalPosts}</span>`);
+                printLine(`Average: <span class="post-date">${avgPostsPerDay}</span> posts per day`);
+            }
+        };
+
+        // --- Path Resolution Helper ---
+
+        function resolvePath(inputPath, currentDir = currentDirectory) {
+            // Handle absolute paths (start with /)
+            if (inputPath.startsWith('/')) {
                 const parts = inputPath.split('/').filter(part => part);
-                let resolvedDir = currentDir;
-                let filename = null;
-                
-                for (let i = 0; i < parts.length; i++) {
-                    const part = parts[i];
-                    
-                    if (part === '..') {
-                        // Go up one directory
-                        if (resolvedDir !== '/') {
-                            resolvedDir = '/';
-                        }
-                    } else if (part === '.' || part === '') {
-                        // Stay in current directory
-                        continue;
+                if (parts.length === 0) {
+                    return {directory: '/', filename: null};
+                } else if (parts.length === 1) {
+                    // Could be a directory or file
+                    if (availableYears.includes(parts[0])) {
+                        return {directory: `/${parts[0]}`, filename: null};
                     } else {
-                        // This is either a directory or filename
-                        if (i === parts.length - 1) {
-                            // Last part - could be directory or file
-                            if (resolvedDir === '/' && availableYears.includes(part)) {
-                                resolvedDir = `/${part}`;
-                            } else {
-                                filename = part;
-                            }
-                        } else {
-                            // Not last part - must be a directory
-                            if (resolvedDir === '/' && availableYears.includes(part)) {
-                                resolvedDir = `/${part}`;
-                            } else {
-                                return null; // Invalid path
-                            }
-                        }
+                        return {directory: '/', filename: parts[0]};
                     }
+                } else if (parts.length === 2) {
+                    return {directory: `/${parts[0]}`, filename: parts[1]};
+                } else {
+                    return null; // Invalid path
                 }
-                
-                return { directory: resolvedDir, filename: filename };
             }
 
-            // --- Terminal Helper Functions ---
+            // Handle relative paths
+            const parts = inputPath.split('/').filter(part => part);
+            let resolvedDir = currentDir;
+            let filename = null;
 
-            function printLine(text) {
-                const line = document.createElement('div');
-                line.classList.add('line', 'command-output');
-                line.innerHTML = text;
-                output.appendChild(line);
+            for (let i = 0; i < parts.length; i++) {
+                const part = parts[i];
+
+                if (part === '..') {
+                    // Go up one directory
+                    if (resolvedDir !== '/') {
+                        resolvedDir = '/';
+                    }
+                } else if (part === '.' || part === '') {
+                    // Stay in current directory
+                    continue;
+                } else {
+                    // This is either a directory or filename
+                    if (i === parts.length - 1) {
+                        // Last part - could be directory or file
+                        if (resolvedDir === '/' && availableYears.includes(part)) {
+                            resolvedDir = `/${part}`;
+                        } else {
+                            filename = part;
+                        }
+                    } else {
+                        // Not last part - must be a directory
+                        if (resolvedDir === '/' && availableYears.includes(part)) {
+                            resolvedDir = `/${part}`;
+                        } else {
+                            return null; // Invalid path
+                        }
+                    }
+                }
+            }
+
+            return {directory: resolvedDir, filename: filename};
+        }
+
+        // --- Terminal Helper Functions ---
+
+        function printLine(text) {
+            const line = document.createElement('div');
+            line.classList.add('line', 'command-output');
+            line.innerHTML = text;
+            output.appendChild(line);
+            scrollToBottom();
+        }
+
+        function printError(text) {
+            printLine(`<span class="error">${text}</span>`);
+        }
+
+        function printCommand(command) {
+            const line = document.createElement('div');
+            line.classList.add('line');
+            line.innerHTML = `<span class="prompt">$ ryans-thoughts:<span class="directory">${currentDirectory}</span> ></span>${command}`;
+            output.appendChild(line);
+        }
+
+        function updatePrompt() {
+            const currentDirElement = document.getElementById('current-dir');
+            if (currentDirElement) {
+                currentDirElement.textContent = currentDirectory;
+            }
+        }
+
+        function scrollToBottom() {
+            terminalBody.scrollTop = terminalBody.scrollHeight;
+        }
+
+        function scrollToPostStart() {
+            // Find the most recent post-date element and scroll to it
+            const postDateElements = output.querySelectorAll('.post-date');
+            if (postDateElements.length > 0) {
+                const lastPostDate = postDateElements[postDateElements.length - 1];
+                // Get the previous element (should be the cat command line)
+                const previousElement = lastPostDate.parentElement.previousElementSibling;
+                if (previousElement) {
+                    previousElement.scrollIntoView({behavior: 'smooth', block: 'start'});
+                } else {
+                    lastPostDate.scrollIntoView({behavior: 'smooth', block: 'start'});
+                }
+            } else {
+                // Fallback: scroll to bottom if no post-date found
                 scrollToBottom();
             }
+        }
 
-            function printError(text) {
-                printLine(`<span class="error">${text}</span>`);
-            }
+        // --- Tab Auto-completion ---
 
-            function printCommand(command) {
-                const line = document.createElement('div');
-                line.classList.add('line');
-                line.innerHTML = `<span class="prompt">$ ryans-thoughts:<span class="directory">${currentDirectory}</span> ></span>${command}`;
-                output.appendChild(line);
-            }
-            
-            function updatePrompt() {
-                const currentDirElement = document.getElementById('current-dir');
-                if (currentDirElement) {
-                    currentDirElement.textContent = currentDirectory;
-                }
-            }
+        function getCompletions(input) {
+            const parts = input.split(/\s+/);
+            const command = parts[0];
+            const currentArg = parts[parts.length - 1] || '';
 
-            function scrollToBottom() {
-                terminalBody.scrollTop = terminalBody.scrollHeight;
-            }
-
-            function scrollToPostStart() {
-                // Find the most recent post-date element and scroll to it
-                const postDateElements = output.querySelectorAll('.post-date');
-                if (postDateElements.length > 0) {
-                    const lastPostDate = postDateElements[postDateElements.length - 1];
-                    // Get the previous element (should be the cat command line)
-                    const previousElement = lastPostDate.parentElement.previousElementSibling;
-                    if (previousElement) {
-                        previousElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    } else {
-                        lastPostDate.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                } else {
-                    // Fallback: scroll to bottom if no post-date found
-                    scrollToBottom();
-                }
-            }
-
-            // --- Tab Auto-completion ---
-
-            function getCompletions(input) {
-                const parts = input.split(/\s+/);
-                const command = parts[0];
-                const currentArg = parts[parts.length - 1] || '';
-
-                if (parts.length === 1) {
-                    // Complete command names
-                    return Object.keys(commands).filter(cmd => cmd.startsWith(currentArg));
-                } else if (command === 'sudo' && parts.length === 3) {
-                    // Handle sudo cat completion
-                    const subCommand = parts[1];
-                    if (subCommand === 'cat') {
-                        const currentArg = parts[2];
-                        if (currentArg.includes('/')) {
-                            // Path completion for sudo cat
-                            const lastSlash = currentArg.lastIndexOf('/');
-                            const pathPrefix = currentArg.substring(0, lastSlash + 1);
-                            const namePrefix = currentArg.substring(lastSlash + 1);
-                            
-                            // Try to resolve the directory part
-                            const dirPath = pathPrefix === '/' ? '/' : pathPrefix.slice(0, -1);
-                            const resolved = resolvePath(dirPath);
-                            
-                            if (!resolved) return [];
-                            
-                            const { directory } = resolved;
-                            let completions = [];
-                            
-                            if (directory === '/') {
-                                // Complete with year directories
-                                completions = availableYears
-                                    .filter(year => year.startsWith(namePrefix))
-                                    .map(year => pathPrefix + year + '/');
-                            } else {
-                                // Complete with files in year directory
-                                const year = directory.substring(1);
-                                const yearPosts = postsByYear[year] || [];
-                                completions = yearPosts
-                                    .map(p => p.title)
-                                    .filter(title => title.startsWith(namePrefix))
-                                    .map(title => pathPrefix + title);
-                                
-                                // Also add .. if we're not at root
-                                if (namePrefix === '' || '..'.startsWith(namePrefix)) {
-                                    completions.push(pathPrefix + '../');
-                                }
-                            }
-                            
-                            return completions;
-                        } else {
-                            // Simple name completion in current directory for sudo cat
-                            if (currentDirectory === '/') {
-                                // In root, complete with year directories for relative paths
-                                return availableYears
-                                    .filter(year => year.startsWith(currentArg))
-                                    .map(year => year + '/');
-                            } else {
-                                const year = currentDirectory.substring(1);
-                                const yearPosts = postsByYear[year] || [];
-                                return yearPosts.map(p => p.title).filter(title => title.startsWith(currentArg));
-                            }
-                        }
-                    }
-                } else if ((command === 'cat' || command === 'ls') && parts.length === 2) {
-                    // Complete paths for cat and ls commands
+            if (parts.length === 1) {
+                // Complete command names
+                return Object.keys(commands).filter(cmd => cmd.startsWith(currentArg));
+            } else if (command === 'sudo' && parts.length === 3) {
+                // Handle sudo cat completion
+                const subCommand = parts[1];
+                if (subCommand === 'cat') {
+                    const currentArg = parts[2];
                     if (currentArg.includes('/')) {
-                        // Path completion
+                        // Path completion for sudo cat
                         const lastSlash = currentArg.lastIndexOf('/');
                         const pathPrefix = currentArg.substring(0, lastSlash + 1);
                         const namePrefix = currentArg.substring(lastSlash + 1);
-                        
+
                         // Try to resolve the directory part
                         const dirPath = pathPrefix === '/' ? '/' : pathPrefix.slice(0, -1);
                         const resolved = resolvePath(dirPath);
-                        
+
                         if (!resolved) return [];
-                        
-                        const { directory } = resolved;
+
+                        const {directory} = resolved;
                         let completions = [];
-                        
+
                         if (directory === '/') {
                             // Complete with year directories
                             completions = availableYears
@@ -1429,283 +1416,335 @@
                                 .map(p => p.title)
                                 .filter(title => title.startsWith(namePrefix))
                                 .map(title => pathPrefix + title);
-                            
+
                             // Also add .. if we're not at root
                             if (namePrefix === '' || '..'.startsWith(namePrefix)) {
                                 completions.push(pathPrefix + '../');
                             }
                         }
-                        
+
                         return completions;
                     } else {
-                        // Simple name completion in current directory
-                        if (command === 'cat') {
-                            if (currentDirectory === '/') {
-                                // In root, complete with year directories for relative paths
-                                return availableYears
-                                    .filter(year => year.startsWith(currentArg))
-                                    .map(year => year + '/');
-                            } else {
-                                const year = currentDirectory.substring(1);
-                                const yearPosts = postsByYear[year] || [];
-                                return yearPosts.map(p => p.title).filter(title => title.startsWith(currentArg));
-                            }
-                        } else if (command === 'ls') {
-                            if (currentDirectory === '/') {
-                                return availableYears
-                                    .filter(year => year.startsWith(currentArg))
-                                    .map(year => year + '/');
-                            } else {
-                                return ['../'].filter(dir => dir.startsWith(currentArg));
-                            }
-                        }
-                    }
-                } else if (command === 'sudo' && parts.length === 2) {
-                    // Complete sudo subcommands
-                    const subCommands = ['cat'];
-                    return subCommands.filter(cmd => cmd.startsWith(currentArg));
-                } else if (command === 'cd' && parts.length === 2) {
-                    // Complete directory names for cd command
-                    if (currentArg.includes('/')) {
-                        // Path completion for cd
-                        const lastSlash = currentArg.lastIndexOf('/');
-                        const pathPrefix = currentArg.substring(0, lastSlash + 1);
-                        const namePrefix = currentArg.substring(lastSlash + 1);
-                        
-                        const dirPath = pathPrefix === '/' ? '/' : pathPrefix.slice(0, -1);
-                        const resolved = resolvePath(dirPath);
-                        
-                        if (!resolved) return [];
-                        
-                        const { directory } = resolved;
-                        let completions = [];
-                        
-                        if (directory === '/') {
-                            completions = availableYears
-                                .filter(year => year.startsWith(namePrefix))
-                                .map(year => pathPrefix + year + '/');
-                        } else {
-                            if (namePrefix === '' || '..'.startsWith(namePrefix)) {
-                                completions.push(pathPrefix + '../');
-                            }
-                        }
-                        
-                        return completions;
-                    } else {
-                        // Simple directory completion
+                        // Simple name completion in current directory for sudo cat
                         if (currentDirectory === '/') {
-                            return availableYears.filter(year => year.startsWith(currentArg));
+                            // In root, complete with year directories for relative paths
+                            return availableYears
+                                .filter(year => year.startsWith(currentArg))
+                                .map(year => year + '/');
                         } else {
-                            return ['..'].filter(dir => dir.startsWith(currentArg));
+                            const year = currentDirectory.substring(1);
+                            const yearPosts = postsByYear[year] || [];
+                            return yearPosts.map(p => p.title).filter(title => title.startsWith(currentArg));
                         }
                     }
                 }
-                return [];
-            }
+            } else if ((command === 'cat' || command === 'ls') && parts.length === 2) {
+                // Complete paths for cat and ls commands
+                if (currentArg.includes('/')) {
+                    // Path completion
+                    const lastSlash = currentArg.lastIndexOf('/');
+                    const pathPrefix = currentArg.substring(0, lastSlash + 1);
+                    const namePrefix = currentArg.substring(lastSlash + 1);
 
-            function handleTabCompletion() {
-                const input = commandInput.value;
-                const completions = getCompletions(input);
-                
-                if (completions.length === 1) {
-                    // Single match - complete it
+                    // Try to resolve the directory part
+                    const dirPath = pathPrefix === '/' ? '/' : pathPrefix.slice(0, -1);
+                    const resolved = resolvePath(dirPath);
+
+                    if (!resolved) return [];
+
+                    const {directory} = resolved;
+                    let completions = [];
+
+                    if (directory === '/') {
+                        // Complete with year directories
+                        completions = availableYears
+                            .filter(year => year.startsWith(namePrefix))
+                            .map(year => pathPrefix + year + '/');
+                    } else {
+                        // Complete with files in year directory
+                        const year = directory.substring(1);
+                        const yearPosts = postsByYear[year] || [];
+                        completions = yearPosts
+                            .map(p => p.title)
+                            .filter(title => title.startsWith(namePrefix))
+                            .map(title => pathPrefix + title);
+
+                        // Also add .. if we're not at root
+                        if (namePrefix === '' || '..'.startsWith(namePrefix)) {
+                            completions.push(pathPrefix + '../');
+                        }
+                    }
+
+                    return completions;
+                } else {
+                    // Simple name completion in current directory
+                    if (command === 'cat') {
+                        if (currentDirectory === '/') {
+                            // In root, complete with year directories for relative paths
+                            return availableYears
+                                .filter(year => year.startsWith(currentArg))
+                                .map(year => year + '/');
+                        } else {
+                            const year = currentDirectory.substring(1);
+                            const yearPosts = postsByYear[year] || [];
+                            return yearPosts.map(p => p.title).filter(title => title.startsWith(currentArg));
+                        }
+                    } else if (command === 'ls') {
+                        if (currentDirectory === '/') {
+                            return availableYears
+                                .filter(year => year.startsWith(currentArg))
+                                .map(year => year + '/');
+                        } else {
+                            return ['../'].filter(dir => dir.startsWith(currentArg));
+                        }
+                    }
+                }
+            } else if (command === 'sudo' && parts.length === 2) {
+                // Complete sudo subcommands
+                const subCommands = ['cat'];
+                return subCommands.filter(cmd => cmd.startsWith(currentArg));
+            } else if (command === 'cd' && parts.length === 2) {
+                // Complete directory names for cd command
+                if (currentArg.includes('/')) {
+                    // Path completion for cd
+                    const lastSlash = currentArg.lastIndexOf('/');
+                    const pathPrefix = currentArg.substring(0, lastSlash + 1);
+                    const namePrefix = currentArg.substring(lastSlash + 1);
+
+                    const dirPath = pathPrefix === '/' ? '/' : pathPrefix.slice(0, -1);
+                    const resolved = resolvePath(dirPath);
+
+                    if (!resolved) return [];
+
+                    const {directory} = resolved;
+                    let completions = [];
+
+                    if (directory === '/') {
+                        completions = availableYears
+                            .filter(year => year.startsWith(namePrefix))
+                            .map(year => pathPrefix + year + '/');
+                    } else {
+                        if (namePrefix === '' || '..'.startsWith(namePrefix)) {
+                            completions.push(pathPrefix + '../');
+                        }
+                    }
+
+                    return completions;
+                } else {
+                    // Simple directory completion
+                    if (currentDirectory === '/') {
+                        return availableYears.filter(year => year.startsWith(currentArg));
+                    } else {
+                        return ['..'].filter(dir => dir.startsWith(currentArg));
+                    }
+                }
+            }
+            return [];
+        }
+
+        function handleTabCompletion() {
+            const input = commandInput.value;
+            const completions = getCompletions(input);
+
+            if (completions.length === 1) {
+                // Single match - complete it
+                const parts = input.split(/\s+/);
+                parts[parts.length - 1] = completions[0];
+                commandInput.value = parts.join(' ');
+            } else if (completions.length > 1) {
+                // Multiple matches - show them
+                printCommand(input);
+                printLine(completions.join('  '));
+
+                // Find common prefix
+                const commonPrefix = completions.reduce((prefix, completion) => {
+                    let i = 0;
+                    while (i < prefix.length && i < completion.length && prefix[i] === completion[i]) {
+                        i++;
+                    }
+                    return prefix.substring(0, i);
+                });
+
+                if (commonPrefix.length > 0) {
                     const parts = input.split(/\s+/);
-                    parts[parts.length - 1] = completions[0];
+                    parts[parts.length - 1] = commonPrefix;
                     commandInput.value = parts.join(' ');
-                } else if (completions.length > 1) {
-                    // Multiple matches - show them
-                    printCommand(input);
-                    printLine(completions.join('  '));
-                    
-                    // Find common prefix
-                    const commonPrefix = completions.reduce((prefix, completion) => {
-                        let i = 0;
-                        while (i < prefix.length && i < completion.length && prefix[i] === completion[i]) {
-                            i++;
-                        }
-                        return prefix.substring(0, i);
-                    });
-                    
-                    if (commonPrefix.length > 0) {
-                        const parts = input.split(/\s+/);
-                        parts[parts.length - 1] = commonPrefix;
-                        commandInput.value = parts.join(' ');
-                    }
                 }
             }
+        }
 
-            // --- Cursor positioning ---
-            
-            function updateCursorPosition() {
-                const cursor = document.getElementById('cursor');
-                const input = commandInput;
-                const inputLine = document.querySelector('.input-line');
-                
-                // Use canvas to measure text width more accurately
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                const computedStyle = getComputedStyle(input);
-                ctx.font = `${computedStyle.fontSize} ${computedStyle.fontFamily}`;
-                
-                const textBeforeCursor = input.value.substring(0, input.selectionStart);
-                const textWidth = ctx.measureText(textBeforeCursor).width;
-                
-                // Get prompt width
-                const prompt = document.querySelector('.prompt');
-                const promptWidth = prompt.getBoundingClientRect().width;
-                
-                cursor.style.left = (promptWidth + textWidth) + 'px';
-            }
+        // --- Cursor positioning ---
 
-            // --- Event Handling ---
+        function updateCursorPosition() {
+            const cursor = document.getElementById('cursor');
+            const input = commandInput;
+            const inputLine = document.querySelector('.input-line');
 
-            commandInput.addEventListener('input', updateCursorPosition);
-            commandInput.addEventListener('keyup', updateCursorPosition);
-            commandInput.addEventListener('click', updateCursorPosition);
+            // Use canvas to measure text width more accurately
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const computedStyle = getComputedStyle(input);
+            ctx.font = `${computedStyle.fontSize} ${computedStyle.fontFamily}`;
 
-            commandInput.addEventListener('keydown', async (e) => {
-                if (e.key === 'Enter') {
-                    const commandStr = commandInput.value.trim();
-                    if (commandStr) {
-                        printCommand(commandStr); // Echo the command
+            const textBeforeCursor = input.value.substring(0, input.selectionStart);
+            const textWidth = ctx.measureText(textBeforeCursor).width;
 
-                        // Add to command history
-                        if (commandHistory[commandHistory.length - 1] !== commandStr) {
-                            commandHistory.push(commandStr);
-                            // Keep only last 100 commands
-                            if (commandHistory.length > 100) {
-                                commandHistory = commandHistory.slice(-100);
-                            }
-                            localStorage.setItem('terminal-history', JSON.stringify(commandHistory));
+            // Get prompt width
+            const prompt = document.querySelector('.prompt');
+            const promptWidth = prompt.getBoundingClientRect().width;
+
+            cursor.style.left = (promptWidth + textWidth) + 'px';
+        }
+
+        // --- Event Handling ---
+
+        commandInput.addEventListener('input', updateCursorPosition);
+        commandInput.addEventListener('keyup', updateCursorPosition);
+        commandInput.addEventListener('click', updateCursorPosition);
+
+        commandInput.addEventListener('keydown', async (e) => {
+            if (e.key === 'Enter') {
+                const commandStr = commandInput.value.trim();
+                if (commandStr) {
+                    printCommand(commandStr); // Echo the command
+
+                    // Add to command history
+                    if (commandHistory[commandHistory.length - 1] !== commandStr) {
+                        commandHistory.push(commandStr);
+                        // Keep only last 100 commands
+                        if (commandHistory.length > 100) {
+                            commandHistory = commandHistory.slice(-100);
                         }
-                        historyIndex = commandHistory.length;
-
-                        const [command, ...args] = commandStr.split(/\s+/);
-
-                        if (commands[command]) {
-                            await commands[command](args);
-                            updatePrompt(); // Update prompt after command execution
-                        } else {
-                            printError(`command not found: ${command}`);
-                        }
-
-                        commandInput.value = '';
+                        localStorage.setItem('terminal-history', JSON.stringify(commandHistory));
                     }
-                    scrollToBottom();
-                } else if (e.key === 'Tab') {
-                    e.preventDefault();
-                    handleTabCompletion();
-                } else if (e.key === 'ArrowUp') {
-                    e.preventDefault();
-                    if (historyIndex > 0) {
-                        historyIndex--;
-                        commandInput.value = commandHistory[historyIndex];
-                        // Move cursor to end
-                        setTimeout(() => {
-                            commandInput.setSelectionRange(commandInput.value.length, commandInput.value.length);
-                            updateCursorPosition();
-                        }, 0);
+                    historyIndex = commandHistory.length;
+
+                    const [command, ...args] = commandStr.split(/\s+/);
+
+                    if (commands[command]) {
+                        await commands[command](args);
+                        updatePrompt(); // Update prompt after command execution
+                    } else {
+                        printError(`command not found: ${command}`);
                     }
-                } else if (e.key === 'ArrowDown') {
-                    e.preventDefault();
-                    if (historyIndex < commandHistory.length - 1) {
-                        historyIndex++;
-                        commandInput.value = commandHistory[historyIndex];
-                    } else if (historyIndex === commandHistory.length - 1) {
-                        historyIndex++;
-                        commandInput.value = '';
-                    }
+
+                    commandInput.value = '';
+                }
+                scrollToBottom();
+            } else if (e.key === 'Tab') {
+                e.preventDefault();
+                handleTabCompletion();
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (historyIndex > 0) {
+                    historyIndex--;
+                    commandInput.value = commandHistory[historyIndex];
                     // Move cursor to end
                     setTimeout(() => {
                         commandInput.setSelectionRange(commandInput.value.length, commandInput.value.length);
                         updateCursorPosition();
                     }, 0);
                 }
-            });
+            } else if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (historyIndex < commandHistory.length - 1) {
+                    historyIndex++;
+                    commandInput.value = commandHistory[historyIndex];
+                } else if (historyIndex === commandHistory.length - 1) {
+                    historyIndex++;
+                    commandInput.value = '';
+                }
+                // Move cursor to end
+                setTimeout(() => {
+                    commandInput.setSelectionRange(commandInput.value.length, commandInput.value.length);
+                    updateCursorPosition();
+                }, 0);
+            }
+        });
 
-            // --- Initial Load ---
+        // --- Initial Load ---
 
-            function initialLoad() {
-                updatePrompt();
+        function initialLoad() {
+            updatePrompt();
+        }
+
+        // --- Image Modal Functions ---
+
+        window.openImageModal = function (imageId, imagePath, caption) {
+            // Remove existing modal if any
+            const existingModal = document.getElementById('image-modal');
+            if (existingModal) {
+                existingModal.remove();
             }
 
-            // --- Image Modal Functions ---
-            
-            window.openImageModal = function(imageId, imagePath, caption) {
-                // Remove existing modal if any
-                const existingModal = document.getElementById('image-modal');
-                if (existingModal) {
-                    existingModal.remove();
-                }
-                
-                // Create modal
-                const modal = document.createElement('div');
-                modal.id = 'image-modal';
-                modal.className = 'image-modal';
-                modal.style.display = 'block';
-                
-                // Create close button
-                const closeButton = document.createElement('div');
-                closeButton.className = 'image-modal-close';
-                closeButton.innerHTML = '×';
-                closeButton.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    modal.remove();
-                });
-                
-                const modalContent = document.createElement('div');
-                modalContent.className = 'image-modal-content';
-                
-                const img = document.createElement('img');
-                img.src = imagePath;
-                img.alt = caption;
-                
-                // Prevent image from closing modal when clicked
-                img.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                });
-                
-                modalContent.appendChild(img);
-                
-                if (caption) {
-                    const captionDiv = document.createElement('div');
-                    captionDiv.className = 'image-modal-caption';
-                    captionDiv.textContent = caption;
-                    modalContent.appendChild(captionDiv);
-                }
-                
-                modal.appendChild(closeButton);
-                modal.appendChild(modalContent);
-                document.body.appendChild(modal);
-                
-                // Close modal when background is clicked
-                modal.addEventListener('click', function(e) {
-                    if (e.target === modal) {
-                        modal.remove();
-                    }
-                });
-                
-                // Close modal with Escape key
-                const handleEscape = function(e) {
-                    if (e.key === 'Escape') {
-                        modal.remove();
-                        document.removeEventListener('keydown', handleEscape);
-                    }
-                };
-                document.addEventListener('keydown', handleEscape);
-                
-                // Remove event listener when modal is removed
-                const originalRemove = modal.remove;
-                modal.remove = function() {
-                    document.removeEventListener('keydown', handleEscape);
-                    originalRemove.call(this);
-                };
-            };
+            // Create modal
+            const modal = document.createElement('div');
+            modal.id = 'image-modal';
+            modal.className = 'image-modal';
+            modal.style.display = 'block';
 
-            initialLoad();
-            updateCursorPosition();
-        });
-    </script>
+            // Create close button
+            const closeButton = document.createElement('div');
+            closeButton.className = 'image-modal-close';
+            closeButton.innerHTML = '×';
+            closeButton.addEventListener('click', function (e) {
+                e.stopPropagation();
+                modal.remove();
+            });
+
+            const modalContent = document.createElement('div');
+            modalContent.className = 'image-modal-content';
+
+            const img = document.createElement('img');
+            img.src = imagePath;
+            img.alt = caption;
+
+            // Prevent image from closing modal when clicked
+            img.addEventListener('click', function (e) {
+                e.stopPropagation();
+            });
+
+            modalContent.appendChild(img);
+
+            if (caption) {
+                const captionDiv = document.createElement('div');
+                captionDiv.className = 'image-modal-caption';
+                captionDiv.textContent = caption;
+                modalContent.appendChild(captionDiv);
+            }
+
+            modal.appendChild(closeButton);
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
+
+            // Close modal when background is clicked
+            modal.addEventListener('click', function (e) {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
+
+            // Close modal with Escape key
+            const handleEscape = function (e) {
+                if (e.key === 'Escape') {
+                    modal.remove();
+                    document.removeEventListener('keydown', handleEscape);
+                }
+            };
+            document.addEventListener('keydown', handleEscape);
+
+            // Remove event listener when modal is removed
+            const originalRemove = modal.remove;
+            modal.remove = function () {
+                document.removeEventListener('keydown', handleEscape);
+                originalRemove.call(this);
+            };
+        };
+
+        initialLoad();
+        updateCursorPosition();
+    });
+</script>
 
 </body>
 </html>
