@@ -25,6 +25,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
           rel="stylesheet"/>
+
     <script>
         function lightenColor(hex, percent) {
             const num = parseInt(hex.replace("#", ""), 16);
@@ -55,13 +56,9 @@
             return `rgba(${r}, ${g}, ${b}, ${alpha})`;
         }
 
-        // Available color options
         const colorOptions = ['#4a90e2', '#af52de', '#30d158', '#ff9500', '#ff453a', '#e91e63', '#00bcd4', '#f8bbd9'];
-
-        // Rainbow colors for special mode
         const rainbowColors = ['#ff0000', '#ff8000', '#ffff00', '#80ff00', '#00ff00', '#00ff80', '#00ffff', '#0080ff', '#0000ff', '#8000ff', '#ff00ff', '#ff0080'];
 
-        // Always pick random color on page load
         const savedColor = colorOptions[Math.floor(Math.random() * colorOptions.length)];
         const lightColor = lightenColor(savedColor, 25);
         const darkColor = darkenColor(savedColor, 25);
@@ -75,6 +72,313 @@
     </script>
 
     <link rel="stylesheet" href="styles.css">
+
+    <style>
+        .cursor-trail-dot {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            mix-blend-mode: screen;
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .cursor-trail-dot { opacity: 0.6; }
+        }
+
+        .typewriter-cursor {
+            display: inline-block;
+            width: 3px;
+            height: 1.1em;
+            background: var(--accent-color);
+            margin-left: 2px;
+            vertical-align: text-bottom;
+            animation: blink-cursor 0.8s step-end infinite;
+        }
+
+        @keyframes blink-cursor {
+            50% { opacity: 0; }
+        }
+
+        .stagger-reveal {
+            opacity: 0;
+            transform: translateY(40px) scale(0.95);
+            transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .stagger-reveal.revealed {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .magnetic-btn {
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .shimmer-text {
+            background-size: 200% auto;
+            animation: shimmer 3s linear infinite;
+        }
+
+        @keyframes shimmer {
+            to { background-position: 200% center; }
+        }
+
+        .wave-divider {
+            position: relative;
+            height: 80px;
+            overflow: hidden;
+        }
+
+        .wave-divider svg {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 80px;
+        }
+
+        .skill-progress-animated {
+            width: 0 !important;
+            transition: width 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .skill-progress-animated.animate-in {
+            width: var(--target-width) !important;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            opacity: 0.6;
+            animation: scroll-bounce 2s ease-in-out infinite;
+        }
+
+        .scroll-indicator-mouse {
+            width: 24px;
+            height: 40px;
+            border: 2px solid var(--accent-color);
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .scroll-indicator-mouse::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 8px;
+            background: var(--accent-color);
+            border-radius: 2px;
+            animation: scroll-wheel 2s ease-in-out infinite;
+        }
+
+        @keyframes scroll-bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(8px); }
+        }
+
+        @keyframes scroll-wheel {
+            0%, 100% { opacity: 1; top: 8px; }
+            50% { opacity: 0.3; top: 18px; }
+        }
+
+        .count-up {
+            font-variant-numeric: tabular-nums;
+        }
+
+        .glitch-hover {
+            position: relative;
+        }
+
+        .glitch-hover:hover {
+            animation: glitch-skew 0.5s ease;
+        }
+
+        @keyframes glitch-skew {
+            0% { transform: skew(0deg); }
+            10% { transform: skew(-2deg); }
+            20% { transform: skew(3deg); }
+            30% { transform: skew(-1deg); }
+            40% { transform: skew(2deg); }
+            50% { transform: skew(0deg); }
+            100% { transform: skew(0deg); }
+        }
+
+        .parallax-element {
+            transition: transform 0.1s ease-out;
+            will-change: transform;
+        }
+
+        .timeline-dot-pulse {
+            position: relative;
+        }
+
+        .timeline-dot-pulse::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: inherit;
+            background: var(--accent-color);
+            opacity: 0;
+            animation: dot-pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes dot-pulse {
+            0%, 100% { opacity: 0; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(1.2); }
+        }
+
+        .reading-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(to right, var(--accent-color), var(--accent-light));
+            z-index: 100;
+            transition: width 0.1s ease-out;
+            border-radius: 0 2px 2px 0;
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .tilt-card {
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .tilt-card-inner {
+            transition: transform 0.1s ease-out;
+            transform-style: preserve-3d;
+        }
+
+        [data-tooltip] {
+            position: relative;
+        }
+
+        [data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%) translateY(4px);
+            padding: 6px 12px;
+            background: rgba(15, 15, 25, 0.95);
+            border: 1px solid var(--accent-color);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            color: white;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.2s ease;
+            z-index: 100;
+        }
+
+        [data-tooltip]:hover::after {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .gradient-border-animated {
+            position: relative;
+            background: transparent;
+        }
+
+        .gradient-border-animated::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 2px;
+            background: linear-gradient(
+                var(--gradient-angle, 0deg),
+                var(--accent-color),
+                var(--accent-light),
+                var(--accent-dark),
+                var(--accent-color)
+            );
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            animation: rotate-gradient 4s linear infinite;
+        }
+
+        @keyframes rotate-gradient {
+            to { --gradient-angle: 360deg; }
+        }
+
+        @property --gradient-angle {
+            syntax: "<angle>";
+            initial-value: 0deg;
+            inherits: false;
+        }
+
+        :focus-visible {
+            outline: 2px solid var(--accent-color);
+            outline-offset: 3px;
+            border-radius: 4px;
+        }
+
+        .page-loaded body {
+            opacity: 1;
+        }
+
+        body {
+            opacity: 0;
+            animation: page-fade-in 0.6s ease-out 0.1s forwards;
+        }
+
+        @keyframes page-fade-in {
+            to { opacity: 1; }
+        }
+
+        .visitor-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .visitor-badge .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #30d158;
+            animation: live-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes live-pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(48, 209, 88, 0.4); }
+            50% { box-shadow: 0 0 0 6px rgba(48, 209, 88, 0); }
+        }
+
+        @media (max-width: 768px) {
+            .tech-ticker-content {
+                gap: 2rem;
+                animation-duration: 20s;
+            }
+            .scroll-indicator {
+                display: none;
+            }
+        }
+    </style>
 
     <script>
         const applyTheme = () => {
@@ -110,12 +414,10 @@
             }
         });
 
-        // Enhanced scroll spy with smooth scrolling
         document.addEventListener('DOMContentLoaded', () => {
             const sections = document.querySelectorAll('section[id]');
             const navLinks = document.querySelectorAll('a[data-scroll]');
 
-            // Add smooth scroll behavior to navigation links
             navLinks.forEach(link => {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
@@ -123,9 +425,7 @@
                     const targetSection = document.getElementById(targetId);
                     if (targetSection) {
                         const isMobile = window.innerWidth < 1024;
-                        // Use slightly smaller header height on mobile, full height on desktop
                         const headerHeight = isMobile ? 56 : 80;
-                        // Add extra positive offset on mobile so section isn't cut off
                         if (targetId === 'home' && isMobile) {
                             window.scrollTo({top: 0, behavior: 'smooth'});
                             return;
@@ -153,21 +453,230 @@
 
             sections.forEach(s => io.observe(s));
 
-            // Initialize effects
             createParticles();
 
-            // Popup frequency management
+            const progressBar = document.createElement('div');
+            progressBar.className = 'reading-progress';
+            progressBar.style.width = '0%';
+            document.body.appendChild(progressBar);
+
+            window.addEventListener('scroll', () => {
+                const scrollTop = window.pageYOffset;
+                const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+                const progress = (scrollTop / docHeight) * 100;
+                progressBar.style.width = progress + '%';
+            }, { passive: true });
+
+            if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+                const trailCount = 8;
+                const trailDots = [];
+                const trailPositions = [];
+
+                for (let i = 0; i < trailCount; i++) {
+                    const dot = document.createElement('div');
+                    dot.className = 'cursor-trail-dot';
+                    dot.style.width = (8 - i) + 'px';
+                    dot.style.height = (8 - i) + 'px';
+                    dot.style.opacity = (0.6 - i * 0.07);
+                    document.body.appendChild(dot);
+                    trailDots.push(dot);
+                    trailPositions.push({ x: 0, y: 0 });
+                }
+
+                let mouseX = 0, mouseY = 0;
+
+                document.addEventListener('mousemove', (e) => {
+                    mouseX = e.clientX;
+                    mouseY = e.clientY;
+                }, { passive: true });
+
+                function animateTrail() {
+                    trailPositions[0].x += (mouseX - trailPositions[0].x) * 0.3;
+                    trailPositions[0].y += (mouseY - trailPositions[0].y) * 0.3;
+
+                    for (let i = 1; i < trailCount; i++) {
+                        trailPositions[i].x += (trailPositions[i - 1].x - trailPositions[i].x) * 0.2;
+                        trailPositions[i].y += (trailPositions[i - 1].y - trailPositions[i].y) * 0.2;
+                    }
+
+                    trailDots.forEach((dot, i) => {
+                        dot.style.left = trailPositions[i].x + 'px';
+                        dot.style.top = trailPositions[i].y + 'px';
+                    });
+
+                    requestAnimationFrame(animateTrail);
+                }
+                animateTrail();
+            }
+
+            function typeWriter(element, texts, speed = 80, deleteSpeed = 40, pauseTime = 2000) {
+                let textIndex = 0;
+                let charIndex = 0;
+                let isDeleting = false;
+
+                const cursor = document.createElement('span');
+                cursor.className = 'typewriter-cursor';
+                element.parentNode.insertBefore(cursor, element.nextSibling);
+
+                function tick() {
+                    const currentText = texts[textIndex];
+
+                    if (isDeleting) {
+                        element.textContent = currentText.substring(0, charIndex - 1);
+                        charIndex--;
+                    } else {
+                        element.textContent = currentText.substring(0, charIndex + 1);
+                        charIndex++;
+                    }
+
+                    let delay = isDeleting ? deleteSpeed : speed;
+
+                    if (!isDeleting && charIndex === currentText.length) {
+                        delay = pauseTime;
+                        isDeleting = true;
+                    } else if (isDeleting && charIndex === 0) {
+                        isDeleting = false;
+                        textIndex = (textIndex + 1) % texts.length;
+                        delay = 500;
+                    }
+
+                    setTimeout(tick, delay);
+                }
+
+                tick();
+            }
+
+            const subtitleEl = document.getElementById('typewriter-target');
+            if (subtitleEl) {
+                typeWriter(subtitleEl, [
+                    'I like to build cool things :)',
+                    'I automate the boring stuff 🤖',
+                    'I ship fast & build faster 🚀',
+                ]);
+            }
+
+            const staggerObserver = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        const el = entry.target;
+                        const siblings = el.parentElement.querySelectorAll('.stagger-reveal');
+                        const idx = Array.from(siblings).indexOf(el);
+                        setTimeout(() => {
+                            el.classList.add('revealed');
+                        }, idx * 120);
+                        staggerObserver.unobserve(el);
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+            document.querySelectorAll('.stagger-reveal').forEach(el => {
+                staggerObserver.observe(el);
+            });
+
+            const skillObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const bars = entry.target.querySelectorAll('.skill-progress-animated');
+                        bars.forEach((bar, i) => {
+                            setTimeout(() => {
+                                bar.classList.add('animate-in');
+                            }, i * 200);
+                        });
+                        skillObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.3 });
+
+            document.querySelectorAll('#skills .glass-card').forEach(card => {
+                skillObserver.observe(card);
+            });
+
+            document.querySelectorAll('.magnetic-btn').forEach(btn => {
+                btn.addEventListener('mousemove', (e) => {
+                    const rect = btn.getBoundingClientRect();
+                    const x = e.clientX - rect.left - rect.width / 2;
+                    const y = e.clientY - rect.top - rect.height / 2;
+                    btn.style.transform = `translate(${x * 0.15}px, ${y * 0.15}px)`;
+                });
+
+                btn.addEventListener('mouseleave', () => {
+                    btn.style.transform = 'translate(0, 0)';
+                });
+            });
+
+            document.querySelectorAll('.tilt-card').forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = (e.clientX - rect.left) / rect.width;
+                    const y = (e.clientY - rect.top) / rect.height;
+                    const tiltX = (y - 0.5) * 8;
+                    const tiltY = (x - 0.5) * -8;
+
+                    const inner = card.querySelector('.tilt-card-inner') || card;
+                    inner.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale3d(1.02, 1.02, 1.02)`;
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    const inner = card.querySelector('.tilt-card-inner') || card;
+                    inner.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+                });
+            });
+
+            function animateCountUp(el, target, suffix = '', duration = 2000) {
+                let start = 0;
+                const startTime = performance.now();
+
+                function update(currentTime) {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const eased = 1 - Math.pow(1 - progress, 3);
+                    const current = Math.floor(eased * target);
+
+                    el.textContent = current + suffix;
+
+                    if (progress < 1) {
+                        requestAnimationFrame(update);
+                    } else {
+                        el.textContent = target + suffix;
+                    }
+                }
+
+                requestAnimationFrame(update);
+            }
+
+            const countObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const el = entry.target;
+                        const target = parseInt(el.dataset.count);
+                        const suffix = el.dataset.suffix || '';
+                        animateCountUp(el, target, suffix);
+                        countObserver.unobserve(el);
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            document.querySelectorAll('.count-up').forEach(el => countObserver.observe(el));
+
+            if (window.matchMedia('(hover: hover)').matches) {
+                document.addEventListener('mousemove', (e) => {
+                    const x = (e.clientX / window.innerWidth - 0.5) * 2;
+                    const y = (e.clientY / window.innerHeight - 0.5) * 2;
+
+                    document.querySelectorAll('.parallax-element').forEach(el => {
+                        const speed = parseFloat(el.dataset.speed || 20);
+                        el.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
+                    });
+                }, { passive: true });
+            }
+
             function shouldShowPopup(popupType) {
                 const lastShown = localStorage.getItem(`popup_${popupType}_last_shown`);
                 if (!lastShown) return true;
-
                 const lastShownDate = new Date(lastShown);
                 const today = new Date();
-
-                // Check if it's been at least 24 hours
                 const timeDiff = today.getTime() - lastShownDate.getTime();
                 const hoursDiff = timeDiff / (1000 * 3600);
-
                 return hoursDiff >= 24;
             }
 
@@ -175,66 +684,48 @@
                 localStorage.setItem(`popup_${popupType}_last_shown`, new Date().toISOString());
             }
 
-            // Global function to clear popup storage for testing
             window.clearPopupStorage = function () {
                 localStorage.removeItem('popup_late_night_last_shown');
                 localStorage.removeItem('popup_macos_last_shown');
                 console.log('Popup storage cleared! Refresh to see popups again.');
             };
 
-            // Show late night popup notification
             function showLateNightPopup() {
-                // Check if we should show this popup
-                if (!shouldShowPopup('late_night')) {
-                    return;
-                }
+                if (!shouldShowPopup('late_night')) return;
+
                 const content = `
-            <div class="flex items-start gap-3">
-              <div class="w-10 h-10 bg-gradient-to-r from-slate-800 to-slate-700 rounded-xl flex items-center justify-center border-2 border-accent flex-shrink-0">
-                <span class="text-lg">🌙</span>
-              </div>
-              <div class="flex-1">
-                <h4 class="font-bold text-white mb-2">Late Night Mode</h4>
-                <p class="text-sm text-slate-300 leading-relaxed mb-3">
-                  I noticed it's pretty late for you, so I've gone ahead & warmed up the colors for your eyes' sake.
-                </p>
-                <button class="dismiss-btn text-xs text-accent hover:text-accent-light transition-colors font-medium">
-                  Got it, thanks!
-                </button>
-              </div>
-              <button class="close-btn text-slate-400 hover:text-white transition-colors ml-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-              </button>
-            </div>
-          `;
+                <div class="flex items-start gap-3">
+                  <div class="w-10 h-10 bg-gradient-to-r from-slate-800 to-slate-700 rounded-xl flex items-center justify-center border-2 border-accent flex-shrink-0">
+                    <span class="text-lg">🌙</span>
+                  </div>
+                  <div class="flex-1">
+                    <h4 class="font-bold text-white mb-2">Late Night Mode</h4>
+                    <p class="text-sm text-slate-300 leading-relaxed mb-3">
+                      I noticed it's pretty late for you, so I've gone ahead & warmed up the colors for your eyes' sake.
+                    </p>
+                    <button class="dismiss-btn text-xs text-accent hover:text-accent-light transition-colors font-medium">Got it, thanks!</button>
+                  </div>
+                  <button class="close-btn text-slate-400 hover:text-white transition-colors ml-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                  </button>
+                </div>`;
 
                 const popupId = window.popupManager.show(content);
-
-                // Mark this popup as shown
                 markPopupShown('late_night');
 
-                // Add event listeners after popup is created
                 setTimeout(() => {
                     const popup = document.getElementById(`popup-${popupId}`);
                     if (popup) {
-                        popup.querySelector('.dismiss-btn').addEventListener('click', () => {
-                            window.popupManager.dismiss(popupId);
-                        });
-                        popup.querySelector('.close-btn').addEventListener('click', () => {
-                            window.popupManager.dismiss(popupId);
-                        });
+                        popup.querySelector('.dismiss-btn').addEventListener('click', () => window.popupManager.dismiss(popupId));
+                        popup.querySelector('.close-btn').addEventListener('click', () => window.popupManager.dismiss(popupId));
                     }
                 }, 50);
             }
 
-            // Initialize easter eggs
             initLateNightMode();
             initKonamiCode();
             initMacOSDetection();
 
-            // Animate elements on scroll
             const animateOnScroll = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -247,12 +738,10 @@
                 animateOnScroll.observe(el);
             });
 
-            // Late Night Mode Implementation
             function initLateNightMode() {
                 function checkLateNightMode() {
                     const hour = new Date().getHours();
-
-                    if (hour >= 21 || hour <= 5) { // 9 PM to 5 AM
+                    if (hour >= 21 || hour <= 5) {
                         activateLateNightMode();
                     } else {
                         deactivateLateNightMode();
@@ -260,68 +749,45 @@
                 }
 
                 function activateLateNightMode() {
-                    if (document.body.classList.contains('late-night-mode')) {
-                        return; // Already active
-                    }
-
+                    if (document.body.classList.contains('late-night-mode')) return;
                     document.body.classList.add('late-night-mode');
-
-                    // Check if user has manually selected a color this session
                     const hasManualSelection = window.manualColorSelection === true;
                     if (hasManualSelection) {
-                        // Add class to prevent CSS override but keep current manual color
                         document.body.classList.add('manual-color-override');
                     } else {
-                        // Switch to warm color for automatic mode and update the CSS variables
-                        updateAccentColor('#ff6b35'); // Warm orange-red
+                        updateAccentColor('#ff6b35');
                         window.lateNightColor = '#ff6b35';
                     }
-
                     showLateNightPopup();
                 }
 
                 function deactivateLateNightMode() {
                     document.body.classList.remove('late-night-mode');
                     document.body.classList.remove('manual-color-override');
-
-                    // Only restore to random color if user hasn't manually selected a color
                     const hasManualSelection = window.manualColorSelection === true;
                     const wasInLateNightMode = window.lateNightColor !== null;
                     if (!hasManualSelection && wasInLateNightMode) {
-                        // Pick a new random color when exiting late night mode
                         const newRandomColor = colorOptions[Math.floor(Math.random() * colorOptions.length)];
                         updateAccentColor(newRandomColor);
                     }
-                    // Clear the late night color since we're back to random
                     window.lateNightColor = null;
                 }
 
-                // Initialize session variables
                 window.manualColorSelection = false;
                 window.lateNightColor = null;
 
-                // Set initial color based on late night mode status
                 function setInitialColor() {
                     const hour = new Date().getHours();
-                    const isLateNight = hour >= 21 || hour <= 5;
-
-                    if (isLateNight) {
-                        // Use late night color
+                    if (hour >= 21 || hour <= 5) {
                         updateAccentColor('#ff6b35');
                         window.lateNightColor = '#ff6b35';
                     }
-                    // Otherwise use the already set random color from page load
                 }
 
                 setInitialColor();
-
-                // Check on page load
                 checkLateNightMode();
-
-                // Check every minute in case user stays on page past threshold
                 setInterval(checkLateNightMode, 60000);
 
-                // Console command for testing
                 window.toggleLateNightMode = function () {
                     if (document.body.classList.contains('late-night-mode')) {
                         deactivateLateNightMode();
@@ -339,41 +805,24 @@
                 ];
                 let userSequence = [];
                 let rainbowMode = false;
-                let rainbowInterval = null;
 
                 document.addEventListener('keydown', (e) => {
-                    // Check if user is typing in a form field
-                    const isInFormField = e.target.tagName === 'INPUT' ||
-                        e.target.tagName === 'TEXTAREA' ||
-                        e.target.isContentEditable;
+                    const isInFormField = e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable;
+                    if (isInFormField) return;
 
-                    // Skip Konami code handling if user is typing in a form
-                    if (isInFormField) {
-                        return;
-                    }
-
-                    const isKonamiKey = konamiSequence.includes(e.code);
-
-                    if (isKonamiKey) {
-                        // Add the pressed key to user sequence
+                    if (konamiSequence.includes(e.code)) {
                         userSequence.push(e.code);
+                        if (userSequence.length > konamiSequence.length) userSequence.shift();
 
-                        // Keep only the last 10 keys (length of Konami code)
-                        if (userSequence.length > konamiSequence.length) {
-                            userSequence.shift();
-                        }
-
-                        // Check if sequence matches Konami code
                         if (userSequence.length === konamiSequence.length) {
                             const matches = userSequence.every((key, index) => key === konamiSequence[index]);
-
                             if (matches) {
                                 if (!rainbowMode) {
                                     activateRainbowMode();
                                 } else {
                                     deactivateRainbowMode();
                                 }
-                                userSequence = []; // Reset sequence
+                                userSequence = [];
                             }
                         }
                     }
@@ -381,94 +830,62 @@
 
                 function activateRainbowMode() {
                     rainbowMode = true;
-
-                    // Add rainbow class to body for CSS-based rainbow effects
                     document.body.classList.add('rainbow-mode');
                 }
 
                 function deactivateRainbowMode() {
                     rainbowMode = false;
-
-                    // Return to appropriate color based on current mode
                     const hour = new Date().getHours();
                     const isLateNight = hour >= 21 || hour <= 5;
 
                     if (isLateNight && !window.manualColorSelection) {
                         updateAccentColor('#ff6b35');
                     } else if (!window.manualColorSelection) {
-                        // Return to a random color
                         const newRandomColor = colorOptions[Math.floor(Math.random() * colorOptions.length)];
                         updateAccentColor(newRandomColor);
                     }
-                    // If manual selection exists, keep current color
 
-                    // Remove rainbow class
                     document.body.classList.remove('rainbow-mode');
-
-                    // Mark as manual selection to preserve user choice
                     window.manualColorSelection = true;
                 }
-
             }
 
             function initMacOSDetection() {
-                // Check if user is on macOS
                 const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0 ||
                     navigator.userAgent.toUpperCase().indexOf('MAC') >= 0;
-
-                if (isMac) {
-                    showMacOSPopup();
-                }
+                if (isMac) showMacOSPopup();
             }
 
             function showMacOSPopup() {
-                // Check if we should show this popup
-                if (!shouldShowPopup('macos')) {
-                    return;
-                }
+                if (!shouldShowPopup('macos')) return;
 
                 const content = `
-            <div class="flex items-start gap-3">
-              <div class="w-10 h-10 bg-gradient-to-r from-slate-800 to-slate-700 rounded-xl flex items-center justify-center border-2 border-accent flex-shrink-0">
-                <span class="text-lg">🍎</span>
-              </div>
-              <div class="flex-1">
-                <h4 class="font-bold text-white mb-2">Nice Apple device!</h4>
-                <p class="text-sm text-slate-300 leading-relaxed mb-3">
-                  Did you know my code is on all Macs newer than 2024? Pretty cool, right?
-                </p>
-                <button class="dismiss-btn text-xs text-accent hover:text-accent-light transition-colors font-medium">
-                  That's awesome!
-                </button>
-              </div>
-              <button class="close-btn text-slate-400 hover:text-white transition-colors ml-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-              </button>
-            </div>
-          `;
+                <div class="flex items-start gap-3">
+                  <div class="w-10 h-10 bg-gradient-to-r from-slate-800 to-slate-700 rounded-xl flex items-center justify-center border-2 border-accent flex-shrink-0">
+                    <span class="text-lg">🍎</span>
+                  </div>
+                  <div class="flex-1">
+                    <h4 class="font-bold text-white mb-2">Nice Apple device!</h4>
+                    <p class="text-sm text-slate-300 leading-relaxed mb-3">Did you know my code is on all Macs newer than 2024? Pretty cool, right?</p>
+                    <button class="dismiss-btn text-xs text-accent hover:text-accent-light transition-colors font-medium">That's awesome!</button>
+                  </div>
+                  <button class="close-btn text-slate-400 hover:text-white transition-colors ml-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                  </button>
+                </div>`;
 
                 const popupId = window.popupManager.show(content);
-
-                // Mark this popup as shown
                 markPopupShown('macos');
 
-                // Add event listeners after popup is created
                 setTimeout(() => {
                     const popup = document.getElementById(`popup-${popupId}`);
                     if (popup) {
-                        popup.querySelector('.dismiss-btn').addEventListener('click', () => {
-                            window.popupManager.dismiss(popupId);
-                        });
-                        popup.querySelector('.close-btn').addEventListener('click', () => {
-                            window.popupManager.dismiss(popupId);
-                        });
+                        popup.querySelector('.dismiss-btn').addEventListener('click', () => window.popupManager.dismiss(popupId));
+                        popup.querySelector('.close-btn').addEventListener('click', () => window.popupManager.dismiss(popupId));
                     }
                 }, 50);
             }
         });
-
     </script>
 </head>
 
@@ -488,16 +905,12 @@
         </button>
     </div>
     <nav class="p-4 space-y-2">
-        <a data-scroll="home" href="#home"
-           class="block py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">Home</a>
+        <a data-scroll="home" href="#home" class="block py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">Home</a>
         <a data-scroll="about" href="#about" class="block py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">About</a>
-        <a data-scroll="experience" href="#experience"
-           class="block py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">Experience</a>
-        <a data-scroll="projects" href="#projects"
-           class="block py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">Projects</a>
+        <a data-scroll="experience" href="#experience" class="block py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">Experience</a>
+        <a data-scroll="projects" href="#projects" class="block py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">Projects</a>
         <a data-scroll="skills" href="#skills" class="block py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">Skills</a>
-        <a data-scroll="testimonials" href="#testimonials"
-           class="block py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">Testimonials</a>
+        <a data-scroll="testimonials" href="#testimonials" class="block py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">Testimonials</a>
         <a data-scroll="contact" href="#contact" class="block py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">Contact</a>
 
         <div class="pt-4 mt-2 border-t border-white/10"></div>
@@ -507,52 +920,20 @@
                         class="w-full flex items-center justify-between p-3 rounded-xl glass hover:shadow-glow transition-all"
                         aria-label="Change Theme Color" aria-expanded="false" aria-haspopup="true">
                     <span class="font-medium">Theme color</span>
-                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                         viewBox="0 0 279.682 279.682" xml:space="preserve" fill="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                        <g id="SVGRepo_iconCarrier"> <g> <path style="fill:#ffffff;"
-                                                               d="M143.25,55.486c-41.06,0-74.465,33.405-74.465,74.465c0,16.824,5.511,32.711,15.938,45.939 c1.998,2.536,4.15,5.033,6.23,7.448c6.212,7.208,12.078,14.017,14.166,21.675c0.045,0.165,0.438,1.773,0.38,7.247l-0.01,0.791 c-0.063,4.444-0.147,10.528,4.352,15.091c3.081,3.125,7.399,4.645,13.204,4.645h40.272c6.268,0,10.774-1.534,13.776-4.689 c4.061-4.267,3.789-9.779,3.608-13.427c-0.032-0.645-0.066-1.296-0.074-1.944c-0.065-5.48,0.345-7.025,0.362-7.09 c2.121-7.657,8.993-15.732,15.057-22.855c2.023-2.377,3.934-4.622,5.714-6.879c10.431-13.23,15.944-29.12,15.944-45.951 C217.705,88.892,184.305,55.486,143.25,55.486z M189.982,166.614c-1.607,2.036-3.429,4.178-5.358,6.445 c-7.07,8.307-15.084,17.722-18.089,28.572c-0.429,1.546-0.988,4.395-0.905,11.273c0.01,0.835,0.049,1.675,0.091,2.507 c0.032,0.657,0.075,1.523,0.071,2.209c-0.528,0.086-1.325,0.166-2.475,0.166h-40.272c-1.276,0-2.022-0.135-2.405-0.237 c-0.198-0.977-0.17-3.007-0.152-4.287l0.012-0.844c0.072-6.919-0.483-9.789-0.907-11.348c-2.98-10.936-10.575-19.749-17.275-27.524 c-2.066-2.398-4.019-4.664-5.813-6.942c-8.32-10.557-12.718-23.232-12.718-36.654c0-32.789,26.676-59.465,59.465-59.465 c32.783,0,59.455,26.676,59.455,59.465C202.705,143.379,198.306,156.058,189.982,166.614z"></path>
-                            <path style="fill:#ffffff;"
-                                  d="M161.766,239.564h-37.041c-7.995,0-14.5,6.505-14.5,14.5v11.117c0,7.995,6.505,14.5,14.5,14.5 h37.041c7.995,0,14.5-6.505,14.5-14.5v-11.117C176.266,246.069,169.761,239.564,161.766,239.564z M161.266,264.682h-36.041v-10.117 h36.041V264.682z"></path>
-                            <path style="fill:#ffffff;"
-                                  d="M143.245,45.779c4.143,0,7.5-3.357,7.5-7.5V7.5c0-4.143-3.357-7.5-7.5-7.5 c-4.143,0-7.5,3.357-7.5,7.5v30.779C135.745,42.422,139.103,45.779,143.245,45.779z"></path>
-                            <path style="fill:#ffffff;"
-                                  d="M241.917,34.598c-2.858-2.995-7.606-3.106-10.604-0.248l-22.77,21.73 c-2.997,2.859-3.107,7.607-0.248,10.604c1.474,1.544,3.448,2.322,5.427,2.322c1.86,0,3.725-0.688,5.177-2.074l22.77-21.731 C244.666,42.342,244.776,37.594,241.917,34.598z"></path>
-                            <path style="fill:#ffffff;"
-                                  d="M264.273,109.599c-0.004,0-0.008,0-0.012,0l-29.311,0.047c-4.143,0.007-7.495,3.37-7.488,7.512 c0.007,4.139,3.363,7.488,7.5,7.488c0.004,0,0.008,0,0.012,0l29.311-0.047c4.143-0.007,7.495-3.37,7.488-7.512 C271.767,112.948,268.41,109.599,264.273,109.599z"></path>
-                            <path style="fill:#ffffff;"
-                                  d="M74.386,64.684c2.859-2.996,2.749-7.743-0.248-10.604l-22.77-21.73 c-2.994-2.858-7.742-2.749-10.604,0.248c-2.859,2.996-2.749,7.743,0.248,10.604l22.77,21.731c1.452,1.386,3.315,2.074,5.177,2.074 C70.937,67.006,72.912,66.228,74.386,64.684z"></path>
-                            <path style="fill:#ffffff;"
-                                  d="M44.729,109.646l-29.31-0.047c-0.004,0-0.008,0-0.012,0c-4.137,0-7.493,3.351-7.5,7.488 c-0.007,4.142,3.346,7.505,7.488,7.512l29.31,0.047c0.004,0,0.008,0,0.012,0c4.137,0,7.493-3.351,7.5-7.488 C52.225,113.016,48.872,109.652,44.729,109.646z"></path> </g> </g></svg>
+                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 279.682 279.682" fill="#ffffff"><g><path d="M143.25,55.486c-41.06,0-74.465,33.405-74.465,74.465c0,16.824,5.511,32.711,15.938,45.939 c1.998,2.536,4.15,5.033,6.23,7.448c6.212,7.208,12.078,14.017,14.166,21.675c0.045,0.165,0.438,1.773,0.38,7.247l-0.01,0.791 c-0.063,4.444-0.147,10.528,4.352,15.091c3.081,3.125,7.399,4.645,13.204,4.645h40.272c6.268,0,10.774-1.534,13.776-4.689 c4.061-4.267,3.789-9.779,3.608-13.427c-0.032-0.645-0.066-1.296-0.074-1.944c-0.065-5.48,0.345-7.025,0.362-7.09 c2.121-7.657,8.993-15.732,15.057-22.855c2.023-2.377,3.934-4.622,5.714-6.879c10.431-13.23,15.944-29.12,15.944-45.951 C217.705,88.892,184.305,55.486,143.25,55.486z"/><path d="M161.766,239.564h-37.041c-7.995,0-14.5,6.505-14.5,14.5v11.117c0,7.995,6.505,14.5,14.5,14.5 h37.041c7.995,0,14.5-6.505,14.5-14.5v-11.117C176.266,246.069,169.761,239.564,161.766,239.564z"/><path d="M143.245,45.779c4.143,0,7.5-3.357,7.5-7.5V7.5c0-4.143-3.357-7.5-7.5-7.5 c-4.143,0-7.5,3.357-7.5,7.5v30.779C135.745,42.422,139.103,45.779,143.245,45.779z"/><path d="M241.917,34.598c-2.858-2.995-7.606-3.106-10.604-0.248l-22.77,21.73 c-2.997,2.859-3.107,7.607-0.248,10.604c1.474,1.544,3.448,2.322,5.427,2.322c1.86,0,3.725-0.688,5.177-2.074l22.77-21.731 C244.666,42.342,244.776,37.594,241.917,34.598z"/><path d="M264.273,109.599c-0.004,0-0.008,0-0.012,0l-29.311,0.047c-4.143,0.007-7.495,3.37-7.488,7.512 c0.007,4.139,3.363,7.488,7.5,7.488c0.004,0,0.008,0,0.012,0l29.311-0.047c4.143-0.007,7.495-3.37,7.488-7.512 C271.767,112.948,268.41,109.599,264.273,109.599z"/><path d="M74.386,64.684c2.859-2.996,2.749-7.743-0.248-10.604l-22.77-21.73 c-2.994-2.858-7.742-2.749-10.604,0.248c-2.859,2.996-2.749,7.743,0.248,10.604l22.77,21.731c1.452,1.386,3.315,2.074,5.177,2.074 C70.937,67.006,72.912,66.228,74.386,64.684z"/><path d="M44.729,109.646l-29.31-0.047c-0.004,0-0.008,0-0.012,0c-4.137,0-7.493,3.351-7.5,7.488 c-0.007,4.142,3.346,7.505,7.488,7.512l29.31,0.047c0.004,0,0.008,0,0.012,0c4.137,0,7.493-3.351,7.5-7.488 C52.225,113.016,48.872,109.652,44.729,109.646z"/></g></svg>
                 </button>
                 <div id="colorPaletteMobile"
                      class="absolute top-full left-0 mt-2 p-6 glass rounded-2xl opacity-0 pointer-events-none transition-all z-50 shadow-xl border border-white/20 min-w-max"
                      role="menu" aria-labelledby="colorPickerBtnMobile">
                     <div class="grid grid-cols-4 gap-3">
-                        <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
-                                data-color="#4a90e2" style="background: linear-gradient(135deg, #4a90e2, #6ba3e8);"
-                                aria-label="Blue theme" role="menuitem"></button>
-                        <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
-                                data-color="#af52de" style="background: linear-gradient(135deg, #af52de, #bf5af2);"
-                                aria-label="Purple theme" role="menuitem"></button>
-                        <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
-                                data-color="#30d158" style="background: linear-gradient(135deg, #30d158, #64de85);"
-                                aria-label="Green theme" role="menuitem"></button>
-                        <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
-                                data-color="#ff9500" style="background: linear-gradient(135deg, #ff9500, #ffb340);"
-                                aria-label="Orange theme" role="menuitem"></button>
-                        <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
-                                data-color="#ff453a" style="background: linear-gradient(135deg, #ff453a, #ff6961);"
-                                aria-label="Red theme" role="menuitem"></button>
-                        <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
-                                data-color="#e91e63" style="background: linear-gradient(135deg, #e91e63, #f06292);"
-                                aria-label="Pink theme" role="menuitem"></button>
-                        <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
-                                data-color="#00bcd4" style="background: linear-gradient(135deg, #00bcd4, #4dd0e1);"
-                                aria-label="Cyan theme" role="menuitem"></button>
-                        <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
-                                data-color="#f8bbd9" style="background: linear-gradient(135deg, #f8bbd9, #fce4ec);"
-                                aria-label="Pastel pink theme" role="menuitem"></button>
+                        <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#4a90e2" style="background: linear-gradient(135deg, #4a90e2, #6ba3e8);" aria-label="Blue theme" role="menuitem" data-tooltip="Blue"></button>
+                        <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#af52de" style="background: linear-gradient(135deg, #af52de, #bf5af2);" aria-label="Purple theme" role="menuitem" data-tooltip="Purple"></button>
+                        <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#30d158" style="background: linear-gradient(135deg, #30d158, #64de85);" aria-label="Green theme" role="menuitem" data-tooltip="Green"></button>
+                        <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#ff9500" style="background: linear-gradient(135deg, #ff9500, #ffb340);" aria-label="Orange theme" role="menuitem" data-tooltip="Orange"></button>
+                        <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#ff453a" style="background: linear-gradient(135deg, #ff453a, #ff6961);" aria-label="Red theme" role="menuitem" data-tooltip="Red"></button>
+                        <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#e91e63" style="background: linear-gradient(135deg, #e91e63, #f06292);" aria-label="Pink theme" role="menuitem" data-tooltip="Pink"></button>
+                        <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#00bcd4" style="background: linear-gradient(135deg, #00bcd4, #4dd0e1);" aria-label="Cyan theme" role="menuitem" data-tooltip="Cyan"></button>
+                        <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#f8bbd9" style="background: linear-gradient(135deg, #f8bbd9, #fce4ec);" aria-label="Pastel pink theme" role="menuitem" data-tooltip="Pastel"></button>
                     </div>
                 </div>
             </div>
@@ -581,98 +962,52 @@
             <div class="flex items-center gap-4">
                 <button id="hamburgerBtn" class="lg:hidden p-2 rounded-xl hover:bg-white/10 transition-all relative"
                         aria-label="Toggle menu" aria-expanded="false" aria-controls="sidebar">
-                    <svg class="hamburger-icon w-6 h-6 transition-all duration-300" fill="none" stroke="currentColor"
-                         viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M4 7h16M4 12h16M4 17h16"></path>
+                    <svg class="hamburger-icon w-6 h-6 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M4 12h16M4 17h16"></path>
                     </svg>
-                    <svg class="close-icon w-6 h-6 absolute top-1 left-1 transition-all duration-300 opacity-0"
-                         fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-top: -1.5rem;">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M6 18L18 6M6 6l12 12"></path>
+                    <svg class="close-icon w-6 h-6 absolute top-1 left-1 transition-all duration-300 opacity-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-top: -1.5rem;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
                 </button>
-                <a data-scroll="home" href="#home" class="font-black tracking-tight text-2xl">
+                <a data-scroll="home" href="#home" class="font-black tracking-tight text-2xl glitch-hover">
                     <span class="gradient-text">Ryan</span><span class="text-accent animate-pulse">.</span>
                 </a>
             </div>
             <nav class="hidden lg:flex items-center gap-8 text-sm font-medium">
-                <a data-scroll="home" href="#home"
-                   class="relative hover:text-accent transition-colors px-2 py-1 rounded">Home</a>
-                <a data-scroll="about" href="#about"
-                   class="relative hover:text-accent transition-colors px-2 py-1 rounded">About</a>
-                <a data-scroll="experience" href="#experience"
-                   class="relative hover:text-accent transition-colors px-2 py-1 rounded">Experience</a>
-                <a data-scroll="projects" href="#projects"
-                   class="relative hover:text-accent transition-colors px-2 py-1 rounded">Projects</a>
-                <a data-scroll="skills" href="#skills"
-                   class="relative hover:text-accent transition-colors px-2 py-1 rounded">Skills</a>
-                <a data-scroll="testimonials" href="#testimonials"
-                   class="relative hover:text-accent transition-colors px-2 py-1 rounded">Testimonials</a>
-                <a data-scroll="contact" href="#contact"
-                   class="relative hover:text-accent transition-colors px-2 py-1 rounded">Contact</a>
+                <a data-scroll="home" href="#home" class="relative hover:text-accent transition-colors px-2 py-1 rounded">Home</a>
+                <a data-scroll="about" href="#about" class="relative hover:text-accent transition-colors px-2 py-1 rounded">About</a>
+                <a data-scroll="experience" href="#experience" class="relative hover:text-accent transition-colors px-2 py-1 rounded">Experience</a>
+                <a data-scroll="projects" href="#projects" class="relative hover:text-accent transition-colors px-2 py-1 rounded">Projects</a>
+                <a data-scroll="skills" href="#skills" class="relative hover:text-accent transition-colors px-2 py-1 rounded">Skills</a>
+                <a data-scroll="testimonials" href="#testimonials" class="relative hover:text-accent transition-colors px-2 py-1 rounded">Testimonials</a>
+                <a data-scroll="contact" href="#contact" class="relative hover:text-accent transition-colors px-2 py-1 rounded">Contact</a>
             </nav>
             <div class="flex items-center gap-3">
-                <!-- Color Picker -->
                 <div class="relative hidden lg:block">
                     <button id="colorPickerBtn" class="p-2 rounded-xl glass hover:shadow-glow transition-all hover-lift"
-                            aria-label="Change Theme Color" aria-expanded="false" aria-haspopup="true">
-                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg"
-                             xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 279.682 279.682"
-                             xml:space="preserve" fill="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                            <g id="SVGRepo_iconCarrier"> <g> <path style="fill:#ffffff;"
-                                                                   d="M143.25,55.486c-41.06,0-74.465,33.405-74.465,74.465c0,16.824,5.511,32.711,15.938,45.939 c1.998,2.536,4.15,5.033,6.23,7.448c6.212,7.208,12.078,14.017,14.166,21.675c0.045,0.165,0.438,1.773,0.38,7.247l-0.01,0.791 c-0.063,4.444-0.147,10.528,4.352,15.091c3.081,3.125,7.399,4.645,13.204,4.645h40.272c6.268,0,10.774-1.534,13.776-4.689 c4.061-4.267,3.789-9.779,3.608-13.427c-0.032-0.645-0.066-1.296-0.074-1.944c-0.065-5.48,0.345-7.025,0.362-7.09 c2.121-7.657,8.993-15.732,15.057-22.855c2.023-2.377,3.934-4.622,5.714-6.879c10.431-13.23,15.944-29.12,15.944-45.951 C217.705,88.892,184.305,55.486,143.25,55.486z M189.982,166.614c-1.607,2.036-3.429,4.178-5.358,6.445 c-7.07,8.307-15.084,17.722-18.089,28.572c-0.429,1.546-0.988,4.395-0.905,11.273c0.01,0.835,0.049,1.675,0.091,2.507 c0.032,0.657,0.075,1.523,0.071,2.209c-0.528,0.086-1.325,0.166-2.475,0.166h-40.272c-1.276,0-2.022-0.135-2.405-0.237 c-0.198-0.977-0.17-3.007-0.152-4.287l0.012-0.844c0.072-6.919-0.483-9.789-0.907-11.348c-2.98-10.936-10.575-19.749-17.275-27.524 c-2.066-2.398-4.019-4.664-5.813-6.942c-8.32-10.557-12.718-23.232-12.718-36.654c0-32.789,26.676-59.465,59.465-59.465 c32.783,0,59.455,26.676,59.455,59.465C202.705,143.379,198.306,156.058,189.982,166.614z"></path>
-                                <path style="fill:#ffffff;"
-                                      d="M161.766,239.564h-37.041c-7.995,0-14.5,6.505-14.5,14.5v11.117c0,7.995,6.505,14.5,14.5,14.5 h37.041c7.995,0,14.5-6.505,14.5-14.5v-11.117C176.266,246.069,169.761,239.564,161.766,239.564z M161.266,264.682h-36.041v-10.117 h36.041V264.682z"></path>
-                                <path style="fill:#ffffff;"
-                                      d="M143.245,45.779c4.143,0,7.5-3.357,7.5-7.5V7.5c0-4.143-3.357-7.5-7.5-7.5 c-4.143,0-7.5,3.357-7.5,7.5v30.779C135.745,42.422,139.103,45.779,143.245,45.779z"></path>
-                                <path style="fill:#ffffff;"
-                                      d="M241.917,34.598c-2.858-2.995-7.606-3.106-10.604-0.248l-22.77,21.73 c-2.997,2.859-3.107,7.607-0.248,10.604c1.474,1.544,3.448,2.322,5.427,2.322c1.86,0,3.725-0.688,5.177-2.074l22.77-21.731 C244.666,42.342,244.776,37.594,241.917,34.598z"></path>
-                                <path style="fill:#ffffff;"
-                                      d="M264.273,109.599c-0.004,0-0.008,0-0.012,0l-29.311,0.047c-4.143,0.007-7.495,3.37-7.488,7.512 c0.007,4.139,3.363,7.488,7.5,7.488c0.004,0,0.008,0,0.012,0l29.311-0.047c4.143-0.007,7.495-3.37,7.488-7.512 C271.767,112.948,268.41,109.599,264.273,109.599z"></path>
-                                <path style="fill:#ffffff;"
-                                      d="M74.386,64.684c2.859-2.996,2.749-7.743-0.248-10.604l-22.77-21.73 c-2.994-2.858-7.742-2.749-10.604,0.248c-2.859,2.996-2.749,7.743,0.248,10.604l22.77,21.731c1.452,1.386,3.315,2.074,5.177,2.074 C70.937,67.006,72.912,66.228,74.386,64.684z"></path>
-                                <path style="fill:#ffffff;"
-                                      d="M44.729,109.646l-29.31-0.047c-0.004,0-0.008,0-0.012,0c-4.137,0-7.493,3.351-7.5,7.488 c-0.007,4.142,3.346,7.505,7.488,7.512l29.31,0.047c0.004,0,0.008,0,0.012,0c4.137,0,7.493-3.351,7.5-7.488 C52.225,113.016,48.872,109.652,44.729,109.646z"></path> </g> </g></svg>
+                            aria-label="Change Theme Color" aria-expanded="false" aria-haspopup="true" data-tooltip="Theme Color">
+                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 279.682 279.682" fill="#ffffff"><g><path d="M143.25,55.486c-41.06,0-74.465,33.405-74.465,74.465c0,16.824,5.511,32.711,15.938,45.939 c1.998,2.536,4.15,5.033,6.23,7.448c6.212,7.208,12.078,14.017,14.166,21.675c0.045,0.165,0.438,1.773,0.38,7.247l-0.01,0.791 c-0.063,4.444-0.147,10.528,4.352,15.091c3.081,3.125,7.399,4.645,13.204,4.645h40.272c6.268,0,10.774-1.534,13.776-4.689 c4.061-4.267,3.789-9.779,3.608-13.427c-0.032-0.645-0.066-1.296-0.074-1.944c-0.065-5.48,0.345-7.025,0.362-7.09 c2.121-7.657,8.993-15.732,15.057-22.855c2.023-2.377,3.934-4.622,5.714-6.879c10.431-13.23,15.944-29.12,15.944-45.951 C217.705,88.892,184.305,55.486,143.25,55.486z"/><path d="M161.766,239.564h-37.041c-7.995,0-14.5,6.505-14.5,14.5v11.117c0,7.995,6.505,14.5,14.5,14.5 h37.041c7.995,0,14.5-6.505,14.5-14.5v-11.117C176.266,246.069,169.761,239.564,161.766,239.564z"/><path d="M143.245,45.779c4.143,0,7.5-3.357,7.5-7.5V7.5c0-4.143-3.357-7.5-7.5-7.5 c-4.143,0-7.5,3.357-7.5,7.5v30.779C135.745,42.422,139.103,45.779,143.245,45.779z"/><path d="M241.917,34.598c-2.858-2.995-7.606-3.106-10.604-0.248l-22.77,21.73 c-2.997,2.859-3.107,7.607-0.248,10.604c1.474,1.544,3.448,2.322,5.427,2.322c1.86,0,3.725-0.688,5.177-2.074l22.77-21.731 C244.666,42.342,244.776,37.594,241.917,34.598z"/><path d="M264.273,109.599l-29.311,0.047c-4.143,0.007-7.495,3.37-7.488,7.512 c0.007,4.139,3.363,7.488,7.5,7.488l29.311-0.047c4.143-0.007,7.495-3.37,7.488-7.512 C271.767,112.948,268.41,109.599,264.273,109.599z"/><path d="M74.386,64.684c2.859-2.996,2.749-7.743-0.248-10.604l-22.77-21.73 c-2.994-2.858-7.742-2.749-10.604,0.248c-2.859,2.996-2.749,7.743,0.248,10.604l22.77,21.731c1.452,1.386,3.315,2.074,5.177,2.074 C70.937,67.006,72.912,66.228,74.386,64.684z"/><path d="M44.729,109.646l-29.31-0.047c-4.137,0-7.493,3.351-7.5,7.488 c-0.007,4.142,3.346,7.505,7.488,7.512l29.31,0.047c4.137,0,7.493-3.351,7.5-7.488 C52.225,113.016,48.872,109.652,44.729,109.646z"/></g></svg>
                     </button>
 
-                    <!-- Color Palette -->
                     <div id="colorPalette"
                          class="absolute top-full right-0 mt-2 p-6 glass rounded-2xl opacity-0 pointer-events-none transition-all z-50 shadow-xl border border-white/20 min-w-max"
                          role="menu" aria-labelledby="colorPickerBtn">
                         <div class="grid grid-cols-4 gap-3">
-                            <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
-                                    data-color="#4a90e2" style="background: linear-gradient(135deg, #4a90e2, #6ba3e8);"
-                                    aria-label="Blue theme" role="menuitem"></button>
-                            <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
-                                    data-color="#af52de" style="background: linear-gradient(135deg, #af52de, #bf5af2);"
-                                    aria-label="Purple theme" role="menuitem"></button>
-                            <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
-                                    data-color="#30d158" style="background: linear-gradient(135deg, #30d158, #64de85);"
-                                    aria-label="Green theme" role="menuitem"></button>
-                            <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
-                                    data-color="#ff9500" style="background: linear-gradient(135deg, #ff9500, #ffb340);"
-                                    aria-label="Orange theme" role="menuitem"></button>
-                            <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
-                                    data-color="#ff453a" style="background: linear-gradient(135deg, #ff453a, #ff6961);"
-                                    aria-label="Red theme" role="menuitem"></button>
-                            <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
-                                    data-color="#e91e63" style="background: linear-gradient(135deg, #e91e63, #f06292);"
-                                    aria-label="Pink theme" role="menuitem"></button>
-                            <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
-                                    data-color="#00bcd4" style="background: linear-gradient(135deg, #00bcd4, #4dd0e1);"
-                                    aria-label="Cyan theme" role="menuitem"></button>
-                            <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
-                                    data-color="#f8bbd9" style="background: linear-gradient(135deg, #f8bbd9, #fce4ec);"
-                                    aria-label="Pastel pink theme" role="menuitem"></button>
+                            <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#4a90e2" style="background: linear-gradient(135deg, #4a90e2, #6ba3e8);" aria-label="Blue theme" role="menuitem" data-tooltip="Blue"></button>
+                            <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#af52de" style="background: linear-gradient(135deg, #af52de, #bf5af2);" aria-label="Purple theme" role="menuitem" data-tooltip="Purple"></button>
+                            <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#30d158" style="background: linear-gradient(135deg, #30d158, #64de85);" aria-label="Green theme" role="menuitem" data-tooltip="Green"></button>
+                            <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#ff9500" style="background: linear-gradient(135deg, #ff9500, #ffb340);" aria-label="Orange theme" role="menuitem" data-tooltip="Orange"></button>
+                            <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#ff453a" style="background: linear-gradient(135deg, #ff453a, #ff6961);" aria-label="Red theme" role="menuitem" data-tooltip="Red"></button>
+                            <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#e91e63" style="background: linear-gradient(135deg, #e91e63, #f06292);" aria-label="Pink theme" role="menuitem" data-tooltip="Pink"></button>
+                            <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#00bcd4" style="background: linear-gradient(135deg, #00bcd4, #4dd0e1);" aria-label="Cyan theme" role="menuitem" data-tooltip="Cyan"></button>
+                            <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#f8bbd9" style="background: linear-gradient(135deg, #f8bbd9, #fce4ec);" aria-label="Pastel pink theme" role="menuitem" data-tooltip="Pastel"></button>
                         </div>
                     </div>
                 </div>
 
                 <a href="https://github.com/ryanpolasky/personal-website/" target="_blank" rel="noreferrer"
                    class="hidden lg:inline-flex p-2 rounded-xl glass hover:shadow-glow transition-all hover-lift"
-                   aria-label="GitHub">
+                   aria-label="GitHub" data-tooltip="View Source">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 .5a12 12 0 0 0-3.79 23.4c.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.74.08-.73.08-.73 1.2.09 1.83 1.23 1.83 1.23 1.07 1.83 2.81 1.3 3.5.99.11-.78.42-1.3.76-1.6-2.66-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.16 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.3-1.55 3.3-1.23 3.3-1.23.66 1.64.24 2.86.12 3.16.77.84 1.24 1.9 1.24 3.22 0 4.61-2.81 5.62-5.49 5.92.43.37.82 1.1.82 2.22v3.29c0 .32.21.69.83.57A12 12 0 0 0 12 .5Z"/>
                     </svg>
@@ -683,24 +1018,19 @@
 </header>
 
 <!-- Hero Section -->
-<section id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden pb-16">
+<section id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden pb-16" style="margin-top:-5rem;">
     <!-- Instant Background Effects -->
     <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
-        <!-- Large diffused glows -->
-        <div class="absolute top-10 right-1/6 w-96 h-96 rounded-full animate-pulse-slow"
+        <div class="absolute top-10 right-1/6 w-96 h-96 rounded-full animate-pulse-slow parallax-element" data-speed="15"
              style="background: radial-gradient(circle, var(--accent-glow, rgba(74, 144, 226, 0.08)) 0%, transparent 70%); filter: blur(60px);"></div>
-        <div class="absolute bottom-20 left-1/6 w-80 h-80 rounded-full animate-pulse-slow"
+        <div class="absolute bottom-20 left-1/6 w-80 h-80 rounded-full animate-pulse-slow parallax-element" data-speed="10"
              style="background: radial-gradient(circle, var(--accent-dark, rgba(53, 122, 189, 0.06)) 0%, transparent 70%); filter: blur(80px); animation-delay: 2s;"></div>
-        <div class="absolute top-1/3 left-2/3 w-72 h-72 rounded-full animate-pulse-slow"
+        <div class="absolute top-1/3 left-2/3 w-72 h-72 rounded-full animate-pulse-slow parallax-element" data-speed="20"
              style="background: radial-gradient(circle, var(--accent-light, rgba(107, 163, 232, 0.05)) 0%, transparent 70%); filter: blur(70px); animation-delay: 4s;"></div>
-
-        <!-- Medium ambient glows -->
         <div class="absolute top-2/3 right-1/3 w-60 h-60 rounded-full animate-pulse-slow"
              style="background: radial-gradient(circle, var(--accent-color, rgba(74, 144, 226, 0.04)) 0%, transparent 60%); filter: blur(50px); animation-delay: 1s;"></div>
         <div class="absolute bottom-1/3 left-1/2 w-52 h-52 rounded-full animate-pulse-slow"
              style="background: radial-gradient(circle, var(--accent-glow, rgba(74, 144, 226, 0.03)) 0%, transparent 60%); filter: blur(40px); animation-delay: 3s;"></div>
-
-        <!-- Subtle corner accents -->
         <div class="absolute top-0 left-0 w-40 h-40 rounded-full animate-pulse-slow"
              style="background: radial-gradient(circle, var(--accent-light, rgba(107, 163, 232, 0.02)) 0%, transparent 50%); filter: blur(30px); animation-delay: 5s;"></div>
         <div class="absolute bottom-0 right-0 w-44 h-44 rounded-full animate-pulse-slow"
@@ -710,13 +1040,16 @@
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 relative z-10">
         <div class="grid lg:grid-cols-5 gap-8 lg:gap-12 items-center">
             <div class="text-center lg:text-left lg:col-span-3 hero-mobile-padding">
-                <div class="hidden lg:inline-block px-3 py-1 rounded-full glass mb-4">
-                    <span class="text-accent font-medium text-sm">Available May 2026</span>
+                <div class="hidden lg:inline-flex items-center gap-2 px-3 py-1 rounded-full glass mb-4">
+                    <div class="visitor-badge">
+                        <span class="pulse-dot"></span>
+                        <span class="text-slate-400">Available May 2026</span>
+                    </div>
                 </div>
 
                 <h1 class="text-4xl mobile-text-5xl sm:text-7xl font-black tracking-tight leading-none mb-8">
                     <span class="block">Hey, I'm</span>
-                    <span class="gradient-text">Ryan</span><span class="text-accent animate-pulse">.</span>
+                    <span class="gradient-text shimmer-text" style="background-image: linear-gradient(90deg, var(--accent-color), var(--accent-light), var(--accent-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Ryan</span><span class="text-accent animate-pulse">.</span>
                 </h1>
 
                 <!-- Avatar folds under header text on mobile/tablet -->
@@ -726,21 +1059,20 @@
                         <img src="./assets/images/my-avatar.png" alt="Ryan Polasky"
                              class="relative w-64 mobile-avatar sm:w-80 sm:h-80 h-64 rounded-3xl object-cover hover-lift"
                              style="border: 2px solid var(--accent-glow, #4a90e2);"/>
-                        <!-- Floating tech icons -->
-                        <div class="absolute -top-4 -right-4 w-12 sm:w-16 h-12 sm:h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent floating">
+                        <div class="absolute -top-4 -right-4 w-12 sm:w-16 h-12 sm:h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent floating parallax-element" data-speed="5">
                             <span class="text-xl sm:text-2xl">⚡</span>
                         </div>
-                        <div class="absolute -bottom-4 -left-4 w-12 sm:w-16 h-12 sm:h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent floating">
+                        <div class="absolute -bottom-4 -left-4 w-12 sm:w-16 h-12 sm:h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent floating parallax-element" data-speed="8">
                             <span class="text-xl sm:text-2xl">🚀</span>
                         </div>
-                        <div class="absolute top-1/2 -left-6 sm:-left-8 w-10 sm:w-12 h-10 sm:h-12 bg-gradient-to-r from-slate-800 to-slate-700 rounded-xl flex items-center justify-center border-2 border-accent floating">
+                        <div class="absolute top-1/2 -left-6 sm:-left-8 w-10 sm:w-12 h-10 sm:h-12 bg-gradient-to-r from-slate-800 to-slate-700 rounded-xl flex items-center justify-center border-2 border-accent floating parallax-element" data-speed="12">
                             <span class="text-lg sm:text-xl">💻</span>
                         </div>
                     </div>
                 </div>
 
                 <h2 class="block text-2xl sm:text-3xl font-normal mt-4 mb-4 hero-subtitle">
-                    I like to build cool things :)
+                    <span id="typewriter-target">I like to build cool things :)</span>
                 </h2>
                 <p class="text-xl text-slate-300 max-w-2xl mb-8 leading-relaxed hero-description">
                     Junior Software Engineer @ UT Dallas ('26). 2x Apple intern crafting
@@ -752,57 +1084,68 @@
 
                 <div class="flex gap-3 mb-6 mobile-button-stack sm:flex-row sm:gap-3 sm:px-0">
                     <a data-scroll="projects" href="#projects"
-                       class="group px-8 py-4 rounded-2xl text-white font-semibold hover:shadow-lg transition-all"
+                       class="group magnetic-btn px-8 py-4 rounded-2xl text-white font-semibold hover:shadow-lg transition-all gradient-border-animated"
                        style="background: linear-gradient(to right, var(--accent-darker), var(--accent-dark));">
-                <span class="flex items-center justify-center gap-2 mt-0.5">
-                  View Projects
-                  <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor"
-                       viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-                  </svg>
-                </span>
+                        <span class="flex items-center justify-center gap-2 mt-0.5">
+                          View Projects
+                          <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                          </svg>
+                        </span>
                     </a>
 
                     <a data-scroll="contact" href="#contact"
-                       class="px-8 py-4 rounded-2xl border-2 border-slate-600 hover:border-accent font-semibold transition-all">
+                       class="magnetic-btn px-8 py-4 rounded-2xl border-2 border-slate-600 hover:border-accent font-semibold transition-all">
                         Get in Touch
                     </a>
 
                     <a href="/assets/Ryan_Polasky_Resume.pdf" download
-                       class="px-8 py-4 rounded-2xl border-2 border-slate-600 hover:border-accent font-semibold transition-all">
+                       class="magnetic-btn px-8 py-4 rounded-2xl border-2 border-slate-600 hover:border-accent font-semibold transition-all">
                         Download Résumé
                     </a>
                 </div>
-
             </div>
 
             <div class="hidden lg:flex justify-center lg:justify-end relative lg:col-span-2">
-                <div class="relative mobile-floating-adjust">
-                    <div class="absolute inset-0 bg-gradient-to-r from-accent to-secondary-blue rounded-3xl blur animate-glow"></div>
-                    <img src="./assets/images/my-avatar.png" alt="Ryan Polasky"
-                         class="relative w-64 mobile-avatar sm:w-80 sm:h-80 h-64 rounded-3xl object-cover hover-lift"
-                         style="border: 2px solid var(--accent-glow, #4a90e2);"/>
+                <div class="relative mobile-floating-adjust tilt-card">
+                    <div class="tilt-card-inner">
+                        <div class="absolute inset-0 bg-gradient-to-r from-accent to-secondary-blue rounded-3xl blur animate-glow"></div>
+                        <img src="./assets/images/my-avatar.png" alt="Ryan Polasky"
+                             class="relative w-64 mobile-avatar sm:w-80 sm:h-80 h-64 rounded-3xl object-cover hover-lift"
+                             style="border: 2px solid var(--accent-glow, #4a90e2);"/>
+                    </div>
 
-                    <!-- Floating tech icons -->
-                    <div class="absolute -top-4 -right-4 w-12 sm:w-16 h-12 sm:h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent floating">
+                    <div class="absolute -top-4 -right-4 w-12 sm:w-16 h-12 sm:h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent floating parallax-element" data-speed="5">
                         <span class="text-xl sm:text-2xl">⚡</span>
                     </div>
-                    <div class="absolute -bottom-4 -left-4 w-12 sm:w-16 h-12 sm:h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent floating">
+                    <div class="absolute -bottom-4 -left-4 w-12 sm:w-16 h-12 sm:h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent floating parallax-element" data-speed="8">
                         <span class="text-xl sm:text-2xl">🚀</span>
                     </div>
-                    <div class="absolute top-1/2 -left-6 sm:-left-8 w-10 sm:w-12 h-10 sm:h-12 bg-gradient-to-r from-slate-800 to-slate-700 rounded-xl flex items-center justify-center border-2 border-accent floating">
+                    <div class="absolute top-1/2 -left-6 sm:-left-8 w-10 sm:w-12 h-10 sm:h-12 bg-gradient-to-r from-slate-800 to-slate-700 rounded-xl flex items-center justify-center border-2 border-accent floating parallax-element" data-speed="12">
                         <span class="text-lg sm:text-xl">💻</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- ===== GOATED: Scroll Indicator ===== -->
+    <div class="scroll-indicator">
+        <div class="scroll-indicator-mouse"></div>
+        <span class="text-xs text-slate-500 font-mono">scroll</span>
+    </div>
 </section>
+
+<!-- ===== GOATED: Wave Divider ===== -->
+<div class="wave-divider">
+    <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
+        <path d="M0,40 C360,80 720,0 1080,40 C1260,60 1380,30 1440,40 L1440,80 L0,80 Z" fill="var(--accent-color)" opacity="0.05"/>
+        <path d="M0,50 C320,10 640,70 960,30 C1200,0 1360,50 1440,35 L1440,80 L0,80 Z" fill="var(--accent-color)" opacity="0.03"/>
+    </svg>
+</div>
 
 <!-- About Section -->
 <section id="about" class="py-12 relative">
-    <!-- Subtle gradient overlay at the top -->
     <div class="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-bg/80 to-transparent pointer-events-none"></div>
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
@@ -812,9 +1155,8 @@
             <div class="w-24 h-1 bg-gradient-to-r from-accent to-accent-light mx-auto rounded-full"></div>
         </div>
 
-        <div class="glass-card p-10 rounded-3xl">
+        <div class="glass-card p-10 rounded-3xl stagger-reveal">
             <div class="grid lg:grid-cols-3 gap-8 items-center">
-                <!-- Main content -->
                 <div class="lg:col-span-2 space-y-6 flex flex-col justify-center">
                     <p class="text-lg text-slate-300 leading-relaxed section-description">
                         I'm a fourth-year CS student at the University of Texas at Dallas, graduating May 2026. I
@@ -841,7 +1183,7 @@
                     </div>
                 </div>
 
-                <!-- Quick stats -->
+                <!-- ===== GOATED: Quick stats with count-up animation ===== -->
                 <div class="space-y-4">
                     <div class="glass p-4 rounded-2xl text-center hover-lift">
                         <div class="w-12 h-12 bg-gradient-to-r from-slate-800 to-slate-700 rounded-xl flex items-center justify-center border-2 border-accent mx-auto mb-2">
@@ -864,7 +1206,7 @@
                             <span class="text-xl">💼</span>
                         </div>
                         <div class="font-bold text-white">Experience</div>
-                        <div class="text-slate-400 text-sm">2x Apple Intern</div>
+                        <div class="text-slate-400 text-sm"><span class="count-up" data-count="2" data-suffix="x">0x</span> Apple Intern</div>
                     </div>
                 </div>
             </div>
@@ -884,13 +1226,12 @@
         </div>
 
         <div class="relative">
-            <!-- Timeline line -->
             <div class="absolute left-8 top-0 bottom-8 w-1 bg-gradient-to-b from-accent via-accent-light to-accent-dark rounded-full z-0 timeline-line-mobile-hidden lg:block"></div>
 
             <div class="space-y-12 lg:space-y-16">
                 <!-- Experience 1 -->
-                <div class="relative experience-mobile z-10">
-                    <div class="hidden lg:flex flex-shrink-0 timeline-icon w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl items-center justify-center border-2 border-accent shadow-glow animate-glow z-20 relative">
+                <div class="relative experience-mobile z-10 stagger-reveal">
+                    <div class="hidden lg:flex flex-shrink-0 timeline-icon w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl items-center justify-center border-2 border-accent shadow-glow animate-glow z-20 relative timeline-dot-pulse">
                         <span class="text-2xl font-black" style="margin-right: -0.3rem;">🎯</span>
                     </div>
                     <div class="glass-card timeline-content p-8 rounded-3xl hover-lift flex-1 z-10 relative">
@@ -908,26 +1249,23 @@
                         <div class="space-y-3 text-slate-300">
                             <div class="flex items-start gap-3">
                                 <span class="text-accent text-xl">▶</span>
-                                <p><span class="text-accent font-semibold">6.87% escalation rate</span> through
-                                    independent research & advanced troubleshooting-well below department average.</p>
+                                <p><span class="text-accent font-semibold">6.87% escalation rate</span> through independent research & advanced troubleshooting-well below department average.</p>
                             </div>
                             <div class="flex items-start gap-3">
                                 <span class="text-accent text-xl">▶</span>
-                                <p><span class="text-accent font-semibold">0.27m average call wrap time</span> while
-                                    maintaining premium-quality documentation standards.</p>
+                                <p><span class="text-accent font-semibold">0.27m average call wrap time</span> while maintaining premium-quality documentation standards.</p>
                             </div>
                             <div class="flex items-start gap-3">
                                 <span class="text-accent text-xl">▶</span>
-                                <p><span class="text-accent font-semibold">15% above department average CSAT</span>; 2x
-                                    AppleCare Excellence Award recipient (2024, 2025).</p>
+                                <p><span class="text-accent font-semibold">15% above department average CSAT</span>; 2x AppleCare Excellence Award recipient (2024, 2025).</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Experience 2 -->
-                <div class="relative experience-mobile z-10">
-                    <div class="hidden lg:flex flex-shrink-0 timeline-icon w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl items-center justify-center border-2 border-accent shadow-glow animate-glow z-20 relative">
+                <div class="relative experience-mobile z-10 stagger-reveal">
+                    <div class="hidden lg:flex flex-shrink-0 timeline-icon w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl items-center justify-center border-2 border-accent shadow-glow animate-glow z-20 relative timeline-dot-pulse">
                         <span class="text-2xl font-black" style="margin-right: -0.1rem;">👨🏻‍💻</span>
                     </div>
                     <div class="glass-card timeline-content p-8 rounded-3xl hover-lift flex-1 z-10 relative">
@@ -945,29 +1283,23 @@
                         <div class="space-y-3 text-slate-300">
                             <div class="flex items-start gap-3">
                                 <span class="text-accent text-xl">▶</span>
-                                <p><span class="text-accent font-semibold">HackUTD Mentor</span> — supported 1,200+
-                                    participants across overnight shifts, debugged critical issues for 60+ teams
-                                    competing in the US's largest hackathon.</p>
+                                <p><span class="text-accent font-semibold">HackUTD Mentor</span> — supported 1,200+ participants across overnight shifts, debugged critical issues for 60+ teams competing in the US's largest hackathon.</p>
                             </div>
                             <div class="flex items-start gap-3">
                                 <span class="text-accent text-xl">▶</span>
-                                <p><span class="text-accent font-semibold">Development Lead</span> — architecting
-                                    full-stack roommate-matching platform (React + FastAPI + PostgreSQL) while coaching
-                                    junior members through agile workflows.</p>
+                                <p><span class="text-accent font-semibold">Development Lead</span> — architecting full-stack roommate-matching platform (React + FastAPI + PostgreSQL) while coaching junior members through agile workflows.</p>
                             </div>
                             <div class="flex items-start gap-3">
                                 <span class="text-accent text-xl">▶</span>
-                                <p><span class="text-accent font-semibold">Education Mentor</span> — selected to guide 4
-                                    underclassmen through technical interviews, career planning, and landing summer
-                                    internships.</p>
+                                <p><span class="text-accent font-semibold">Education Mentor</span> — selected to guide 4 underclassmen through technical interviews, career planning, and landing summer internships.</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Experience 2 -->
-                <div class="relative experience-mobile z-10">
-                    <div class="hidden lg:flex flex-shrink-0 timeline-icon w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl items-center justify-center border-2 border-accent shadow-glow animate-glow z-20 relative">
+                <!-- Experience 3 -->
+                <div class="relative experience-mobile z-10 stagger-reveal">
+                    <div class="hidden lg:flex flex-shrink-0 timeline-icon w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl items-center justify-center border-2 border-accent shadow-glow animate-glow z-20 relative timeline-dot-pulse">
                         <span class="text-2xl font-black" style="margin-right: -0.1rem;">📱</span>
                     </div>
                     <div class="glass-card timeline-content p-8 rounded-3xl hover-lift flex-1 z-10 relative">
@@ -985,28 +1317,23 @@
                         <div class="space-y-3 text-slate-300">
                             <div class="flex items-start gap-3">
                                 <span class="text-accent text-xl">▶</span>
-                                <p>Automated parsing, grouping, and analysis of <span class="text-accent font-semibold">thousands of on-device tests</span>
-                                    with intelligent categorization systems.</p>
+                                <p>Automated parsing, grouping, and analysis of <span class="text-accent font-semibold">thousands of on-device tests</span> with intelligent categorization systems.</p>
                             </div>
                             <div class="flex items-start gap-3">
                                 <span class="text-accent text-xl">▶</span>
-                                <p>Integrated <span
-                                        class="text-accent font-semibold">LLMs into test triage workflows</span> to
-                                    dramatically speed up root-cause analysis and reduce manual investigation time by
-                                    4,800%.</p>
+                                <p>Integrated <span class="text-accent font-semibold">LLMs into test triage workflows</span> to dramatically speed up root-cause analysis and reduce manual investigation time by 4,800%.</p>
                             </div>
                             <div class="flex items-start gap-3">
                                 <span class="text-accent text-xl">▶</span>
-                                <p>Unified bug report formats for <span class="text-accent font-semibold">succinct, actionable communications</span>
-                                    that teams actually use.</p>
+                                <p>Unified bug report formats for <span class="text-accent font-semibold">succinct, actionable communications</span> that teams actually use.</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Experience 3 -->
-                <div class="relative experience-mobile z-10">
-                    <div class="hidden lg:flex flex-shrink-0 timeline-icon w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl items-center justify-center border-2 border-accent shadow-glow animate-glow z-20 relative">
+                <!-- Experience 4 -->
+                <div class="relative experience-mobile z-10 stagger-reveal">
+                    <div class="hidden lg:flex flex-shrink-0 timeline-icon w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl items-center justify-center border-2 border-accent shadow-glow animate-glow z-20 relative timeline-dot-pulse">
                         <span class="text-2xl font-black" style="margin-right: -0.2rem;">⚡</span>
                     </div>
                     <div class="glass-card timeline-content p-8 rounded-3xl hover-lift flex-1 z-10 relative">
@@ -1024,31 +1351,27 @@
                         <div class="space-y-3 text-slate-300">
                             <div class="flex items-start gap-3">
                                 <span class="text-accent text-xl">▶</span>
-                                <p>Built an <span class="text-accent font-semibold">LLM-powered chat interface + Python package</span>
-                                    to generate SQL/NoSQL queries from natural language-no more syntax debugging.</p>
+                                <p>Built an <span class="text-accent font-semibold">LLM-powered chat interface + Python package</span> to generate SQL/NoSQL queries from natural language-no more syntax debugging.</p>
                             </div>
                             <div class="flex items-start gap-3">
                                 <span class="text-accent text-xl">▶</span>
-                                <p>Migrated critical services from <span class="text-accent font-semibold">Java 11 → JDK 21</span>,
-                                    resolving dependency conflicts and security vulnerabilities.</p>
+                                <p>Migrated critical services from <span class="text-accent font-semibold">Java 11 → JDK 21</span>, resolving dependency conflicts and security vulnerabilities.</p>
                             </div>
                             <div class="flex items-start gap-3">
                                 <span class="text-accent text-xl">▶</span>
-                                <p>Designed robust <span class="text-accent font-semibold">AWS/GCP workflows and CI/CD pipelines</span>
-                                    for reliable deploys and lightning-fast feedback loops.</p>
+                                <p>Designed robust <span class="text-accent font-semibold">AWS/GCP workflows and CI/CD pipelines</span> for reliable deploys and lightning-fast feedback loops.</p>
                             </div>
                             <div class="flex items-start gap-3">
                                 <span class="text-accent text-xl">▶</span>
-                                <p>Optimized an iOS log analyzer (MVVM) to <span class="text-accent font-semibold">render thousands of events in real-time</span>
-                                    without performance hiccups.</p>
+                                <p>Optimized an iOS log analyzer (MVVM) to <span class="text-accent font-semibold">render thousands of events in real-time</span> without performance hiccups.</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Experience 4 -->
-                <div class="relative experience-mobile z-10">
-                    <div class="hidden lg:flex flex-shrink-0 timeline-icon w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl items-center justify-center border-2 border-accent shadow-glow animate-glow z-20 relative">
+                <!-- Experience 5 -->
+                <div class="relative experience-mobile z-10 stagger-reveal">
+                    <div class="hidden lg:flex flex-shrink-0 timeline-icon w-16 h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl items-center justify-center border-2 border-accent shadow-glow animate-glow z-20 relative timeline-dot-pulse">
                         <span class="text-2xl font-black" style="margin-right: -0.1rem;">🏥</span>
                     </div>
                     <div class="glass-card timeline-content p-8 rounded-3xl hover-lift flex-1 z-10 relative">
@@ -1066,13 +1389,11 @@
                         <div class="space-y-3 text-slate-300">
                             <div class="flex items-start gap-3">
                                 <span class="text-accent text-xl">▶</span>
-                                <p>Repaired, imaged, and deployed <span class="text-accent font-semibold">hundreds of machines</span>
-                                    for critical healthcare system expansion.</p>
+                                <p>Repaired, imaged, and deployed <span class="text-accent font-semibold">hundreds of machines</span> for critical healthcare system expansion.</p>
                             </div>
                             <div class="flex items-start gap-3">
                                 <span class="text-accent text-xl">▶</span>
-                                <p>Handled urgent hardware deliveries and set a <span class="text-accent font-semibold">department intake record (300+ devices)</span>
-                                    during high-demand periods.</p>
+                                <p>Handled urgent hardware deliveries and set a <span class="text-accent font-semibold">department intake record (300+ devices)</span> during high-demand periods.</p>
                             </div>
                         </div>
                     </div>
@@ -1092,19 +1413,18 @@
             </h2>
             <div class="w-24 h-1 bg-gradient-to-r from-accent to-accent-light mx-auto rounded-full mb-6"></div>
             <a href="https://github.com/ryanpolasky" target="_blank" rel="noreferrer"
-               class="inline-flex items-center gap-2 text-lg font-semibold text-accent hover:text-accent-light transition-colors px-4 py-2 rounded-xl">
+               class="inline-flex items-center gap-2 text-lg font-semibold text-accent hover:text-accent-light transition-colors px-4 py-2 rounded-xl magnetic-btn">
                 View Public GitHub
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
                 </svg>
             </a>
         </div>
 
         <div class="grid mobile-grid-single md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
             <!-- Project 1 -->
-            <article class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden">
-                <div class="relative">
+            <article class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden tilt-card stagger-reveal">
+                <div class="relative tilt-card-inner">
                     <div class="flex items-center justify-between mb-6">
                         <div class="flex items-center gap-3">
                             <div class="w-12 h-12 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent">
@@ -1119,10 +1439,7 @@
                     </div>
 
                     <p class="text-slate-300 mb-6 leading-relaxed">
-                        Python package + chat UI that transforms natural language into data-accurate responses by
-                        automatically
-                        running parameterized SQL or NoSQL queries & interpreting the responses. No more syntax
-                        debugging sessions!
+                        Python package + chat UI that transforms natural language into data-accurate responses by automatically running parameterized SQL or NoSQL queries & interpreting the responses. No more syntax debugging sessions!
                     </p>
 
                     <div class="flex gap-2 flex-wrap mb-4">
@@ -1132,15 +1449,13 @@
                         <span class="px-3 py-1 rounded-full bg-white/10 text-white text-xs font-mono">GCP</span>
                     </div>
 
-                    <div class="text-xs text-slate-500 italic">
-                        Internal tool • Repository is private
-                    </div>
+                    <div class="text-xs text-slate-500 italic">Internal tool • Repository is private</div>
                 </div>
             </article>
 
             <!-- Project 2 -->
-            <article class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden">
-                <div class="relative">
+            <article class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden tilt-card stagger-reveal">
+                <div class="relative tilt-card-inner">
                     <div class="flex items-center justify-between mb-6">
                         <div class="flex items-center gap-3">
                             <div class="w-12 h-12 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent">
@@ -1155,10 +1470,7 @@
                     </div>
 
                     <p class="text-slate-300 mb-6 leading-relaxed">
-                        Intelligent test failure aggregation system that classifies failures, suggests probable root
-                        causes
-                        using multi-stage LLM analysis and exports unified bug reports with automatic artifact
-                        attachment. Turns chaos into actionable insights.
+                        Intelligent test failure aggregation system that classifies failures, suggests probable root causes using multi-stage LLM analysis and exports unified bug reports with automatic artifact attachment. Turns chaos into actionable insights.
                     </p>
 
                     <div class="flex gap-2 flex-wrap mb-4">
@@ -1168,15 +1480,13 @@
                         <span class="px-3 py-1 rounded-full bg-white/10 text-white text-xs font-mono">bash</span>
                     </div>
 
-                    <div class="text-xs text-slate-500 italic">
-                        Internal tool • Repository is private
-                    </div>
+                    <div class="text-xs text-slate-500 italic">Internal tool • Repository is private</div>
                 </div>
             </article>
 
             <!-- Project 3 -->
-            <article class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden">
-                <div class="relative">
+            <article class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden tilt-card stagger-reveal">
+                <div class="relative tilt-card-inner">
                     <div class="flex items-center justify-between mb-6">
                         <div class="flex items-center gap-3">
                             <div class="w-12 h-12 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent">
@@ -1191,9 +1501,7 @@
                     </div>
 
                     <p class="text-slate-300 mb-6 leading-relaxed">
-                        A dedicated page tracking my Spotify status in real-time. Features dynamic ambient background
-                        generation
-                        based on album artwork colors, fluid animations, and is optimized for both mobile and desktop.
+                        A dedicated page tracking my Spotify status in real-time. Features dynamic ambient background generation based on album artwork colors, fluid animations, and is optimized for both mobile and desktop.
                     </p>
 
                     <div class="flex gap-2 flex-wrap mb-4">
@@ -1203,15 +1511,14 @@
                     </div>
 
                     <div class="text-xs text-slate-500 italic">
-                        <a href="https://listening.ryanpolasky.com" target="_blank"
-                           class="hover:text-accent transition-colors">View Live Site ></a>
+                        <a href="https://listening.ryanpolasky.com" target="_blank" class="hover:text-accent transition-colors">View Live Site ></a>
                     </div>
                 </div>
             </article>
 
             <!-- Project 4 -->
-            <article class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden">
-                <div class="relative">
+            <article class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden tilt-card stagger-reveal">
+                <div class="relative tilt-card-inner">
                     <div class="flex items-center justify-between mb-6">
                         <div class="flex items-center gap-3">
                             <div class="w-12 h-12 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent">
@@ -1226,9 +1533,7 @@
                     </div>
 
                     <p class="text-slate-300 mb-6 leading-relaxed">
-                        A digital garden hosting my entire CS curriculum notes from UTD. Features comprehensive
-                        documentation, LaTeX-formatted algorithms, and study guides organized via Notion to help
-                        students.
+                        A digital garden hosting my entire CS curriculum notes from UTD. Features comprehensive documentation, LaTeX-formatted algorithms, and study guides organized via Notion to help students.
                     </p>
 
                     <div class="flex gap-2 flex-wrap mb-4">
@@ -1238,15 +1543,14 @@
                     </div>
 
                     <div class="text-xs text-slate-500 italic">
-                        <a href="https://ryanpolasky.com/notes" class="hover:text-accent transition-colors">View Site
-                            ></a>
+                        <a href="https://ryanpolasky.com/notes" class="hover:text-accent transition-colors">View Site ></a>
                     </div>
                 </div>
             </article>
 
             <!-- Project 5 -->
-            <article class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden">
-                <div class="relative">
+            <article class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden tilt-card stagger-reveal">
+                <div class="relative tilt-card-inner">
                     <div class="flex items-center justify-between mb-6">
                         <div class="flex items-center gap-3">
                             <div class="w-12 h-12 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent">
@@ -1261,11 +1565,7 @@
                     </div>
 
                     <p class="text-slate-300 mb-6 leading-relaxed">
-                        Since 2021, I've been a hobbyist music producer, primarily specializing in the creation of
-                        "Lo-Fi", or
-                        Low Fidelity music. I have been a published artist on major streaming platforms such as Spotify
-                        & Apple
-                        Music since 2023.
+                        Since 2021, I've been a hobbyist music producer, primarily specializing in the creation of "Lo-Fi", or Low Fidelity music. I have been a published artist on major streaming platforms such as Spotify & Apple Music since 2023.
                     </p>
 
                     <div class="flex gap-2 flex-wrap mb-4">
@@ -1281,8 +1581,8 @@
             </article>
 
             <!-- Project 6 -->
-            <article class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden">
-                <div class="relative">
+            <article class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden tilt-card stagger-reveal">
+                <div class="relative tilt-card-inner">
                     <div class="flex items-center justify-between mb-6">
                         <div class="flex items-center gap-3">
                             <div class="w-12 h-12 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent">
@@ -1297,10 +1597,7 @@
                     </div>
 
                     <p class="text-slate-300 mb-6 leading-relaxed">
-                        As Project Lead, I'm architecting a full-stack matching platform for UTD students while
-                        mentoring
-                        junior developers. We're building a reliable, secure system to replace outdated, impersonal
-                        matching systems.
+                        As Project Lead, I'm architecting a full-stack matching platform for UTD students while mentoring junior developers. We're building a reliable, secure system to replace outdated, impersonal matching systems.
                     </p>
 
                     <div class="flex gap-2 flex-wrap mb-4">
@@ -1310,30 +1607,11 @@
                     </div>
 
                     <div class="text-xs text-slate-500 italic flex gap-4">
-                        <a href="https://github.com/acmutd/meteormate-backend" target="_blank"
-                           class="hover:text-accent transition-colors">Backend Repo ></a>
-                        <a href="https://github.com/acmutd/meteormate-client" target="_blank"
-                           class="hover:text-accent transition-colors">Frontend Repo ></a>
+                        <a href="https://github.com/acmutd/meteormate-backend" target="_blank" class="hover:text-accent transition-colors">Backend Repo ></a>
+                        <a href="https://github.com/acmutd/meteormate-client" target="_blank" class="hover:text-accent transition-colors">Frontend Repo ></a>
                     </div>
                 </div>
             </article>
-
-            <!--          &lt;!&ndash; Project n - Coming Soon &ndash;&gt;-->
-            <!--          <article class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden border-2 border-dashed border-accent/30">-->
-            <!--            <div class="relative text-center">-->
-            <!--              <div class="w-20 h-20 bg-gradient-to-r from-slate-800 to-slate-700 rounded-3xl mx-auto mb-6 flex items-center justify-center border-2 border-accent">-->
-            <!--                <span class="text-4xl animate-bounce-slow">🚀</span>-->
-            <!--              </div>-->
-
-            <!--              <h3 class="text-2xl font-bold text-white mb-4">Something Epic</h3>-->
-            <!--              <p class="text-slate-400 mb-6 font-mono">Coming Very Soon™</p>-->
-
-            <!--              <div class="space-y-2 text-sm text-slate-500">-->
-            <!--                <p>Working on something that will blow your mind.</p>-->
-            <!--                <p class="font-semibold text-accent">Check back later! 👀</p>-->
-            <!--              </div>-->
-            <!--            </div>-->
-            <!--          </article>-->
         </div>
     </div>
 </section>
@@ -1351,7 +1629,7 @@
 
         <div class="grid mobile-grid-single md:grid-cols-2 xl:grid-cols-4 gap-6 lg:gap-8">
             <!-- Languages -->
-            <div class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden">
+            <div class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden stagger-reveal">
                 <div class="absolute inset-0 bg-gradient-to-br from-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <div class="relative">
                     <div class="flex items-center gap-4 mb-6">
@@ -1368,7 +1646,7 @@
                                 <span class="text-slate-400">Advanced</span>
                             </div>
                             <div class="skill-bar">
-                                <div class="skill-progress" style="width: 95%;"></div>
+                                <div class="skill-progress skill-progress-animated" style="--target-width: 95%;"></div>
                             </div>
                         </div>
 
@@ -1378,7 +1656,7 @@
                                 <span class="text-slate-400">Intermediate</span>
                             </div>
                             <div class="skill-bar">
-                                <div class="skill-progress" style="width: 88%;"></div>
+                                <div class="skill-progress skill-progress-animated" style="--target-width: 88%;"></div>
                             </div>
                         </div>
 
@@ -1388,19 +1666,17 @@
                                 <span class="text-slate-400">Intermediate</span>
                             </div>
                             <div class="skill-bar">
-                                <div class="skill-progress" style="width: 80%;"></div>
+                                <div class="skill-progress skill-progress-animated" style="--target-width: 80%;"></div>
                             </div>
                         </div>
 
-                        <div class="text-sm text-slate-400 font-mono pt-2">
-                            C++, SwiftUI, HTML/CSS, JavaScript, R, Obj-C
-                        </div>
+                        <div class="text-sm text-slate-400 font-mono pt-2">C++, SwiftUI, HTML/CSS, JavaScript, R, Obj-C</div>
                     </div>
                 </div>
             </div>
 
             <!-- Data & Databases -->
-            <div class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden">
+            <div class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden stagger-reveal">
                 <div class="absolute inset-0 bg-gradient-to-br from-cyber-blue/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <div class="relative">
                     <div class="flex items-center gap-4 mb-6">
@@ -1417,7 +1693,7 @@
                                 <span class="text-slate-400">Advanced</span>
                             </div>
                             <div class="skill-bar">
-                                <div class="skill-progress" style="width: 95%;"></div>
+                                <div class="skill-progress skill-progress-animated" style="--target-width: 95%;"></div>
                             </div>
                         </div>
 
@@ -1427,7 +1703,7 @@
                                 <span class="text-slate-400">Intermediate</span>
                             </div>
                             <div class="skill-bar">
-                                <div class="skill-progress" style="width: 85%;"></div>
+                                <div class="skill-progress skill-progress-animated" style="--target-width: 85%;"></div>
                             </div>
                         </div>
 
@@ -1437,19 +1713,17 @@
                                 <span class="text-slate-400">Intermediate</span>
                             </div>
                             <div class="skill-bar">
-                                <div class="skill-progress" style="width: 80%;"></div>
+                                <div class="skill-progress skill-progress-animated" style="--target-width: 80%;"></div>
                             </div>
                         </div>
 
-                        <div class="text-sm text-slate-400 font-mono pt-2">
-                            MySQL, SQLite, Vector DBs, MongoDB
-                        </div>
+                        <div class="text-sm text-slate-400 font-mono pt-2">MySQL, SQLite, Vector DBs, MongoDB</div>
                     </div>
                 </div>
             </div>
 
             <!-- AI/LLMs -->
-            <div class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden">
+            <div class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden stagger-reveal">
                 <div class="absolute inset-0 bg-gradient-to-br from-cyber-green/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <div class="relative">
                     <div class="flex items-center gap-4 mb-6">
@@ -1466,7 +1740,7 @@
                                 <span class="text-slate-400">Advanced</span>
                             </div>
                             <div class="skill-bar">
-                                <div class="skill-progress" style="width: 95%;"></div>
+                                <div class="skill-progress skill-progress-animated" style="--target-width: 95%;"></div>
                             </div>
                         </div>
 
@@ -1476,7 +1750,7 @@
                                 <span class="text-slate-400">Advanced</span>
                             </div>
                             <div class="skill-bar">
-                                <div class="skill-progress" style="width: 95%;"></div>
+                                <div class="skill-progress skill-progress-animated" style="--target-width: 95%;"></div>
                             </div>
                         </div>
 
@@ -1486,19 +1760,17 @@
                                 <span class="text-slate-400">Intermediate</span>
                             </div>
                             <div class="skill-bar">
-                                <div class="skill-progress" style="width: 90%;"></div>
+                                <div class="skill-progress skill-progress-animated" style="--target-width: 90%;"></div>
                             </div>
                         </div>
 
-                        <div class="text-sm text-slate-400 font-mono pt-2">
-                            Fine-tuning, Function Calling, Embeddings
-                        </div>
+                        <div class="text-sm text-slate-400 font-mono pt-2">Fine-tuning, Function Calling, Embeddings</div>
                     </div>
                 </div>
             </div>
 
             <!-- DevOps & Cloud -->
-            <div class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden">
+            <div class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden stagger-reveal">
                 <div class="absolute inset-0 bg-gradient-to-br from-cyber-purple/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <div class="relative">
                     <div class="flex items-center gap-4 mb-6">
@@ -1515,7 +1787,7 @@
                                 <span class="text-slate-400">Intermediate</span>
                             </div>
                             <div class="skill-bar">
-                                <div class="skill-progress" style="width: 85%;"></div>
+                                <div class="skill-progress skill-progress-animated" style="--target-width: 85%;"></div>
                             </div>
                         </div>
 
@@ -1525,7 +1797,7 @@
                                 <span class="text-slate-400">Intermediate</span>
                             </div>
                             <div class="skill-bar">
-                                <div class="skill-progress" style="width: 85%;"></div>
+                                <div class="skill-progress skill-progress-animated" style="--target-width: 85%;"></div>
                             </div>
                         </div>
 
@@ -1535,13 +1807,11 @@
                                 <span class="text-slate-400">Intermediate</span>
                             </div>
                             <div class="skill-bar">
-                                <div class="skill-progress" style="width: 75%;"></div>
+                                <div class="skill-progress skill-progress-animated" style="--target-width: 75%;"></div>
                             </div>
                         </div>
 
-                        <div class="text-sm text-slate-400 font-mono pt-2">
-                            Docker, Helm, Terraform, Jenkins
-                        </div>
+                        <div class="text-sm text-slate-400 font-mono pt-2">Docker, Helm, Terraform, Jenkins</div>
                     </div>
                 </div>
             </div>
@@ -1563,7 +1833,7 @@
 
         <div class="grid mobile-grid-single md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
             <!-- Testimonial 1 -->
-            <figure class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden">
+            <figure class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden stagger-reveal">
                 <div class="absolute inset-0 bg-gradient-to-br from-slate-800/20 to-slate-900/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <div class="relative h-full flex flex-col">
                     <div class="flex items-center gap-4 mb-6">
@@ -1577,8 +1847,7 @@
                     </div>
 
                     <blockquote class="text-lg text-slate-300 leading-relaxed mb-6 flex-grow testimonial-text">
-                        "Ryan's learning agility is remarkable… he tackles each new challenge with focus and enthusiasm.
-                        Strong communicator with clear, impactful presentations."
+                        "Ryan's learning agility is remarkable… he tackles each new challenge with focus and enthusiasm. Strong communicator with clear, impactful presentations."
                     </blockquote>
 
                     <figcaption class="flex items-center gap-3 mt-auto">
@@ -1586,8 +1855,7 @@
                             <span class="text-slate-300 font-bold text-lg">SP</span>
                         </div>
                         <div>
-                            <div class="font-bold text-white"><a href="https://www.linkedin.com/in/sahilpujari/">Sahil
-                                Pujari</a></div>
+                            <div class="font-bold text-white"><a href="https://www.linkedin.com/in/sahilpujari/">Sahil Pujari</a></div>
                             <div class="text-sm text-slate-400">Sr. Software Engineer | Mentor</div>
                         </div>
                     </figcaption>
@@ -1595,7 +1863,7 @@
             </figure>
 
             <!-- Testimonial 2 -->
-            <figure class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden">
+            <figure class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden stagger-reveal">
                 <div class="absolute inset-0 bg-gradient-to-br from-slate-800/20 to-slate-900/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <div class="relative h-full flex flex-col">
                     <div class="flex items-center gap-4 mb-6">
@@ -1609,8 +1877,7 @@
                     </div>
 
                     <blockquote class="text-lg text-slate-300 leading-relaxed mb-6 flex-grow testimonial-text">
-                        "Ryan was a fantastic summer 2025 intern. A fast learner, he delivered his project ahead of
-                        schedule and integrated seamlessly. He performed like a full-time hire."
+                        "Ryan was a fantastic summer 2025 intern. A fast learner, he delivered his project ahead of schedule and integrated seamlessly. He performed like a full-time hire."
                     </blockquote>
 
                     <figcaption class="flex items-center gap-3 mt-auto">
@@ -1618,8 +1885,7 @@
                             <span class="text-slate-300 font-bold text-lg">JK</span>
                         </div>
                         <div>
-                            <div class="font-bold text-white"><a href="https://www.linkedin.com/in/jozefkruger/">Jozef
-                                Kruger</a></div>
+                            <div class="font-bold text-white"><a href="https://www.linkedin.com/in/jozefkruger/">Jozef Kruger</a></div>
                             <div class="text-sm text-slate-400">Engineering Manager | Manager</div>
                         </div>
                     </figcaption>
@@ -1627,7 +1893,7 @@
             </figure>
 
             <!-- Testimonial 3 -->
-            <figure class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden">
+            <figure class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden stagger-reveal">
                 <div class="absolute inset-0 bg-gradient-to-br from-slate-800/20 to-slate-900/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <div class="relative h-full flex flex-col">
                     <div class="flex items-center gap-4 mb-6">
@@ -1641,8 +1907,7 @@
                     </div>
 
                     <blockquote class="text-lg text-slate-300 leading-relaxed mb-6 flex-grow testimonial-text">
-                        "Ryan was an exceptional intern, contributing valuable test automation tools. His initiative,
-                        clear communication, and collaboration made him a joy to work with."
+                        "Ryan was an exceptional intern, contributing valuable test automation tools. His initiative, clear communication, and collaboration made him a joy to work with."
                     </blockquote>
 
                     <figcaption class="flex items-center gap-3 mt-auto">
@@ -1650,14 +1915,12 @@
                             <span class="text-slate-300 font-bold text-lg">JP</span>
                         </div>
                         <div>
-                            <div class="font-bold text-white"><a href="https://www.linkedin.com/in/jdpaul123/">JD
-                                Paul</a></div>
+                            <div class="font-bold text-white"><a href="https://www.linkedin.com/in/jdpaul123/">JD Paul</a></div>
                             <div class="text-sm text-slate-400">Software Engineer | Teammate</div>
                         </div>
                     </figcaption>
                 </div>
             </figure>
-
         </div>
     </div>
 </section>
@@ -1678,7 +1941,7 @@
 
         <div class="grid mobile-grid-single lg:grid-cols-3 gap-6 lg:gap-8 items-start">
             <!-- Contact Form -->
-            <div class="lg:col-span-2 glass-card contact-mobile-padding lg:p-10 rounded-3xl">
+            <div class="lg:col-span-2 glass-card contact-mobile-padding lg:p-10 rounded-3xl stagger-reveal">
                 <h3 class="text-2xl font-bold text-white mb-8 flex items-center gap-3">
                     <div class="w-12 h-12 bg-gradient-to-r from-slate-800 to-slate-700 rounded-xl flex items-center justify-center border-2 border-accent">
                         <span class="text-xl">💬</span>
@@ -1699,27 +1962,25 @@
                     </div>
 
                     <div class="relative">
-                <textarea required name="message" placeholder="Your message" rows="6"
-                          class="w-full p-4 rounded-2xl bg-bg/60 border-2 border-white/10 text-white placeholder-slate-400 outline-none focus:border-accent transition-colors backdrop-blur-sm resize-none"></textarea>
+                        <textarea required name="message" placeholder="Your message" rows="6"
+                                  class="w-full p-4 rounded-2xl bg-bg/60 border-2 border-white/10 text-white placeholder-slate-400 outline-none focus:border-accent transition-colors backdrop-blur-sm resize-none"></textarea>
                     </div>
 
                     <button type="submit"
-                            class="group w-full sm:w-auto px-8 py-4 rounded-2xl text-white font-bold hover:shadow-lg transition-all"
+                            class="group magnetic-btn w-full sm:w-auto px-8 py-4 rounded-2xl text-white font-bold hover:shadow-lg transition-all gradient-border-animated"
                             style="background: linear-gradient(to right, var(--accent-darker), var(--accent-dark));">
-                <span class="flex items-center justify-center gap-3">
-                  <span>Send Message</span>
-                  <svg class="w-5 h-5 group-hover:-translate-y-1 transition-transform" fill="none" stroke="currentColor"
-                       viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                  </svg>
-                </span>
+                        <span class="flex items-center justify-center gap-3">
+                          <span>Send Message</span>
+                          <svg class="w-5 h-5 group-hover:-translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                          </svg>
+                        </span>
                     </button>
                 </form>
             </div>
 
             <!-- Quick Contact -->
-            <div class="glass-card contact-mobile-padding lg:p-8 rounded-3xl">
+            <div class="glass-card contact-mobile-padding lg:p-8 rounded-3xl stagger-reveal">
                 <h3 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
                     <div class="w-12 h-12 bg-gradient-to-r from-slate-800 to-slate-700 rounded-xl flex items-center justify-center border-2 border-accent">
                         <span class="text-xl">⚡</span>
@@ -1754,14 +2015,16 @@
                             <span class="text-xl">💼</span>
                         </div>
                         <div>
-                            <div class="font-bold text-white group-hover:text-slate-300 transition-colors">LinkedIn
-                            </div>
+                            <div class="font-bold text-white group-hover:text-slate-300 transition-colors">LinkedIn</div>
                         </div>
                     </a>
 
                     <div class="mt-6 pt-6 border-t border-white/10">
                         <div class="text-center">
-                            <div class="text-sm text-slate-400 mb-2">Available May 2026</div>
+                            <div class="visitor-badge glass rounded-full mx-auto mb-2 justify-center">
+                                <span class="pulse-dot"></span>
+                                <span class="text-slate-400">Available May 2026</span>
+                            </div>
                             <div class="text-xs text-slate-500">Open to remote opportunities now!</div>
                         </div>
                     </div>
@@ -1776,46 +2039,39 @@
     <div class="absolute inset-0 bg-gradient-to-t from-bg-glow/30 to-transparent"></div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div class="text-center">
-            <!-- Logo -->
             <div class="mb-8">
-                <h3 class="text-3xl font-black">
+                <h3 class="text-3xl font-black glitch-hover">
                     <span class="gradient-text">Ryan</span><span class="text-accent animate-pulse">.</span>
                 </h3>
                 <p class="text-slate-400 mt-2 font-mono">Building the future, one line at a time</p>
             </div>
 
-            <!-- Social Links -->
             <div class="flex justify-center gap-6 mb-8">
                 <a href="mailto:ryanpolasky@hotmail.com"
-                   class="group p-4 glass rounded-2xl hover-lift transition-all">
-                    <svg class="w-6 h-6 text-slate-400 group-hover:text-slate-300 transition-colors" fill="currentColor"
-                         viewBox="0 0 24 24">
+                   class="group p-4 glass rounded-2xl hover-lift transition-all magnetic-btn" data-tooltip="Email">
+                    <svg class="w-6 h-6 text-slate-400 group-hover:text-slate-300 transition-colors" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
                     </svg>
                 </a>
 
                 <a href="https://www.linkedin.com/in/ryan-polasky/" target="_blank" rel="noreferrer"
-                   class="group p-4 glass rounded-2xl hover-lift transition-all">
-                    <svg class="w-6 h-6 text-slate-400 group-hover:text-slate-300 transition-colors" fill="currentColor"
-                         viewBox="0 0 24 24">
+                   class="group p-4 glass rounded-2xl hover-lift transition-all magnetic-btn" data-tooltip="LinkedIn">
+                    <svg class="w-6 h-6 text-slate-400 group-hover:text-slate-300 transition-colors" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
                     </svg>
                 </a>
 
                 <a href="https://github.com/ryanpolasky/personal-website" target="_blank" rel="noreferrer"
-                   class="group p-4 glass rounded-2xl hover-lift transition-all">
-                    <svg class="w-6 h-6 text-slate-400 group-hover:text-slate-300 transition-colors" fill="currentColor"
-                         viewBox="0 0 24 24">
+                   class="group p-4 glass rounded-2xl hover-lift transition-all magnetic-btn" data-tooltip="GitHub">
+                    <svg class="w-6 h-6 text-slate-400 group-hover:text-slate-300 transition-colors" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12 .5a12 12 0 0 0-3.79 23.4c.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.74.08-.73.08-.73 1.2.09 1.83 1.23 1.83 1.23 1.07 1.83 2.81 1.3 3.5.99.11-.78.42-1.3.76-1.6-2.66-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.16 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.3-1.55 3.3-1.23 3.3-1.23.66 1.64.24 2.86.12 3.16.77.84 1.24 1.9 1.24 3.22 0 4.61-2.81 5.62-5.49 5.92.43.37.82 1.1.82 2.22v3.29c0 .32.21.69.83.57A12 12 0 0 0 12 .5Z"/>
                     </svg>
                 </a>
             </div>
 
-            <!-- Copyright -->
             <div class="text-slate-400 font-mono">
                 <p>© <span id="year"></span> Ryan Polasky. All rights reserved.</p>
-                <p class="mt-2 text-sm">Made with <a style="text-decoration: none;" href="https://status.ryanpolasky.com">❤️</a> and too much
-                    caffeine</p>
+                <p class="mt-2 text-sm">Made with <a style="text-decoration: none;" href="https://status.ryanpolasky.com">❤️</a> and too much caffeine</p>
             </div>
         </div>
     </div>
@@ -1823,10 +2079,10 @@
 
 <!-- Scroll to Top Button -->
 <button id="scrollTop"
-        class="fixed bottom-8 left-8 p-4 rounded-2xl hover-lift z-49 transition-all duration-500 ease-in-out opacity-0 pointer-events-none"
-        style="position: fixed !important; background: rgba(0, 0, 0, 0.6) !important; backdrop-filter: blur(16px) !important; border: 1px solid var(--accent-color) !important;">
-    <svg class="w-6 h-6 text-accent transition-colors duration-300" fill="none" stroke="currentColor"
-         viewBox="0 0 24 24">
+        class="fixed bottom-8 left-8 p-4 rounded-2xl hover-lift z-49 transition-all duration-500 ease-in-out opacity-0 pointer-events-none magnetic-btn"
+        style="position: fixed !important; background: rgba(0, 0, 0, 0.6) !important; backdrop-filter: blur(16px) !important; border: 1px solid var(--accent-color) !important;"
+        data-tooltip="Back to top">
+    <svg class="w-6 h-6 text-accent transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
     </svg>
 </button>
@@ -1865,10 +2121,8 @@
 
 <!-- Final Scripts -->
 <script>
-    // Set current year
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Scroll to top functionality
     const scrollTopBtn = document.getElementById('scrollTop');
     let scrollTimeout;
 
@@ -1889,14 +2143,12 @@
         window.scrollTo({top: 0, behavior: 'smooth'});
     });
 
-    // Add nav-active class styling and late night mode
     const style = document.createElement('style');
     style.textContent = `
         .nav-active {
           color: var(--accent-color) !important;
         }
         
-        /* Late Night Mode Styles - Eye-friendly with blue light filter */
         .late-night-mode:not(.manual-color-override) {
           --accent-color: #ff6b35;
           --accent-light: #ff8a5b;
@@ -1912,7 +2164,6 @@
           left: 0;
           right: 0;
           bottom: 0;
-          /* Warm amber overlay to reduce blue light */
           background: linear-gradient(135deg, 
             rgba(255, 140, 0, 0.08) 0%, 
             rgba(255, 69, 0, 0.06) 50%, 
@@ -1929,14 +2180,12 @@
           left: 0;
           right: 0;
           bottom: 0;
-          /* Additional sepia-like overlay */
           background: rgba(255, 200, 150, 0.04);
           pointer-events: none;
           z-index: 2;
           mix-blend-mode: overlay;
         }
         
-        /* Warmer text colors for better readability */
         .late-night-mode .text-slate-300 {
           color: #f1f5f9 !important;
         }
@@ -1945,7 +2194,6 @@
           color: #cbd5e1 !important;
         }
         
-        /* Slightly warmer glass effects */
         .late-night-mode .glass-card {
           background: rgba(20, 15, 10, 0.85) !important;
           border-color: rgba(255, 140, 0, 0.2) !important;
@@ -1956,7 +2204,6 @@
           border-color: rgba(255, 140, 0, 0.15) !important;
         }
         
-        /* Night-themed text variants */
         .late-night-mode .hero-subtitle {
           color: #a1a1aa !important;
         }
@@ -1977,7 +2224,6 @@
           color: #9ca3af !important;
         }
         
-        /* Popup stacking system */
         .popup-stack {
           position: fixed;
           bottom: 1rem;
@@ -2006,7 +2252,6 @@
           opacity: 0;
         }
 
-        /* Mobile sidebar */
         body.sidebar-open {
           overflow: hidden;
         }
@@ -2018,7 +2263,6 @@
           pointer-events: auto !important;
         }
 
-        /* Hamburger to X animation */
         body.sidebar-open .hamburger-icon {
           opacity: 0 !important;
           transform: rotate(180deg) !important;
@@ -2031,12 +2275,11 @@
           transform: rotate(-180deg);
         }
 
-        /* Responsive utility fallbacks for desktop visibility */
         @media (min-width: 1024px) {
-          .lg\:flex { display: flex; }
-          .lg\:block { display: block; }
-          .lg\:inline-flex { display: inline-flex; }
-          .lg\:hidden { display: none; }
+          .lg\\:flex { display: flex; }
+          .lg\\:block { display: block; }
+          .lg\\:inline-flex { display: inline-flex; }
+          .lg\\:hidden { display: none; }
         }
       `;
     document.head.appendChild(style);
@@ -2063,24 +2306,19 @@
             popup.className = 'popup-item glass-card p-6 rounded-2xl shadow-xl border border-white/20 animate-slide-in popup-entering';
             popup.innerHTML = content;
 
-            // Add to container
             this.container.appendChild(popup);
             this.popups.set(id, popup);
 
-            // Animate in
             requestAnimationFrame(() => {
                 popup.classList.remove('popup-entering');
             });
 
-            // Auto-dismiss after specified time
             const autoDismissTime = options.autoDismiss || 15000;
             const autoDismissTimer = setTimeout(() => {
                 this.dismiss(id);
             }, autoDismissTime);
 
-            // Store timer for potential cancellation
             popup.dataset.autoDismissTimer = autoDismissTimer;
-
             return id;
         }
 
@@ -2088,35 +2326,27 @@
             const popup = this.popups.get(id);
             if (!popup) return;
 
-            // Clear auto-dismiss timer
             if (popup.dataset.autoDismissTimer) {
                 clearTimeout(parseInt(popup.dataset.autoDismissTimer));
             }
 
-            // Animate out
             popup.classList.add('popup-exiting');
 
             setTimeout(() => {
-                if (popup.parentNode) {
-                    popup.parentNode.removeChild(popup);
-                }
+                if (popup.parentNode) popup.parentNode.removeChild(popup);
                 this.popups.delete(id);
             }, 300);
         }
 
         dismissAll() {
-            for (const id of this.popups.keys()) {
-                this.dismiss(id);
-            }
+            for (const id of this.popups.keys()) this.dismiss(id);
         }
     }
 
-    // Global popup manager instance
     window.popupManager = new PopupManager();
 
     // Color picker functionality
     document.addEventListener('DOMContentLoaded', () => {
-        // Apply the saved/random color once
         updateAccentColor(savedColor);
 
         function setupColorPicker(btnId, paletteId) {
@@ -2140,24 +2370,18 @@
                 paletteOpen = false;
             }
 
-            // Toggle palette visibility
             colorPickerBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                if (paletteOpen) {
-                    closePalette();
-                } else {
-                    openPalette();
-                }
+                if (paletteOpen) closePalette();
+                else openPalette();
             });
 
-            // Close palette when clicking outside
             document.addEventListener('click', (e) => {
                 if (!colorPalette.contains(e.target) && !colorPickerBtn.contains(e.target)) {
                     if (paletteOpen) closePalette();
                 }
             });
 
-            // Handle color selection (scoped to this palette)
             colorPalette.querySelectorAll('.color-option').forEach(option => {
                 option.addEventListener('click', (e) => {
                     e.preventDefault();
@@ -2166,16 +2390,13 @@
                     updateAccentColor(newColor);
                     window.manualColorSelection = true;
 
-                    // Add manual override class if late night mode is active
                     if (document.body.classList.contains('late-night-mode')) {
                         document.body.classList.add('manual-color-override');
                     }
 
-                    // Close palette after selection
                     closePalette();
                 });
 
-                // Keyboard navigation
                 option.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
@@ -2185,19 +2406,15 @@
             });
         }
 
-        // Setup for desktop header picker
         setupColorPicker('colorPickerBtn', 'colorPalette');
-        // Setup for mobile/tablet sidebar picker
         setupColorPicker('colorPickerBtnMobile', 'colorPaletteMobile');
     });
 
     function updateAccentColor(color) {
-        // Calculate lighter and darker variants
         const lightColor = lightenColor(color, 25);
         const darkColor = darkenColor(color, 25);
         const glowColor = hexToRgba(color, 0.3);
 
-        // Update CSS custom properties only - this is safe and won't break CSS
         const root = document.documentElement;
         root.style.setProperty('--accent-color', color);
         root.style.setProperty('--accent-light', lightColor);
@@ -2207,7 +2424,6 @@
     }
 
     function getContrastColor(hexColor) {
-        // Calculate luminance and return black or white for best contrast
         const r = parseInt(hexColor.slice(1, 3), 16);
         const g = parseInt(hexColor.slice(3, 5), 16);
         const b = parseInt(hexColor.slice(5, 7), 16);
@@ -2233,26 +2449,17 @@
 
         openBtn?.addEventListener('click', (e) => {
             e.preventDefault();
-            if (document.body.classList.contains('sidebar-open')) {
-                closeSidebar();
-            } else {
-                openSidebar();
-            }
+            if (document.body.classList.contains('sidebar-open')) closeSidebar();
+            else openSidebar();
         });
 
-        closeBtn?.addEventListener('click', (e) => {
-            e.preventDefault();
-            closeSidebar();
-        });
-
+        closeBtn?.addEventListener('click', (e) => { e.preventDefault(); closeSidebar(); });
         overlay?.addEventListener('click', closeSidebar);
 
-        // Close on navigation
         document.querySelectorAll('#sidebar a[data-scroll]').forEach(link => {
             link.addEventListener('click', () => closeSidebar());
         });
 
-        // Close on Esc
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') closeSidebar();
         });
@@ -2265,6 +2472,19 @@
             contactForm.addEventListener('submit', async function (e) {
                 e.preventDefault();
                 const formData = new FormData(contactForm);
+                const submitBtn = contactForm.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                
+                // ===== GOATED: Loading state on submit =====
+                submitBtn.innerHTML = `<span class="flex items-center justify-center gap-3">
+                    <svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span>Sending...</span>
+                </span>`;
+                submitBtn.disabled = true;
+                
                 try {
                     const response = await fetch(contactForm.action, {
                         method: contactForm.method,
@@ -2272,24 +2492,41 @@
                         headers: {'Accept': 'application/json'},
                     });
                     if (response.ok) {
-                        contactForm.reset(); // Clear only after success
-                        // Optional: show popup confirmation
+                        contactForm.reset();
+                        submitBtn.innerHTML = `<span class="flex items-center justify-center gap-3">
+                            <span>✅ Sent!</span>
+                        </span>`;
+                        setTimeout(() => {
+                            submitBtn.innerHTML = originalText;
+                            submitBtn.disabled = false;
+                        }, 3000);
+                        
                         window.popupManager?.show(
                             `<div class="flex items-center gap-3">
-                    <span class="text-lg">✅</span>
-                    <span class="text-sm text-slate-300">Message sent successfully!</span>
-                  </div>`,
+                                <span class="text-lg">✅</span>
+                                <span class="text-sm text-slate-300">Message sent! I'll get back to you soon 🚀</span>
+                            </div>`,
                             {autoDismiss: 5000}
                         );
                     } else {
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
                         console.error('Formspree error:', await response.text());
                     }
                 } catch (err) {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
                     console.error('Submission failed:', err);
                 }
             });
         }
     });
+
+    // ===== GOATED: Console Easter Egg =====
+    console.log('%c🐐 GOATED SITE 🐐', 'font-size: 24px; font-weight: bold; color: #ff453a; text-shadow: 2px 2px 0 #000;');
+    console.log('%cBuilt by Ryan Polasky', 'font-size: 14px; color: #4a90e2;');
+    console.log('%c\nTry the Konami code: ↑ ↑ ↓ ↓ ← → ← → B A', 'font-size: 12px; color: #30d158;');
+    console.log('%cOr type: clearPopupStorage() to reset notifications', 'font-size: 12px; color: #ff9500;');
 </script>
 </body>
 </html>
