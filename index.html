@@ -88,7 +88,9 @@
         }
 
         @media (hover: hover) and (pointer: fine) {
-            .cursor-trail-dot { opacity: 0.6; }
+            .cursor-trail-dot {
+                opacity: 0.6;
+            }
         }
 
         .typewriter-cursor {
@@ -102,7 +104,9 @@
         }
 
         @keyframes blink-cursor {
-            50% { opacity: 0; }
+            50% {
+                opacity: 0;
+            }
         }
 
         .stagger-reveal {
@@ -126,7 +130,9 @@
         }
 
         @keyframes shimmer {
-            to { background-position: 200% center; }
+            to {
+                background-position: 200% center;
+            }
         }
 
         .wave-divider {
@@ -186,13 +192,23 @@
         }
 
         @keyframes scroll-bounce {
-            0%, 100% { transform: translateX(-50%) translateY(0); }
-            50% { transform: translateX(-50%) translateY(8px); }
+            0%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            50% {
+                transform: translateX(-50%) translateY(8px);
+            }
         }
 
         @keyframes scroll-wheel {
-            0%, 100% { opacity: 1; top: 8px; }
-            50% { opacity: 0.3; top: 18px; }
+            0%, 100% {
+                opacity: 1;
+                top: 8px;
+            }
+            50% {
+                opacity: 0.3;
+                top: 18px;
+            }
         }
 
         .count-up {
@@ -208,13 +224,27 @@
         }
 
         @keyframes glitch-skew {
-            0% { transform: skew(0deg); }
-            10% { transform: skew(-2deg); }
-            20% { transform: skew(3deg); }
-            30% { transform: skew(-1deg); }
-            40% { transform: skew(2deg); }
-            50% { transform: skew(0deg); }
-            100% { transform: skew(0deg); }
+            0% {
+                transform: skew(0deg);
+            }
+            10% {
+                transform: skew(-2deg);
+            }
+            20% {
+                transform: skew(3deg);
+            }
+            30% {
+                transform: skew(-1deg);
+            }
+            40% {
+                transform: skew(2deg);
+            }
+            50% {
+                transform: skew(0deg);
+            }
+            100% {
+                transform: skew(0deg);
+            }
         }
 
         .parallax-element {
@@ -237,8 +267,14 @@
         }
 
         @keyframes dot-pulse {
-            0%, 100% { opacity: 0; transform: scale(1); }
-            50% { opacity: 0.3; transform: scale(1.2); }
+            0%, 100% {
+                opacity: 0;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.3;
+                transform: scale(1.2);
+            }
         }
 
         .reading-progress {
@@ -304,11 +340,11 @@
             border-radius: inherit;
             padding: 2px;
             background: linear-gradient(
-                var(--gradient-angle, 0deg),
-                var(--accent-color),
-                var(--accent-light),
-                var(--accent-dark),
-                var(--accent-color)
+                    var(--gradient-angle, 0deg),
+                    var(--accent-color),
+                    var(--accent-light),
+                    var(--accent-dark),
+                    var(--accent-color)
             );
             -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -318,7 +354,9 @@
         }
 
         @keyframes rotate-gradient {
-            to { --gradient-angle: 360deg; }
+            to {
+                --gradient-angle: 360deg;
+            }
         }
 
         @property --gradient-angle {
@@ -343,7 +381,9 @@
         }
 
         @keyframes page-fade-in {
-            to { opacity: 1; }
+            to {
+                opacity: 1;
+            }
         }
 
         .visitor-badge {
@@ -365,17 +405,23 @@
         }
 
         @keyframes live-pulse {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(48, 209, 88, 0.4); }
-            50% { box-shadow: 0 0 0 6px rgba(48, 209, 88, 0); }
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(48, 209, 88, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 0 6px rgba(48, 209, 88, 0);
+            }
         }
 
         @media (max-width: 768px) {
-            .tech-ticker-content {
-                gap: 2rem;
-                animation-duration: 20s;
-            }
             .scroll-indicator {
                 display: none;
+            }
+        }
+
+        @media (max-width: 1025px) {
+            #home {
+                padding-top: 5rem;
             }
         }
     </style>
@@ -465,7 +511,7 @@
                 const docHeight = document.documentElement.scrollHeight - window.innerHeight;
                 const progress = (scrollTop / docHeight) * 100;
                 progressBar.style.width = progress + '%';
-            }, { passive: true });
+            }, {passive: true});
 
             if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
                 const trailCount = 8;
@@ -480,7 +526,7 @@
                     dot.style.opacity = (0.6 - i * 0.07);
                     document.body.appendChild(dot);
                     trailDots.push(dot);
-                    trailPositions.push({ x: 0, y: 0 });
+                    trailPositions.push({x: 0, y: 0});
                 }
 
                 let mouseX = 0, mouseY = 0;
@@ -488,7 +534,7 @@
                 document.addEventListener('mousemove', (e) => {
                     mouseX = e.clientX;
                     mouseY = e.clientY;
-                }, { passive: true });
+                }, {passive: true});
 
                 function animateTrail() {
                     trailPositions[0].x += (mouseX - trailPositions[0].x) * 0.3;
@@ -506,6 +552,7 @@
 
                     requestAnimationFrame(animateTrail);
                 }
+
                 animateTrail();
             }
 
@@ -567,7 +614,7 @@
                         staggerObserver.unobserve(el);
                     }
                 });
-            }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+            }, {threshold: 0.1, rootMargin: '0px 0px -50px 0px'});
 
             document.querySelectorAll('.stagger-reveal').forEach(el => {
                 staggerObserver.observe(el);
@@ -585,7 +632,7 @@
                         skillObserver.unobserve(entry.target);
                     }
                 });
-            }, { threshold: 0.3 });
+            }, {threshold: 0.3});
 
             document.querySelectorAll('#skills .glass-card').forEach(card => {
                 skillObserver.observe(card);
@@ -654,7 +701,7 @@
                         countObserver.unobserve(el);
                     }
                 });
-            }, { threshold: 0.5 });
+            }, {threshold: 0.5});
 
             document.querySelectorAll('.count-up').forEach(el => countObserver.observe(el));
 
@@ -667,7 +714,7 @@
                         const speed = parseFloat(el.dataset.speed || 20);
                         el.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
                     });
-                }, { passive: true });
+                }, {passive: true});
             }
 
             function shouldShowPopup(popupType) {
@@ -905,12 +952,16 @@
         </button>
     </div>
     <nav class="p-4 space-y-2">
-        <a data-scroll="home" href="#home" class="block py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">Home</a>
+        <a data-scroll="home" href="#home"
+           class="block py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">Home</a>
         <a data-scroll="about" href="#about" class="block py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">About</a>
-        <a data-scroll="experience" href="#experience" class="block py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">Experience</a>
-        <a data-scroll="projects" href="#projects" class="block py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">Projects</a>
+        <a data-scroll="experience" href="#experience"
+           class="block py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">Experience</a>
+        <a data-scroll="projects" href="#projects"
+           class="block py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">Projects</a>
         <a data-scroll="skills" href="#skills" class="block py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">Skills</a>
-        <a data-scroll="testimonials" href="#testimonials" class="block py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">Testimonials</a>
+        <a data-scroll="testimonials" href="#testimonials"
+           class="block py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">Testimonials</a>
         <a data-scroll="contact" href="#contact" class="block py-3 px-4 rounded-lg hover:bg-white/10 transition-colors">Contact</a>
 
         <div class="pt-4 mt-2 border-t border-white/10"></div>
@@ -920,20 +971,47 @@
                         class="w-full flex items-center justify-between p-3 rounded-xl glass hover:shadow-glow transition-all"
                         aria-label="Change Theme Color" aria-expanded="false" aria-haspopup="true">
                     <span class="font-medium">Theme color</span>
-                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 279.682 279.682" fill="#ffffff"><g><path d="M143.25,55.486c-41.06,0-74.465,33.405-74.465,74.465c0,16.824,5.511,32.711,15.938,45.939 c1.998,2.536,4.15,5.033,6.23,7.448c6.212,7.208,12.078,14.017,14.166,21.675c0.045,0.165,0.438,1.773,0.38,7.247l-0.01,0.791 c-0.063,4.444-0.147,10.528,4.352,15.091c3.081,3.125,7.399,4.645,13.204,4.645h40.272c6.268,0,10.774-1.534,13.776-4.689 c4.061-4.267,3.789-9.779,3.608-13.427c-0.032-0.645-0.066-1.296-0.074-1.944c-0.065-5.48,0.345-7.025,0.362-7.09 c2.121-7.657,8.993-15.732,15.057-22.855c2.023-2.377,3.934-4.622,5.714-6.879c10.431-13.23,15.944-29.12,15.944-45.951 C217.705,88.892,184.305,55.486,143.25,55.486z"/><path d="M161.766,239.564h-37.041c-7.995,0-14.5,6.505-14.5,14.5v11.117c0,7.995,6.505,14.5,14.5,14.5 h37.041c7.995,0,14.5-6.505,14.5-14.5v-11.117C176.266,246.069,169.761,239.564,161.766,239.564z"/><path d="M143.245,45.779c4.143,0,7.5-3.357,7.5-7.5V7.5c0-4.143-3.357-7.5-7.5-7.5 c-4.143,0-7.5,3.357-7.5,7.5v30.779C135.745,42.422,139.103,45.779,143.245,45.779z"/><path d="M241.917,34.598c-2.858-2.995-7.606-3.106-10.604-0.248l-22.77,21.73 c-2.997,2.859-3.107,7.607-0.248,10.604c1.474,1.544,3.448,2.322,5.427,2.322c1.86,0,3.725-0.688,5.177-2.074l22.77-21.731 C244.666,42.342,244.776,37.594,241.917,34.598z"/><path d="M264.273,109.599c-0.004,0-0.008,0-0.012,0l-29.311,0.047c-4.143,0.007-7.495,3.37-7.488,7.512 c0.007,4.139,3.363,7.488,7.5,7.488c0.004,0,0.008,0,0.012,0l29.311-0.047c4.143-0.007,7.495-3.37,7.488-7.512 C271.767,112.948,268.41,109.599,264.273,109.599z"/><path d="M74.386,64.684c2.859-2.996,2.749-7.743-0.248-10.604l-22.77-21.73 c-2.994-2.858-7.742-2.749-10.604,0.248c-2.859,2.996-2.749,7.743,0.248,10.604l22.77,21.731c1.452,1.386,3.315,2.074,5.177,2.074 C70.937,67.006,72.912,66.228,74.386,64.684z"/><path d="M44.729,109.646l-29.31-0.047c-0.004,0-0.008,0-0.012,0c-4.137,0-7.493,3.351-7.5,7.488 c-0.007,4.142,3.346,7.505,7.488,7.512l29.31,0.047c0.004,0,0.008,0,0.012,0c4.137,0,7.493-3.351,7.5-7.488 C52.225,113.016,48.872,109.652,44.729,109.646z"/></g></svg>
+                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 279.682 279.682"
+                         fill="#ffffff">
+                        <g>
+                            <path d="M143.25,55.486c-41.06,0-74.465,33.405-74.465,74.465c0,16.824,5.511,32.711,15.938,45.939 c1.998,2.536,4.15,5.033,6.23,7.448c6.212,7.208,12.078,14.017,14.166,21.675c0.045,0.165,0.438,1.773,0.38,7.247l-0.01,0.791 c-0.063,4.444-0.147,10.528,4.352,15.091c3.081,3.125,7.399,4.645,13.204,4.645h40.272c6.268,0,10.774-1.534,13.776-4.689 c4.061-4.267,3.789-9.779,3.608-13.427c-0.032-0.645-0.066-1.296-0.074-1.944c-0.065-5.48,0.345-7.025,0.362-7.09 c2.121-7.657,8.993-15.732,15.057-22.855c2.023-2.377,3.934-4.622,5.714-6.879c10.431-13.23,15.944-29.12,15.944-45.951 C217.705,88.892,184.305,55.486,143.25,55.486z"/>
+                            <path d="M161.766,239.564h-37.041c-7.995,0-14.5,6.505-14.5,14.5v11.117c0,7.995,6.505,14.5,14.5,14.5 h37.041c7.995,0,14.5-6.505,14.5-14.5v-11.117C176.266,246.069,169.761,239.564,161.766,239.564z"/>
+                            <path d="M143.245,45.779c4.143,0,7.5-3.357,7.5-7.5V7.5c0-4.143-3.357-7.5-7.5-7.5 c-4.143,0-7.5,3.357-7.5,7.5v30.779C135.745,42.422,139.103,45.779,143.245,45.779z"/>
+                            <path d="M241.917,34.598c-2.858-2.995-7.606-3.106-10.604-0.248l-22.77,21.73 c-2.997,2.859-3.107,7.607-0.248,10.604c1.474,1.544,3.448,2.322,5.427,2.322c1.86,0,3.725-0.688,5.177-2.074l22.77-21.731 C244.666,42.342,244.776,37.594,241.917,34.598z"/>
+                            <path d="M264.273,109.599c-0.004,0-0.008,0-0.012,0l-29.311,0.047c-4.143,0.007-7.495,3.37-7.488,7.512 c0.007,4.139,3.363,7.488,7.5,7.488c0.004,0,0.008,0,0.012,0l29.311-0.047c4.143-0.007,7.495-3.37,7.488-7.512 C271.767,112.948,268.41,109.599,264.273,109.599z"/>
+                            <path d="M74.386,64.684c2.859-2.996,2.749-7.743-0.248-10.604l-22.77-21.73 c-2.994-2.858-7.742-2.749-10.604,0.248c-2.859,2.996-2.749,7.743,0.248,10.604l22.77,21.731c1.452,1.386,3.315,2.074,5.177,2.074 C70.937,67.006,72.912,66.228,74.386,64.684z"/>
+                            <path d="M44.729,109.646l-29.31-0.047c-0.004,0-0.008,0-0.012,0c-4.137,0-7.493,3.351-7.5,7.488 c-0.007,4.142,3.346,7.505,7.488,7.512l29.31,0.047c0.004,0,0.008,0,0.012,0c4.137,0,7.493-3.351,7.5-7.488 C52.225,113.016,48.872,109.652,44.729,109.646z"/>
+                        </g>
+                    </svg>
                 </button>
                 <div id="colorPaletteMobile"
                      class="absolute top-full left-0 mt-2 p-6 glass rounded-2xl opacity-0 pointer-events-none transition-all z-50 shadow-xl border border-white/20 min-w-max"
                      role="menu" aria-labelledby="colorPickerBtnMobile">
                     <div class="grid grid-cols-4 gap-3">
-                        <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#4a90e2" style="background: linear-gradient(135deg, #4a90e2, #6ba3e8);" aria-label="Blue theme" role="menuitem" data-tooltip="Blue"></button>
-                        <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#af52de" style="background: linear-gradient(135deg, #af52de, #bf5af2);" aria-label="Purple theme" role="menuitem" data-tooltip="Purple"></button>
-                        <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#30d158" style="background: linear-gradient(135deg, #30d158, #64de85);" aria-label="Green theme" role="menuitem" data-tooltip="Green"></button>
-                        <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#ff9500" style="background: linear-gradient(135deg, #ff9500, #ffb340);" aria-label="Orange theme" role="menuitem" data-tooltip="Orange"></button>
-                        <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#ff453a" style="background: linear-gradient(135deg, #ff453a, #ff6961);" aria-label="Red theme" role="menuitem" data-tooltip="Red"></button>
-                        <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#e91e63" style="background: linear-gradient(135deg, #e91e63, #f06292);" aria-label="Pink theme" role="menuitem" data-tooltip="Pink"></button>
-                        <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#00bcd4" style="background: linear-gradient(135deg, #00bcd4, #4dd0e1);" aria-label="Cyan theme" role="menuitem" data-tooltip="Cyan"></button>
-                        <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#f8bbd9" style="background: linear-gradient(135deg, #f8bbd9, #fce4ec);" aria-label="Pastel pink theme" role="menuitem" data-tooltip="Pastel"></button>
+                        <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
+                                data-color="#4a90e2" style="background: linear-gradient(135deg, #4a90e2, #6ba3e8);"
+                                aria-label="Blue theme" role="menuitem" data-tooltip="Blue"></button>
+                        <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
+                                data-color="#af52de" style="background: linear-gradient(135deg, #af52de, #bf5af2);"
+                                aria-label="Purple theme" role="menuitem" data-tooltip="Purple"></button>
+                        <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
+                                data-color="#30d158" style="background: linear-gradient(135deg, #30d158, #64de85);"
+                                aria-label="Green theme" role="menuitem" data-tooltip="Green"></button>
+                        <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
+                                data-color="#ff9500" style="background: linear-gradient(135deg, #ff9500, #ffb340);"
+                                aria-label="Orange theme" role="menuitem" data-tooltip="Orange"></button>
+                        <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
+                                data-color="#ff453a" style="background: linear-gradient(135deg, #ff453a, #ff6961);"
+                                aria-label="Red theme" role="menuitem" data-tooltip="Red"></button>
+                        <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
+                                data-color="#e91e63" style="background: linear-gradient(135deg, #e91e63, #f06292);"
+                                aria-label="Pink theme" role="menuitem" data-tooltip="Pink"></button>
+                        <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
+                                data-color="#00bcd4" style="background: linear-gradient(135deg, #00bcd4, #4dd0e1);"
+                                aria-label="Cyan theme" role="menuitem" data-tooltip="Cyan"></button>
+                        <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
+                                data-color="#f8bbd9" style="background: linear-gradient(135deg, #f8bbd9, #fce4ec);"
+                                aria-label="Pastel pink theme" role="menuitem" data-tooltip="Pastel"></button>
                     </div>
                 </div>
             </div>
@@ -962,11 +1040,15 @@
             <div class="flex items-center gap-4">
                 <button id="hamburgerBtn" class="lg:hidden p-2 rounded-xl hover:bg-white/10 transition-all relative"
                         aria-label="Toggle menu" aria-expanded="false" aria-controls="sidebar">
-                    <svg class="hamburger-icon w-6 h-6 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M4 12h16M4 17h16"></path>
+                    <svg class="hamburger-icon w-6 h-6 transition-all duration-300" fill="none" stroke="currentColor"
+                         viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M4 7h16M4 12h16M4 17h16"></path>
                     </svg>
-                    <svg class="close-icon w-6 h-6 absolute top-1 left-1 transition-all duration-300 opacity-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-top: -1.5rem;">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    <svg class="close-icon w-6 h-6 absolute top-1 left-1 transition-all duration-300 opacity-0"
+                         fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-top: -1.5rem;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
                 </button>
                 <a data-scroll="home" href="#home" class="font-black tracking-tight text-2xl glitch-hover">
@@ -974,33 +1056,68 @@
                 </a>
             </div>
             <nav class="hidden lg:flex items-center gap-8 text-sm font-medium">
-                <a data-scroll="home" href="#home" class="relative hover:text-accent transition-colors px-2 py-1 rounded">Home</a>
-                <a data-scroll="about" href="#about" class="relative hover:text-accent transition-colors px-2 py-1 rounded">About</a>
-                <a data-scroll="experience" href="#experience" class="relative hover:text-accent transition-colors px-2 py-1 rounded">Experience</a>
-                <a data-scroll="projects" href="#projects" class="relative hover:text-accent transition-colors px-2 py-1 rounded">Projects</a>
-                <a data-scroll="skills" href="#skills" class="relative hover:text-accent transition-colors px-2 py-1 rounded">Skills</a>
-                <a data-scroll="testimonials" href="#testimonials" class="relative hover:text-accent transition-colors px-2 py-1 rounded">Testimonials</a>
-                <a data-scroll="contact" href="#contact" class="relative hover:text-accent transition-colors px-2 py-1 rounded">Contact</a>
+                <a data-scroll="home" href="#home"
+                   class="relative hover:text-accent transition-colors px-2 py-1 rounded">Home</a>
+                <a data-scroll="about" href="#about"
+                   class="relative hover:text-accent transition-colors px-2 py-1 rounded">About</a>
+                <a data-scroll="experience" href="#experience"
+                   class="relative hover:text-accent transition-colors px-2 py-1 rounded">Experience</a>
+                <a data-scroll="projects" href="#projects"
+                   class="relative hover:text-accent transition-colors px-2 py-1 rounded">Projects</a>
+                <a data-scroll="skills" href="#skills"
+                   class="relative hover:text-accent transition-colors px-2 py-1 rounded">Skills</a>
+                <a data-scroll="testimonials" href="#testimonials"
+                   class="relative hover:text-accent transition-colors px-2 py-1 rounded">Testimonials</a>
+                <a data-scroll="contact" href="#contact"
+                   class="relative hover:text-accent transition-colors px-2 py-1 rounded">Contact</a>
             </nav>
             <div class="flex items-center gap-3">
                 <div class="relative hidden lg:block">
                     <button id="colorPickerBtn" class="p-2 rounded-xl glass hover:shadow-glow transition-all hover-lift"
-                            aria-label="Change Theme Color" aria-expanded="false" aria-haspopup="true" data-tooltip="Theme Color">
-                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 279.682 279.682" fill="#ffffff"><g><path d="M143.25,55.486c-41.06,0-74.465,33.405-74.465,74.465c0,16.824,5.511,32.711,15.938,45.939 c1.998,2.536,4.15,5.033,6.23,7.448c6.212,7.208,12.078,14.017,14.166,21.675c0.045,0.165,0.438,1.773,0.38,7.247l-0.01,0.791 c-0.063,4.444-0.147,10.528,4.352,15.091c3.081,3.125,7.399,4.645,13.204,4.645h40.272c6.268,0,10.774-1.534,13.776-4.689 c4.061-4.267,3.789-9.779,3.608-13.427c-0.032-0.645-0.066-1.296-0.074-1.944c-0.065-5.48,0.345-7.025,0.362-7.09 c2.121-7.657,8.993-15.732,15.057-22.855c2.023-2.377,3.934-4.622,5.714-6.879c10.431-13.23,15.944-29.12,15.944-45.951 C217.705,88.892,184.305,55.486,143.25,55.486z"/><path d="M161.766,239.564h-37.041c-7.995,0-14.5,6.505-14.5,14.5v11.117c0,7.995,6.505,14.5,14.5,14.5 h37.041c7.995,0,14.5-6.505,14.5-14.5v-11.117C176.266,246.069,169.761,239.564,161.766,239.564z"/><path d="M143.245,45.779c4.143,0,7.5-3.357,7.5-7.5V7.5c0-4.143-3.357-7.5-7.5-7.5 c-4.143,0-7.5,3.357-7.5,7.5v30.779C135.745,42.422,139.103,45.779,143.245,45.779z"/><path d="M241.917,34.598c-2.858-2.995-7.606-3.106-10.604-0.248l-22.77,21.73 c-2.997,2.859-3.107,7.607-0.248,10.604c1.474,1.544,3.448,2.322,5.427,2.322c1.86,0,3.725-0.688,5.177-2.074l22.77-21.731 C244.666,42.342,244.776,37.594,241.917,34.598z"/><path d="M264.273,109.599l-29.311,0.047c-4.143,0.007-7.495,3.37-7.488,7.512 c0.007,4.139,3.363,7.488,7.5,7.488l29.311-0.047c4.143-0.007,7.495-3.37,7.488-7.512 C271.767,112.948,268.41,109.599,264.273,109.599z"/><path d="M74.386,64.684c2.859-2.996,2.749-7.743-0.248-10.604l-22.77-21.73 c-2.994-2.858-7.742-2.749-10.604,0.248c-2.859,2.996-2.749,7.743,0.248,10.604l22.77,21.731c1.452,1.386,3.315,2.074,5.177,2.074 C70.937,67.006,72.912,66.228,74.386,64.684z"/><path d="M44.729,109.646l-29.31-0.047c-4.137,0-7.493,3.351-7.5,7.488 c-0.007,4.142,3.346,7.505,7.488,7.512l29.31,0.047c4.137,0,7.493-3.351,7.5-7.488 C52.225,113.016,48.872,109.652,44.729,109.646z"/></g></svg>
+                            aria-label="Change Theme Color" aria-expanded="false" aria-haspopup="true"
+                            data-tooltip="Theme Color">
+                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 279.682 279.682"
+                             fill="#ffffff">
+                            <g>
+                                <path d="M143.25,55.486c-41.06,0-74.465,33.405-74.465,74.465c0,16.824,5.511,32.711,15.938,45.939 c1.998,2.536,4.15,5.033,6.23,7.448c6.212,7.208,12.078,14.017,14.166,21.675c0.045,0.165,0.438,1.773,0.38,7.247l-0.01,0.791 c-0.063,4.444-0.147,10.528,4.352,15.091c3.081,3.125,7.399,4.645,13.204,4.645h40.272c6.268,0,10.774-1.534,13.776-4.689 c4.061-4.267,3.789-9.779,3.608-13.427c-0.032-0.645-0.066-1.296-0.074-1.944c-0.065-5.48,0.345-7.025,0.362-7.09 c2.121-7.657,8.993-15.732,15.057-22.855c2.023-2.377,3.934-4.622,5.714-6.879c10.431-13.23,15.944-29.12,15.944-45.951 C217.705,88.892,184.305,55.486,143.25,55.486z"/>
+                                <path d="M161.766,239.564h-37.041c-7.995,0-14.5,6.505-14.5,14.5v11.117c0,7.995,6.505,14.5,14.5,14.5 h37.041c7.995,0,14.5-6.505,14.5-14.5v-11.117C176.266,246.069,169.761,239.564,161.766,239.564z"/>
+                                <path d="M143.245,45.779c4.143,0,7.5-3.357,7.5-7.5V7.5c0-4.143-3.357-7.5-7.5-7.5 c-4.143,0-7.5,3.357-7.5,7.5v30.779C135.745,42.422,139.103,45.779,143.245,45.779z"/>
+                                <path d="M241.917,34.598c-2.858-2.995-7.606-3.106-10.604-0.248l-22.77,21.73 c-2.997,2.859-3.107,7.607-0.248,10.604c1.474,1.544,3.448,2.322,5.427,2.322c1.86,0,3.725-0.688,5.177-2.074l22.77-21.731 C244.666,42.342,244.776,37.594,241.917,34.598z"/>
+                                <path d="M264.273,109.599l-29.311,0.047c-4.143,0.007-7.495,3.37-7.488,7.512 c0.007,4.139,3.363,7.488,7.5,7.488l29.311-0.047c4.143-0.007,7.495-3.37,7.488-7.512 C271.767,112.948,268.41,109.599,264.273,109.599z"/>
+                                <path d="M74.386,64.684c2.859-2.996,2.749-7.743-0.248-10.604l-22.77-21.73 c-2.994-2.858-7.742-2.749-10.604,0.248c-2.859,2.996-2.749,7.743,0.248,10.604l22.77,21.731c1.452,1.386,3.315,2.074,5.177,2.074 C70.937,67.006,72.912,66.228,74.386,64.684z"/>
+                                <path d="M44.729,109.646l-29.31-0.047c-4.137,0-7.493,3.351-7.5,7.488 c-0.007,4.142,3.346,7.505,7.488,7.512l29.31,0.047c4.137,0,7.493-3.351,7.5-7.488 C52.225,113.016,48.872,109.652,44.729,109.646z"/>
+                            </g>
+                        </svg>
                     </button>
 
                     <div id="colorPalette"
                          class="absolute top-full right-0 mt-2 p-6 glass rounded-2xl opacity-0 pointer-events-none transition-all z-50 shadow-xl border border-white/20 min-w-max"
                          role="menu" aria-labelledby="colorPickerBtn">
                         <div class="grid grid-cols-4 gap-3">
-                            <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#4a90e2" style="background: linear-gradient(135deg, #4a90e2, #6ba3e8);" aria-label="Blue theme" role="menuitem" data-tooltip="Blue"></button>
-                            <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#af52de" style="background: linear-gradient(135deg, #af52de, #bf5af2);" aria-label="Purple theme" role="menuitem" data-tooltip="Purple"></button>
-                            <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#30d158" style="background: linear-gradient(135deg, #30d158, #64de85);" aria-label="Green theme" role="menuitem" data-tooltip="Green"></button>
-                            <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#ff9500" style="background: linear-gradient(135deg, #ff9500, #ffb340);" aria-label="Orange theme" role="menuitem" data-tooltip="Orange"></button>
-                            <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#ff453a" style="background: linear-gradient(135deg, #ff453a, #ff6961);" aria-label="Red theme" role="menuitem" data-tooltip="Red"></button>
-                            <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#e91e63" style="background: linear-gradient(135deg, #e91e63, #f06292);" aria-label="Pink theme" role="menuitem" data-tooltip="Pink"></button>
-                            <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#00bcd4" style="background: linear-gradient(135deg, #00bcd4, #4dd0e1);" aria-label="Cyan theme" role="menuitem" data-tooltip="Cyan"></button>
-                            <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md" data-color="#f8bbd9" style="background: linear-gradient(135deg, #f8bbd9, #fce4ec);" aria-label="Pastel pink theme" role="menuitem" data-tooltip="Pastel"></button>
+                            <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
+                                    data-color="#4a90e2" style="background: linear-gradient(135deg, #4a90e2, #6ba3e8);"
+                                    aria-label="Blue theme" role="menuitem" data-tooltip="Blue"></button>
+                            <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
+                                    data-color="#af52de" style="background: linear-gradient(135deg, #af52de, #bf5af2);"
+                                    aria-label="Purple theme" role="menuitem" data-tooltip="Purple"></button>
+                            <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
+                                    data-color="#30d158" style="background: linear-gradient(135deg, #30d158, #64de85);"
+                                    aria-label="Green theme" role="menuitem" data-tooltip="Green"></button>
+                            <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
+                                    data-color="#ff9500" style="background: linear-gradient(135deg, #ff9500, #ffb340);"
+                                    aria-label="Orange theme" role="menuitem" data-tooltip="Orange"></button>
+                            <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
+                                    data-color="#ff453a" style="background: linear-gradient(135deg, #ff453a, #ff6961);"
+                                    aria-label="Red theme" role="menuitem" data-tooltip="Red"></button>
+                            <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
+                                    data-color="#e91e63" style="background: linear-gradient(135deg, #e91e63, #f06292);"
+                                    aria-label="Pink theme" role="menuitem" data-tooltip="Pink"></button>
+                            <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
+                                    data-color="#00bcd4" style="background: linear-gradient(135deg, #00bcd4, #4dd0e1);"
+                                    aria-label="Cyan theme" role="menuitem" data-tooltip="Cyan"></button>
+                            <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
+                                    data-color="#f8bbd9" style="background: linear-gradient(135deg, #f8bbd9, #fce4ec);"
+                                    aria-label="Pastel pink theme" role="menuitem" data-tooltip="Pastel"></button>
                         </div>
                     </div>
                 </div>
@@ -1018,14 +1135,18 @@
 </header>
 
 <!-- Hero Section -->
-<section id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden pb-16" style="margin-top:-5rem;">
+<section id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden pb-16"
+         style="margin-top:-5rem;">
     <!-- Instant Background Effects -->
     <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
-        <div class="absolute top-10 right-1/6 w-96 h-96 rounded-full animate-pulse-slow parallax-element" data-speed="15"
+        <div class="absolute top-10 right-1/6 w-96 h-96 rounded-full animate-pulse-slow parallax-element"
+             data-speed="15"
              style="background: radial-gradient(circle, var(--accent-glow, rgba(74, 144, 226, 0.08)) 0%, transparent 70%); filter: blur(60px);"></div>
-        <div class="absolute bottom-20 left-1/6 w-80 h-80 rounded-full animate-pulse-slow parallax-element" data-speed="10"
+        <div class="absolute bottom-20 left-1/6 w-80 h-80 rounded-full animate-pulse-slow parallax-element"
+             data-speed="10"
              style="background: radial-gradient(circle, var(--accent-dark, rgba(53, 122, 189, 0.06)) 0%, transparent 70%); filter: blur(80px); animation-delay: 2s;"></div>
-        <div class="absolute top-1/3 left-2/3 w-72 h-72 rounded-full animate-pulse-slow parallax-element" data-speed="20"
+        <div class="absolute top-1/3 left-2/3 w-72 h-72 rounded-full animate-pulse-slow parallax-element"
+             data-speed="20"
              style="background: radial-gradient(circle, var(--accent-light, rgba(107, 163, 232, 0.05)) 0%, transparent 70%); filter: blur(70px); animation-delay: 4s;"></div>
         <div class="absolute top-2/3 right-1/3 w-60 h-60 rounded-full animate-pulse-slow"
              style="background: radial-gradient(circle, var(--accent-color, rgba(74, 144, 226, 0.04)) 0%, transparent 60%); filter: blur(50px); animation-delay: 1s;"></div>
@@ -1049,7 +1170,9 @@
 
                 <h1 class="text-4xl mobile-text-5xl sm:text-7xl font-black tracking-tight leading-none mb-8">
                     <span class="block">Hey, I'm</span>
-                    <span class="gradient-text shimmer-text" style="background-image: linear-gradient(90deg, var(--accent-color), var(--accent-light), var(--accent-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Ryan</span><span class="text-accent animate-pulse">.</span>
+                    <span class="gradient-text shimmer-text"
+                          style="background-image: linear-gradient(90deg, var(--accent-color), var(--accent-light), var(--accent-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Ryan</span><span
+                        class="text-accent animate-pulse">.</span>
                 </h1>
 
                 <!-- Avatar folds under header text on mobile/tablet -->
@@ -1059,13 +1182,16 @@
                         <img src="./assets/images/my-avatar.png" alt="Ryan Polasky"
                              class="relative w-64 mobile-avatar sm:w-80 sm:h-80 h-64 rounded-3xl object-cover hover-lift"
                              style="border: 2px solid var(--accent-glow, #4a90e2);"/>
-                        <div class="absolute -top-4 -right-4 w-12 sm:w-16 h-12 sm:h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent floating parallax-element" data-speed="5">
+                        <div class="absolute -top-4 -right-4 w-12 sm:w-16 h-12 sm:h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent floating parallax-element"
+                             data-speed="5">
                             <span class="text-xl sm:text-2xl">⚡</span>
                         </div>
-                        <div class="absolute -bottom-4 -left-4 w-12 sm:w-16 h-12 sm:h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent floating parallax-element" data-speed="8">
+                        <div class="absolute -bottom-4 -left-4 w-12 sm:w-16 h-12 sm:h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent floating parallax-element"
+                             data-speed="8">
                             <span class="text-xl sm:text-2xl">🚀</span>
                         </div>
-                        <div class="absolute top-1/2 -left-6 sm:-left-8 w-10 sm:w-12 h-10 sm:h-12 bg-gradient-to-r from-slate-800 to-slate-700 rounded-xl flex items-center justify-center border-2 border-accent floating parallax-element" data-speed="12">
+                        <div class="absolute top-1/2 -left-6 sm:-left-8 w-10 sm:w-12 h-10 sm:h-12 bg-gradient-to-r from-slate-800 to-slate-700 rounded-xl flex items-center justify-center border-2 border-accent floating parallax-element"
+                             data-speed="12">
                             <span class="text-lg sm:text-xl">💻</span>
                         </div>
                     </div>
@@ -1088,8 +1214,10 @@
                        style="background: linear-gradient(to right, var(--accent-darker), var(--accent-dark));">
                         <span class="flex items-center justify-center gap-2 mt-0.5">
                           View Projects
-                          <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                          <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none"
+                               stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
                           </svg>
                         </span>
                     </a>
@@ -1113,34 +1241,36 @@
                         <img src="./assets/images/my-avatar.png" alt="Ryan Polasky"
                              class="relative w-64 mobile-avatar sm:w-80 sm:h-80 h-64 rounded-3xl object-cover hover-lift"
                              style="border: 2px solid var(--accent-glow, #4a90e2);"/>
-                    </div>
-
-                    <div class="absolute -top-4 -right-4 w-12 sm:w-16 h-12 sm:h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent floating parallax-element" data-speed="5">
-                        <span class="text-xl sm:text-2xl">⚡</span>
-                    </div>
-                    <div class="absolute -bottom-4 -left-4 w-12 sm:w-16 h-12 sm:h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent floating parallax-element" data-speed="8">
-                        <span class="text-xl sm:text-2xl">🚀</span>
-                    </div>
-                    <div class="absolute top-1/2 -left-6 sm:-left-8 w-10 sm:w-12 h-10 sm:h-12 bg-gradient-to-r from-slate-800 to-slate-700 rounded-xl flex items-center justify-center border-2 border-accent floating parallax-element" data-speed="12">
-                        <span class="text-lg sm:text-xl">💻</span>
+                        <div class="absolute -top-4 -right-4 w-12 sm:w-16 h-12 sm:h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent floating parallax-element"
+                             data-speed="5">
+                            <span class="text-xl sm:text-2xl">⚡</span>
+                        </div>
+                        <div class="absolute -bottom-4 -left-4 w-12 sm:w-16 h-12 sm:h-16 bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl flex items-center justify-center border-2 border-accent floating parallax-element"
+                             data-speed="8">
+                            <span class="text-xl sm:text-2xl">🚀</span>
+                        </div>
+                        <div class="absolute top-1/2 -left-6 sm:-left-8 w-10 sm:w-12 h-10 sm:h-12 bg-gradient-to-r from-slate-800 to-slate-700 rounded-xl flex items-center justify-center border-2 border-accent floating parallax-element"
+                             data-speed="12">
+                            <span class="text-lg sm:text-xl">💻</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ===== GOATED: Scroll Indicator ===== -->
     <div class="scroll-indicator">
         <div class="scroll-indicator-mouse"></div>
         <span class="text-xs text-slate-500 font-mono">scroll</span>
     </div>
 </section>
 
-<!-- ===== GOATED: Wave Divider ===== -->
 <div class="wave-divider">
     <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
-        <path d="M0,40 C360,80 720,0 1080,40 C1260,60 1380,30 1440,40 L1440,80 L0,80 Z" fill="var(--accent-color)" opacity="0.05"/>
-        <path d="M0,50 C320,10 640,70 960,30 C1200,0 1360,50 1440,35 L1440,80 L0,80 Z" fill="var(--accent-color)" opacity="0.03"/>
+        <path d="M0,40 C360,80 720,0 1080,40 C1260,60 1380,30 1440,40 L1440,80 L0,80 Z" fill="var(--accent-color)"
+              opacity="0.05"/>
+        <path d="M0,50 C320,10 640,70 960,30 C1200,0 1360,50 1440,35 L1440,80 L0,80 Z" fill="var(--accent-color)"
+              opacity="0.03"/>
     </svg>
 </div>
 
@@ -1183,7 +1313,6 @@
                     </div>
                 </div>
 
-                <!-- ===== GOATED: Quick stats with count-up animation ===== -->
                 <div class="space-y-4">
                     <div class="glass p-4 rounded-2xl text-center hover-lift">
                         <div class="w-12 h-12 bg-gradient-to-r from-slate-800 to-slate-700 rounded-xl flex items-center justify-center border-2 border-accent mx-auto mb-2">
@@ -1206,7 +1335,9 @@
                             <span class="text-xl">💼</span>
                         </div>
                         <div class="font-bold text-white">Experience</div>
-                        <div class="text-slate-400 text-sm"><span class="count-up" data-count="2" data-suffix="x">0x</span> Apple Intern</div>
+                        <div class="text-slate-400 text-sm"><span class="count-up" data-count="2"
+                                                                  data-suffix="x">0x</span> Apple Intern
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1249,15 +1380,18 @@
                         <div class="space-y-3 text-slate-300">
                             <div class="flex items-start gap-3">
                                 <span class="text-accent text-xl">▶</span>
-                                <p><span class="text-accent font-semibold">6.87% escalation rate</span> through independent research & advanced troubleshooting-well below department average.</p>
+                                <p><span class="text-accent font-semibold">6.87% escalation rate</span> through
+                                    independent research & advanced troubleshooting-well below department average.</p>
                             </div>
                             <div class="flex items-start gap-3">
                                 <span class="text-accent text-xl">▶</span>
-                                <p><span class="text-accent font-semibold">0.27m average call wrap time</span> while maintaining premium-quality documentation standards.</p>
+                                <p><span class="text-accent font-semibold">0.27m average call wrap time</span> while
+                                    maintaining premium-quality documentation standards.</p>
                             </div>
                             <div class="flex items-start gap-3">
                                 <span class="text-accent text-xl">▶</span>
-                                <p><span class="text-accent font-semibold">15% above department average CSAT</span>; 2x AppleCare Excellence Award recipient (2024, 2025).</p>
+                                <p><span class="text-accent font-semibold">15% above department average CSAT</span>; 2x
+                                    AppleCare Excellence Award recipient (2024, 2025).</p>
                             </div>
                         </div>
                     </div>
@@ -1283,15 +1417,21 @@
                         <div class="space-y-3 text-slate-300">
                             <div class="flex items-start gap-3">
                                 <span class="text-accent text-xl">▶</span>
-                                <p><span class="text-accent font-semibold">HackUTD Mentor</span> — supported 1,200+ participants across overnight shifts, debugged critical issues for 60+ teams competing in the US's largest hackathon.</p>
+                                <p><span class="text-accent font-semibold">HackUTD Mentor</span> — supported 1,200+
+                                    participants across overnight shifts, debugged critical issues for 60+ teams
+                                    competing in the US's largest hackathon.</p>
                             </div>
                             <div class="flex items-start gap-3">
                                 <span class="text-accent text-xl">▶</span>
-                                <p><span class="text-accent font-semibold">Development Lead</span> — architecting full-stack roommate-matching platform (React + FastAPI + PostgreSQL) while coaching junior members through agile workflows.</p>
+                                <p><span class="text-accent font-semibold">Development Lead</span> — architecting
+                                    full-stack roommate-matching platform (React + FastAPI + PostgreSQL) while coaching
+                                    junior members through agile workflows.</p>
                             </div>
                             <div class="flex items-start gap-3">
                                 <span class="text-accent text-xl">▶</span>
-                                <p><span class="text-accent font-semibold">Education Mentor</span> — selected to guide 4 underclassmen through technical interviews, career planning, and landing summer internships.</p>
+                                <p><span class="text-accent font-semibold">Education Mentor</span> — selected to guide 4
+                                    underclassmen through technical interviews, career planning, and landing summer
+                                    internships.</p>
                             </div>
                         </div>
                     </div>
@@ -1317,15 +1457,20 @@
                         <div class="space-y-3 text-slate-300">
                             <div class="flex items-start gap-3">
                                 <span class="text-accent text-xl">▶</span>
-                                <p>Automated parsing, grouping, and analysis of <span class="text-accent font-semibold">thousands of on-device tests</span> with intelligent categorization systems.</p>
+                                <p>Automated parsing, grouping, and analysis of <span class="text-accent font-semibold">thousands of on-device tests</span>
+                                    with intelligent categorization systems.</p>
                             </div>
                             <div class="flex items-start gap-3">
                                 <span class="text-accent text-xl">▶</span>
-                                <p>Integrated <span class="text-accent font-semibold">LLMs into test triage workflows</span> to dramatically speed up root-cause analysis and reduce manual investigation time by 4,800%.</p>
+                                <p>Integrated <span
+                                        class="text-accent font-semibold">LLMs into test triage workflows</span> to
+                                    dramatically speed up root-cause analysis and reduce manual investigation time by
+                                    4,800%.</p>
                             </div>
                             <div class="flex items-start gap-3">
                                 <span class="text-accent text-xl">▶</span>
-                                <p>Unified bug report formats for <span class="text-accent font-semibold">succinct, actionable communications</span> that teams actually use.</p>
+                                <p>Unified bug report formats for <span class="text-accent font-semibold">succinct, actionable communications</span>
+                                    that teams actually use.</p>
                             </div>
                         </div>
                     </div>
@@ -1351,19 +1496,23 @@
                         <div class="space-y-3 text-slate-300">
                             <div class="flex items-start gap-3">
                                 <span class="text-accent text-xl">▶</span>
-                                <p>Built an <span class="text-accent font-semibold">LLM-powered chat interface + Python package</span> to generate SQL/NoSQL queries from natural language-no more syntax debugging.</p>
+                                <p>Built an <span class="text-accent font-semibold">LLM-powered chat interface + Python package</span>
+                                    to generate SQL/NoSQL queries from natural language-no more syntax debugging.</p>
                             </div>
                             <div class="flex items-start gap-3">
                                 <span class="text-accent text-xl">▶</span>
-                                <p>Migrated critical services from <span class="text-accent font-semibold">Java 11 → JDK 21</span>, resolving dependency conflicts and security vulnerabilities.</p>
+                                <p>Migrated critical services from <span class="text-accent font-semibold">Java 11 → JDK 21</span>,
+                                    resolving dependency conflicts and security vulnerabilities.</p>
                             </div>
                             <div class="flex items-start gap-3">
                                 <span class="text-accent text-xl">▶</span>
-                                <p>Designed robust <span class="text-accent font-semibold">AWS/GCP workflows and CI/CD pipelines</span> for reliable deploys and lightning-fast feedback loops.</p>
+                                <p>Designed robust <span class="text-accent font-semibold">AWS/GCP workflows and CI/CD pipelines</span>
+                                    for reliable deploys and lightning-fast feedback loops.</p>
                             </div>
                             <div class="flex items-start gap-3">
                                 <span class="text-accent text-xl">▶</span>
-                                <p>Optimized an iOS log analyzer (MVVM) to <span class="text-accent font-semibold">render thousands of events in real-time</span> without performance hiccups.</p>
+                                <p>Optimized an iOS log analyzer (MVVM) to <span class="text-accent font-semibold">render thousands of events in real-time</span>
+                                    without performance hiccups.</p>
                             </div>
                         </div>
                     </div>
@@ -1389,11 +1538,13 @@
                         <div class="space-y-3 text-slate-300">
                             <div class="flex items-start gap-3">
                                 <span class="text-accent text-xl">▶</span>
-                                <p>Repaired, imaged, and deployed <span class="text-accent font-semibold">hundreds of machines</span> for critical healthcare system expansion.</p>
+                                <p>Repaired, imaged, and deployed <span class="text-accent font-semibold">hundreds of machines</span>
+                                    for critical healthcare system expansion.</p>
                             </div>
                             <div class="flex items-start gap-3">
                                 <span class="text-accent text-xl">▶</span>
-                                <p>Handled urgent hardware deliveries and set a <span class="text-accent font-semibold">department intake record (300+ devices)</span> during high-demand periods.</p>
+                                <p>Handled urgent hardware deliveries and set a <span class="text-accent font-semibold">department intake record (300+ devices)</span>
+                                    during high-demand periods.</p>
                             </div>
                         </div>
                     </div>
@@ -1416,14 +1567,16 @@
                class="inline-flex items-center gap-2 text-lg font-semibold text-accent hover:text-accent-light transition-colors px-4 py-2 rounded-xl magnetic-btn">
                 View Public GitHub
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
                 </svg>
             </a>
         </div>
 
         <div class="grid mobile-grid-single md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
             <!-- Project 1 -->
-            <article class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden tilt-card stagger-reveal">
+            <article
+                    class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden tilt-card stagger-reveal">
                 <div class="relative tilt-card-inner">
                     <div class="flex items-center justify-between mb-6">
                         <div class="flex items-center gap-3">
@@ -1439,7 +1592,9 @@
                     </div>
 
                     <p class="text-slate-300 mb-6 leading-relaxed">
-                        Python package + chat UI that transforms natural language into data-accurate responses by automatically running parameterized SQL or NoSQL queries & interpreting the responses. No more syntax debugging sessions!
+                        Python package + chat UI that transforms natural language into data-accurate responses by
+                        automatically running parameterized SQL or NoSQL queries & interpreting the responses. No more
+                        syntax debugging sessions!
                     </p>
 
                     <div class="flex gap-2 flex-wrap mb-4">
@@ -1454,7 +1609,8 @@
             </article>
 
             <!-- Project 2 -->
-            <article class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden tilt-card stagger-reveal">
+            <article
+                    class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden tilt-card stagger-reveal">
                 <div class="relative tilt-card-inner">
                     <div class="flex items-center justify-between mb-6">
                         <div class="flex items-center gap-3">
@@ -1470,7 +1626,9 @@
                     </div>
 
                     <p class="text-slate-300 mb-6 leading-relaxed">
-                        Intelligent test failure aggregation system that classifies failures, suggests probable root causes using multi-stage LLM analysis and exports unified bug reports with automatic artifact attachment. Turns chaos into actionable insights.
+                        Intelligent test failure aggregation system that classifies failures, suggests probable root
+                        causes using multi-stage LLM analysis and exports unified bug reports with automatic artifact
+                        attachment. Turns chaos into actionable insights.
                     </p>
 
                     <div class="flex gap-2 flex-wrap mb-4">
@@ -1485,7 +1643,8 @@
             </article>
 
             <!-- Project 3 -->
-            <article class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden tilt-card stagger-reveal">
+            <article
+                    class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden tilt-card stagger-reveal">
                 <div class="relative tilt-card-inner">
                     <div class="flex items-center justify-between mb-6">
                         <div class="flex items-center gap-3">
@@ -1501,7 +1660,9 @@
                     </div>
 
                     <p class="text-slate-300 mb-6 leading-relaxed">
-                        A dedicated page tracking my Spotify status in real-time. Features dynamic ambient background generation based on album artwork colors, fluid animations, and is optimized for both mobile and desktop.
+                        A dedicated page tracking my Spotify status in real-time. Features dynamic ambient background
+                        generation based on album artwork colors, fluid animations, and is optimized for both mobile and
+                        desktop.
                     </p>
 
                     <div class="flex gap-2 flex-wrap mb-4">
@@ -1511,13 +1672,15 @@
                     </div>
 
                     <div class="text-xs text-slate-500 italic">
-                        <a href="https://listening.ryanpolasky.com" target="_blank" class="hover:text-accent transition-colors">View Live Site ></a>
+                        <a href="https://listening.ryanpolasky.com" target="_blank"
+                           class="hover:text-accent transition-colors">View Live Site ></a>
                     </div>
                 </div>
             </article>
 
             <!-- Project 4 -->
-            <article class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden tilt-card stagger-reveal">
+            <article
+                    class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden tilt-card stagger-reveal">
                 <div class="relative tilt-card-inner">
                     <div class="flex items-center justify-between mb-6">
                         <div class="flex items-center gap-3">
@@ -1533,7 +1696,9 @@
                     </div>
 
                     <p class="text-slate-300 mb-6 leading-relaxed">
-                        A digital garden hosting my entire CS curriculum notes from UTD. Features comprehensive documentation, LaTeX-formatted algorithms, and study guides organized via Notion to help students.
+                        A digital garden hosting my entire CS curriculum notes from UTD. Features comprehensive
+                        documentation, LaTeX-formatted algorithms, and study guides organized via Notion to help
+                        students.
                     </p>
 
                     <div class="flex gap-2 flex-wrap mb-4">
@@ -1543,13 +1708,15 @@
                     </div>
 
                     <div class="text-xs text-slate-500 italic">
-                        <a href="https://ryanpolasky.com/notes" class="hover:text-accent transition-colors">View Site ></a>
+                        <a href="https://ryanpolasky.com/notes" class="hover:text-accent transition-colors">View Site
+                            ></a>
                     </div>
                 </div>
             </article>
 
             <!-- Project 5 -->
-            <article class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden tilt-card stagger-reveal">
+            <article
+                    class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden tilt-card stagger-reveal">
                 <div class="relative tilt-card-inner">
                     <div class="flex items-center justify-between mb-6">
                         <div class="flex items-center gap-3">
@@ -1565,7 +1732,9 @@
                     </div>
 
                     <p class="text-slate-300 mb-6 leading-relaxed">
-                        Since 2021, I've been a hobbyist music producer, primarily specializing in the creation of "Lo-Fi", or Low Fidelity music. I have been a published artist on major streaming platforms such as Spotify & Apple Music since 2023.
+                        Since 2021, I've been a hobbyist music producer, primarily specializing in the creation of
+                        "Lo-Fi", or Low Fidelity music. I have been a published artist on major streaming platforms such
+                        as Spotify & Apple Music since 2023.
                     </p>
 
                     <div class="flex gap-2 flex-wrap mb-4">
@@ -1581,7 +1750,8 @@
             </article>
 
             <!-- Project 6 -->
-            <article class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden tilt-card stagger-reveal">
+            <article
+                    class="group glass-card p-8 rounded-3xl hover-lift relative overflow-hidden tilt-card stagger-reveal">
                 <div class="relative tilt-card-inner">
                     <div class="flex items-center justify-between mb-6">
                         <div class="flex items-center gap-3">
@@ -1597,7 +1767,9 @@
                     </div>
 
                     <p class="text-slate-300 mb-6 leading-relaxed">
-                        As Project Lead, I'm architecting a full-stack matching platform for UTD students while mentoring junior developers. We're building a reliable, secure system to replace outdated, impersonal matching systems.
+                        As Project Lead, I'm architecting a full-stack matching platform for UTD students while
+                        mentoring junior developers. We're building a reliable, secure system to replace outdated,
+                        impersonal matching systems.
                     </p>
 
                     <div class="flex gap-2 flex-wrap mb-4">
@@ -1607,8 +1779,10 @@
                     </div>
 
                     <div class="text-xs text-slate-500 italic flex gap-4">
-                        <a href="https://github.com/acmutd/meteormate-backend" target="_blank" class="hover:text-accent transition-colors">Backend Repo ></a>
-                        <a href="https://github.com/acmutd/meteormate-client" target="_blank" class="hover:text-accent transition-colors">Frontend Repo ></a>
+                        <a href="https://github.com/acmutd/meteormate-backend" target="_blank"
+                           class="hover:text-accent transition-colors">Backend Repo ></a>
+                        <a href="https://github.com/acmutd/meteormate-client" target="_blank"
+                           class="hover:text-accent transition-colors">Frontend Repo ></a>
                     </div>
                 </div>
             </article>
@@ -1670,7 +1844,9 @@
                             </div>
                         </div>
 
-                        <div class="text-sm text-slate-400 font-mono pt-2">C++, SwiftUI, HTML/CSS, JavaScript, R, Obj-C</div>
+                        <div class="text-sm text-slate-400 font-mono pt-2">C++, SwiftUI, HTML/CSS, JavaScript, R,
+                            Obj-C
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1764,7 +1940,8 @@
                             </div>
                         </div>
 
-                        <div class="text-sm text-slate-400 font-mono pt-2">Fine-tuning, Function Calling, Embeddings</div>
+                        <div class="text-sm text-slate-400 font-mono pt-2">Fine-tuning, Function Calling, Embeddings
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1847,7 +2024,8 @@
                     </div>
 
                     <blockquote class="text-lg text-slate-300 leading-relaxed mb-6 flex-grow testimonial-text">
-                        "Ryan's learning agility is remarkable… he tackles each new challenge with focus and enthusiasm. Strong communicator with clear, impactful presentations."
+                        "Ryan's learning agility is remarkable… he tackles each new challenge with focus and enthusiasm.
+                        Strong communicator with clear, impactful presentations."
                     </blockquote>
 
                     <figcaption class="flex items-center gap-3 mt-auto">
@@ -1855,7 +2033,8 @@
                             <span class="text-slate-300 font-bold text-lg">SP</span>
                         </div>
                         <div>
-                            <div class="font-bold text-white"><a href="https://www.linkedin.com/in/sahilpujari/">Sahil Pujari</a></div>
+                            <div class="font-bold text-white"><a href="https://www.linkedin.com/in/sahilpujari/">Sahil
+                                Pujari</a></div>
                             <div class="text-sm text-slate-400">Sr. Software Engineer | Mentor</div>
                         </div>
                     </figcaption>
@@ -1877,7 +2056,8 @@
                     </div>
 
                     <blockquote class="text-lg text-slate-300 leading-relaxed mb-6 flex-grow testimonial-text">
-                        "Ryan was a fantastic summer 2025 intern. A fast learner, he delivered his project ahead of schedule and integrated seamlessly. He performed like a full-time hire."
+                        "Ryan was a fantastic summer 2025 intern. A fast learner, he delivered his project ahead of
+                        schedule and integrated seamlessly. He performed like a full-time hire."
                     </blockquote>
 
                     <figcaption class="flex items-center gap-3 mt-auto">
@@ -1885,7 +2065,8 @@
                             <span class="text-slate-300 font-bold text-lg">JK</span>
                         </div>
                         <div>
-                            <div class="font-bold text-white"><a href="https://www.linkedin.com/in/jozefkruger/">Jozef Kruger</a></div>
+                            <div class="font-bold text-white"><a href="https://www.linkedin.com/in/jozefkruger/">Jozef
+                                Kruger</a></div>
                             <div class="text-sm text-slate-400">Engineering Manager | Manager</div>
                         </div>
                     </figcaption>
@@ -1907,7 +2088,8 @@
                     </div>
 
                     <blockquote class="text-lg text-slate-300 leading-relaxed mb-6 flex-grow testimonial-text">
-                        "Ryan was an exceptional intern, contributing valuable test automation tools. His initiative, clear communication, and collaboration made him a joy to work with."
+                        "Ryan was an exceptional intern, contributing valuable test automation tools. His initiative,
+                        clear communication, and collaboration made him a joy to work with."
                     </blockquote>
 
                     <figcaption class="flex items-center gap-3 mt-auto">
@@ -1915,7 +2097,8 @@
                             <span class="text-slate-300 font-bold text-lg">JP</span>
                         </div>
                         <div>
-                            <div class="font-bold text-white"><a href="https://www.linkedin.com/in/jdpaul123/">JD Paul</a></div>
+                            <div class="font-bold text-white"><a href="https://www.linkedin.com/in/jdpaul123/">JD
+                                Paul</a></div>
                             <div class="text-sm text-slate-400">Software Engineer | Teammate</div>
                         </div>
                     </figcaption>
@@ -1971,8 +2154,10 @@
                             style="background: linear-gradient(to right, var(--accent-darker), var(--accent-dark));">
                         <span class="flex items-center justify-center gap-3">
                           <span>Send Message</span>
-                          <svg class="w-5 h-5 group-hover:-translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                          <svg class="w-5 h-5 group-hover:-translate-y-1 transition-transform" fill="none"
+                               stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
                           </svg>
                         </span>
                     </button>
@@ -2015,7 +2200,8 @@
                             <span class="text-xl">💼</span>
                         </div>
                         <div>
-                            <div class="font-bold text-white group-hover:text-slate-300 transition-colors">LinkedIn</div>
+                            <div class="font-bold text-white group-hover:text-slate-300 transition-colors">LinkedIn
+                            </div>
                         </div>
                     </a>
 
@@ -2049,21 +2235,24 @@
             <div class="flex justify-center gap-6 mb-8">
                 <a href="mailto:ryanpolasky@hotmail.com"
                    class="group p-4 glass rounded-2xl hover-lift transition-all magnetic-btn" data-tooltip="Email">
-                    <svg class="w-6 h-6 text-slate-400 group-hover:text-slate-300 transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-6 h-6 text-slate-400 group-hover:text-slate-300 transition-colors" fill="currentColor"
+                         viewBox="0 0 24 24">
                         <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
                     </svg>
                 </a>
 
                 <a href="https://www.linkedin.com/in/ryan-polasky/" target="_blank" rel="noreferrer"
                    class="group p-4 glass rounded-2xl hover-lift transition-all magnetic-btn" data-tooltip="LinkedIn">
-                    <svg class="w-6 h-6 text-slate-400 group-hover:text-slate-300 transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-6 h-6 text-slate-400 group-hover:text-slate-300 transition-colors" fill="currentColor"
+                         viewBox="0 0 24 24">
                         <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
                     </svg>
                 </a>
 
                 <a href="https://github.com/ryanpolasky/personal-website" target="_blank" rel="noreferrer"
                    class="group p-4 glass rounded-2xl hover-lift transition-all magnetic-btn" data-tooltip="GitHub">
-                    <svg class="w-6 h-6 text-slate-400 group-hover:text-slate-300 transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-6 h-6 text-slate-400 group-hover:text-slate-300 transition-colors" fill="currentColor"
+                         viewBox="0 0 24 24">
                         <path d="M12 .5a12 12 0 0 0-3.79 23.4c.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.74.08-.73.08-.73 1.2.09 1.83 1.23 1.83 1.23 1.07 1.83 2.81 1.3 3.5.99.11-.78.42-1.3.76-1.6-2.66-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.16 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.3-1.55 3.3-1.23 3.3-1.23.66 1.64.24 2.86.12 3.16.77.84 1.24 1.9 1.24 3.22 0 4.61-2.81 5.62-5.49 5.92.43.37.82 1.1.82 2.22v3.29c0 .32.21.69.83.57A12 12 0 0 0 12 .5Z"/>
                     </svg>
                 </a>
@@ -2071,7 +2260,9 @@
 
             <div class="text-slate-400 font-mono">
                 <p>© <span id="year"></span> Ryan Polasky. All rights reserved.</p>
-                <p class="mt-2 text-sm">Made with <a style="text-decoration: none;" href="https://status.ryanpolasky.com">❤️</a> and too much caffeine</p>
+                <p class="mt-2 text-sm">Made with <a style="text-decoration: none;"
+                                                     href="https://status.ryanpolasky.com">❤️</a> and too much caffeine
+                </p>
             </div>
         </div>
     </div>
@@ -2082,7 +2273,8 @@
         class="fixed bottom-8 left-8 p-4 rounded-2xl hover-lift z-49 transition-all duration-500 ease-in-out opacity-0 pointer-events-none magnetic-btn"
         style="position: fixed !important; background: rgba(0, 0, 0, 0.6) !important; backdrop-filter: blur(16px) !important; border: 1px solid var(--accent-color) !important;"
         data-tooltip="Back to top">
-    <svg class="w-6 h-6 text-accent transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <svg class="w-6 h-6 text-accent transition-colors duration-300" fill="none" stroke="currentColor"
+         viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
     </svg>
 </button>
@@ -2453,7 +2645,10 @@
             else openSidebar();
         });
 
-        closeBtn?.addEventListener('click', (e) => { e.preventDefault(); closeSidebar(); });
+        closeBtn?.addEventListener('click', (e) => {
+            e.preventDefault();
+            closeSidebar();
+        });
         overlay?.addEventListener('click', closeSidebar);
 
         document.querySelectorAll('#sidebar a[data-scroll]').forEach(link => {
@@ -2474,8 +2669,7 @@
                 const formData = new FormData(contactForm);
                 const submitBtn = contactForm.querySelector('button[type="submit"]');
                 const originalText = submitBtn.innerHTML;
-                
-                // ===== GOATED: Loading state on submit =====
+
                 submitBtn.innerHTML = `<span class="flex items-center justify-center gap-3">
                     <svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -2484,7 +2678,7 @@
                     <span>Sending...</span>
                 </span>`;
                 submitBtn.disabled = true;
-                
+
                 try {
                     const response = await fetch(contactForm.action, {
                         method: contactForm.method,
@@ -2500,7 +2694,7 @@
                             submitBtn.innerHTML = originalText;
                             submitBtn.disabled = false;
                         }, 3000);
-                        
+
                         window.popupManager?.show(
                             `<div class="flex items-center gap-3">
                                 <span class="text-lg">✅</span>
@@ -2522,11 +2716,8 @@
         }
     });
 
-    // ===== GOATED: Console Easter Egg =====
-    console.log('%c🐐 GOATED SITE 🐐', 'font-size: 24px; font-weight: bold; color: #ff453a; text-shadow: 2px 2px 0 #000;');
     console.log('%cBuilt by Ryan Polasky', 'font-size: 14px; color: #4a90e2;');
     console.log('%c\nTry the Konami code: ↑ ↑ ↓ ↓ ← → ← → B A', 'font-size: 12px; color: #30d158;');
-    console.log('%cOr type: clearPopupStorage() to reset notifications', 'font-size: 12px; color: #ff9500;');
 </script>
 </body>
 </html>
