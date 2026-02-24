@@ -25,6 +25,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
           rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com"></script>
 
     <script>
         function lightenColor(hex, percent) {
@@ -87,7 +88,7 @@
             mix-blend-mode: screen;
         }
 
-        @media (hover: hover) and (pointer: fine) {
+        @media (hover: hover) and (pointer: fine) and (min-width: 727px) {
             .cursor-trail-dot {
                 opacity: 0.6;
             }
@@ -144,8 +145,19 @@
         .wave-divider svg {
             position: absolute;
             bottom: 0;
-            width: 100%;
+            width: 200%;
             height: 80px;
+            animation: wave-scroll 12s linear infinite;
+            will-change: transform;
+        }
+
+        @keyframes wave-scroll {
+            from {
+                transform: translateX(0);
+            }
+            to {
+                transform: translateX(-50%);
+            }
         }
 
         .skill-progress-animated {
@@ -416,6 +428,11 @@
         @media (max-width: 768px) {
             .scroll-indicator {
                 display: none;
+            }
+
+            .glass-card {
+                background: rgba(27, 26, 26, 0.99);
+                backdrop-filter: none;
             }
         }
 
@@ -966,64 +983,104 @@
 
         <div class="pt-4 mt-2 border-t border-white/10"></div>
         <div class="space-y-3">
+
             <div class="relative">
                 <button id="colorPickerBtnMobile"
-                        class="w-full flex items-center justify-between p-3 rounded-xl glass hover:shadow-glow transition-all"
-                        aria-label="Change Theme Color" aria-expanded="false" aria-haspopup="true">
+                        class="w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl glass transition-all duration-200 hover:shadow-glow hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-white/40"
+                        aria-label="Change Theme Color"
+                        aria-expanded="false"
+                        aria-haspopup="true">
                     <span class="font-medium">Theme color</span>
-                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 279.682 279.682"
-                         fill="#ffffff">
+                    <svg class="w-5 h-5 shrink-0" xmlns="http://www.w3.org/2000/svg"
+                         viewBox="0 0 279.682 279.682"
+                         fill="currentColor">
                         <g>
-                            <path d="M143.25,55.486c-41.06,0-74.465,33.405-74.465,74.465c0,16.824,5.511,32.711,15.938,45.939 c1.998,2.536,4.15,5.033,6.23,7.448c6.212,7.208,12.078,14.017,14.166,21.675c0.045,0.165,0.438,1.773,0.38,7.247l-0.01,0.791 c-0.063,4.444-0.147,10.528,4.352,15.091c3.081,3.125,7.399,4.645,13.204,4.645h40.272c6.268,0,10.774-1.534,13.776-4.689 c4.061-4.267,3.789-9.779,3.608-13.427c-0.032-0.645-0.066-1.296-0.074-1.944c-0.065-5.48,0.345-7.025,0.362-7.09 c2.121-7.657,8.993-15.732,15.057-22.855c2.023-2.377,3.934-4.622,5.714-6.879c10.431-13.23,15.944-29.12,15.944-45.951 C217.705,88.892,184.305,55.486,143.25,55.486z"/>
-                            <path d="M161.766,239.564h-37.041c-7.995,0-14.5,6.505-14.5,14.5v11.117c0,7.995,6.505,14.5,14.5,14.5 h37.041c7.995,0,14.5-6.505,14.5-14.5v-11.117C176.266,246.069,169.761,239.564,161.766,239.564z"/>
-                            <path d="M143.245,45.779c4.143,0,7.5-3.357,7.5-7.5V7.5c0-4.143-3.357-7.5-7.5-7.5 c-4.143,0-7.5,3.357-7.5,7.5v30.779C135.745,42.422,139.103,45.779,143.245,45.779z"/>
-                            <path d="M241.917,34.598c-2.858-2.995-7.606-3.106-10.604-0.248l-22.77,21.73 c-2.997,2.859-3.107,7.607-0.248,10.604c1.474,1.544,3.448,2.322,5.427,2.322c1.86,0,3.725-0.688,5.177-2.074l22.77-21.731 C244.666,42.342,244.776,37.594,241.917,34.598z"/>
-                            <path d="M264.273,109.599c-0.004,0-0.008,0-0.012,0l-29.311,0.047c-4.143,0.007-7.495,3.37-7.488,7.512 c0.007,4.139,3.363,7.488,7.5,7.488c0.004,0,0.008,0,0.012,0l29.311-0.047c4.143-0.007,7.495-3.37,7.488-7.512 C271.767,112.948,268.41,109.599,264.273,109.599z"/>
-                            <path d="M74.386,64.684c2.859-2.996,2.749-7.743-0.248-10.604l-22.77-21.73 c-2.994-2.858-7.742-2.749-10.604,0.248c-2.859,2.996-2.749,7.743,0.248,10.604l22.77,21.731c1.452,1.386,3.315,2.074,5.177,2.074 C70.937,67.006,72.912,66.228,74.386,64.684z"/>
-                            <path d="M44.729,109.646l-29.31-0.047c-0.004,0-0.008,0-0.012,0c-4.137,0-7.493,3.351-7.5,7.488 c-0.007,4.142,3.346,7.505,7.488,7.512l29.31,0.047c0.004,0,0.008,0,0.012,0c4.137,0,7.493-3.351,7.5-7.488 C52.225,113.016,48.872,109.652,44.729,109.646z"/>
+                            <path d="M143.25,55.486c-41.06,0-74.465,33.405-74.465,74.465c0,16.824,5.511,32.711,15.938,45.939c1.998,2.536,4.15,5.033,6.23,7.448c6.212,7.208,12.078,14.017,14.166,21.675c0.045,0.165,0.438,1.773,0.38,7.247l-0.01,0.791c-0.063,4.444-0.147,10.528,4.352,15.091c3.081,3.125,7.399,4.645,13.204,4.645h40.272c6.268,0,10.774-1.534,13.776-4.689c4.061-4.267,3.789-9.779,3.608-13.427c-0.032-0.645-0.066-1.296-0.074-1.944c-0.065-5.48,0.345-7.025,0.362-7.09c2.121-7.657,8.993-15.732,15.057-22.855c2.023-2.377,3.934-4.622,5.714-6.879c10.431-13.23,15.944-29.12,15.944-45.951C217.705,88.892,184.305,55.486,143.25,55.486z"/>
+                            <path d="M161.766,239.564h-37.041c-7.995,0-14.5,6.505-14.5,14.5v11.117c0,7.995,6.505,14.5,14.5,14.5h37.041c7.995,0,14.5-6.505,14.5-14.5v-11.117C176.266,246.069,169.761,239.564,161.766,239.564z"/>
+                            <path d="M143.245,45.779c4.143,0,7.5-3.357,7.5-7.5V7.5c0-4.143-3.357-7.5-7.5-7.5c-4.143,0-7.5,3.357-7.5,7.5v30.779C135.745,42.422,139.103,45.779,143.245,45.779z"/>
+                            <path d="M241.917,34.598c-2.858-2.995-7.606-3.106-10.604-0.248l-22.77,21.73c-2.997,2.859-3.107,7.607-0.248,10.604c1.474,1.544,3.448,2.322,5.427,2.322c1.86,0,3.725-0.688,5.177-2.074l22.77-21.731C244.666,42.342,244.776,37.594,241.917,34.598z"/>
+                            <path d="M264.273,109.599l-29.311,0.047c-4.143,0.007-7.495,3.37-7.488,7.512c0.007,4.139,3.363,7.488,7.5,7.488l29.311-0.047c4.143-0.007,7.495-3.37,7.488-7.512C271.767,112.948,268.41,109.599,264.273,109.599z"/>
+                            <path d="M74.386,64.684c2.859-2.996,2.749-7.743-0.248-10.604l-22.77-21.73c-2.994-2.858-7.742-2.749-10.604,0.248c-2.859,2.996-2.749,7.743,0.248,10.604l22.77,21.731c1.452,1.386,3.315,2.074,5.177,2.074C70.937,67.006,72.912,66.228,74.386,64.684z"/>
+                            <path d="M44.729,109.646l-29.31-0.047c-4.137,0-7.493,3.351-7.5,7.488c-0.007,4.142,3.346,7.505,7.488,7.512l29.31,0.047c4.137,0,7.493-3.351,7.5-7.488C52.225,113.016,48.872,109.652,44.729,109.646z"/>
                         </g>
                     </svg>
                 </button>
+
                 <div id="colorPaletteMobile"
                      class="absolute top-full left-0 mt-2 p-6 glass rounded-2xl opacity-0 pointer-events-none transition-all z-50 shadow-xl border border-white/20 min-w-max"
-                     role="menu" aria-labelledby="colorPickerBtnMobile">
+                     role="menu"
+                     aria-labelledby="colorPickerBtnMobile">
                     <div class="grid grid-cols-4 gap-3">
                         <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
-                                data-color="#4a90e2" style="background: linear-gradient(135deg, #4a90e2, #6ba3e8);"
-                                aria-label="Blue theme" role="menuitem" data-tooltip="Blue"></button>
+                                data-color="#4a90e2"
+                                style="background: linear-gradient(135deg, #4a90e2, #6ba3e8);"
+                                aria-label="Blue theme"></button>
                         <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
-                                data-color="#af52de" style="background: linear-gradient(135deg, #af52de, #bf5af2);"
-                                aria-label="Purple theme" role="menuitem" data-tooltip="Purple"></button>
+                                data-color="#af52de"
+                                style="background: linear-gradient(135deg, #af52de, #bf5af2);"
+                                aria-label="Purple theme"></button>
                         <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
-                                data-color="#30d158" style="background: linear-gradient(135deg, #30d158, #64de85);"
-                                aria-label="Green theme" role="menuitem" data-tooltip="Green"></button>
+                                data-color="#30d158"
+                                style="background: linear-gradient(135deg, #30d158, #64de85);"
+                                aria-label="Green theme"></button>
                         <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
-                                data-color="#ff9500" style="background: linear-gradient(135deg, #ff9500, #ffb340);"
-                                aria-label="Orange theme" role="menuitem" data-tooltip="Orange"></button>
+                                data-color="#ff9500"
+                                style="background: linear-gradient(135deg, #ff9500, #ffb340);"
+                                aria-label="Orange theme"></button>
                         <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
-                                data-color="#ff453a" style="background: linear-gradient(135deg, #ff453a, #ff6961);"
-                                aria-label="Red theme" role="menuitem" data-tooltip="Red"></button>
+                                data-color="#ff453a"
+                                style="background: linear-gradient(135deg, #ff453a, #ff6961);"
+                                aria-label="Red theme"></button>
                         <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
-                                data-color="#e91e63" style="background: linear-gradient(135deg, #e91e63, #f06292);"
-                                aria-label="Pink theme" role="menuitem" data-tooltip="Pink"></button>
+                                data-color="#e91e63"
+                                style="background: linear-gradient(135deg, #e91e63, #f06292);"
+                                aria-label="Pink theme"></button>
                         <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
-                                data-color="#00bcd4" style="background: linear-gradient(135deg, #00bcd4, #4dd0e1);"
-                                aria-label="Cyan theme" role="menuitem" data-tooltip="Cyan"></button>
+                                data-color="#00bcd4"
+                                style="background: linear-gradient(135deg, #00bcd4, #4dd0e1);"
+                                aria-label="Cyan theme"></button>
                         <button class="color-option w-10 h-10 rounded-lg border-2 border-white/20 hover:scale-110 hover:border-white/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 shadow-md"
-                                data-color="#f8bbd9" style="background: linear-gradient(135deg, #f8bbd9, #fce4ec);"
-                                aria-label="Pastel pink theme" role="menuitem" data-tooltip="Pastel"></button>
+                                data-color="#f8bbd9"
+                                style="background: linear-gradient(135deg, #f8bbd9, #fce4ec);"
+                                aria-label="Pastel pink theme"></button>
                     </div>
                 </div>
             </div>
 
-            <a href="https://github.com/ryanpolasky/personal-website/" target="_blank" rel="noreferrer"
-               class="flex items-center gap-3 p-3 rounded-xl glass hover:shadow-glow transition-all"
+            <a href="https://github.com/ryanpolasky/personal-website/"
+               target="_blank"
+               rel="noreferrer"
+               class="w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl glass transition-all duration-200 hover:shadow-glow hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-white/40"
                aria-label="GitHub">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                <span class="font-medium">GitHub</span>
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     class="w-5 h-5 shrink-0"
+                     viewBox="0 0 24 24"
+                     fill="currentColor">
                     <path d="M12 .5a12 12 0 0 0-3.79 23.4c.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.74.08-.73.08-.73 1.2.09 1.83 1.23 1.83 1.23 1.07 1.83 2.81 1.3 3.5.99.11-.78.42-1.3.76-1.6-2.66-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.16 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.3-1.55 3.3-1.23 3.3-1.23.66 1.64.24 2.86.12 3.16.77.84 1.24 1.9 1.24 3.22 0 4.61-2.81 5.62-5.49 5.92.43.37.82 1.1.82 2.22v3.29c0 .32.21.69.83.57A12 12 0 0 0 12 .5Z"/>
                 </svg>
-                <span class="font-medium">GitHub</span>
             </a>
+
+            <div class="flex flex-row gap-3 w-full justify-center">
+                <a
+                        href="https://cs.utdring.com/#ryanpolasky.com?nav=prev"
+                        aria-label="Previous site"
+                        class="flex items-center justify-center px-4 py-3 rounded-xl glass transition-all duration-200 hover:shadow-glow hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-white/40">
+                    <span class="text-lg font-medium">←</span>
+                </a>
+                <a href="https://cs.utdring.com/#ryanpolasky.com"
+                   aria-label="CS Webring"
+                   class="flex items-center justify-center px-4 py-3 rounded-xl glass transition-all duration-200 hover:shadow-glow hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-white/40">
+                    <img src="https://cs.utdring.com/icon.white.svg"
+                         alt="CS Webring"
+                         class="w-5 h-5 opacity-80 hover:opacity-100 transition"/>
+                </a>
+                <a href="https://cs.utdring.com/#ryanpolasky.com?nav=next"
+                   aria-label="Next site"
+                   class="flex items-center justify-center px-4 py-3 rounded-xl glass transition-all duration-200 hover:shadow-glow hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-white/40">
+                    <span class="text-lg font-medium">→</span>
+                </a>
+            </div>
         </div>
     </nav>
 </aside>
@@ -1045,8 +1102,8 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M4 7h16M4 12h16M4 17h16"></path>
                     </svg>
-                    <svg class="close-icon w-6 h-6 absolute top-1 left-1 transition-all duration-300 opacity-0"
-                         fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-top: -1.5rem;">
+                    <svg class="close-icon w-6 h-6 absolute top-2 left-2 transition-all duration-300 opacity-0"
+                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
@@ -1071,6 +1128,15 @@
                 <a data-scroll="contact" href="#contact"
                    class="relative hover:text-accent transition-colors px-2 py-1 rounded">Contact</a>
             </nav>
+            <div class="hidden sm:flex items-center gap-2">
+                <a href="https://cs.utdring.com/#ryanpolasky.com?nav=prev">←</a>
+                <a href="https://cs.utdring.com/#ryanpolasky.com">
+                    <img src="https://cs.utdring.com/icon.white.svg"
+                         alt="CS Webring"
+                         class="w-6 h-auto opacity-80"/>
+                </a>
+                <a href="https://cs.utdring.com/#ryanpolasky.com?nav=next">→</a>
+            </div>
             <div class="flex items-center gap-3">
                 <div class="relative hidden lg:block">
                     <button id="colorPickerBtn" class="p-2 rounded-xl glass hover:shadow-glow transition-all hover-lift"
@@ -2270,7 +2336,7 @@
 
 <!-- Scroll to Top Button -->
 <button id="scrollTop"
-        class="fixed bottom-8 left-8 p-4 rounded-2xl hover-lift z-49 transition-all duration-500 ease-in-out opacity-0 pointer-events-none magnetic-btn"
+        class="fixed bottom-8 left-8 p-4 rounded-2xl hover-lift z-[9999] transition-all duration-500 ease-in-out opacity-0 pointer-events-none magnetic-btn"
         style="position: fixed !important; background: rgba(0, 0, 0, 0.6) !important; backdrop-filter: blur(16px) !important; border: 1px solid var(--accent-color) !important;"
         data-tooltip="Back to top">
     <svg class="w-6 h-6 text-accent transition-colors duration-300" fill="none" stroke="currentColor"
