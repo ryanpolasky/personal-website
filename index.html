@@ -75,25 +75,6 @@
     <link rel="stylesheet" href="styles.css">
 
     <style>
-        .cursor-trail-dot {
-            position: fixed;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--accent-color);
-            pointer-events: none;
-            z-index: 9999;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            mix-blend-mode: screen;
-        }
-
-        @media (hover: hover) and (pointer: fine) and (min-width: 727px) {
-            .cursor-trail-dot {
-                opacity: 0.6;
-            }
-        }
-
         .typewriter-cursor {
             display: inline-block;
             width: 3px;
@@ -529,49 +510,6 @@
                 const progress = (scrollTop / docHeight) * 100;
                 progressBar.style.width = progress + '%';
             }, {passive: true});
-
-            if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
-                const trailCount = 8;
-                const trailDots = [];
-                const trailPositions = [];
-
-                for (let i = 0; i < trailCount; i++) {
-                    const dot = document.createElement('div');
-                    dot.className = 'cursor-trail-dot';
-                    dot.style.width = (8 - i) + 'px';
-                    dot.style.height = (8 - i) + 'px';
-                    dot.style.opacity = (0.6 - i * 0.07);
-                    document.body.appendChild(dot);
-                    trailDots.push(dot);
-                    trailPositions.push({x: 0, y: 0});
-                }
-
-                let mouseX = 0, mouseY = 0;
-
-                document.addEventListener('mousemove', (e) => {
-                    mouseX = e.clientX;
-                    mouseY = e.clientY;
-                }, {passive: true});
-
-                function animateTrail() {
-                    trailPositions[0].x += (mouseX - trailPositions[0].x) * 0.3;
-                    trailPositions[0].y += (mouseY - trailPositions[0].y) * 0.3;
-
-                    for (let i = 1; i < trailCount; i++) {
-                        trailPositions[i].x += (trailPositions[i - 1].x - trailPositions[i].x) * 0.2;
-                        trailPositions[i].y += (trailPositions[i - 1].y - trailPositions[i].y) * 0.2;
-                    }
-
-                    trailDots.forEach((dot, i) => {
-                        dot.style.left = trailPositions[i].x + 'px';
-                        dot.style.top = trailPositions[i].y + 'px';
-                    });
-
-                    requestAnimationFrame(animateTrail);
-                }
-
-                animateTrail();
-            }
 
             function typeWriter(element, texts, speed = 80, deleteSpeed = 40, pauseTime = 2000) {
                 let textIndex = 0;
@@ -1333,10 +1271,24 @@
 
 <div class="wave-divider">
     <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
-        <path d="M0,40 C360,80 720,0 1080,40 C1260,60 1380,30 1440,40 L1440,80 L0,80 Z" fill="var(--accent-color)"
-              opacity="0.05"/>
-        <path d="M0,50 C320,10 640,70 960,30 C1200,0 1360,50 1440,35 L1440,80 L0,80 Z" fill="var(--accent-color)"
-              opacity="0.03"/>
+      <path
+        d="
+          M0,40
+          C240,80 480,0 720,40
+          C960,80 1200,0 1440,40
+          L1440,80 L0,80 Z"
+        fill="var(--accent-color)"
+        opacity="0.05"
+      />
+      <path
+        d="
+          M0,50
+          C240,10 480,70 720,50
+          C960,10 1200,70 1440,50
+          L1440,80 L0,80 Z"
+        fill="var(--accent-color)"
+        opacity="0.03"
+      />
     </svg>
 </div>
 
