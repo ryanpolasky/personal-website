@@ -824,13 +824,37 @@
                     }
                 });
 
+                function hslToHex(h, s, l) {
+                    s /= 100;
+                    l /= 100;
+                    const a = s * Math.min(l, 1 - l);
+                    const f = n => {
+                        const k = (n + h / 30) % 12;
+                        const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+                        return Math.round(255 * color).toString(16).padStart(2, '0');
+                    };
+                    return `#${f(0)}${f(8)}${f(4)}`;
+                }
+
                 function activateRainbowMode() {
                     rainbowMode = true;
-                    document.body.classList.add('rainbow-mode');
+                    window.manualColorSelection = true;
+                    document.body.classList.add('manual-color-override');
+                    let hue = 0;
+                    function tick() {
+                        hue = (hue + 0.5) % 360;
+                        updateAccentColor(hslToHex(hue, 100, 50));
+                        window.rainbowFrame = requestAnimationFrame(tick);
+                    }
+                    window.rainbowFrame = requestAnimationFrame(tick);
                 }
 
                 function deactivateRainbowMode() {
                     rainbowMode = false;
+                    if (window.rainbowFrame) {
+                        cancelAnimationFrame(window.rainbowFrame);
+                        window.rainbowFrame = null;
+                    }
                     const hour = new Date().getHours();
                     const isLateNight = hour >= 21 || hour <= 5;
 
@@ -841,7 +865,6 @@
                         updateAccentColor(newRandomColor);
                     }
 
-                    document.body.classList.remove('rainbow-mode');
                     window.manualColorSelection = true;
                 }
             }

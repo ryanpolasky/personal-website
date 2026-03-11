@@ -1946,20 +1946,6 @@ video {
 
 /* Rainbow mode for Konami code */
 
-.rainbow-mode {
-  animation: rainbow-bg 3s linear infinite;
-}
-
-@keyframes rainbow-bg {
-  0% {
-    filter: hue-rotate(0deg);
-  }
-
-  100% {
-    filter: hue-rotate(360deg);
-  }
-}
-
 @keyframes float {
   0%, 100% {
     transform: translateY(0px);
