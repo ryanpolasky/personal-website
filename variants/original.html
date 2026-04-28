@@ -775,14 +775,20 @@
                     'I automate boring stuff 🤖',
                     'I ship fast & build faster 🚀',
                 ];
-                fetch('https://status.ryanpolasky.com/api/music')
-                  .then(r => r.json())
-                  .then(d => {
-                    const prefix = d.isPlaying ? 'Listening to' : 'Last played';
-                    texts.push(prefix + ': ' + d.title + ' — ' + d.artist + ' 🎵');
-                    typeWriter(subtitleEl, texts);
-                  })
-                  .catch(() => typeWriter(subtitleEl, texts));
+                function fetchNpOriginal(){
+                  fetch('https://status.ryanpolasky.com/api/music')
+                    .then(r => r.json())
+                    .then(d => {
+                      const prefix = d.isPlaying ? 'Listening to' : 'Last played';
+                      const npText = prefix + ': ' + d.title + ' — ' + d.artist + ' 🎵';
+                      if(texts.length < 4) texts.push(npText);
+                      else texts[3] = npText;
+                    })
+                    .catch(() => {});
+                }
+                fetchNpOriginal();
+                setInterval(fetchNpOriginal, 10000);
+                setTimeout(() => typeWriter(subtitleEl, texts), 300);
             }
 
             const staggerObserver = new IntersectionObserver((entries) => {

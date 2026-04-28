@@ -68,6 +68,7 @@ body {
   -webkit-font-smoothing: antialiased; font-variant-numeric: tabular-nums;
   background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
   background-size: 32px 32px; background-position: -1px -1px;
+  overflow-x: hidden;
 }
 ::selection { background: var(--ok); color: var(--bg); }
 a { color: inherit; text-decoration: none; }
@@ -215,14 +216,17 @@ h1.svc-title .at { color: var(--fg-4); }
 .btn .arrow { font-size: 14px; line-height: 1; }
 .btn .key { background: var(--bg); border: 1px solid var(--line-2); padding: 1px 5px; font-size: 10px; color: var(--fg-3); }
 
-.live { background: var(--bg); border-left: 0; font-family: var(--mono); font-size: 11.5px; height: 100%; }
+.live { background: var(--bg); border-left: 0; font-family: var(--mono); font-size: 11.5px; height: 100%; overflow: hidden; min-width: 0; }
 .live .lh {
   display: flex; align-items: center; justify-content: space-between;
   padding: 8px 12px; border-bottom: 1px solid var(--line);
   color: var(--fg-3); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
 }
 .live .lh span:last-child { color: var(--ok); }
-.live .lb { padding: 12px; display: grid; gap: 10px; }
+.live .lb { padding: 12px; display: grid; gap: 10px; min-width: 0; }
+#np-metric { grid-template-columns: 1fr; }
+#np-metric > div { min-width: 0; overflow: hidden; }
+#np-value { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .metric { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: end; }
 .metric .lk { color: var(--fg-3); font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; }
 .metric .vk { color: var(--fg); font-weight: 600; font-size: 14px; }
@@ -1234,30 +1238,116 @@ body.t-magenta .spark path.spark-area { fill: rgba(244,114,182,0.12); }
 console.log('%c$ ryan.polasky ', 'color:#7EE787; font-family:monospace; font-size:14px;');
 console.log('%c   ▸ status: RUNNING\n   ▸ available May 2026\n   ▸ try ⌘K for commands', 'color:#B8C0CC; font-family:monospace; font-size:12px;');
 
-(function(){
-  fetch('https://status.ryanpolasky.com/api/music')
-    .then(r => r.json())
-    .then(d => {
-      const label = document.getElementById('np-label');
-      const value = document.getElementById('np-value');
-      const bar = document.getElementById('np-bar');
-      if(!label||!value) return;
-      label.textContent = d.isPlaying ? 'now playing' : 'last played';
-      value.textContent = d.title + ' — ' + d.artist;
-      if(bar) {
-        if(d.isPlaying) {
-          bar.style.animation = 'np-slide 3s ease-in-out infinite';
-        }
-      }
-      if(d.trackUrl) {
-        value.style.cursor = 'pointer';
-        value.addEventListener('click', () => window.open(d.trackUrl, '_blank'));
-      }
-    })
-    .catch(() => {
-      const v = document.getElementById('np-value');
-      if(v) v.textContent = 'offline';
+function npMarquee(el){
+  if(!el) return;
+  if(el._npResizeHandler){
+    window.removeEventListener('resize', el._npResizeHandler);
+    el._npResizeHandler = null;
+  }
+  if(el._npResizeTimer){
+    clearTimeout(el._npResizeTimer);
+    el._npResizeTimer = null;
+  }
+  if(el._npAnim){
+    try { el._npAnim.cancel(); } catch(_) {}
+    el._npAnim = null;
+  }
+
+  var prior = el.querySelector('.np-track');
+  if(prior){
+    var firstCell = prior.querySelector('.np-cell');
+    if(firstCell) el.innerHTML = firstCell.innerHTML;
+    el.style.textOverflow = '';
+  }
+  if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var runId = (el._npRunId || 0) + 1;
+  el._npRunId = runId;
+
+  var fontsReady = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+  fontsReady.then(function(){
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        if(runId !== el._npRunId) return;
+        var contW = el.clientWidth;
+        if(contW <= 0) return;
+        var orig = el.innerHTML;
+        var mirror = document.createElement('span');
+        mirror.style.cssText = 'position:absolute;left:-99999px;top:0;visibility:hidden;white-space:nowrap;font:inherit;letter-spacing:inherit;';
+        mirror.innerHTML = orig;
+        el.appendChild(mirror);
+        var textW = Math.ceil(mirror.getBoundingClientRect().width);
+        mirror.remove();
+        if(textW <= contW + 1) return;
+
+        var seedGap = 32;
+        el.style.textOverflow = 'clip';
+        el.innerHTML =
+          '<span class="np-track" style="display:inline-flex;white-space:nowrap;will-change:transform;transform:translate3d(0,0,0);">' +
+            '<span class="np-cell" style="display:inline-block;flex:0 0 auto;margin-right:' + seedGap + 'px;">' + orig + '</span>' +
+            '<span class="np-cell" aria-hidden="true" style="display:inline-block;flex:0 0 auto;">' + orig + '</span>' +
+          '</span>';
+        var track = el.querySelector('.np-track');
+        if(!track) return;
+
+        var first = track.querySelector('.np-cell');
+        var firstW = first ? Math.ceil(first.getBoundingClientRect().width) : textW;
+        var gap = firstW + 24;
+        if(first) first.style.marginRight = gap + 'px';
+        var dist = firstW + gap;
+        var scrollSec = dist / 20;
+        var pauseSec = 3;
+        var totalSec = scrollSec + pauseSec;
+        var scrollPct = scrollSec / totalSec;
+
+        el._npAnim = track.animate([
+          { transform: 'translate3d(0,0,0)', offset: 0 },
+          { transform: 'translate3d(-' + dist + 'px,0,0)', offset: scrollPct },
+          { transform: 'translate3d(-' + dist + 'px,0,0)', offset: 1 }
+        ], { duration: totalSec * 1000, delay: 2000, iterations: Infinity, easing: 'linear' });
+      });
     });
+  });
+
+  el._npResizeHandler = function(){
+    clearTimeout(el._npResizeTimer);
+    el._npResizeTimer = setTimeout(function(){ npMarquee(el); }, 90);
+  };
+  window.addEventListener('resize', el._npResizeHandler, { passive: true });
+}
+
+(function(){
+  function fetchNp(){
+    fetch('https://status.ryanpolasky.com/api/music')
+      .then(r => r.json())
+      .then(d => {
+        const label = document.getElementById('np-label');
+        const value = document.getElementById('np-value');
+        const bar = document.getElementById('np-bar');
+        if(!label||!value) return;
+        label.textContent = d.isPlaying ? 'now playing' : 'last played';
+        value.textContent = d.title + ' — ' + d.artist;
+        npMarquee(value);
+        if(bar) {
+          if(d.isPlaying) {
+            bar.style.animation = 'np-slide 3s ease-in-out infinite';
+          } else {
+            bar.style.animation = 'none';
+            bar.style.width = '0%';
+          }
+        }
+        if(d.trackUrl) {
+          value.style.cursor = 'pointer';
+          value.onclick = () => window.open(d.trackUrl, '_blank');
+        }
+      })
+      .catch(() => {
+        const v = document.getElementById('np-value');
+        if(v) v.textContent = 'offline';
+      });
+  }
+  fetchNp();
+  setInterval(fetchNp, 10000);
 })();
 </script>
 

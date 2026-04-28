@@ -70,7 +70,11 @@
 }
 *,*::before,*::after { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
+/* hard-cap both to viewport width. iOS Safari can leak horizontal overflow
+   through position:sticky children even when body has overflow-x: hidden,
+   so we apply it to html as well and explicitly width:100% both. */
+html, body { width: 100%; max-width: 100%; position: relative; }
 body {
   font-family: var(--type); background: var(--paper);
   color: var(--ink); font-size: 15px; line-height: 1.6;
@@ -80,7 +84,10 @@ body {
     radial-gradient(ellipse at 80% 100%, rgba(140,110,60,0.08) 0%, transparent 50%),
     repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(50,40,20,0.012) 2px, rgba(50,40,20,0.012) 3px);
   min-height: 100vh;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
+*, *::before, *::after { box-sizing: border-box; }
 ::selection { background: var(--stamp); color: var(--paper); }
 a { color: inherit; text-decoration: none; }
 button { font-family: inherit; }
@@ -121,7 +128,21 @@ body::after {
 @keyframes pulse { 0%,100%{box-shadow: 0 0 0 0 rgba(194,52,43,0.7);} 50%{box-shadow: 0 0 0 6px rgba(194,52,43,0);} }
 .case-bar a { color: var(--paper); border-bottom: 1px dotted rgba(255,255,255,0.3); }
 .case-bar a:hover { color: var(--stamp-2); border-bottom-color: var(--stamp-2); }
-@media (max-width: 720px) { .case-bar .row { grid-template-columns: 1fr auto; gap: 14px; padding: 0 16px; } .case-bar .r { display: none; } }
+/* On phones, the nowrap CASE 2026-04-RP / SUBJECT line in the auto track was
+   inflating the row to ~520px and forcing logical body width past the
+   viewport. Stack the row vertically and let the case-id wrap. */
+@media (max-width: 720px) {
+  .case-bar .row {
+    grid-template-columns: 1fr;
+    gap: 4px;
+    padding: 6px 16px;
+    height: auto; min-height: 38px;
+    justify-items: center; text-align: center;
+  }
+  .case-bar .l { gap: 12px; font-size: 10px; justify-content: center; flex-wrap: wrap; min-width: 0; }
+  .case-bar .c { white-space: normal; line-height: 1.25; font-size: 12px; }
+  .case-bar .r { display: none; }
+}
 
 /* ─── tab nav ─── */
 .tabs {
@@ -231,9 +252,11 @@ body::after {
   display: grid; grid-template-columns: 130px 1fr; gap: 10px 18px;
   font-family: var(--type); font-size: 13px; line-height: 1.5;
   border-top: 1px dashed var(--ink-3); padding-top: 14px; margin-top: 10px;
+  min-width: 0;
 }
 .field-grid dt { color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.08em; font-size: 11px; padding-top: 2px; }
-.field-grid dd { margin: 0; color: var(--ink); }
+.field-grid dd { margin: 0; color: var(--ink); min-width: 0; }
+#np-forensic { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; max-width: 100%; }
 .field-grid dd b { color: var(--stamp); font-weight: 700; }
 
 .profile-summary {
@@ -479,6 +502,84 @@ body::after {
 .intake .avail { padding: 14px 16px; font-family: var(--type); font-size: 12px; color: var(--ink-2); display: flex; align-items: center; gap: 8px; border-top: 1px dashed var(--ink-3); }
 .intake .avail b { color: var(--stamp); font-weight: 700; }
 
+/* ─── mobile-overflow defenses ─────────────────────────────────────────────
+   Long unbreakable strings (emails, URLs, filenames in `<dd>`s and meta lines)
+   were forcing their parent grid track past the viewport. body has
+   overflow-x:hidden so the scrollbar was suppressed, but margin:auto centering
+   still resolved against the inflated logical width, putting the page off
+   center to the left on phones. Cap min-width to 0 on the offending grid
+   items and let long strings break at any character. */
+.intake li > div { min-width: 0; }
+.intake .val { overflow-wrap: anywhere; word-break: break-word; }
+.intake .val a { word-break: break-word; max-width: 100%; }
+.case-grid dd { min-width: 0; overflow-wrap: anywhere; word-break: break-word; }
+.coc-list .meta { min-width: 0; overflow-wrap: anywhere; word-break: break-word; }
+.foot-pn { flex-wrap: wrap; min-width: 0; }
+.foot-pn span { min-width: 0; overflow-wrap: anywhere; word-break: break-word; }
+.foot-r { min-width: 0; }
+.foot-r span { overflow-wrap: anywhere; word-break: break-word; }
+.case .links a { word-break: break-word; }
+.assessment-side dd { overflow-wrap: anywhere; word-break: break-word; }
+.field-grid dd { overflow-wrap: anywhere; word-break: break-word; }
+
+/* ─── profile section: lock everything to viewport on phones ───────────────
+   The .profile grid (and every descendant) was being inflated by the
+   middle-dot-separated lists in .alias and .field-grid dd, the long
+   profile-summary paragraph, and the stamps. min-width: auto on grid items
+   = min-content of children, which propagates the widest unbreakable run
+   up the tree until it forces .folder, .shell, and body wider than the
+   viewport. Below 720px we hard-cap every level and force any text to
+   break at any character if it has to. */
+@media (max-width: 720px) {
+  .profile,
+  .profile > *,
+  .profile > * > *,
+  .subject-info,
+  .stamps-col { min-width: 0; max-width: 100%; }
+
+  /* (3) alias line is hidden entirely on phones - too long for the column
+     and not essential for the recruiter pass. */
+  .subject-info .alias { display: none; }
+
+  /* (5) modus operandi / (6) profile summary - allow breaks mid-string so
+     middle-dot or word-joined runs don't inflate the parent. */
+  .subject-info .field-grid dd,
+  .subject-info .field-grid dd *,
+  .subject-info .profile-summary,
+  .subject-info .profile-summary * {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    max-width: 100%;
+  }
+
+  /* (2) POLASKY, RYAN was kissing the evidence-photo caption - the photo's
+     ::before sits at bottom:-28px which mostly absorbs the .profile gap,
+     so we add padding to .subject-info to put real space between them. */
+  .subject-info { padding-top: 18px; }
+  .subject-info h1 { margin-top: 0; }
+
+  /* (4) profile bottom border was extending past the viewport because the
+     grid was inflated. Now constrained, the border lives inside .folder. */
+  .profile { padding-left: 0; padding-right: 0; }
+
+  /* (7) the rotated REVIEWED / FILED / etc. stamps in .stamps-col were
+     overflowing because flex-direction: row at ≤1000 has no flex-wrap and
+     each stamp's rotated bounding box pushes wider. */
+  .stamps-col {
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+  }
+  .stamps-col .stamp { max-width: 100%; }
+
+  /* (1) case-bar: belt-and-suspenders. The grid restructure above stacks the
+     row vertically, but make absolutely sure no descendant can leak past. */
+  .case-bar { max-width: 100%; }
+  .case-bar .row { max-width: 100%; min-width: 0; }
+  .case-bar .l span,
+  .case-bar .c { max-width: 100%; min-width: 0; }
+}
+
 /* ─── footer ─── */
 .foot { padding: 28px 0 60px; border-top: 2px double var(--ink-2); margin-top: 28px; font-family: var(--type); font-size: 12.5px; color: var(--ink-2); }
 .foot-grid { display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: end; }
@@ -553,6 +654,15 @@ body::after {
   .intake li { padding: 12px 14px; gap: 12px; }
   .intake .val { font-size: 13px; }
   .foot-pn { font-size: 10px; gap: 6px; }
+  /* (white-space and .l constraints already set in the 720px rule above) */
+  .assessment-side dl { grid-template-columns: 1fr; gap: 4px 0; }
+  .assessment-side dt { margin-top: 6px; }
+  .assessment-side dt:first-of-type { margin-top: 0; }
+  .case-grid { grid-template-columns: 1fr; gap: 4px 0; }
+  .case-grid dt { margin-top: 6px; }
+  .case-grid dt:first-of-type { margin-top: 0; }
+  .foot-mark .name { font-size: clamp(26px, 8vw, 38px); }
+  .statement .signed { flex-direction: column; align-items: flex-start; }
 }
 </style>
 
@@ -801,7 +911,7 @@ body::after {
         <dt>Occupation</dt><dd>Junior Software Engineer</dd>
         <dt>Affiliation</dt><dd>UT Dallas '26 · Apple (2× Intern) · ACM UTD</dd>
         <dt>Last seen</dt><dd>North Dakota, USA · open to remote</dd>
-        <dt>Modus operandi</dt><dd>Backend systems · LLM tooling · CI/CD · test automation</dd>
+        <dt>Specialties</dt><dd>Backend systems · LLM tooling · CI/CD</dd>
         <dt id="np-forensic-label">Listening</dt><dd id="np-forensic">—</dd>
       </dl>
 
@@ -1331,17 +1441,100 @@ body::after {
 console.log('%cCASE 2026-04-RP - SUBJECT: POLASKY, R. ', 'background:#A02320; color:#E8DCC0; font-family:Courier, monospace; padding:4px 10px; font-size:14px; letter-spacing:0.18em;');
 console.log('%c   STATUS: ACTIVE / OPEN - Available May 2026', 'color:#3D3328; font-family:Courier, monospace; font-size:12px;');
 
+function npMarquee(el){
+  if(!el) return;
+  if(el._npResizeHandler){
+    window.removeEventListener('resize', el._npResizeHandler);
+    el._npResizeHandler = null;
+  }
+  if(el._npResizeTimer){
+    clearTimeout(el._npResizeTimer);
+    el._npResizeTimer = null;
+  }
+  if(el._npAnim){
+    try { el._npAnim.cancel(); } catch(_) {}
+    el._npAnim = null;
+  }
+
+  var prior = el.querySelector('.np-track');
+  if(prior){
+    var firstCell = prior.querySelector('.np-cell');
+    if(firstCell) el.innerHTML = firstCell.innerHTML;
+    el.style.textOverflow = '';
+  }
+  if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var runId = (el._npRunId || 0) + 1;
+  el._npRunId = runId;
+
+  var fontsReady = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+  fontsReady.then(function(){
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        if(runId !== el._npRunId) return;
+        var contW = el.clientWidth;
+        if(contW <= 0) return;
+        var orig = el.innerHTML;
+        var mirror = document.createElement('span');
+        mirror.style.cssText = 'position:absolute;left:-99999px;top:0;visibility:hidden;white-space:nowrap;font:inherit;letter-spacing:inherit;';
+        mirror.innerHTML = orig;
+        el.appendChild(mirror);
+        var textW = Math.ceil(mirror.getBoundingClientRect().width);
+        mirror.remove();
+        if(textW <= contW + 1) return;
+
+        var seedGap = 32;
+        el.style.textOverflow = 'clip';
+        el.innerHTML =
+          '<span class="np-track" style="display:inline-flex;white-space:nowrap;will-change:transform;transform:translate3d(0,0,0);">' +
+            '<span class="np-cell" style="display:inline-block;flex:0 0 auto;margin-right:' + seedGap + 'px;">' + orig + '</span>' +
+            '<span class="np-cell" aria-hidden="true" style="display:inline-block;flex:0 0 auto;">' + orig + '</span>' +
+          '</span>';
+        var track = el.querySelector('.np-track');
+        if(!track) return;
+
+        var first = track.querySelector('.np-cell');
+        var firstW = first ? Math.ceil(first.getBoundingClientRect().width) : textW;
+        var gap = firstW + 24;
+        if(first) first.style.marginRight = gap + 'px';
+        var dist = firstW + gap;
+        var scrollSec = dist / 20;
+        var pauseSec = 3;
+        var totalSec = scrollSec + pauseSec;
+        var scrollPct = scrollSec / totalSec;
+
+        el._npAnim = track.animate([
+          { transform: 'translate3d(0,0,0)', offset: 0 },
+          { transform: 'translate3d(-' + dist + 'px,0,0)', offset: scrollPct },
+          { transform: 'translate3d(-' + dist + 'px,0,0)', offset: 1 }
+        ], { duration: totalSec * 1000, delay: 2000, iterations: Infinity, easing: 'linear' });
+      });
+    });
+  });
+
+  el._npResizeHandler = function(){
+    clearTimeout(el._npResizeTimer);
+    el._npResizeTimer = setTimeout(function(){ npMarquee(el); }, 90);
+  };
+  window.addEventListener('resize', el._npResizeHandler, { passive: true });
+}
+
 (function(){
-  fetch('https://status.ryanpolasky.com/api/music')
-    .then(r => r.json())
-    .then(d => {
-      const label = document.getElementById('np-forensic-label');
-      const el = document.getElementById('np-forensic');
-      if(!el) return;
-      label.textContent = d.isPlaying ? 'Now playing' : 'Last played';
-      el.textContent = d.title + ' — ' + d.artist;
-    })
-    .catch(() => {});
+  function fetchNp(){
+    fetch('https://status.ryanpolasky.com/api/music')
+      .then(r => r.json())
+      .then(d => {
+        const label = document.getElementById('np-forensic-label');
+        const el = document.getElementById('np-forensic');
+        if(!el) return;
+        label.textContent = d.isPlaying ? 'Now playing' : 'Last played';
+        el.textContent = d.title + ' — ' + d.artist;
+        npMarquee(el);
+      })
+      .catch(() => {});
+  }
+  fetchNp();
+  setInterval(fetchNp, 10000);
 })();
 </script>
 

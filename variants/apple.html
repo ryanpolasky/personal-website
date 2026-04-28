@@ -74,6 +74,7 @@ body {
   background: var(--paper); color: var(--ink);
   font-family: var(--sans); font-size: 17px; line-height: 1.55;
   -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+  overflow-x: hidden;
 }
 ::selection { background: var(--ink); color: var(--paper); }
 a { color: inherit; text-decoration: none; }
@@ -208,6 +209,8 @@ body::after {
 .masthead .standfirst .meta dt { color: var(--ink); text-transform: uppercase; letter-spacing: 0.1em; font-size: 10.5px; margin-top: 10px; }
 .masthead .standfirst .meta dt:first-of-type { margin-top: 0; }
 .masthead .standfirst .meta dd { margin: 2px 0 0; }
+#np-apple { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.masthead .standfirst .meta { min-width: 0; overflow: hidden; }
 .masthead .standfirst .meta a { color: var(--ink); border-bottom: 0.5px solid var(--hair); transition: border-color 0.2s, color 0.2s; }
 .masthead .standfirst .meta a:hover { color: var(--accent); border-color: var(--accent); }
 .masthead .cta { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
@@ -1221,25 +1224,108 @@ body.t-midnight::after { mix-blend-mode: lighten; opacity: 0.18; }
 console.log('%c\u201cSoftware, written carefully.\u201d', 'color:#B23A1A; font-family:Georgia, serif; font-style:italic; font-size:18px;');
 console.log('%c   Ryan Polasky \u2014 ryanpolasky.com', 'color:#69655A; font-family:monospace; font-size:11px;');
 
+function npMarquee(el){
+  if(!el) return;
+  if(el._npResizeHandler){
+    window.removeEventListener('resize', el._npResizeHandler);
+    el._npResizeHandler = null;
+  }
+  if(el._npResizeTimer){
+    clearTimeout(el._npResizeTimer);
+    el._npResizeTimer = null;
+  }
+  if(el._npAnim){
+    try { el._npAnim.cancel(); } catch(_) {}
+    el._npAnim = null;
+  }
+
+  var prior = el.querySelector('.np-track');
+  if(prior){
+    var firstCell = prior.querySelector('.np-cell');
+    if(firstCell) el.innerHTML = firstCell.innerHTML;
+    el.style.textOverflow = '';
+  }
+  if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var runId = (el._npRunId || 0) + 1;
+  el._npRunId = runId;
+
+  var fontsReady = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+  fontsReady.then(function(){
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        if(runId !== el._npRunId) return;
+        var contW = el.clientWidth;
+        if(contW <= 0) return;
+        var orig = el.innerHTML;
+        var mirror = document.createElement('span');
+        mirror.style.cssText = 'position:absolute;left:-99999px;top:0;visibility:hidden;white-space:nowrap;font:inherit;letter-spacing:inherit;';
+        mirror.innerHTML = orig;
+        el.appendChild(mirror);
+        var textW = Math.ceil(mirror.getBoundingClientRect().width);
+        mirror.remove();
+        if(textW <= contW + 1) return;
+
+        var seedGap = 32;
+        el.style.textOverflow = 'clip';
+        el.innerHTML =
+          '<span class="np-track" style="display:inline-flex;white-space:nowrap;will-change:transform;transform:translate3d(0,0,0);">' +
+            '<span class="np-cell" style="display:inline-block;flex:0 0 auto;margin-right:' + seedGap + 'px;">' + orig + '</span>' +
+            '<span class="np-cell" aria-hidden="true" style="display:inline-block;flex:0 0 auto;">' + orig + '</span>' +
+          '</span>';
+        var track = el.querySelector('.np-track');
+        if(!track) return;
+
+        var first = track.querySelector('.np-cell');
+        var firstW = first ? Math.ceil(first.getBoundingClientRect().width) : textW;
+        var gap = firstW + 24;
+        if(first) first.style.marginRight = gap + 'px';
+        var dist = firstW + gap;
+        var scrollSec = dist / 20;
+        var pauseSec = 3;
+        var totalSec = scrollSec + pauseSec;
+        var scrollPct = scrollSec / totalSec;
+
+        el._npAnim = track.animate([
+          { transform: 'translate3d(0,0,0)', offset: 0 },
+          { transform: 'translate3d(-' + dist + 'px,0,0)', offset: scrollPct },
+          { transform: 'translate3d(-' + dist + 'px,0,0)', offset: 1 }
+        ], { duration: totalSec * 1000, delay: 2000, iterations: Infinity, easing: 'linear' });
+      });
+    });
+  });
+
+  el._npResizeHandler = function(){
+    clearTimeout(el._npResizeTimer);
+    el._npResizeTimer = setTimeout(function(){ npMarquee(el); }, 90);
+  };
+  window.addEventListener('resize', el._npResizeHandler, { passive: true });
+}
+
 (function(){
-  fetch('https://status.ryanpolasky.com/api/music')
-    .then(r => r.json())
-    .then(d => {
-      const label = document.getElementById('np-apple-label');
-      const el = document.getElementById('np-apple');
-      if(!el) return;
-      label.textContent = d.isPlaying ? 'Now Playing' : 'Last Played';
-      el.textContent = d.title + ' — ' + d.artist;
-      if(d.trackUrl) {
-        const a = document.createElement('a');
-        a.href = d.trackUrl; a.target = '_blank'; a.rel = 'noreferrer';
-        a.textContent = el.textContent;
-        a.style.cssText = 'color:inherit; border-bottom:0.5px solid var(--hair); transition:color 0.2s, border-color 0.2s;';
-        el.textContent = '';
-        el.appendChild(a);
-      }
-    })
-    .catch(() => {});
+  function fetchNp(){
+    fetch('https://status.ryanpolasky.com/api/music')
+      .then(r => r.json())
+      .then(d => {
+        const label = document.getElementById('np-apple-label');
+        const el = document.getElementById('np-apple');
+        if(!el) return;
+        label.textContent = d.isPlaying ? 'Now Playing' : 'Last Played';
+        el.textContent = d.title + ' — ' + d.artist;
+        if(d.trackUrl) {
+          const a = document.createElement('a');
+          a.href = d.trackUrl; a.target = '_blank'; a.rel = 'noreferrer';
+          a.textContent = el.textContent;
+          a.style.cssText = 'color:inherit; border-bottom:0.5px solid var(--hair); transition:color 0.2s, border-color 0.2s;';
+          el.textContent = '';
+          el.appendChild(a);
+        }
+        npMarquee(el);
+      })
+      .catch(() => {});
+  }
+  fetchNp();
+  setInterval(fetchNp, 10000);
 })();
 </script>
 
