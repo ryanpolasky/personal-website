@@ -1,0 +1,27 @@
+{
+  "name": "Ryan Polasky — Software Engineer",
+  "short_name": "Ryan Polasky",
+  "description": "Personal site of Ryan Polasky — Junior Software Engineer specializing in backend systems, AI/LLM tooling, and developer productivity.",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["personal", "portfolio", "developer"],
+  "icons": [
+    {
+      "src": "/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "theme_color": "#08090C",
+  "background_color": "#08090C",
+  "display": "standalone",
+  "start_url": "/",
+  "scope": "/"
+}

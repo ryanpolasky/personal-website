@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<base href="/"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Ryan Polasky - Software Engineer · 2× Apple Intern · UT Dallas '26</title>
+    <meta name="description" content="Ryan Polasky - Junior Software Engineer. Backend systems, AI/LLM tooling, developer productivity. UT Dallas '26. 2× Apple intern. Open May 2026."/>
+    <meta name="keywords" content="Ryan Polasky, ryan polasky, software engineer, backend developer, AI engineer, LLM tooling, Apple intern, UT Dallas, computer science, devops, python, typescript"/>
+    <meta name="author" content="Ryan Polasky"/>
+    <meta name="creator" content="Ryan Polasky"/>
+    <meta name="publisher" content="Ryan Polasky"/>
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"/>
+
+    <link rel="canonical" href="https://ryanpolasky.com/"/>
+
+    <meta property="og:type" content="profile"/>
+    <meta property="og:site_name" content="Ryan Polasky"/>
+    <meta property="og:locale" content="en_US"/>
+    <meta property="og:url" content="https://ryanpolasky.com/"/>
+    <meta property="og:title" content="Ryan Polasky - Software Engineer · 2× Apple Intern"/>
+    <meta property="og:description" content="Junior Software Engineer specializing in backend systems, AI/LLM tooling, and developer productivity. UT Dallas '26. Open May 2026."/>
+    <meta property="og:image" content="https://ryanpolasky.com/assets/images/site-preview.png"/>
+    <meta property="og:image:alt" content="ryan.polasky / runtime — terminal-style status page for Ryan Polasky's personal site"/>
+    <meta property="profile:first_name" content="Ryan"/>
+    <meta property="profile:last_name" content="Polasky"/>
+    <meta property="profile:username" content="ryanpolasky"/>
+
+    <meta name="twitter:card" content="summary_large_image"/>
+    <meta name="twitter:title" content="Ryan Polasky - Software Engineer · 2× Apple Intern"/>
+    <meta name="twitter:description" content="Junior Software Engineer specializing in backend systems, AI/LLM tooling, and developer productivity. UT Dallas '26. Open May 2026."/>
+    <meta name="twitter:image" content="https://ryanpolasky.com/assets/images/site-preview.png"/>
+    <meta name="twitter:image:alt" content="ryan.polasky / runtime — terminal-style status page for Ryan Polasky's personal site"/>
+
+    <meta name="theme-color" content="#08090C"/>
+    <meta name="application-name" content="Ryan Polasky"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+    <meta name="apple-mobile-web-app-title" content="Ryan Polasky"/>
+    <meta name="format-detection" content="telephone=no"/>
+
+<link rel="icon" type="image/png" href="favicon-96x96.png" sizes="96x96"/>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+<link rel="shortcut icon" href="favicon.ico"/>
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png"/>
+<link rel="manifest" href="manifest.json"/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+
+<style>
+:root {
+  --bg: #08090C; --bg-1: #0B0D11; --bg-2: #10131A; --bg-3: #161A22;
+  --line: #1E2229; --line-2: #2A2F3A;
+  --fg: #E6EAF1; --fg-2: #B8C0CC; --fg-3: #6E7787; --fg-4: #4A525E;
+  --ok: #7EE787; --warn: #F2C94C; --crit: #FF6B6B; --info: #5EEAD4; --vio: #B794F6;
+  --grid: rgba(255,255,255,0.025);
+  --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --sans: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+}
+*,*::before,*::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--mono); background: var(--bg); color: var(--fg);
+  font-size: 13px; line-height: 1.55; letter-spacing: 0.005em;
+  -webkit-font-smoothing: antialiased; font-variant-numeric: tabular-nums;
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 32px 32px; background-position: -1px -1px;
+}
+::selection { background: var(--ok); color: var(--bg); }
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; }
+
+.statusbar {
+  position: sticky; top: 0; z-index: 80;
+  display: grid; grid-template-columns: 1fr auto; align-items: center;
+  height: 28px; padding: 0 16px;
+  background: var(--bg-1); border-bottom: 1px solid var(--line);
+  font-family: var(--mono); font-size: 11px; color: var(--fg-3);
+  letter-spacing: 0.04em; text-transform: uppercase;
+}
+.statusbar .left, .statusbar .right { display: flex; gap: 18px; align-items: center; }
+.statusbar .pill { display: inline-flex; align-items: center; gap: 6px; }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ok); animation: dot 2.4s ease-in-out infinite; color: var(--ok); }
+.dot.amber { background: var(--warn); color: var(--warn); }
+.dot.crit { background: var(--crit); color: var(--crit); }
+.dot.info { background: var(--info); color: var(--info); }
+@keyframes dot { 0%,100%{box-shadow: 0 0 0 0 rgba(126,231,135,0.6);} 50%{box-shadow: 0 0 0 6px rgba(126,231,135,0);} }
+@keyframes np-slide { 0%{width:0%;margin-left:0} 50%{width:100%;margin-left:0} 100%{width:0%;margin-left:100%} }
+.statusbar .v { color: var(--fg-2); font-weight: 600; letter-spacing: 0.06em; }
+@media (max-width: 700px) { .statusbar .left { gap: 10px; flex-wrap: wrap; } .statusbar .hide-md { display: none; } }
+
+.nav {
+  position: sticky; top: 0; z-index: 70;
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center;
+  height: 48px; padding: 0 16px; gap: 24px;
+  background: var(--bg); border-bottom: 1px solid var(--line);
+}
+.brand { font-family: var(--mono); font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; letter-spacing: 0.02em; }
+.brand .prompt { color: var(--ok); }
+.brand .cursor { display: inline-block; width: 8px; height: 14px; background: var(--ok); margin-left: 2px; vertical-align: -2px; animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 0; flex-wrap: nowrap; overflow: hidden; }
+.nav li a {
+  display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px;
+  font-family: var(--mono); font-size: 12px; color: var(--fg-3);
+  border-right: 1px solid var(--line); transition: color 0.15s, background 0.15s;
+}
+.nav li:first-child a { border-left: 1px solid var(--line); }
+.nav li a:hover { color: var(--fg); background: var(--bg-2); }
+.nav li a .num { color: var(--fg-4); font-size: 10px; }
+.nav-actions { display: flex; gap: 8px; align-items: center; }
+.iconbtn {
+  width: 28px; height: 28px; display: inline-grid; place-items: center;
+  border: 1px solid var(--line); background: var(--bg-1); color: var(--fg-2);
+  cursor: pointer; transition: border-color 0.15s, color 0.15s;
+  font-family: var(--mono); font-size: 18px;
+}
+.iconbtn:hover { border-color: var(--fg-3); color: var(--fg); }
+@media (max-width: 1100px) { .nav li a .num { display: none; } .nav li a { padding: 8px 10px; font-size: 11px; } }
+@media (max-width: 900px) { .nav { gap: 8px; } .nav ul { display: none; } .nav-actions { margin-left: auto; } }
+
+.themer { position: relative; }
+.themer .menu {
+  position: absolute; top: 32px; right: 0; min-width: 200px;
+  background: var(--bg-1); border: 1px solid var(--line); padding: 6px;
+  font-family: var(--mono); font-size: 11px; display: none; z-index: 90;
+}
+.themer.open .menu { display: block; }
+.themer .menu button {
+  width: 100%; text-align: left; padding: 6px 10px;
+  background: transparent; border: 0; color: var(--fg-2);
+  font-family: var(--mono); font-size: 11px; cursor: pointer;
+  display: flex; align-items: center; gap: 8px;
+}
+.themer .menu button:hover { background: var(--bg-2); color: var(--fg); }
+.themer .menu button .swatch { width: 10px; height: 10px; border: 1px solid var(--line-2); }
+
+.shell { max-width: 1400px; margin: 0 auto; padding: 0 16px; }
+
+.panel { background: var(--bg-1); border: 1px solid var(--line); position: relative; }
+.panel + .panel { border-top: 0; }
+.panel .head {
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center;
+  height: 32px; padding: 0 12px;
+  border-bottom: 1px solid var(--line); background: var(--bg-2);
+  font-family: var(--mono); font-size: 11px; color: var(--fg-3);
+  text-transform: uppercase; letter-spacing: 0.08em;
+}
+.panel .head .title { color: var(--fg); font-weight: 600; }
+.panel .body { padding: 16px; }
+
+.row { display: grid; grid-template-columns: repeat(12, 1fr); gap: 0; }
+.col-12 { grid-column: span 12; }
+.col-8 { grid-column: span 8; }
+.col-7 { grid-column: span 7; }
+.col-6 { grid-column: span 6; }
+.col-5 { grid-column: span 5; }
+.col-4 { grid-column: span 4; }
+@media (max-width: 900px) { .col-8, .col-7, .col-6, .col-5, .col-4 { grid-column: span 12; } }
+
+.hero {
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, var(--bg-2) 0%, var(--bg-1) 100%);
+  margin-top: 16px; position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(600px 240px at 12% 0%, rgba(126,231,135,0.06), transparent 60%),
+    radial-gradient(500px 220px at 88% 100%, rgba(94,234,212,0.05), transparent 60%);
+}
+.hero-inner { display: grid; grid-template-columns: 1.6fr 1fr; gap: 0; position: relative; }
+@media (max-width: 900px) { .hero-inner { grid-template-columns: 1fr; } }
+.hero-l { padding: 28px 28px 24px; border-right: 1px solid var(--line); }
+.hero-r { padding: 0; }
+@media (max-width: 900px) { .hero-l { border-right: 0; border-bottom: 1px solid var(--line); } }
+
+.kicker {
+  font-family: var(--mono); font-size: 11px; color: var(--fg-3);
+  letter-spacing: 0.1em; text-transform: uppercase;
+  display: inline-flex; align-items: center; gap: 8px; margin-bottom: 14px;
+}
+.kicker .tag { border: 1px solid var(--line-2); padding: 2px 7px; color: var(--fg-2); background: var(--bg-2); }
+
+h1.svc-title {
+  font-family: var(--mono); font-size: clamp(28px, 5vw, 48px); font-weight: 700;
+  letter-spacing: -0.02em; line-height: 1.05; color: var(--fg); margin: 0 0 14px;
+}
+h1.svc-title .ns { color: var(--fg-3); font-weight: 400; }
+h1.svc-title .at { color: var(--fg-4); }
+
+.svc-status {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: 12px; color: var(--ok); margin-bottom: 18px;
+}
+.svc-status .label { color: var(--fg-3); }
+
+.svc-line { font-family: var(--sans); font-size: 16px; color: var(--fg-2); max-width: 56ch; margin: 0 0 22px; line-height: 1.6; }
+.svc-line em { font-style: normal; color: var(--ok); }
+
+.cta-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px;
+  font-family: var(--mono); font-size: 12px; font-weight: 600;
+  border: 1px solid var(--line-2); background: var(--bg-2); color: var(--fg);
+  cursor: pointer; letter-spacing: 0.04em;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+.btn:hover { border-color: var(--ok); color: var(--ok); }
+.btn.primary { background: var(--ok); color: var(--bg); border-color: var(--ok); }
+.btn.primary:hover { background: transparent; color: var(--ok); }
+.btn .arrow { font-size: 14px; line-height: 1; }
+.btn .key { background: var(--bg); border: 1px solid var(--line-2); padding: 1px 5px; font-size: 10px; color: var(--fg-3); }
+
+.live { background: var(--bg); border-left: 0; font-family: var(--mono); font-size: 11.5px; height: 100%; }
+.live .lh {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 12px; border-bottom: 1px solid var(--line);
+  color: var(--fg-3); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+}
+.live .lh span:last-child { color: var(--ok); }
+.live .lb { padding: 12px; display: grid; gap: 10px; }
+.metric { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: end; }
+.metric .lk { color: var(--fg-3); font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; }
+.metric .vk { color: var(--fg); font-weight: 600; font-size: 14px; }
+.metric .vk.ok { color: var(--ok); }
+.metric .vk.info { color: var(--info); }
+.metric .spark { grid-column: span 2; height: 28px; }
+.metric .bar { grid-column: span 2; height: 4px; background: var(--bg-3); position: relative; overflow: hidden; }
+.metric .bar i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--ok); }
+.spark path.spark-line { fill: none; stroke: var(--ok); stroke-width: 1.4; vector-effect: non-scaling-stroke; }
+.spark path.spark-area { fill: rgba(126,231,135,0.12); stroke: none; }
+
+.avatar-tile {
+  display: grid; grid-template-columns: 64px 1fr; gap: 12px; align-items: center;
+  border: 1px solid var(--line); padding: 12px; margin-bottom: 12px; background: var(--bg-1);
+}
+.avatar-tile img { width: 64px; height: 64px; object-fit: cover; border: 1px solid var(--line-2); filter: contrast(1.05); }
+.avatar-tile .who { color: var(--fg); font-weight: 600; font-size: 13px; }
+.avatar-tile .role { color: var(--fg-3); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 2px; }
+.avatar-tile .where { color: var(--fg-3); font-size: 10.5px; margin-top: 2px; }
+
+.section-head {
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 14px;
+  margin: 28px 0 10px; font-family: var(--mono); font-size: 11px; color: var(--fg-3);
+  letter-spacing: 0.1em; text-transform: uppercase;
+}
+.section-head .lab { color: var(--fg); font-size: 13px; letter-spacing: 0.04em; }
+.section-head .lab .arrow { color: var(--ok); margin-right: 6px; }
+.section-head .rule { height: 1px; background: var(--line); }
+.section-head .ts { color: var(--fg-3); font-size: 11px; }
+
+.logtable { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 12px; }
+.logtable td { padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; text-align: left; }
+.logtable tr:hover td { background: var(--bg-2); }
+.logtable .ts { color: var(--fg-3); white-space: nowrap; width: 1%; }
+.logtable .lvl { width: 1%; white-space: nowrap; }
+.logtable .lvl .badge { padding: 1px 7px; border: 1px solid var(--line-2); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; }
+.logtable .lvl .badge.ok { color: var(--ok); border-color: rgba(126,231,135,0.4); }
+.logtable .lvl .badge.info { color: var(--info); border-color: rgba(94,234,212,0.4); }
+.logtable .src { color: var(--fg-3); white-space: nowrap; width: 1%; }
+.logtable .msg .title { color: var(--fg); font-weight: 600; }
+.logtable .msg ul { margin: 6px 0 0; padding: 0; list-style: none; }
+.logtable .msg li { color: var(--fg-2); margin: 3px 0; padding-left: 18px; position: relative; }
+.logtable .msg li::before { content: '└─'; position: absolute; left: 0; color: var(--fg-4); }
+.logtable .msg li b { color: var(--ok); font-weight: 600; }
+@media (max-width: 700px) { .logtable .src, .logtable .lvl { display: none; } }
+
+.svc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; }
+@media (max-width: 1100px) { .svc-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 700px) { .svc-grid { grid-template-columns: 1fr; } }
+.svc {
+  border: 1px solid var(--line); margin: -1px 0 0 -1px; padding: 16px;
+  background: var(--bg-1); position: relative;
+  display: flex; flex-direction: column; min-height: 220px;
+}
+.svc:hover { background: var(--bg-2); }
+.svc .top { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: start; margin-bottom: 6px; }
+.svc h3 { font-family: var(--mono); font-size: 14px; font-weight: 700; color: var(--fg); margin: 0; letter-spacing: -0.01em; }
+.svc h3 .ver { color: var(--fg-3); font-weight: 400; font-size: 11px; margin-left: 6px; }
+.svc .ns { color: var(--fg-3); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 2px; }
+.svc .stat { display: inline-flex; align-items: center; gap: 6px; font-size: 10.5px; color: var(--ok); text-transform: uppercase; letter-spacing: 0.08em; }
+.svc p { font-family: var(--sans); font-size: 13px; color: var(--fg-2); line-height: 1.55; margin: 8px 0 14px; flex-grow: 1; }
+.svc .met { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 1px solid var(--line); margin-top: 4px; }
+.svc .met > div { padding: 6px 8px; border-right: 1px solid var(--line); font-size: 10.5px; }
+.svc .met > div:last-child { border-right: 0; }
+.svc .met .k { color: var(--fg-3); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.08em; }
+.svc .met .v { color: var(--fg); font-weight: 600; font-size: 12px; margin-top: 1px; }
+.svc .tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 12px; }
+.svc .tags span { font-size: 10px; color: var(--fg-2); padding: 2px 6px; border: 1px solid var(--line-2); background: var(--bg); letter-spacing: 0.04em; }
+.svc .link { font-family: var(--mono); font-size: 11px; color: var(--ok); margin-top: 10px; display: inline-flex; align-items: center; gap: 6px; }
+.svc .link.muted { color: var(--fg-3); }
+
+.res-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0; }
+@media (max-width: 700px) { .res-grid { grid-template-columns: 1fr; } }
+.res { border: 1px solid var(--line); margin: -1px 0 0 -1px; padding: 16px; background: var(--bg-1); }
+.res h3 { font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--fg); margin: 0 0 4px; letter-spacing: 0.04em; text-transform: uppercase; }
+.res .sub { font-size: 10.5px; color: var(--fg-3); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.08em; }
+.res .row-r { display: grid; grid-template-columns: 1fr auto; gap: 6px; align-items: center; margin: 8px 0; }
+.res .row-r .lk { font-size: 11.5px; color: var(--fg); }
+.res .row-r .vk { font-size: 10.5px; color: var(--fg-3); }
+.res .b { height: 4px; background: var(--bg-3); position: relative; overflow: hidden; }
+.res .b i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--ok); transform: translateX(-100%); transition: transform 1.6s cubic-bezier(0.2,0.7,0.2,1); }
+.res .b.tier-2 i { background: var(--info); }
+.res .b.tier-3 i { background: var(--warn); }
+.res .b.tier-4 i { background: var(--vio); }
+.res.in-view .b i { transform: translateX(0); }
+.res .extras { font-size: 10.5px; color: var(--fg-3); margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--line); }
+
+.syn-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; }
+@media (max-width: 1100px) { .syn-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 700px) { .syn-grid { grid-template-columns: 1fr; } }
+.syn { border: 1px solid var(--line); margin: -1px 0 0 -1px; padding: 16px; background: var(--bg-1); display: flex; flex-direction: column; }
+.syn .h { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px dashed var(--line); }
+.syn .h .pid { font-family: var(--mono); font-size: 10.5px; color: var(--fg-3); }
+.syn .h .pass { display: inline-flex; align-items: center; gap: 6px; font-size: 10.5px; color: var(--ok); margin-left: auto; text-transform: uppercase; letter-spacing: 0.08em; }
+.syn blockquote { font-family: var(--sans); font-size: 14px; line-height: 1.6; color: var(--fg); margin: 0 0 14px; flex-grow: 1; }
+.syn .who { font-family: var(--mono); font-size: 11px; color: var(--fg-2); }
+.syn .who a { color: var(--fg); border-bottom: 1px dashed var(--line-2); }
+.syn .who a:hover { color: var(--ok); border-bottom-color: var(--ok); }
+.syn .who .role { color: var(--fg-3); margin-top: 2px; }
+.syn .ml { font-size: 10px; color: var(--fg-3); margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line); display: flex; gap: 14px; }
+
+.incident { display: grid; grid-template-columns: 1fr 320px; gap: 0; }
+.incident > * + * { border-left: 0; }
+@media (max-width: 900px) { .incident { grid-template-columns: 1fr; } }
+.form { background: var(--bg-1); border: 1px solid var(--line); padding: 18px; }
+.form h3 { font-family: var(--mono); font-size: 12px; color: var(--fg); margin: 0 0 4px; letter-spacing: 0.04em; text-transform: uppercase; }
+.form .sub { font-size: 11px; color: var(--fg-3); margin-bottom: 14px; }
+.fld { display: grid; gap: 4px; margin-bottom: 12px; }
+.fld label { font-family: var(--mono); font-size: 10px; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.1em; }
+.fld input, .fld textarea {
+  font-family: var(--mono); font-size: 13px;
+  background: var(--bg); color: var(--fg);
+  border: 1px solid var(--line-2); padding: 9px 11px; outline: 0;
+  transition: border-color 0.15s; border-radius: 0;
+}
+.fld input:focus, .fld textarea:focus { border-color: var(--ok); }
+.fld textarea { resize: vertical; min-height: 100px; }
+.fld-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 600px) { .fld-row { grid-template-columns: 1fr; } }
+
+.runbook { background: var(--bg-1); border: 1px solid var(--line); border-left: 0; padding: 0; font-family: var(--mono); font-size: 12px; }
+@media (max-width: 900px) { .runbook { border-left: 1px solid var(--line); border-top: 0; } }
+.runbook h4 { font-family: var(--mono); font-size: 11px; color: var(--fg-3); margin: 0; padding: 10px 14px; border-bottom: 1px solid var(--line); text-transform: uppercase; letter-spacing: 0.08em; background: var(--bg-2); }
+.runbook ul { list-style: none; padding: 0; margin: 0; }
+.runbook li { padding: 12px 14px; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; }
+.runbook li:last-child { border-bottom: 0; }
+.runbook li .ic { width: 22px; height: 22px; display: grid; place-items: center; border: 1px solid var(--line-2); color: var(--fg-3); font-size: 11px; }
+.runbook li .nm { color: var(--fg); font-size: 12px; }
+.runbook li .ds { color: var(--fg-3); font-size: 10.5px; margin-top: 2px; }
+.runbook li .arr { color: var(--fg-3); }
+.runbook li:hover { background: var(--bg-2); }
+.runbook li:hover .arr { color: var(--ok); }
+
+.foot { margin-top: 32px; padding: 22px 0 60px; border-top: 1px solid var(--line); color: var(--fg-3); font-family: var(--mono); font-size: 11px; }
+.foot .row { grid-template-columns: 1fr auto; align-items: end; gap: 16px; }
+.foot .l b { color: var(--fg); font-weight: 600; }
+.foot .l .ascii { color: var(--fg-4); white-space: pre; line-height: 1.2; margin-top: 8px; font-size: 10px; }
+.foot .r { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; text-align: right; }
+.foot .r a { color: var(--fg-2); border-bottom: 1px dashed var(--line-2); }
+.foot .r a:hover { color: var(--ok); border-bottom-color: var(--ok); }
+.foot .ring { display: flex; gap: 6px; align-items: center; margin-top: 8px; }
+.foot .ring a { display: inline-grid; place-items: center; width: 26px; height: 26px; border: 1px solid var(--line); color: var(--fg-3); }
+.foot .ring a:hover { color: var(--ok); border-color: var(--ok); }
+.foot .ring img { width: 14px; height: 14px; display: block; opacity: 0.78; transition: opacity 0.18s; }
+.foot .ring a:hover img { opacity: 1; }
+
+.cmdk-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; z-index: 200; align-items: flex-start; justify-content: center; padding: 12vh 16px; }
+.cmdk-overlay.open { display: flex; }
+.cmdk { width: min(560px, 100%); background: var(--bg-1); border: 1px solid var(--line-2); }
+.cmdk input { width: 100%; padding: 14px 16px; background: transparent; border: 0; border-bottom: 1px solid var(--line); color: var(--fg); font-family: var(--mono); font-size: 14px; outline: 0; }
+.cmdk ul { list-style: none; margin: 0; padding: 6px; max-height: 50vh; overflow-y: auto; }
+.cmdk li { padding: 10px 12px; font-family: var(--mono); font-size: 13px; color: var(--fg-2); display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; cursor: pointer; }
+.cmdk li:hover, .cmdk li.active { background: var(--bg-2); color: var(--fg); }
+.cmdk li .k { color: var(--fg-4); font-size: 10px; }
+.cmdk li .ic { color: var(--ok); }
+.cmdk-hint { padding: 8px 12px; border-top: 1px solid var(--line); display: flex; gap: 14px; color: var(--fg-3); font-family: var(--mono); font-size: 10.5px; }
+.cmdk-hint kbd { background: var(--bg); border: 1px solid var(--line-2); padding: 1px 5px; font-family: var(--mono); font-size: 10px; color: var(--fg-2); }
+
+.muted { color: var(--fg-3); } .glow { color: var(--ok); } .dim { color: var(--fg-4); }
+.scroll-mt { scroll-margin-top: 68px; }
+body.t-amber { --ok: #F2C94C; }
+body.t-amber .spark path.spark-line { stroke: var(--ok); }
+body.t-amber .spark path.spark-area { fill: rgba(242,201,76,0.12); }
+body.t-cyan { --ok: #5EEAD4; }
+body.t-cyan .spark path.spark-line { stroke: var(--ok); }
+body.t-cyan .spark path.spark-area { fill: rgba(94,234,212,0.12); }
+body.t-magenta { --ok: #F472B6; }
+body.t-magenta .spark path.spark-line { stroke: var(--ok); }
+body.t-magenta .spark path.spark-area { fill: rgba(244,114,182,0.12); }
+
+@media (max-width: 480px) {
+  .section-head { grid-template-columns: 1fr; gap: 4px; }
+  .section-head .rule { display: none; }
+  .section-head .ts { justify-self: start; }
+  .svc .met { grid-template-columns: 1fr; }
+  .svc .met > div { border-right: 0; border-bottom: 1px solid var(--line); }
+  .svc .met > div:last-child { border-bottom: 0; }
+  .avatar-tile { grid-template-columns: 48px 1fr; gap: 10px; }
+  .avatar-tile img { width: 48px; height: 48px; }
+  .themer .menu { min-width: 0; width: calc(100vw - 32px); right: -8px; }
+  .themer .iconbtn span { font-size: 16px !important; transform: translateY(-1px) !important; }
+  #cmdk-btn span { font-size: 20px !important; transform: translateY(-2px) !important; }
+  .logtable .ts { white-space: normal; font-size: 10px; text-align: center; }
+  .logtable td { padding: 8px; }
+  .ts-arr { font-size: 0; }
+  .ts-arr::after { content: '↓'; font-size: 10px; display: block; text-align: center; }
+}
+</style>
+
+<script type="application/ld+json">
+    {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://ryanpolasky.com/#person",
+      "name": "Ryan Polasky",
+      "givenName": "Ryan",
+      "familyName": "Polasky",
+      "alternateName": "ryan.polasky",
+      "url": "https://ryanpolasky.com/",
+      "image": "https://ryanpolasky.com/assets/images/my-avatar.png",
+      "email": "mailto:ryanpolasky@hotmail.com",
+      "jobTitle": "Software Engineer",
+      "description": "Junior Software Engineer specializing in backend systems, AI/LLM tooling, test automation, and developer productivity. UT Dallas '26 graduate and 2\u00d7 Apple intern.",
+      "address": {
+        "@type": "PostalAddress",
+        "addressRegion": "ND",
+        "addressCountry": "US"
+      },
+      "alumniOf": {
+        "@type": "CollegeOrUniversity",
+        "name": "The University of Texas at Dallas",
+        "url": "https://www.utdallas.edu/",
+        "sameAs": "https://en.wikipedia.org/wiki/University_of_Texas_at_Dallas"
+      },
+      "knowsAbout": [
+        "Software Engineering",
+        "Backend Development",
+        "Artificial Intelligence",
+        "Large Language Models",
+        "Developer Tooling",
+        "DevOps",
+        "Test Automation",
+        "CI/CD",
+        "Python",
+        "TypeScript",
+        "Cloud Infrastructure"
+      ],
+      "sameAs": [
+        "https://www.linkedin.com/in/ryan-polasky/",
+        "https://github.com/ryanpolasky"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://ryanpolasky.com/#website",
+      "url": "https://ryanpolasky.com/",
+      "name": "Ryan Polasky",
+      "alternateName": "ryan.polasky / runtime",
+      "description": "Personal site of Ryan Polasky \u2014 Junior Software Engineer specializing in backend systems, AI/LLM tooling, and developer productivity.",
+      "inLanguage": "en",
+      "publisher": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "author": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "copyrightHolder": {
+        "@id": "https://ryanpolasky.com/#person"
+      }
+    },
+    {
+      "@type": "ProfilePage",
+      "@id": "https://ryanpolasky.com/#profile",
+      "url": "https://ryanpolasky.com/",
+      "name": "Ryan Polasky - Software Engineer",
+      "isPartOf": {
+        "@id": "https://ryanpolasky.com/#website"
+      },
+      "about": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "mainEntity": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "primaryImageOfPage": "https://ryanpolasky.com/assets/images/my-avatar.png"
+    },
+    {
+      "@type": "VideoGame",
+      "@id": "https://crashdle.com/#game",
+      "name": "Crashdle",
+      "url": "https://crashdle.com/",
+      "description": "Daily 5-letter word puzzle paired with a live crash multiplier bonus round. Solve the word in six guesses, then optionally risk your winnings on a real-time crash game.",
+      "image": "https://crashdle.com/og.webp",
+      "genre": [
+        "Word Game",
+        "Puzzle",
+        "Casual"
+      ],
+      "playMode": "SinglePlayer",
+      "gamePlatform": "Web Browser",
+      "applicationCategory": "GameApplication",
+      "operatingSystem": "Any",
+      "inLanguage": "en",
+      "creator": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "author": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "publisher": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      }
+    },
+    {
+      "@type": "WebApplication",
+      "@id": "https://ryplay.dev/#app",
+      "name": "ryplay",
+      "alternateName": "ryplay - Your Music, Visualized",
+      "url": "https://ryplay.dev/",
+      "description": "A real-time music dashboard powered by Last.fm. Visualize your listening habits, track streaks, and share your music taste.",
+      "image": "https://ryplay.dev/og.webp",
+      "applicationCategory": "MultimediaApplication",
+      "applicationSubCategory": "Music Visualization",
+      "operatingSystem": "Any",
+      "inLanguage": "en",
+      "creator": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "author": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "publisher": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      }
+    },
+    {
+      "@type": "WebApplication",
+      "@id": "https://ryme.md/#app",
+      "name": "RyMe.md",
+      "alternateName": "readme-ryvamper",
+      "url": "https://ryme.md/",
+      "description": "A browser-based generator for animated GitHub profile README banners. Pick a template, fill in your info, and export as SVG or GIF \u2014 entirely client-side.",
+      "image": "https://ryme.md/og.webp",
+      "applicationCategory": "DeveloperApplication",
+      "applicationSubCategory": "Profile README Generator",
+      "operatingSystem": "Any",
+      "inLanguage": "en",
+      "creator": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "author": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "publisher": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      }
+    },
+    {
+      "@type": "WebApplication",
+      "@id": "https://status.ryanpolasky.com/#app",
+      "name": "WRLT",
+      "alternateName": "What's Ryan Up To?",
+      "url": "https://status.ryanpolasky.com/",
+      "description": "A live personal dashboard with mini-games, an in-app economy, and a desktop-style UI in the browser.",
+      "image": "https://status.ryanpolasky.com/og.webp",
+      "applicationCategory": "LifestyleApplication",
+      "applicationSubCategory": "Personal Dashboard",
+      "operatingSystem": "Any",
+      "inLanguage": "en",
+      "creator": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "author": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "publisher": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      }
+    }
+  ]
+}
+    </script>
+</head>
+<body>
+
+<nav class="nav" aria-label="Primary">
+  <a class="brand" href="#home"><span class="prompt">$</span>&nbsp;ryan.polasky<span class="cursor"></span></a>
+  <ul>
+    <li><a href="#home"><span class="num">01</span> overview</a></li>
+    <li><a href="#about"><span class="num">02</span> about</a></li>
+    <li><a href="#experience"><span class="num">03</span> experience</a></li>
+    <li><a href="#projects"><span class="num">04</span> projects</a></li>
+    <li><a href="#skills"><span class="num">05</span> skills</a></li>
+    <li><a href="#testimonials"><span class="num">06</span> testimonials</a></li>
+    <li><a href="#contact"><span class="num">07</span> contact</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="iconbtn" id="cmdk-btn" aria-label="Command palette"><span style="display:inline-block;font-size:25px;transform:translateY(-5px)">⌕</span></button>
+    <div class="themer" id="themer">
+      <button class="iconbtn" aria-label="Theme"><span style="display:inline-block;transform:translateY(-2px)">◐</span></button>
+      <div class="menu" role="menu">
+        <button data-theme="" role="menuitem"><span class="swatch" style="background:#7EE787"></span>terminal-green (default)</button>
+        <button data-theme="t-amber" role="menuitem"><span class="swatch" style="background:#F2C94C"></span>amber-on-black</button>
+        <button data-theme="t-cyan" role="menuitem"><span class="swatch" style="background:#5EEAD4"></span>tron-cyan</button>
+        <button data-theme="t-magenta" role="menuitem"><span class="swatch" style="background:#F472B6"></span>incident-pink</button>
+      </div>
+    </div>
+    <a class="iconbtn" href="https://github.com/ryanpolasky" target="_blank" rel="noreferrer" aria-label="GitHub">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a12 12 0 0 0-3.79 23.4c.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.74.08-.73.08-.73 1.2.09 1.83 1.23 1.83 1.23 1.07 1.83 2.81 1.3 3.5.99.11-.78.42-1.3.76-1.6-2.66-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.16 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.3-1.55 3.3-1.23 3.3-1.23.66 1.64.24 2.86.12 3.16.77.84 1.24 1.9 1.24 3.22 0 4.61-2.81 5.62-5.49 5.92.43.37.82 1.1.82 2.22v3.29c0 .32.21.69.83.57A12 12 0 0 0 12 .5Z"/></svg>
+    </a>
+  </div>
+</nav>
+
+<main class="shell">
+
+<section class="hero scroll-mt" id="home">
+  <div class="hero-inner">
+    <div class="hero-l">
+      <div class="kicker">
+        <span class="tag">SVC</span>
+        <span>ryan.polasky / runtime</span>
+        <span class="dim">·</span>
+        <span>v3.7.0</span>
+      </div>
+      <h1 class="svc-title">
+        <span class="ns">svc/</span>ryan<span class="at">@apple-2026</span>
+      </h1>
+      <div class="svc-status">
+        <span class="dot"></span>
+        <span class="label">status:</span> RUNNING <span class="dim">· available</span> May 2026
+      </div>
+      <p class="svc-line">
+        Junior Software Engineer @ UT Dallas ('26). 2× Apple intern crafting
+        <em>AI-powered tooling</em>, <em>scalable backend systems</em>, and
+        <em>developer productivity tools</em> that actually ship.
+      </p>
+      <div class="cta-row">
+        <a class="btn primary" href="#projects">view projects <span class="arrow">→</span></a>
+        <a class="btn" href="#contact">contact</a>
+        <a class="btn" href="/assets/Ryan_Polasky_Resume.pdf" download>
+          <span>resume.pdf</span><span class="key">↓</span>
+        </a>
+      </div>
+    </div>
+    <aside class="live" aria-label="Metrics">
+      <div class="lh"><span>at a glance</span><span></span></div>
+      <div class="lb">
+        <div class="avatar-tile">
+          <img src="./assets/images/my-avatar.png" alt="Ryan Polasky"/>
+          <div>
+            <div class="who">ryan.polasky</div>
+            <div class="role">junior swe / backend / ai</div>
+            <div class="where">north dakota · ut dallas '26</div>
+          </div>
+        </div>
+        <div class="metric">
+          <div><div class="lk">triage time reduction</div></div>
+          <div><span class="vk ok">−4,800<span style="font-size:11px">%</span></span></div>
+          <div class="bar"><i style="width:96%"></i></div>
+        </div>
+        <div class="metric">
+          <div><div class="lk">CSAT vs department avg</div></div>
+          <div><span class="vk ok">+15<span style="font-size:11px">%</span></span></div>
+          <div class="bar"><i style="width:86%"></i></div>
+        </div>
+        <div class="metric">
+          <div><div class="lk">SOTA model inference speedup</div></div>
+          <div><span class="vk ok">200<span style="font-size:11px">%</span></span></div>
+          <div class="bar"><i style="width:72%"></i></div>
+        </div>
+        <div class="metric" id="np-metric">
+          <div><div class="lk" id="np-label">now playing</div></div>
+          <div><span class="vk ok" id="np-value" style="font-size:13px;">loading…</span></div>
+          <div class="bar"><i id="np-bar" style="width:0%"></i></div>
+        </div>
+        <div style="display:grid; grid-template-columns: repeat(2,1fr); gap: 8px; margin-top: 4px;">
+          <div style="border:1px solid var(--line); padding:8px;">
+            <div class="lk" style="font-size:9.5px;">apple intern</div>
+            <div class="vk" style="font-size:18px;">2<span style="color:var(--fg-3); font-size:11px;">×</span></div>
+          </div>
+          <div style="border:1px solid var(--line); padding:8px;">
+            <div class="lk" style="font-size:9.5px;">excellence award</div>
+            <div class="vk" style="font-size:18px;">2<span style="color:var(--fg-3); font-size:11px;">×</span></div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<section id="about" class="scroll-mt">
+  <header class="section-head">
+    <span class="lab"><span class="arrow">▸</span> 02 / about</span>
+    <span class="rule"></span>
+    <span class="ts">who i am</span>
+  </header>
+  <div class="row">
+    <div class="panel col-8">
+      <div class="head"><span class="title">// process info</span><span></span><span class="meta">ryan.service</span></div>
+      <div class="body" style="font-family: var(--sans); font-size: 14px; color: var(--fg-2); line-height: 1.65;">
+        <p style="margin:0 0 16px;">
+          I'm a fourth-year CS student at the University of Texas at Dallas, graduating <span class="glow">May 2026</span>.
+          I specialize in solving the <em style="font-style: normal; color: var(--fg);">unglamorous problems</em> that make teams 10× faster — intelligent log analysis,
+          bulletproof CI/CD pipelines, test automation that actually works, and AI-powered query generation.
+        </p>
+        <p style="margin:0 0 18px;">
+          At Apple, I built <em style="font-style: normal; color: var(--fg);">LLM-powered tooling</em> for the Camera &amp; Photos team, automated thousands of test failures
+          with smart triage systems, and designed cloud workflows that ship fast and break nothing. I balance velocity with reliability,
+          security with usability, and prioritize crystal-clear communication.
+        </p>
+        <div style="display:flex; gap: 6px; flex-wrap: wrap; font-family: var(--mono); font-size: 11px;">
+          <span style="border:1px solid var(--line-2); padding: 3px 9px; color:var(--ok);">problem-solver</span>
+          <span style="border:1px solid var(--line-2); padding: 3px 9px; color:var(--info);">ai-engineer</span>
+          <span style="border:1px solid var(--line-2); padding: 3px 9px; color:var(--vio);">devops</span>
+        </div>
+      </div>
+    </div>
+    <div class="panel col-4">
+      <div class="head"><span class="title">// env</span><span></span><span class="meta">read-only</span></div>
+      <div class="body" style="font-family: var(--mono); font-size: 12px; padding: 0;">
+        <div style="display:grid; grid-template-columns: auto 1fr;">
+          <div style="padding: 12px 14px; border-right:1px solid var(--line); border-bottom: 1px solid var(--line); color:var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em; font-size: 10.5px;">LOCATION</div>
+          <div style="padding: 12px 14px; border-bottom: 1px solid var(--line); color: var(--fg);">North Dakota, USA</div>
+          <div style="padding: 12px 14px; border-right:1px solid var(--line); border-bottom: 1px solid var(--line); color:var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em; font-size: 10.5px;">SCHOOL</div>
+          <div style="padding: 12px 14px; border-bottom: 1px solid var(--line); color: var(--fg);">CS @ UT Dallas '26</div>
+          <div style="padding: 12px 14px; border-right:1px solid var(--line); border-bottom: 1px solid var(--line); color:var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em; font-size: 10.5px;">EXPERIENCE</div>
+          <div style="padding: 12px 14px; border-bottom: 1px solid var(--line); color: var(--fg);">2× Apple Intern</div>
+          <div style="padding: 12px 14px; border-right:1px solid var(--line); border-bottom: 1px solid var(--line); color:var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em; font-size: 10.5px;">SHELL</div>
+          <div style="padding: 12px 14px; border-bottom: 1px solid var(--line); color: var(--fg);">/usr/bin/zsh</div>
+          <div style="padding: 12px 14px; border-right:1px solid var(--line); color:var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em; font-size: 10.5px;">HACKATHONS</div>
+          <div style="padding: 12px 14px; color: var(--fg);">Axxess · LAHacks</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="experience" class="scroll-mt">
+  <header class="section-head">
+    <span class="lab"><span class="arrow">▸</span> 03 / experience</span>
+    <span class="rule"></span>
+    <span class="ts">2021 — present</span>
+  </header>
+  <div class="panel">
+    <div class="head"><span class="title">// experience.log</span><span></span><span class="meta">5 entries · sorted desc</span></div>
+    <table class="logtable">
+      <tbody>
+        <tr>
+          <td class="ts">2023-05 <span class="ts-arr">→</span> present</td>
+          <td class="lvl"><span class="badge ok">PROD</span></td>
+          <td class="src">apple/at-home-advisor</td>
+          <td class="msg">
+            <div class="title">At-Home Advisor · Apple</div>
+            <ul>
+              <li><b>6.87% escalation rate</b> through independent research &amp; advanced troubleshooting — well below department average.</li>
+              <li><b>0.27m average call wrap time</b> while maintaining premium-quality documentation standards.</li>
+              <li><b>+15% department-avg CSAT</b>; 2× AppleCare Excellence Award recipient (2024, 2025).</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td class="ts">2025-05 <span class="ts-arr">→</span> present</td>
+          <td class="lvl"><span class="badge info">LEAD</span></td>
+          <td class="src">acm-utd/leadership</td>
+          <td class="msg">
+            <div class="title">Development Lead &amp; Education Mentor · ACM UTD</div>
+            <ul>
+              <li><b>HackUTD Mentor</b> — supported 1,200+ participants across overnight shifts; debugged critical issues for 60+ teams in the largest US hackathon.</li>
+              <li><b>Development Lead</b> — architecting full-stack roommate-matching platform (React + FastAPI + PostgreSQL) while coaching junior members through agile workflows.</li>
+              <li><b>Education Mentor</b> — selected to guide 4 underclassmen through technical interviews, career planning, and landing summer internships.</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td class="ts">2025-05 <span class="ts-arr">→</span> 2025-08</td>
+          <td class="lvl"><span class="badge ok">SHIPPED</span></td>
+          <td class="src">apple/camera-api-test</td>
+          <td class="msg">
+            <div class="title">Camera API Test Automation Intern · Apple</div>
+            <ul>
+              <li>Automated parsing, grouping, and analysis of <b>thousands of on-device tests</b> with intelligent categorization systems.</li>
+              <li>Integrated <b>LLMs into test triage workflows</b> to dramatically speed up root-cause analysis and reduce manual investigation time by <b>4,800%</b>.</li>
+              <li>Unified bug report formats for <b>succinct, actionable communications</b> that teams actually use.</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td class="ts">2024-06 <span class="ts-arr">→</span> 2024-11</td>
+          <td class="lvl"><span class="badge ok">SHIPPED</span></td>
+          <td class="src">apple/wte-tools</td>
+          <td class="msg">
+            <div class="title">WTE Tools Engineer Intern · Apple</div>
+            <ul>
+              <li>Built an <b>LLM-powered chat interface + Python package</b> to generate SQL/NoSQL queries from natural language — no more syntax debugging.</li>
+              <li>Migrated critical services from <b>Java 11 → JDK 21</b>, resolving dependency conflicts and security vulnerabilities.</li>
+              <li>Designed robust <b>AWS/GCP workflows and CI/CD pipelines</b> for reliable deploys and lightning-fast feedback loops.</li>
+              <li>Optimized an iOS log analyzer (MVVM) to <b>render thousands of events in real-time</b> without performance hiccups.</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td class="ts">2021-06 <span class="ts-arr">→</span> 2022-07</td>
+          <td class="lvl"><span class="badge info">OPS</span></td>
+          <td class="src">altru/it-intern</td>
+          <td class="msg">
+            <div class="title">IT Intern · Altru Health System</div>
+            <ul>
+              <li>Repaired, imaged, and deployed <b>hundreds of machines</b> for critical healthcare system expansion.</li>
+              <li>Handled urgent hardware deliveries and set a <b>department intake record (300+ devices)</b> during high-demand periods.</li>
+            </ul>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="projects" class="scroll-mt">
+  <header class="section-head">
+    <span class="lab"><span class="arrow">▸</span> 04 / projects</span>
+    <span class="rule"></span>
+    <span class="ts">6 deployments</span>
+  </header>
+  <div class="panel">
+    <div class="head">
+      <span class="title">// projects · 6 deployments</span>
+      <span></span>
+      <span class="meta"><a href="https://github.com/ryanpolasky" target="_blank" rel="noreferrer" style="color:var(--ok); border-bottom: 1px dashed var(--ok);">github.com/ryanpolasky →</a></span>
+    </div>
+    <div class="svc-grid">
+      <article class="svc">
+        <div class="top">
+          <div><h3>askdb<span class="ver">v2.4</span></h3><div class="ns">apple · internal · python</div></div>
+          <span class="stat"><span class="dot"></span>healthy</span>
+        </div>
+        <p>Python package + chat UI that transforms natural language into data-accurate responses by automatically running parameterized SQL or NoSQL queries and interpreting the results.</p>
+        <div class="met">
+          <div><div class="k">stack</div><div class="v">Python</div></div>
+          <div><div class="k">backend</div><div class="v">FastAPI</div></div>
+          <div><div class="k">store</div><div class="v">PostgreSQL</div></div>
+        </div>
+        <div class="tags"><span>Python</span><span>FastAPI</span><span>PostgreSQL</span><span>GCP</span><span>LLMs</span></div>
+        <span class="link muted">▣ private · internal tool</span>
+      </article>
+      <article class="svc">
+        <div class="top">
+          <div><h3>ai-test-analysis<span class="ver">v1.8</span></h3><div class="ns">apple · qa · python</div></div>
+          <span class="stat"><span class="dot"></span>healthy</span>
+        </div>
+        <p>Intelligent test failure aggregation system. Classifies failures, suggests probable root causes via multi-stage LLM analysis, and exports unified bug reports with auto-attached artifacts.</p>
+        <div class="met">
+          <div><div class="k">triage Δ</div><div class="v" style="color:var(--ok)">−4,800%</div></div>
+          <div><div class="k">runtime</div><div class="v">Jenkins</div></div>
+          <div><div class="k">model</div><div class="v">multi-LLM</div></div>
+        </div>
+        <div class="tags"><span>Python</span><span>Jenkins</span><span>LLMs</span><span>bash</span></div>
+        <span class="link muted">▣ private · internal tool</span>
+      </article>
+      <article class="svc">
+        <div class="top">
+          <div><h3>ryan-os<span class="ver">v3.0</span></h3><div class="ns">personal · faux-desktop</div></div>
+          <span class="stat"><span class="dot"></span>healthy</span>
+        </div>
+        <p>A desktop-style site built to answer the age-old question — what is Ryan up to? Features draggable widgets, dynamic ambient backgrounds, fluid animations; mobile + desktop optimized.</p>
+        <div class="met">
+          <div><div class="k">stack</div><div class="v">React</div></div>
+          <div><div class="k">backend</div><div class="v">FastAPI</div></div>
+          <div><div class="k">motion</div><div class="v">Framer</div></div>
+        </div>
+        <div class="tags"><span>React</span><span>FastAPI</span><span>Framer Motion</span></div>
+        <a class="link" href="https://status.ryanpolasky.com" target="_blank" rel="noreferrer">▶ status.ryanpolasky.com</a>
+      </article>
+      <article class="svc">
+        <div class="top">
+          <div><h3>ryan-notes<span class="ver">v∞</span></h3><div class="ns">personal · knowledge-base</div></div>
+          <span class="stat"><span class="dot"></span>healthy</span>
+        </div>
+        <p>A digital garden hosting my entire CS curriculum from UTD. Comprehensive documentation, LaTeX-formatted algorithms, and study guides organized via Notion to help students.</p>
+        <div class="met">
+          <div><div class="k">format</div><div class="v">Notion</div></div>
+          <div><div class="k">math</div><div class="v">LaTeX</div></div>
+          <div><div class="k">audience</div><div class="v">UTD CS</div></div>
+        </div>
+        <div class="tags"><span>Notion</span><span>Documentation</span><span>LaTeX</span></div>
+        <a class="link" href="https://ryanpolasky.com/notes">▶ ryanpolasky.com/notes</a>
+      </article>
+      <article class="svc">
+        <div class="top">
+          <div><h3>plasky<span class="ver">v2023</span></h3><div class="ns">personal · music · lo-fi</div></div>
+          <span class="stat"><span class="dot info"></span>experimental</span>
+        </div>
+        <p>Since 2021, I've been a hobbyist music producer specializing in Lo-Fi. Published artist on major streaming platforms since 2023.</p>
+        <div class="met">
+          <div><div class="k">daw</div><div class="v">FL Studio</div></div>
+          <div><div class="k">since</div><div class="v">2021</div></div>
+          <div><div class="k">label</div><div class="v">indie</div></div>
+        </div>
+        <div class="tags"><span>FL Studio</span><span>Composition</span><span>Piano</span></div>
+        <a class="link" href="spotify.html">▶ listen now</a>
+      </article>
+      <article class="svc">
+        <div class="top">
+          <div><h3>meteormate<span class="ver">v0.9</span></h3><div class="ns">acm · roommate-matching</div></div>
+          <span class="stat"><span class="dot amber"></span>building</span>
+        </div>
+        <p>As Project Lead, I'm architecting a full-stack matching platform for UTD students while mentoring junior developers. Reliable, secure system replacing outdated, impersonal matching.</p>
+        <div class="met">
+          <div><div class="k">role</div><div class="v">Tech Lead</div></div>
+          <div><div class="k">team</div><div class="v">~6</div></div>
+          <div><div class="k">stage</div><div class="v">α</div></div>
+        </div>
+        <div class="tags"><span>Architecture</span><span>Full Stack</span><span>FastAPI</span><span>React</span></div>
+        <span class="link"><a href="https://github.com/acmutd/meteormate-backend" target="_blank" rel="noreferrer" style="color:var(--ok)">▶ backend</a> &nbsp; <a href="https://github.com/acmutd/meteormate-client" target="_blank" rel="noreferrer" style="color:var(--ok)">▶ frontend</a></span>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="skills" class="scroll-mt">
+  <header class="section-head">
+    <span class="lab"><span class="arrow">▸</span> 05 / skills</span>
+    <span class="rule"></span>
+    <span class="ts">technical proficiency</span>
+  </header>
+  <div class="panel">
+    <div class="head"><span class="title">// technical skills</span><span></span><span class="meta">proficiency levels</span></div>
+    <div class="res-grid">
+      <div class="res">
+        <h3>► languages</h3>
+        <div class="sub">cpu · primary cores</div>
+        <div class="row-r"><span class="lk">python</span><span class="vk">95% advanced</span></div>
+        <div class="b tier-1"><i style="width: 95%"></i></div>
+        <div class="row-r"><span class="lk">swift</span><span class="vk">88% intermediate</span></div>
+        <div class="b tier-1"><i style="width: 88%"></i></div>
+        <div class="row-r"><span class="lk">java</span><span class="vk">80% intermediate</span></div>
+        <div class="b tier-1"><i style="width: 80%"></i></div>
+        <div class="extras">+ c++, swiftui, html/css, javascript, r, obj-c</div>
+      </div>
+      <div class="res">
+        <h3>► data</h3>
+        <div class="sub">memory · persistence</div>
+        <div class="row-r"><span class="lk">postgresql</span><span class="vk">95% advanced</span></div>
+        <div class="b tier-2"><i style="width: 95%"></i></div>
+        <div class="row-r"><span class="lk">opensearch</span><span class="vk">85% intermediate</span></div>
+        <div class="b tier-2"><i style="width: 85%"></i></div>
+        <div class="row-r"><span class="lk">redis</span><span class="vk">80% intermediate</span></div>
+        <div class="b tier-2"><i style="width: 80%"></i></div>
+        <div class="extras">+ mysql, sqlite, vector dbs, mongodb</div>
+      </div>
+      <div class="res">
+        <h3>► ai / llms</h3>
+        <div class="sub">accelerator · gpu pool</div>
+        <div class="row-r"><span class="lk">llm integration</span><span class="vk">95% advanced</span></div>
+        <div class="b tier-3"><i style="width: 95%"></i></div>
+        <div class="row-r"><span class="lk">rag systems</span><span class="vk">95% advanced</span></div>
+        <div class="b tier-3"><i style="width: 95%"></i></div>
+        <div class="row-r"><span class="lk">vertex ai</span><span class="vk">90% intermediate</span></div>
+        <div class="b tier-3"><i style="width: 90%"></i></div>
+        <div class="extras">+ fine-tuning, function calling, embeddings</div>
+      </div>
+      <div class="res">
+        <h3>► devops</h3>
+        <div class="sub">network · orchestration</div>
+        <div class="row-r"><span class="lk">kubernetes</span><span class="vk">85% intermediate</span></div>
+        <div class="b tier-4"><i style="width: 85%"></i></div>
+        <div class="row-r"><span class="lk">ci/cd</span><span class="vk">85% intermediate</span></div>
+        <div class="b tier-4"><i style="width: 85%"></i></div>
+        <div class="row-r"><span class="lk">aws / gcp</span><span class="vk">75% intermediate</span></div>
+        <div class="b tier-4"><i style="width: 75%"></i></div>
+        <div class="extras">+ docker, helm, terraform, jenkins</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="testimonials" class="scroll-mt">
+  <header class="section-head">
+    <span class="lab"><span class="arrow">▸</span> 06 / testimonials</span>
+    <span class="rule"></span>
+    <span class="ts">3 references on file</span>
+  </header>
+  <div class="panel">
+    <div class="head"><span class="title">// testimonials</span><span></span><span class="meta">3/3 · full refs on request</span></div>
+    <div class="syn-grid">
+      <article class="syn">
+        <div class="h"><span class="pid">001 / learning-agility</span><span class="pass"><span class="dot"></span>verified</span></div>
+        <blockquote>"Ryan's learning agility is remarkable… he tackles each new challenge with focus and enthusiasm. Strong communicator with clear, impactful presentations."</blockquote>
+        <div class="who"><a href="https://www.linkedin.com/in/sahilpujari/">Sahil Pujari</a><div class="role">Sr. Software Engineer · Mentor</div></div>
+        <div class="ml"><span>★★★★★</span><span>checks: 12/12</span></div>
+      </article>
+      <article class="syn">
+        <div class="h"><span class="pid">002 / excellence</span><span class="pass"><span class="dot"></span>verified</span></div>
+        <blockquote>"Ryan was a fantastic summer 2025 intern. A fast learner, he delivered his project ahead of schedule and integrated seamlessly. He performed like a full-time hire."</blockquote>
+        <div class="who"><a href="https://www.linkedin.com/in/jozefkruger/">Jozef Kruger</a><div class="role">Engineering Manager · Manager</div></div>
+        <div class="ml"><span>★★★★★</span><span>checks: 12/12</span></div>
+      </article>
+      <article class="syn">
+        <div class="h"><span class="pid">003 / innovation</span><span class="pass"><span class="dot"></span>verified</span></div>
+        <blockquote>"Ryan was an exceptional intern, contributing valuable test automation tools. His initiative, clear communication, and collaboration made him a joy to work with."</blockquote>
+        <div class="who"><a href="https://www.linkedin.com/in/jdpaul123/">JD Paul</a><div class="role">Software Engineer · Teammate</div></div>
+        <div class="ml"><span>★★★★★</span><span>checks: 12/12</span></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="scroll-mt">
+  <header class="section-head">
+    <span class="lab"><span class="arrow">▸</span> 07 / contact</span>
+    <span class="rule"></span>
+    <span class="ts">get in touch</span>
+  </header>
+  <div class="incident">
+    <form class="form" action="https://formspree.io/f/xldjdlla" method="POST" id="cf">
+      <h3>// get in touch</h3>
+      <div class="sub">usually replies within 24h.</div>
+      <div class="fld-row">
+        <div class="fld"><label for="cf-name">name</label><input id="cf-name" name="name" required placeholder="ada lovelace"/></div>
+        <div class="fld"><label for="cf-email">email</label><input id="cf-email" name="email" type="email" required placeholder="ada@example.com"/></div>
+      </div>
+      <div class="fld">
+        <label for="cf-msg">message</label>
+        <textarea id="cf-msg" name="message" required placeholder="what brought you here, what you'd like to discuss…"></textarea>
+      </div>
+      <div style="display:flex; align-items:center; gap: 12px; margin-top: 4px;">
+        <button class="btn primary" type="submit">send message <span class="arrow">→</span></button>
+        <span style="font-size: 11px; color: var(--fg-3);">or use one of the channels →</span>
+      </div>
+    </form>
+
+    <aside class="runbook" aria-label="Direct channels">
+      <h4>// direct channels</h4>
+      <ul>
+        <li><span class="ic">@</span><div><div class="nm"><a href="mailto:ryanpolasky@hotmail.com">ryanpolasky@hotmail.com</a></div><div class="ds">primary · email</div></div><span class="arr">→</span></li>
+        <li><span class="ic">☏</span><div><div class="nm"><a href="tel:+14089406887">+1 (408) 940-6887</a></div><div class="ds">voice · sms</div></div><span class="arr">→</span></li>
+        <li><span class="ic">in</span><div><div class="nm"><a href="https://www.linkedin.com/in/ryan-polasky/" target="_blank" rel="noreferrer">linkedin / ryan-polasky</a></div><div class="ds">professional</div></div><span class="arr">→</span></li>
+        <li><span class="ic">gh</span><div><div class="nm"><a href="https://github.com/ryanpolasky" target="_blank" rel="noreferrer">github / ryanpolasky</a></div><div class="ds">code · open source</div></div><span class="arr">→</span></li>
+      </ul>
+      <div style="padding: 12px 14px; border-top: 1px solid var(--line); font-size: 11px; color: var(--fg-3);">
+        <span class="dot" style="display:inline-block; vertical-align: middle; margin-right: 6px;"></span>
+        available <span class="glow">May 2026</span> · open to remote now
+      </div>
+    </aside>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="row">
+    <div class="l col-8">
+      <div style="margin-top:6px; color:var(--fg-3);">© <span id="year"></span> ryan polasky. all rights reserved.</div>
+      <div class="ascii">─────────────────────────────────────
+   $ tail -f /var/log/ryan/heart.log
+   2026-04-27 ❤ healthy
+   2026-04-27 ❤ open to incidents
+   2026-04-27 ❤ EOF
+─────────────────────────────────────</div>
+    </div>
+    <div class="r col-4">
+      <span>node: <a href="https://github.com/ryanpolasky/personal-website" target="_blank" rel="noreferrer">view source</a></span>
+      <span>peer: <a href="https://cs.utdring.com/#ryanpolasky.com" target="_blank" rel="noreferrer">cs webring</a></span>
+      <div class="ring">
+        <a href="https://cs.utdring.com/#ryanpolasky.com?nav=prev" aria-label="prev">←</a>
+        <a href="https://cs.utdring.com/#ryanpolasky.com" aria-label="ring"><img src="https://cs.utdring.com/icon.white.svg" alt="CS Webring"/></a>
+        <a href="https://cs.utdring.com/#ryanpolasky.com?nav=next" aria-label="next">→</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="cmdk-overlay" id="cmdk" role="dialog" aria-modal="true" aria-label="Command palette">
+  <div class="cmdk">
+    <input type="text" id="cmdk-input" placeholder="run a command…" autocomplete="off"/>
+    <ul id="cmdk-list">
+      <li data-action="goto" data-target="#home"><span class="ic">▸</span><span>jump to overview</span><span class="k">01</span></li>
+      <li data-action="goto" data-target="#about"><span class="ic">▸</span><span>jump to about</span><span class="k">02</span></li>
+      <li data-action="goto" data-target="#experience"><span class="ic">▸</span><span>jump to experience</span><span class="k">03</span></li>
+      <li data-action="goto" data-target="#projects"><span class="ic">▸</span><span>jump to projects</span><span class="k">04</span></li>
+      <li data-action="goto" data-target="#skills"><span class="ic">▸</span><span>jump to skills</span><span class="k">05</span></li>
+      <li data-action="goto" data-target="#testimonials"><span class="ic">▸</span><span>jump to testimonials</span><span class="k">06</span></li>
+      <li data-action="goto" data-target="#contact"><span class="ic">▸</span><span>jump to contact</span><span class="k">07</span></li>
+      <li data-action="open" data-target="/assets/Ryan_Polasky_Resume.pdf"><span class="ic">⬇</span><span>download resume.pdf</span><span class="k">↓</span></li>
+      <li data-action="open" data-target="https://github.com/ryanpolasky"><span class="ic">↗</span><span>open github profile</span><span class="k">↗</span></li>
+      <li data-action="theme" data-target=""><span class="ic">◐</span><span>theme · terminal-green</span><span class="k">t1</span></li>
+      <li data-action="theme" data-target="t-amber"><span class="ic">◐</span><span>theme · amber-on-black</span><span class="k">t2</span></li>
+      <li data-action="theme" data-target="t-cyan"><span class="ic">◐</span><span>theme · tron-cyan</span><span class="k">t3</span></li>
+      <li data-action="theme" data-target="t-magenta"><span class="ic">◐</span><span>theme · incident-pink</span><span class="k">t4</span></li>
+    </ul>
+    <div class="cmdk-hint">
+      <span><kbd>↑</kbd><kbd>↓</kbd> nav</span>
+      <span><kbd>↵</kbd> run</span>
+      <span><kbd>esc</kbd> close</span>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const $year = document.getElementById('year');
+  if($year) $year.textContent = new Date().getFullYear();
+})();
+
+(function(){
+  const els = document.querySelectorAll('[data-counter]');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting){
+        const el = e.target; const target = +el.dataset.counter; const dur = 1400; const t0 = performance.now();
+        function step(t){
+          const p = Math.min(1, (t-t0)/dur);
+          const v = Math.floor(target * (1 - Math.pow(1-p, 3)));
+          el.textContent = v.toLocaleString();
+          if(p<1) requestAnimationFrame(step); else el.textContent = target.toLocaleString();
+        }
+        requestAnimationFrame(step);
+        io.unobserve(el);
+      }
+    });
+  }, { threshold: 0.4 });
+  els.forEach(el => io.observe(el));
+})();
+
+(function(){
+  const els = document.querySelectorAll('.res');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in-view'); io.unobserve(e.target); } });
+  }, { threshold: 0.3 });
+  els.forEach(el => io.observe(el));
+})();
+
+(function(){
+  const themer = document.getElementById('themer');
+  const btn = themer.querySelector('.iconbtn');
+  btn.addEventListener('click', (e) => { e.stopPropagation(); themer.classList.toggle('open'); });
+  document.addEventListener('click', () => themer.classList.remove('open'));
+  themer.querySelectorAll('[data-theme]').forEach(b => {
+    b.addEventListener('click', () => {
+      document.body.classList.remove('t-amber','t-cyan','t-magenta');
+      const t = b.dataset.theme; if(t) document.body.classList.add(t);
+      try { localStorage.setItem('ryan-theme', t || ''); } catch(e){}
+      themer.classList.remove('open');
+    });
+  });
+  try { const saved = localStorage.getItem('ryan-theme'); if(saved) document.body.classList.add(saved); } catch(e){}
+})();
+
+(function(){
+  const overlay = document.getElementById('cmdk');
+  const input = document.getElementById('cmdk-input');
+  const list = document.getElementById('cmdk-list');
+  const open = () => { overlay.classList.add('open'); input.value=''; filter(''); input.focus(); };
+  const close = () => { overlay.classList.remove('open'); };
+  document.getElementById('cmdk-btn').addEventListener('click', open);
+  document.addEventListener('keydown', (e) => {
+    if((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')){ e.preventDefault(); overlay.classList.contains('open') ? close() : open(); }
+    else if(e.key === 'Escape' && overlay.classList.contains('open')) close();
+    else if(overlay.classList.contains('open') && (e.key === 'ArrowDown' || e.key === 'ArrowUp')){
+      e.preventDefault(); moveActive(e.key === 'ArrowDown' ? 1 : -1);
+    } else if(overlay.classList.contains('open') && e.key === 'Enter'){
+      const a = list.querySelector('li.active') || list.querySelector('li:not([hidden])'); if(a) run(a);
+    }
+  });
+  overlay.addEventListener('click', (e) => { if(e.target === overlay) close(); });
+  function filter(q){
+    q = q.trim().toLowerCase();
+    list.querySelectorAll('li').forEach(li => { const t = li.textContent.toLowerCase(); li.hidden = q && !t.includes(q); li.classList.remove('active'); });
+    const first = list.querySelector('li:not([hidden])'); if(first) first.classList.add('active');
+  }
+  function moveActive(dir){
+    const visible = [...list.querySelectorAll('li:not([hidden])')];
+    const i = visible.findIndex(l => l.classList.contains('active'));
+    visible.forEach(l => l.classList.remove('active'));
+    const next = visible[(i + dir + visible.length) % visible.length];
+    if(next){ next.classList.add('active'); next.scrollIntoView({block:'nearest'}); }
+  }
+  input.addEventListener('input', (e) => filter(e.target.value));
+  list.addEventListener('click', (e) => { const li = e.target.closest('li'); if(li) run(li); });
+  function run(li){
+    const action = li.dataset.action; const target = li.dataset.target;
+    if(action === 'goto'){ document.querySelector(target)?.scrollIntoView({behavior: 'smooth'}); }
+    else if(action === 'open'){ window.open(target, target.startsWith('http') ? '_blank' : '_self'); }
+    else if(action === 'theme'){ document.body.classList.remove('t-amber','t-cyan','t-magenta'); if(target) document.body.classList.add(target); try { localStorage.setItem('ryan-theme', target || ''); } catch(e){} }
+    close();
+  }
+})();
+
+(function(){
+  const cf = document.getElementById('cf');
+  if(!cf) return;
+  cf.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fd = new FormData(cf);
+    const btn = cf.querySelector('button[type=submit]');
+    const orig = btn.innerHTML;
+    btn.disabled = true; btn.textContent = 'sending…';
+    try {
+      const res = await fetch(cf.action, { method: cf.method, body: fd, headers: { Accept: 'application/json' }});
+      if(res.ok){ cf.reset(); btn.textContent = '✓ sent'; setTimeout(() => { btn.innerHTML = orig; btn.disabled = false; }, 3000); }
+      else { btn.innerHTML = orig; btn.disabled = false; }
+    } catch (err){ btn.innerHTML = orig; btn.disabled = false; }
+  });
+})();
+
+console.log('%c$ ryan.polasky ', 'color:#7EE787; font-family:monospace; font-size:14px;');
+console.log('%c   ▸ status: RUNNING\n   ▸ available May 2026\n   ▸ try ⌘K for commands', 'color:#B8C0CC; font-family:monospace; font-size:12px;');
+
+(function(){
+  fetch('https://status.ryanpolasky.com/api/music')
+    .then(r => r.json())
+    .then(d => {
+      const label = document.getElementById('np-label');
+      const value = document.getElementById('np-value');
+      const bar = document.getElementById('np-bar');
+      if(!label||!value) return;
+      label.textContent = d.isPlaying ? 'now playing' : 'last played';
+      value.textContent = d.title + ' — ' + d.artist;
+      if(bar) {
+        if(d.isPlaying) {
+          bar.style.animation = 'np-slide 3s ease-in-out infinite';
+        }
+      }
+      if(d.trackUrl) {
+        value.style.cursor = 'pointer';
+        value.addEventListener('click', () => window.open(d.trackUrl, '_blank'));
+      }
+    })
+    .catch(() => {
+      const v = document.getElementById('np-value');
+      if(v) v.textContent = 'offline';
+    });
+})();
+</script>
+
+</main>
+
+</body>
+</html>
