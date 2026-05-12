@@ -1,0 +1,5 @@
+/assets/music/audio/*.mp3
+  Content-Type: audio/mpeg
+
+/assets/music/audio/*.wav
+  Content-Type: audio/wav

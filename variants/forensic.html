@@ -1,0 +1,1552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<base href="/"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Ryan Polasky - Software Engineer · 2× Apple Intern · UT Dallas '26</title>
+    <meta name="description" content="Ryan Polasky - Junior Software Engineer. Backend systems, AI/LLM tooling, developer productivity. UT Dallas '26. 2× Apple intern. Open May 2026."/>
+    <meta name="keywords" content="Ryan Polasky, ryan polasky, software engineer, backend developer, AI engineer, LLM tooling, Apple intern, UT Dallas, computer science, devops, python, typescript"/>
+    <meta name="author" content="Ryan Polasky"/>
+    <meta name="creator" content="Ryan Polasky"/>
+    <meta name="publisher" content="Ryan Polasky"/>
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"/>
+
+    <link rel="canonical" href="https://ryanpolasky.com/"/>
+
+    <meta property="og:type" content="profile"/>
+    <meta property="og:site_name" content="Ryan Polasky"/>
+    <meta property="og:locale" content="en_US"/>
+    <meta property="og:url" content="https://ryanpolasky.com/"/>
+    <meta property="og:title" content="Ryan Polasky - Software Engineer · 2× Apple Intern"/>
+    <meta property="og:description" content="Junior Software Engineer specializing in backend systems, AI/LLM tooling, and developer productivity. UT Dallas '26. Open May 2026."/>
+    <meta property="og:image" content="https://ryanpolasky.com/assets/images/site-preview.png"/>
+    <meta property="og:image:alt" content="ryan.polasky / runtime - terminal-style status page for Ryan Polasky's personal site"/>
+    <meta property="profile:first_name" content="Ryan"/>
+    <meta property="profile:last_name" content="Polasky"/>
+    <meta property="profile:username" content="ryanpolasky"/>
+
+    <meta name="twitter:card" content="summary_large_image"/>
+    <meta name="twitter:title" content="Ryan Polasky - Software Engineer · 2× Apple Intern"/>
+    <meta name="twitter:description" content="Junior Software Engineer specializing in backend systems, AI/LLM tooling, and developer productivity. UT Dallas '26. Open May 2026."/>
+    <meta name="twitter:image" content="https://ryanpolasky.com/assets/images/site-preview.png"/>
+    <meta name="twitter:image:alt" content="ryan.polasky / runtime - terminal-style status page for Ryan Polasky's personal site"/>
+
+    <meta name="theme-color" content="#E8DCC0"/>
+    <meta name="application-name" content="Ryan Polasky"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+    <meta name="apple-mobile-web-app-title" content="Ryan Polasky"/>
+    <meta name="format-detection" content="telephone=no"/>
+
+<link rel="icon" type="image/png" href="favicon-96x96.png" sizes="96x96"/>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+<link rel="shortcut icon" href="favicon.ico"/>
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png"/>
+<link rel="manifest" href="manifest.json"/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=Crimson+Pro:ital,wght@0,300..700;1,300..700&display=swap" rel="stylesheet"/>
+
+<style>
+:root {
+  --paper: #E8DCC0;
+  --paper-2: #DECF9E;
+  --paper-3: #C9B582;
+  --paper-edge: #B8A371;
+  --paper-shadow: rgba(78, 56, 22, 0.18);
+  --ink: #1A1612;
+  --ink-2: #3D3328;
+  --ink-3: #6B5C46;
+  --ink-fade: #94836A;
+  --stamp: #A02320;
+  --stamp-2: #C2342B;
+  --warn: #C29A3A;
+  --tape: rgba(220, 200, 130, 0.6);
+  --display: 'Special Elite', 'Courier New', monospace;
+  --serif: 'Crimson Pro', 'Times New Roman', serif;
+  --type: 'Courier Prime', 'Courier New', monospace;
+}
+*,*::before,*::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
+/* hard-cap both to viewport width. iOS Safari can leak horizontal overflow
+   through position:sticky children even when body has overflow-x: hidden,
+   so we apply it to html as well and explicitly width:100% both. */
+html, body { width: 100%; max-width: 100%; position: relative; }
+body {
+  font-family: var(--type); background: var(--paper);
+  color: var(--ink); font-size: 15px; line-height: 1.6;
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+  background-image:
+    radial-gradient(ellipse at 20% 0%, rgba(255,240,210,0.4) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 100%, rgba(140,110,60,0.08) 0%, transparent 50%),
+    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(50,40,20,0.012) 2px, rgba(50,40,20,0.012) 3px);
+  min-height: 100vh;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+*, *::before, *::after { box-sizing: border-box; }
+::selection { background: var(--stamp); color: var(--paper); }
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; }
+img { display: block; max-width: 100%; }
+
+/* paper grain */
+body::before {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 1;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.6' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.18  0 0 0 0 0.13  0 0 0 0 0.07  0 0 0 0.16 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  opacity: 0.55; mix-blend-mode: multiply;
+}
+body::after {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 2;
+  background-image:
+    radial-gradient(circle at 86% 14%, rgba(120, 60, 20, 0.08) 0%, transparent 5%),
+    radial-gradient(circle at 86% 14%, transparent 5%, rgba(120, 60, 20, 0.04) 5.4%, transparent 7%);
+  mix-blend-mode: multiply;
+}
+
+.shell { max-width: 1280px; margin: 0 auto; padding: 0 28px; position: relative; z-index: 3; }
+@media (max-width: 720px) { .shell { padding: 0 18px; } }
+
+/* ─── case bar ─── */
+.case-bar {
+  position: sticky; top: 0; z-index: 30;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--type); font-size: 11px;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  border-bottom: 4px double var(--paper-edge);
+}
+.case-bar .row { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; height: 38px; padding: 0 28px; gap: 24px; }
+.case-bar .l, .case-bar .r { display: flex; gap: 18px; align-items: center; }
+.case-bar .r { justify-content: flex-end; }
+.case-bar .c { font-family: var(--display); font-size: 14px; letter-spacing: 0.08em; color: var(--paper); white-space: nowrap; }
+.case-bar .c b { color: var(--stamp-2); font-weight: 400; }
+.case-bar .pulse { width: 7px; height: 7px; background: var(--stamp-2); border-radius: 50%; animation: pulse 1.6s ease-in-out infinite; display: inline-block; }
+@keyframes pulse { 0%,100%{box-shadow: 0 0 0 0 rgba(194,52,43,0.7);} 50%{box-shadow: 0 0 0 6px rgba(194,52,43,0);} }
+.case-bar a { color: var(--paper); border-bottom: 1px dotted rgba(255,255,255,0.3); }
+.case-bar a:hover { color: var(--stamp-2); border-bottom-color: var(--stamp-2); }
+/* On phones, the nowrap CASE 2026-04-RP / SUBJECT line in the auto track was
+   inflating the row to ~520px and forcing logical body width past the
+   viewport. Stack the row vertically and let the case-id wrap. */
+@media (max-width: 720px) {
+  .case-bar .row {
+    grid-template-columns: 1fr;
+    gap: 4px;
+    padding: 6px 16px;
+    height: auto; min-height: 38px;
+    justify-items: center; text-align: center;
+  }
+  .case-bar .l { gap: 12px; font-size: 10px; justify-content: center; flex-wrap: wrap; min-width: 0; }
+  .case-bar .c { white-space: normal; line-height: 1.25; font-size: 12px; }
+  .case-bar .r { display: none; }
+}
+
+/* ─── tab nav ─── */
+.tabs {
+  background: var(--paper);
+  border-bottom: 2px solid var(--ink);
+  position: sticky; top: 38px; z-index: 28;
+  padding: 14px 28px 0;
+  display: flex; gap: 0; overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch;
+}
+.tabs a {
+  flex-shrink: 0;
+  font-family: var(--display); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--ink-2); padding: 8px 16px;
+  background: linear-gradient(180deg, var(--paper-2) 0%, var(--paper-3) 100%);
+  border: 2px solid var(--ink); border-bottom: 0;
+  border-radius: 6px 6px 0 0; margin-right: -2px;
+  position: relative; top: 4px;
+  transition: top 0.2s, background 0.2s, color 0.2s;
+}
+.tabs a:hover { top: 0; background: var(--paper); }
+.tabs a.active { top: 0; background: var(--paper); color: var(--stamp); border-bottom: 2px solid var(--paper); z-index: 1; box-shadow: 0 -2px 0 var(--paper); }
+.tabs a small { display: block; font-family: var(--type); font-size: 9.5px; letter-spacing: 0.1em; color: var(--ink-3); margin-top: 1px; text-transform: uppercase; }
+@media (max-width: 720px) { .tabs { padding: 10px 16px 0; } .tabs a { padding: 6px 11px; font-size: 10.5px; } }
+
+/* ─── stamps ─── */
+.stamp {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--display); font-size: 14px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--stamp); border: 3px double var(--stamp);
+  padding: 6px 14px; transform: rotate(-4deg);
+  background: rgba(232, 220, 192, 0.4);
+  text-shadow: 0 0 1px rgba(160, 35, 32, 0.3);
+  letter-spacing: 0.18em;
+  filter: contrast(1.1);
+}
+.stamp.lg { font-size: 22px; padding: 10px 22px; border-width: 4px; }
+.stamp.green { color: #4A6B3F; border-color: #4A6B3F; }
+.stamp.tilt-r { transform: rotate(4deg); }
+.stamp.tilt-0 { transform: rotate(-1deg); }
+.stamp.flat { display: inline-block; padding: 4px 10px; font-size: 11px; transform: none; border-width: 2px; letter-spacing: 0.1em; }
+
+/* ─── folder body wrapper ─── */
+.folder {
+  margin: 32px auto;
+  background: var(--paper);
+  border: 1px solid var(--paper-edge);
+  box-shadow: 0 1px 0 var(--paper-2), 0 30px 60px -30px var(--paper-shadow), 0 8px 24px -16px var(--paper-shadow);
+  position: relative;
+  padding: 32px 32px 40px;
+}
+.folder::before {
+  content: ''; position: absolute; top: -14px; left: 56px;
+  width: 180px; height: 22px; background: var(--paper-2);
+  border: 1px solid var(--paper-edge); border-bottom: 0;
+  border-radius: 6px 6px 0 0;
+  font-family: var(--display); font-size: 11px; line-height: 22px; text-align: center;
+  color: var(--ink-2); letter-spacing: 0.16em; text-transform: uppercase;
+  content: 'CASE 2026-04-RP';
+}
+.folder::after {
+  content: ''; position: absolute; top: -14px; right: 0; width: 80px; height: 14px;
+  background: linear-gradient(180deg, transparent 0, transparent 50%, var(--paper) 50%, var(--paper) 100%),
+              repeating-linear-gradient(45deg, var(--stamp) 0 8px, var(--paper) 8px 16px);
+}
+@media (max-width: 600px) { .folder { padding: 22px 20px 28px; } .folder::before { left: 16px; width: 140px; font-size: 10px; } }
+
+/* ─── hero / subject profile ─── */
+.profile { display: grid; grid-template-columns: 280px 1fr 220px; gap: 32px; padding-bottom: 28px; border-bottom: 1px solid var(--paper-edge); margin-bottom: 28px; align-items: start; }
+@media (max-width: 1000px) { .profile { grid-template-columns: 200px 1fr; } .profile .stamps-col { grid-column: 1 / -1; flex-direction: row; gap: 18px; padding: 18px 0 0; border-top: 1px solid var(--paper-edge); margin-top: 18px; } }
+@media (max-width: 600px) { .profile { grid-template-columns: 1fr; } }
+
+.subject-photo {
+  position: relative;
+  width: 100%; aspect-ratio: 4 / 5;
+  background: var(--paper-3);
+  border: 1px solid var(--ink-2);
+  padding: 8px;
+  box-shadow: 4px 6px 0 0 var(--paper-edge), 0 24px 40px -24px var(--paper-shadow);
+  transform: rotate(-2deg);
+}
+.subject-photo img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(0.75) contrast(0.95) sepia(0.18); }
+.subject-photo::before {
+  content: 'EVIDENCE PHOTO #001'; position: absolute; left: 8px; bottom: -28px; right: 8px;
+  font-family: var(--display); font-size: 11px; letter-spacing: 0.18em; color: var(--ink-2);
+  text-align: center; text-transform: uppercase;
+}
+.subject-photo::after {
+  content: ''; position: absolute; top: -14px; left: 50%; transform: translateX(-50%) rotate(-4deg);
+  width: 76px; height: 22px; background: var(--tape);
+  border-left: 1px dashed rgba(120,90,40,0.25); border-right: 1px dashed rgba(120,90,40,0.25);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+}
+
+.subject-info h1 {
+  font-family: var(--display); font-size: clamp(34px, 4.4vw, 52px);
+  font-weight: 400; line-height: 1; margin: 0 0 6px;
+  letter-spacing: 0.01em; color: var(--ink);
+}
+.subject-info h1::before { content: '▶ '; color: var(--stamp); font-size: 0.7em; vertical-align: 4px; }
+.subject-info .alias {
+  font-family: var(--type); font-size: 12.5px; color: var(--ink-3);
+  letter-spacing: 0.06em; margin-bottom: 18px;
+}
+.subject-info .alias b { color: var(--ink-2); font-weight: 700; }
+
+.field-grid {
+  display: grid; grid-template-columns: 130px 1fr; gap: 10px 18px;
+  font-family: var(--type); font-size: 13px; line-height: 1.5;
+  border-top: 1px dashed var(--ink-3); padding-top: 14px; margin-top: 10px;
+  min-width: 0;
+}
+.field-grid dt { color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.08em; font-size: 11px; padding-top: 2px; }
+.field-grid dd { margin: 0; color: var(--ink); min-width: 0; }
+#np-forensic { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; max-width: 100%; }
+.field-grid dd b { color: var(--stamp); font-weight: 700; }
+
+.profile-summary {
+  margin-top: 18px; padding-top: 16px; border-top: 1px dashed var(--ink-3);
+  font-family: var(--serif); font-size: 17px; line-height: 1.55; color: var(--ink-2);
+  max-width: 64ch;
+}
+.profile-summary em { font-style: italic; color: var(--stamp); font-weight: 600; }
+
+.profile-cta { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 12px; }
+.btn-cf {
+  display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px;
+  font-family: var(--display); font-size: 12.5px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--paper); background: var(--ink); border: 2px solid var(--ink);
+  cursor: pointer; transition: background 0.15s, color 0.15s;
+}
+.btn-cf:hover { background: var(--stamp); border-color: var(--stamp); color: var(--paper); }
+.btn-cf.alt { background: transparent; color: var(--ink); }
+.btn-cf.alt:hover { background: var(--ink); color: var(--paper); }
+.btn-cf.stamp-y { background: var(--stamp); border-color: var(--stamp); color: var(--paper); }
+.btn-cf.stamp-y:hover { background: var(--ink); border-color: var(--ink); }
+.btn-cf .arr { font-size: 14px; }
+
+.stamps-col { display: flex; flex-direction: column; gap: 14px; align-items: flex-end; padding-top: 8px; }
+
+/* ─── section headings (numbered exhibit) ─── */
+.exhibit { padding: 36px 0 8px; position: relative; }
+.exhibit + .exhibit { border-top: 1px dashed var(--ink-3); }
+.exhibit-head { display: grid; grid-template-columns: auto 1fr auto; gap: 18px; align-items: end; padding-bottom: 18px; border-bottom: 2px solid var(--ink); margin-bottom: 24px; }
+.exhibit-head .num {
+  font-family: var(--display); font-size: 14px; letter-spacing: 0.18em; color: var(--ink-3);
+  text-transform: uppercase; padding: 4px 10px; border: 2px solid var(--ink-2); background: var(--paper-2);
+}
+.exhibit-head h2 {
+  margin: 0; font-family: var(--display); font-size: clamp(28px, 3.6vw, 44px);
+  font-weight: 400; line-height: 1; color: var(--ink); letter-spacing: 0.005em;
+}
+.exhibit-head h2 small { display: block; font-family: var(--type); font-size: 12px; color: var(--ink-3); letter-spacing: 0.16em; text-transform: uppercase; margin-top: 6px; font-weight: normal; }
+.exhibit-head .meta { font-family: var(--type); font-size: 11px; color: var(--ink-3); letter-spacing: 0.08em; text-transform: uppercase; text-align: right; }
+
+/* ─── about: personality assessment ─── */
+.assessment { display: grid; grid-template-columns: 1.6fr 1fr; gap: 32px; align-items: start; }
+.assessment-prose { font-family: var(--serif); font-size: 17.5px; line-height: 1.65; color: var(--ink); max-width: 60ch; }
+.assessment-prose p { margin: 0 0 14px; }
+.assessment-prose em { font-style: italic; color: var(--stamp); font-weight: 600; }
+.assessment-prose strong { color: var(--ink); font-weight: 700; }
+
+.tags-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; padding-top: 16px; border-top: 1px dashed var(--ink-3); }
+.tags-row span { font-family: var(--display); font-size: 11.5px; letter-spacing: 0.1em; padding: 4px 10px; border: 2px solid var(--ink-2); color: var(--ink); text-transform: uppercase; background: var(--paper-2); }
+
+.assessment-side {
+  background: var(--paper-2); border: 1px solid var(--ink-2); padding: 18px;
+  position: relative;
+}
+.assessment-side::before {
+  content: '⏃'; position: absolute; top: -10px; left: 16px;
+  font-size: 22px; transform: rotate(-12deg); color: var(--ink-2);
+}
+.assessment-side h3 { font-family: var(--display); font-size: 14px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 14px; color: var(--ink); padding-bottom: 8px; border-bottom: 1px solid var(--ink-3); }
+.assessment-side dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 8px 14px; font-family: var(--type); font-size: 13px; }
+.assessment-side dt { color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.08em; font-size: 11px; }
+.assessment-side dd { margin: 0; color: var(--ink); }
+.assessment-side .pq {
+  margin-top: 18px; padding-top: 16px; border-top: 1px dashed var(--ink-3);
+  font-family: var(--serif); font-style: italic; font-size: 18px; line-height: 1.4; color: var(--ink-2);
+}
+.assessment-side .pq::before { content: '"'; color: var(--stamp); margin-right: 2px; }
+.assessment-side .pq::after { content: '"'; color: var(--stamp); margin-left: 2px; }
+
+@media (max-width: 800px) { .assessment { grid-template-columns: 1fr; gap: 22px; } }
+
+/* ─── experience: chain of evidence ─── */
+.coc-list { list-style: none; padding: 0; margin: 0; counter-reset: coc; }
+.coc-list > li {
+  counter-increment: coc;
+  display: grid; grid-template-columns: 56px 1fr 220px; gap: 24px;
+  padding: 22px 0; border-bottom: 1px dashed var(--ink-3);
+  align-items: start;
+}
+.coc-list > li:last-child { border-bottom: 0; }
+.coc-list .ord {
+  font-family: var(--display); font-size: 28px; line-height: 1; color: var(--stamp);
+  border: 2px solid var(--stamp); padding: 10px 8px; text-align: center;
+  background: var(--paper-2);
+}
+.coc-list .ord::before { content: '#0' counter(coc); display: block; font-size: 24px; line-height: 1; }
+.coc-list h3 { font-family: var(--display); font-size: 22px; line-height: 1.15; margin: 0 0 4px; color: var(--ink); font-weight: 400; letter-spacing: 0.01em; }
+.coc-list .org { font-family: var(--type); font-size: 11.5px; color: var(--ink-3); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; }
+.coc-list .body { font-family: var(--serif); font-size: 16.5px; line-height: 1.6; color: var(--ink); }
+.coc-list .body p { margin: 0 0 8px; }
+.coc-list .body em { font-style: italic; color: var(--stamp); font-weight: 600; }
+.coc-list .meta { font-family: var(--type); font-size: 11.5px; color: var(--ink-3); line-height: 1.5; padding-top: 4px; }
+.coc-list .meta b { display: block; color: var(--ink); font-family: var(--display); font-size: 13px; letter-spacing: 0.06em; margin-bottom: 3px; }
+.coc-list .meta .stamp { margin-top: 10px; font-size: 10.5px; padding: 3px 8px; border-width: 2px; }
+
+@media (max-width: 800px) { .coc-list > li { grid-template-columns: 1fr; } .coc-list .meta { padding-top: 8px; } }
+
+/* ─── projects: case files ─── */
+.cases { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; }
+@media (max-width: 900px) { .cases { grid-template-columns: 1fr; } }
+.case {
+  background: var(--paper); border: 1px solid var(--ink-2); padding: 22px;
+  position: relative;
+  box-shadow: 2px 4px 0 0 var(--paper-edge), 0 14px 30px -16px var(--paper-shadow);
+}
+.case::before {
+  content: '📎'; position: absolute; top: -10px; left: 18px;
+  font-size: 22px; transform: rotate(-15deg); filter: grayscale(0.8) sepia(0.4);
+}
+.case .case-id {
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+  font-family: var(--display); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-3); margin-bottom: 6px;
+}
+.case .case-id .no { color: var(--stamp); font-weight: 700; }
+.case h3 {
+  font-family: var(--display); font-size: 24px; line-height: 1.05; margin: 0 0 10px;
+  color: var(--ink); font-weight: 400; letter-spacing: 0;
+}
+.case .lede { font-family: var(--serif); font-size: 16.5px; line-height: 1.5; color: var(--ink-2); margin: 0 0 16px; }
+.case .lede em { font-style: italic; color: var(--stamp); font-weight: 600; }
+
+.case-grid { display: grid; grid-template-columns: 96px 1fr; gap: 8px 12px; padding: 12px 0; border-top: 1px dashed var(--ink-3); border-bottom: 1px dashed var(--ink-3); }
+.case-grid dt { font-family: var(--display); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); padding-top: 2px; }
+.case-grid dd { margin: 0; font-family: var(--type); font-size: 13px; color: var(--ink); }
+.case-grid dd em { font-style: italic; color: var(--stamp); font-weight: 700; }
+
+.case-bottom { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; padding-top: 12px; }
+.case .tags { display: flex; gap: 4px; flex-wrap: wrap; }
+.case .tags span { font-family: var(--type); font-size: 11px; padding: 2px 8px; border: 1px solid var(--ink-3); color: var(--ink-2); background: var(--paper-2); }
+.case .links { font-family: var(--display); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; }
+.case .links a { color: var(--stamp); border-bottom: 1px solid var(--stamp); }
+.case .links a:hover { color: var(--ink); border-bottom-color: var(--ink); }
+.case .links .muted { color: var(--ink-3); }
+
+/* ─── skills: forensic toolkit ─── */
+.toolkit { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+@media (max-width: 1000px) { .toolkit { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .toolkit { grid-template-columns: 1fr; } }
+.tool-cabinet {
+  background: var(--paper-2); border: 2px solid var(--ink-2);
+  padding: 18px; position: relative;
+}
+.tool-cabinet h3 { font-family: var(--display); font-size: 14px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 4px; color: var(--ink); border-bottom: 2px solid var(--ink-2); padding-bottom: 8px; }
+.tool-cabinet .sub { font-family: var(--type); font-size: 11px; color: var(--ink-3); letter-spacing: 0.06em; margin: 6px 0 14px; }
+.tool-cabinet ul { list-style: none; padding: 0; margin: 0; }
+.tool-cabinet li {
+  display: grid; grid-template-columns: 1fr auto; gap: 8px;
+  font-family: var(--type); font-size: 13px; padding: 6px 0; align-items: center;
+  border-bottom: 1px dotted var(--ink-3);
+}
+.tool-cabinet li:last-child { border-bottom: 0; }
+.tool-cabinet li b { color: var(--ink); font-weight: 700; }
+.tool-cabinet li .lvl { font-size: 10.5px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.08em; }
+.tool-cabinet li.adv .lvl { color: var(--stamp); font-weight: 700; }
+.tool-cabinet .also { font-family: var(--type); font-size: 11.5px; color: var(--ink-3); margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--ink-3); font-style: italic; }
+.tool-cabinet::before {
+  content: ''; position: absolute; top: -8px; left: -8px; width: 22px; height: 22px;
+  background: repeating-linear-gradient(45deg, var(--ink-2) 0 4px, transparent 4px 8px);
+}
+
+/* ─── testimonials: witness statements ─── */
+.witness { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+@media (max-width: 1000px) { .witness { grid-template-columns: 1fr; } }
+.statement {
+  background: var(--paper); border: 1px solid var(--ink-2);
+  padding: 22px; position: relative;
+  box-shadow: 0 12px 30px -18px var(--paper-shadow);
+}
+.statement::before {
+  content: 'WITNESS STATEMENT'; position: absolute; top: 14px; right: 14px;
+  font-family: var(--display); font-size: 9px; letter-spacing: 0.18em; color: var(--ink-3);
+  border: 1px solid var(--ink-3); padding: 2px 6px;
+}
+.statement .stmt-id { font-family: var(--type); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 14px; }
+.statement blockquote {
+  margin: 0; font-family: var(--serif); font-size: 17px; line-height: 1.55; color: var(--ink);
+  font-style: italic;
+}
+.statement blockquote::before { content: '"'; color: var(--stamp); margin-right: 2px; font-weight: 700; }
+.statement blockquote::after { content: '"'; color: var(--stamp); margin-left: 2px; font-weight: 700; }
+.statement .signed { margin-top: 16px; padding-top: 12px; border-top: 1px dashed var(--ink-3); font-family: var(--type); font-size: 12px; color: var(--ink); display: flex; justify-content: space-between; align-items: end; gap: 12px; }
+.statement .signed .name { font-family: var(--display); font-size: 16px; font-weight: 400; color: var(--ink); }
+.statement .signed .name a { color: inherit; border-bottom: 1px dotted var(--ink-3); }
+.statement .signed .name a:hover { color: var(--stamp); border-bottom-color: var(--stamp); }
+.statement .signed .role { font-size: 11px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 2px; }
+.statement .signed .seal { font-family: var(--display); font-size: 9.5px; letter-spacing: 0.16em; color: var(--stamp); border: 1.5px solid var(--stamp); padding: 3px 8px; transform: rotate(-3deg); }
+
+/* ─── contact: file new report ─── */
+.report-grid { display: grid; grid-template-columns: 1fr 360px; gap: 24px; align-items: start; }
+@media (max-width: 880px) { .report-grid { grid-template-columns: 1fr; } }
+.report-form { background: var(--paper); border: 2px solid var(--ink-2); padding: 22px; position: relative; }
+.report-form::before {
+  content: ''; position: absolute; top: -1px; left: -1px; right: -1px; height: 22px;
+  background: var(--ink-2);
+}
+.report-form .head {
+  position: absolute; top: 0; left: 0; right: 0; height: 22px;
+  display: flex; align-items: center; padding: 0 14px; gap: 16px;
+  font-family: var(--display); font-size: 11px; color: var(--paper); letter-spacing: 0.16em; text-transform: uppercase;
+}
+.report-form .head .pulse { background: var(--stamp-2); }
+.report-form .body { padding-top: 24px; }
+.report-form h3 { font-family: var(--display); font-size: 22px; font-weight: 400; margin: 0 0 4px; color: var(--ink); letter-spacing: 0.01em; }
+.report-form .sub { font-family: var(--type); font-size: 12.5px; color: var(--ink-3); margin-bottom: 18px; }
+.report-form .fld { display: grid; gap: 6px; margin-bottom: 14px; }
+.report-form .fld label { font-family: var(--display); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink); }
+.report-form .fld input,
+.report-form .fld textarea {
+  font-family: var(--type); font-size: 14.5px; color: var(--ink);
+  background: rgba(255,255,255,0.4); border: 1px solid var(--ink-3);
+  padding: 10px 12px; outline: 0;
+  border-radius: 0; transition: border-color 0.2s, background 0.2s;
+}
+.report-form .fld input:focus, .report-form .fld textarea:focus { border-color: var(--stamp); background: rgba(255,255,255,0.7); }
+.report-form .fld textarea { resize: vertical; min-height: 110px; }
+.report-form .fld-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 600px) { .report-form .fld-row { grid-template-columns: 1fr; } }
+
+.intake { background: var(--paper-2); border: 2px solid var(--ink-2); padding: 0; position: relative; }
+.intake .head { background: var(--ink-2); color: var(--paper); padding: 6px 14px; font-family: var(--display); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; }
+.intake ul { list-style: none; padding: 0; margin: 0; }
+.intake li { padding: 14px 16px; border-bottom: 1px dashed var(--ink-3); display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center; }
+.intake li:last-child { border-bottom: 0; }
+.intake .ic {
+  width: 32px; height: 32px; display: grid; place-items: center;
+  background: var(--paper); border: 2px solid var(--ink-2);
+  font-family: var(--display); font-size: 13px; color: var(--ink);
+  /* shift the glyph down 1px optically (padding eats from top, so the
+     place-items: center anchor moves down by half the padding). */
+  padding-top: 2px;
+}
+/* email + phone use bigger symbol glyphs; the alphabetic 'in' / 'gh' tags
+   keep the smaller display-font size. all four still get the 1px nudge. */
+.intake li:nth-child(1) .ic,
+.intake li:nth-child(2) .ic { font-size: 18px; }
+.intake .label { font-family: var(--type); font-size: 11.5px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.08em; }
+.intake .val { font-family: var(--display); font-size: 14px; color: var(--ink); }
+.intake .val a { color: inherit; border-bottom: 1px dotted var(--ink-3); }
+.intake .val a:hover { color: var(--stamp); border-bottom-color: var(--stamp); }
+.intake .arr { color: var(--ink-3); }
+.intake li:hover .arr { color: var(--stamp); }
+.intake .avail { padding: 14px 16px; font-family: var(--type); font-size: 12px; color: var(--ink-2); display: flex; align-items: center; gap: 8px; border-top: 1px dashed var(--ink-3); }
+.intake .avail b { color: var(--stamp); font-weight: 700; }
+
+/* ─── mobile-overflow defenses ─────────────────────────────────────────────
+   Long unbreakable strings (emails, URLs, filenames in `<dd>`s and meta lines)
+   were forcing their parent grid track past the viewport. body has
+   overflow-x:hidden so the scrollbar was suppressed, but margin:auto centering
+   still resolved against the inflated logical width, putting the page off
+   center to the left on phones. Cap min-width to 0 on the offending grid
+   items and let long strings break at any character. */
+.intake li > div { min-width: 0; }
+.intake .val { overflow-wrap: anywhere; word-break: break-word; }
+.intake .val a { word-break: break-word; max-width: 100%; }
+.case-grid dd { min-width: 0; overflow-wrap: anywhere; word-break: break-word; }
+.coc-list .meta { min-width: 0; overflow-wrap: anywhere; word-break: break-word; }
+.foot-pn { flex-wrap: wrap; min-width: 0; }
+.foot-pn span { min-width: 0; overflow-wrap: anywhere; word-break: break-word; }
+.foot-r { min-width: 0; }
+.foot-r span { overflow-wrap: anywhere; word-break: break-word; }
+.case .links a { word-break: break-word; }
+.assessment-side dd { overflow-wrap: anywhere; word-break: break-word; }
+.field-grid dd { overflow-wrap: anywhere; word-break: break-word; }
+
+/* ─── profile section: lock everything to viewport on phones ───────────────
+   The .profile grid (and every descendant) was being inflated by the
+   middle-dot-separated lists in .alias and .field-grid dd, the long
+   profile-summary paragraph, and the stamps. min-width: auto on grid items
+   = min-content of children, which propagates the widest unbreakable run
+   up the tree until it forces .folder, .shell, and body wider than the
+   viewport. Below 720px we hard-cap every level and force any text to
+   break at any character if it has to. */
+@media (max-width: 720px) {
+  .profile,
+  .profile > *,
+  .profile > * > *,
+  .subject-info,
+  .stamps-col { min-width: 0; max-width: 100%; }
+
+  /* (3) alias line is hidden entirely on phones - too long for the column
+     and not essential for the recruiter pass. */
+  .subject-info .alias { display: none; }
+
+  /* (5) modus operandi / (6) profile summary - allow breaks mid-string so
+     middle-dot or word-joined runs don't inflate the parent. */
+  .subject-info .field-grid dd,
+  .subject-info .field-grid dd *,
+  .subject-info .profile-summary,
+  .subject-info .profile-summary * {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    max-width: 100%;
+  }
+
+  /* (2) POLASKY, RYAN was kissing the evidence-photo caption - the photo's
+     ::before sits at bottom:-28px which mostly absorbs the .profile gap,
+     so we add padding to .subject-info to put real space between them. */
+  .subject-info { padding-top: 18px; }
+  .subject-info h1 { margin-top: 0; }
+
+  /* (4) profile bottom border was extending past the viewport because the
+     grid was inflated. Now constrained, the border lives inside .folder. */
+  .profile { padding-left: 0; padding-right: 0; }
+
+  /* (7) the rotated REVIEWED / FILED / etc. stamps in .stamps-col were
+     overflowing because flex-direction: row at ≤1000 has no flex-wrap and
+     each stamp's rotated bounding box pushes wider. */
+  .stamps-col {
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+  }
+  .stamps-col .stamp { max-width: 100%; }
+
+  /* (1) case-bar: belt-and-suspenders. The grid restructure above stacks the
+     row vertically, but make absolutely sure no descendant can leak past. */
+  .case-bar { max-width: 100%; }
+  .case-bar .row { max-width: 100%; min-width: 0; }
+  .case-bar .l span,
+  .case-bar .c { max-width: 100%; min-width: 0; }
+}
+
+/* ─── footer ─── */
+.foot { padding: 28px 0 60px; border-top: 2px double var(--ink-2); margin-top: 28px; font-family: var(--type); font-size: 12.5px; color: var(--ink-2); }
+.foot-grid { display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: end; }
+.foot-mark .name { font-family: var(--display); font-size: 38px; line-height: 1; color: var(--ink); margin: 0; letter-spacing: 0.02em; }
+.foot-mark .name span { color: var(--stamp); }
+.foot-mark .tag { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3); margin-top: 10px; }
+.foot-r { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; text-align: right; font-size: 11px; letter-spacing: 0.06em; color: var(--ink-3); text-transform: uppercase; }
+.foot-r a { color: var(--ink); border-bottom: 1px dotted var(--ink-3); }
+.foot-r a:hover { color: var(--stamp); border-bottom-color: var(--stamp); }
+.foot-r .ring { display: flex; gap: 6px; align-items: center; margin-top: 8px; }
+.foot-r .ring a { width: 28px; height: 28px; display: grid; place-items: center; border: 1px solid var(--ink-3); padding: 0; }
+.foot-r .ring a:hover { color: var(--stamp); border-color: var(--stamp); }
+.foot-r .ring img { width: 16px; height: 16px; display: block; filter: brightness(0); opacity: 0.7; transition: opacity 0.18s; }
+.foot-r .ring a:hover img { opacity: 1; }
+@media (max-width: 720px) { .foot-grid { grid-template-columns: 1fr; } .foot-r { align-items: flex-start; text-align: left; } }
+.foot-pn { margin-top: 22px; padding-top: 14px; border-top: 1px dashed var(--ink-3); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; font-size: 11px; letter-spacing: 0.06em; }
+
+/* ─── reveal ─── */
+.reveal { opacity: 0; transform: translateY(8px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.in { opacity: 1; transform: translateY(0); }
+.scroll-mt { scroll-margin-top: 96px; }
+
+/* ─── compact phones (mirrors the observability/apple ≤480 treatment) ───
+   - case-bar / tabs lose decorative breathing room and per-tab subtitles;
+   - folder shell tightens, profile photo constrains so single-column doesn't
+     blow up to fill the viewport;
+   - exhibit head drops the right-side PAGES meta (decoration only) and
+     stacks num + h2 in two columns so the title isn't squeezed;
+   - field grid stacks dt above dd at this width — three-fifths of the
+     screen for a 130px label column was painful;
+   - card padding (.coc-list, .case, .statement, .tool-cabinet, etc.)
+     compresses one step. */
+@media (max-width: 480px) {
+  .case-bar .row { padding: 0 12px; height: 34px; gap: 10px; }
+  .case-bar .c { font-size: 12px; letter-spacing: 0.04em; }
+  .case-bar .l { gap: 10px; font-size: 10px; }
+  .tabs { padding: 8px 12px 0; }
+  .tabs a { padding: 5px 10px; font-size: 10px; }
+  .tabs a small { display: none; }
+  .folder { padding: 18px 14px 22px; margin: 18px auto; }
+  .folder::before { left: 12px; width: 110px; font-size: 9px; }
+  .profile { gap: 18px; }
+  .subject-photo { max-width: 220px; margin: 0 auto; }
+  .subject-info h1 { font-size: clamp(28px, 8vw, 40px); }
+  .field-grid { grid-template-columns: 1fr; gap: 4px 0; padding-top: 10px; }
+  .field-grid dt { margin-top: 8px; padding-top: 0; }
+  .field-grid dt:first-of-type { margin-top: 0; }
+  .profile-summary { font-size: 15.5px; line-height: 1.5; }
+  .profile-cta { gap: 8px; }
+  .btn-cf { padding: 8px 12px; font-size: 11px; letter-spacing: 0.08em; }
+  .stamps-col { gap: 10px; padding-top: 10px; }
+  .stamp { font-size: 12px; padding: 4px 10px; }
+  .stamp.lg { font-size: 16px; padding: 6px 14px; }
+  .exhibit { padding: 24px 0 4px; }
+  .exhibit-head { grid-template-columns: auto 1fr; gap: 12px; padding-bottom: 14px; margin-bottom: 18px; }
+  .exhibit-head .meta { display: none; }
+  .exhibit-head h2 { font-size: clamp(22px, 6vw, 32px); }
+  .exhibit-head h2 small { font-size: 10.5px; margin-top: 4px; letter-spacing: 0.1em; }
+  .exhibit-head .num { padding: 3px 8px; font-size: 12px; }
+  .assessment-prose { font-size: 16px; line-height: 1.55; }
+  .assessment-side { padding: 14px; }
+  .coc-list > li { padding: 18px 0; gap: 14px; }
+  .coc-list h3 { font-size: 19px; }
+  .coc-list .body { font-size: 15.5px; line-height: 1.55; }
+  .case { padding: 18px; }
+  .case h3 { font-size: 20px; }
+  .case .lede { font-size: 15px; }
+  .tool-cabinet { padding: 16px; }
+  .statement { padding: 16px; }
+  .statement::before { font-size: 8.5px; padding: 1px 5px; }
+  .report-form .body { padding: 18px; }
+  .intake li { padding: 12px 14px; gap: 12px; }
+  .intake .val { font-size: 13px; }
+  .foot-pn { font-size: 10px; gap: 6px; }
+  /* (white-space and .l constraints already set in the 720px rule above) */
+  .assessment-side dl { grid-template-columns: 1fr; gap: 4px 0; }
+  .assessment-side dt { margin-top: 6px; }
+  .assessment-side dt:first-of-type { margin-top: 0; }
+  .case-grid { grid-template-columns: 1fr; gap: 4px 0; }
+  .case-grid dt { margin-top: 6px; }
+  .case-grid dt:first-of-type { margin-top: 0; }
+  .foot-mark .name { font-size: clamp(26px, 8vw, 38px); }
+  .statement .signed { flex-direction: column; align-items: flex-start; }
+}
+</style>
+
+<script type="application/ld+json">
+    {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://ryanpolasky.com/#person",
+      "name": "Ryan Polasky",
+      "givenName": "Ryan",
+      "familyName": "Polasky",
+      "alternateName": "ryan.polasky",
+      "url": "https://ryanpolasky.com/",
+      "image": "https://ryanpolasky.com/assets/images/my-avatar.png",
+      "email": "mailto:ryanpolasky@hotmail.com",
+      "jobTitle": "Software Engineer",
+      "description": "Junior Software Engineer specializing in backend systems, AI/LLM tooling, test automation, and developer productivity. UT Dallas '26 graduate and 2\u00d7 Apple intern.",
+      "address": {
+        "@type": "PostalAddress",
+        "addressRegion": "ND",
+        "addressCountry": "US"
+      },
+      "alumniOf": {
+        "@type": "CollegeOrUniversity",
+        "name": "The University of Texas at Dallas",
+        "url": "https://www.utdallas.edu/",
+        "sameAs": "https://en.wikipedia.org/wiki/University_of_Texas_at_Dallas"
+      },
+      "knowsAbout": [
+        "Software Engineering",
+        "Backend Development",
+        "Artificial Intelligence",
+        "Large Language Models",
+        "Developer Tooling",
+        "DevOps",
+        "Test Automation",
+        "CI/CD",
+        "Python",
+        "TypeScript",
+        "Cloud Infrastructure"
+      ],
+      "sameAs": [
+        "https://www.linkedin.com/in/ryan-polasky/",
+        "https://github.com/ryanpolasky"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://ryanpolasky.com/#website",
+      "url": "https://ryanpolasky.com/",
+      "name": "Ryan Polasky",
+      "alternateName": "ryan.polasky / runtime",
+      "description": "Personal site of Ryan Polasky \u2014 Junior Software Engineer specializing in backend systems, AI/LLM tooling, and developer productivity.",
+      "inLanguage": "en",
+      "publisher": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "author": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "copyrightHolder": {
+        "@id": "https://ryanpolasky.com/#person"
+      }
+    },
+    {
+      "@type": "ProfilePage",
+      "@id": "https://ryanpolasky.com/#profile",
+      "url": "https://ryanpolasky.com/",
+      "name": "Ryan Polasky - Software Engineer",
+      "isPartOf": {
+        "@id": "https://ryanpolasky.com/#website"
+      },
+      "about": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "mainEntity": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "primaryImageOfPage": "https://ryanpolasky.com/assets/images/my-avatar.png"
+    },
+    {
+      "@type": "VideoGame",
+      "@id": "https://crashdle.com/#game",
+      "name": "Crashdle",
+      "url": "https://crashdle.com/",
+      "description": "Daily 5-letter word puzzle paired with a live crash multiplier bonus round. Solve the word in six guesses, then optionally risk your winnings on a real-time crash game.",
+      "image": "https://crashdle.com/og.webp",
+      "genre": [
+        "Word Game",
+        "Puzzle",
+        "Casual"
+      ],
+      "playMode": "SinglePlayer",
+      "gamePlatform": "Web Browser",
+      "applicationCategory": "GameApplication",
+      "operatingSystem": "Any",
+      "inLanguage": "en",
+      "creator": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "author": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "publisher": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      }
+    },
+    {
+      "@type": "WebApplication",
+      "@id": "https://ryplay.dev/#app",
+      "name": "ryplay",
+      "alternateName": "ryplay - Your Music, Visualized",
+      "url": "https://ryplay.dev/",
+      "description": "A real-time music dashboard powered by Last.fm. Visualize your listening habits, track streaks, and share your music taste.",
+      "image": "https://ryplay.dev/og.webp",
+      "applicationCategory": "MultimediaApplication",
+      "applicationSubCategory": "Music Visualization",
+      "operatingSystem": "Any",
+      "inLanguage": "en",
+      "creator": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "author": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "publisher": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      }
+    },
+    {
+      "@type": "WebApplication",
+      "@id": "https://ryme.md/#app",
+      "name": "RyMe.md",
+      "alternateName": "readme-ryvamper",
+      "url": "https://ryme.md/",
+      "description": "A browser-based generator for animated GitHub profile README banners. Pick a template, fill in your info, and export as SVG or GIF \u2014 entirely client-side.",
+      "image": "https://ryme.md/og.webp",
+      "applicationCategory": "DeveloperApplication",
+      "applicationSubCategory": "Profile README Generator",
+      "operatingSystem": "Any",
+      "inLanguage": "en",
+      "creator": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "author": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "publisher": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      }
+    },
+    {
+      "@type": "WebApplication",
+      "@id": "https://status.ryanpolasky.com/#app",
+      "name": "WRLT",
+      "alternateName": "What's Ryan Up To?",
+      "url": "https://status.ryanpolasky.com/",
+      "description": "A live personal dashboard with mini-games, an in-app economy, and a desktop-style UI in the browser.",
+      "image": "https://status.ryanpolasky.com/og.webp",
+      "applicationCategory": "LifestyleApplication",
+      "applicationSubCategory": "Personal Dashboard",
+      "operatingSystem": "Any",
+      "inLanguage": "en",
+      "creator": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "author": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "publisher": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      }
+    }
+  ]
+}
+    </script>
+</head>
+<body>
+
+<div class="case-bar" role="banner">
+  <div class="row">
+    <div class="l">
+      <span><span class="pulse"></span>&nbsp;ACTIVE / OPEN</span>
+      <span>FILED <span id="filed">-</span></span>
+    </div>
+    <div class="c"><b>CASE&nbsp;</b>2026-04-RP <span style="color:var(--ink-fade); margin: 0 6px;">/</span> SUBJECT: POLASKY, R.</div>
+    <div class="r">
+      <span>CLEARANCE: PUBLIC</span>
+      <span>DET. <a href="https://github.com/ryanpolasky" target="_blank" rel="noreferrer">GH/RP</a></span>
+    </div>
+  </div>
+</div>
+
+<nav class="tabs" aria-label="Case sections">
+  <a href="#profile" class="active" data-tab>SUBJECT<small>&nbsp;profile</small></a>
+  <a href="#assessment" data-tab>ABOUT<small>exhibit&nbsp;A</small></a>
+  <a href="#chain" data-tab>EXPERIENCE<small>exhibit&nbsp;B</small></a>
+  <a href="#cases" data-tab>PROJECTS<small>exhibit&nbsp;C</small></a>
+  <a href="#toolkit" data-tab>SKILLS<small>exhibit&nbsp;D</small></a>
+  <a href="#witness" data-tab>WITNESS&nbsp;STATEMENTS<small>exhibit&nbsp;E</small></a>
+  <a href="#report" data-tab>FILE&nbsp;REPORT<small>open&nbsp;new&nbsp;case</small></a>
+</nav>
+
+<main class="shell" role="main">
+<div class="folder">
+
+<!-- ─── subject profile ─── -->
+<section id="profile" class="scroll-mt">
+  <div class="profile">
+    <div class="subject-photo">
+      <img src="./assets/images/my-avatar.png" alt="Subject: Ryan Polasky"/>
+    </div>
+
+    <div class="subject-info">
+      <h1>POLASKY, RYAN</h1>
+      <div class="alias">a.k.a. <b>plasky</b> · <b>ryanpolasky</b> · alias used in production logs</div>
+
+      <dl class="field-grid">
+        <dt>Status</dt><dd><b>ACTIVE / OPEN</b> - available May 2026</dd>
+        <dt>Occupation</dt><dd>Junior Software Engineer</dd>
+        <dt>Affiliation</dt><dd>UT Dallas '26 · Apple (2× Intern) · ACM UTD</dd>
+        <dt>Last seen</dt><dd>North Dakota, USA · open to remote</dd>
+        <dt>Specialties</dt><dd>Backend systems · LLM tooling · CI/CD</dd>
+        <dt id="np-forensic-label">Listening</dt><dd id="np-forensic">—</dd>
+      </dl>
+
+      <p class="profile-summary">
+        Subject is a fourth-year CS student at UTD, graduating <em>May 2026</em>. Specializes in the
+        <em>unglamorous problems</em> that make engineering teams 10× faster - ships LLM-powered tooling
+        at Apple, cut test triage time by 4,800%, and sustains CSAT scores 15% above departmental average.
+        Currently <em>at large</em>, open to incidents starting May 2026.
+      </p>
+
+      <div class="profile-cta">
+        <a class="btn-cf" href="#cases">▶ review case files</a>
+        <a class="btn-cf alt" href="#report">file new report</a>
+        <a class="btn-cf stamp-y" href="/assets/Ryan_Polasky_Resume.pdf" download>extract dossier <span class="arr">↓</span></a>
+      </div>
+    </div>
+
+    <div class="stamps-col">
+      <div class="stamp lg">EVIDENCE</div>
+      <div class="stamp tilt-r">CONFIDENTIAL</div>
+      <div class="stamp green tilt-0">REVIEWED ✓</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── exhibit a: personality assessment ─── -->
+<section id="assessment" class="exhibit scroll-mt">
+  <header class="exhibit-head">
+    <span class="num">A.</span>
+    <h2>ABOUT<small>Personality Assessment &middot; self-reported</small></h2>
+    <span class="meta">PAGES 02 / 14</span>
+  </header>
+
+  <div class="assessment">
+    <article class="assessment-prose">
+      <p>
+        Self-reported specialization: solving the <em>unglamorous problems</em> that make engineering teams 10× faster -
+        intelligent log analysis, bulletproof CI/CD pipelines, test automation that actually works, and AI-powered query
+        generation that doesn't fall over the moment a user phrases a question oddly.
+      </p>
+      <p>
+        At <strong>Apple</strong>, subject built <em>LLM-powered tooling</em> for the Camera and Photos team, automated the
+        triage of <em>thousands of test failures</em> with smart categorization, and designed cloud workflows that ship fast
+        and break nothing. Balances velocity with reliability, security with usability, and prioritizes crystal-clear
+        communication. Supervisor notes confirm subject operates <em>like a full-time engineer</em>.
+      </p>
+      <p>
+        Off-duty interests include <em>lo-fi music production</em> (published as <em>plasky</em> since 2023), maintaining a
+        public knowledge base of CS coursework, and an unhealthy preoccupation with the things that go wrong in production
+        at 3am - because that's where the lessons live.
+      </p>
+      <div class="tags-row">
+        <span>● BACKEND ENGINEER</span>
+        <span>● AI / LLM TOOLING</span>
+        <span>● DEVOPS</span>
+        <span>● PROBLEM SOLVER</span>
+      </div>
+    </article>
+
+    <aside class="assessment-side">
+      <h3>Identifiers</h3>
+      <dl>
+        <dt>LOCATION</dt><dd>North Dakota, USA</dd>
+        <dt>EDUCATION</dt><dd>BS CS · UT Dallas '26</dd>
+        <dt>EXPERIENCE</dt><dd>2× Apple Intern</dd>
+        <dt>AWARDS</dt><dd>2× AppleCare Excellence</dd>
+        <dt>PRONOUNS</dt><dd>he / him</dd>
+        <dt>SHELL</dt><dd>/usr/bin/zsh</dd>
+        <dt>EDITOR</dt><dd>JetBrains</dd>
+      </dl>
+      <p class="pq">Half of engineering is writing things down well - and the other half is showing up at 3am.</p>
+    </aside>
+  </div>
+</section>
+
+<!-- ─── exhibit b: chain of evidence ─── -->
+<section id="chain" class="exhibit scroll-mt">
+  <header class="exhibit-head">
+    <span class="num">B.</span>
+    <h2>EXPERIENCE<small>Chain of Evidence &middot; 2021 → present</small></h2>
+    <span class="meta">PAGES 03 → 07</span>
+  </header>
+
+  <ul class="coc-list">
+    <li class="reveal">
+      <div class="ord"></div>
+      <div>
+        <h3>AT-HOME ADVISOR · APPLE</h3>
+        <div class="org">CUPERTINO · 2023 → PRESENT</div>
+        <div class="body">
+          <p>Sustained a <em>6.87% escalation rate</em> through independent research and advanced troubleshooting - well below department average. Average call wrap time of <em>0.27 minutes</em> while keeping documentation standards premium-quality. CSAT consistently <em>+15% over the department average</em>; recipient of the AppleCare Excellence Award (2024 &amp; 2025).</p>
+        </div>
+      </div>
+      <div class="meta">
+        <b>EVIDENCE TAG</b>
+        AHA-2023-PRESENT<br/>
+        Type: Customer Engineering<br/>
+        Logged: ongoing
+        <div class="stamp green flat">2× EXCELLENCE</div>
+      </div>
+    </li>
+
+    <li class="reveal">
+      <div class="ord"></div>
+      <div>
+        <h3>DEVELOPMENT LEAD &amp; MENTOR · ACM UTD</h3>
+        <div class="org">DALLAS · 2025 → PRESENT</div>
+        <div class="body">
+          <p><em>HackUTD Mentor</em> - supported 1,200+ participants across overnight shifts; debugged critical issues for sixty teams in the largest hackathon in the United States. <em>Development Lead</em> on a full-stack roommate-matching platform (React + FastAPI + PostgreSQL) while coaching juniors through agile workflows. <em>Education Mentor</em> selected to guide four underclassmen through interviews, planning, and landing summer internships.</p>
+        </div>
+      </div>
+      <div class="meta">
+        <b>EVIDENCE TAG</b>
+        ACM-2025-PRESENT<br/>
+        Type: Leadership · Mentorship<br/>
+        Logged: ongoing
+      </div>
+    </li>
+
+    <li class="reveal">
+      <div class="ord"></div>
+      <div>
+        <h3>CAMERA API TEST AUTOMATION INTERN · APPLE</h3>
+        <div class="org">CUPERTINO · MAY → AUG 2025</div>
+        <div class="body">
+          <p>Automated parsing, grouping, and analysis of <em>thousands of on-device tests</em> with intelligent categorization. Integrated <em>LLMs into test triage workflows</em> to dramatically speed root-cause analysis - manual investigation time reduced by <em>4,800%</em>. Unified bug-report formats for actionable communication that teams actually use.</p>
+        </div>
+      </div>
+      <div class="meta">
+        <b>EVIDENCE TAG</b>
+        APL-2025-CAM<br/>
+        Type: QA · ML · Automation<br/>
+        Logged: 2025-08-31
+      </div>
+    </li>
+
+    <li class="reveal">
+      <div class="ord"></div>
+      <div>
+        <h3>WTE TOOLS ENGINEER INTERN · APPLE</h3>
+        <div class="org">CUPERTINO · JUN → NOV 2024</div>
+        <div class="body">
+          <p>Built an <em>LLM-powered chat interface and Python package</em> to generate SQL/NoSQL queries from natural language - no more syntax debugging. Migrated critical services from <em>Java 11 → JDK 21</em>, resolving dependency conflicts and security vulnerabilities. Designed AWS/GCP workflows and CI/CD pipelines for reliable deploys. Optimized an iOS log analyzer (MVVM) to render <em>thousands of events in real-time</em>.</p>
+        </div>
+      </div>
+      <div class="meta">
+        <b>EVIDENCE TAG</b>
+        APL-2024-WTE<br/>
+        Type: Tooling · Backend · iOS<br/>
+        Logged: 2024-11-30
+      </div>
+    </li>
+
+    <li class="reveal">
+      <div class="ord"></div>
+      <div>
+        <h3>IT INTERN · ALTRU HEALTH SYSTEM</h3>
+        <div class="org">GRAND FORKS, ND · JUN 2021 → JUL 2022</div>
+        <div class="body">
+          <p>Repaired, imaged, and deployed <em>hundreds of machines</em> for critical healthcare-system expansion. Handled urgent hardware deliveries and set department intake record at <em>300+ devices</em> during high-demand periods.</p>
+        </div>
+      </div>
+      <div class="meta">
+        <b>EVIDENCE TAG</b>
+        ALTRU-2021-IT<br/>
+        Type: Healthcare IT<br/>
+        Logged: 2022-07-31
+      </div>
+    </li>
+  </ul>
+</section>
+
+<!-- ─── exhibit c: case files (projects) ─── -->
+<section id="cases" class="exhibit scroll-mt">
+  <header class="exhibit-head">
+    <span class="num">C.</span>
+    <h2>PROJECTS<small>Case Files &middot; six investigations</small></h2>
+    <span class="meta">PAGES 08 → 13</span>
+  </header>
+
+  <div class="cases">
+
+    <article class="case reveal">
+      <div class="case-id"><span class="no">CASE 24-001</span> · STATUS: <span style="color:var(--stamp); font-weight:700;">RESOLVED</span> · CLEARANCE: <span style="color:var(--stamp-2)">CLASSIFIED</span></div>
+      <h3>askdb - the database that listens.</h3>
+      <p class="lede">Engineers were drowning in syntax. Subject built a Python package + chat interface translating natural language into <em>data-accurate</em> SQL/NoSQL queries.</p>
+      <dl class="case-grid">
+        <dt>SYMPTOM</dt><dd>Engineers spending hours writing throwaway queries.</dd>
+        <dt>INVESTIGATION</dt><dd>Built parameterised generation w/ schema awareness + result interpretation.</dd>
+        <dt>RESOLUTION</dt><dd><em>Shipped as a Python package + chat interface used by Apple engineers</em></dd>
+      </dl>
+      <div class="case-bottom">
+        <div class="tags"><span>Python</span><span>FastAPI</span><span>Postgres</span><span>GCP</span><span>LLMs</span></div>
+        <div class="links"><span class="muted">internal · sealed</span></div>
+      </div>
+    </article>
+
+    <article class="case reveal">
+      <div class="case-id"><span class="no">CASE 25-014</span> · STATUS: <span style="color:var(--stamp); font-weight:700;">RESOLVED</span> · CLEARANCE: <span style="color:var(--stamp-2)">CLASSIFIED</span></div>
+      <h3>The intelligent failure aggregator.</h3>
+      <p class="lede">Test failures stacking up faster than triage can clear them. Subject built classification + multi-stage LLM root-cause analysis with unified bug exports.</p>
+      <dl class="case-grid">
+        <dt>SYMPTOM</dt><dd>Manual triage of thousands of weekly failures.</dd>
+        <dt>INVESTIGATION</dt><dd>LLM-driven categorisation, RCA, and artifact attachment.</dd>
+        <dt>RESOLUTION</dt><dd><em>−4,800% manual investigation time · unified bug reports w/ auto-attached artifacts</em></dd>
+      </dl>
+      <div class="case-bottom">
+        <div class="tags"><span>Python</span><span>Jenkins</span><span>LLMs</span><span>bash</span></div>
+        <div class="links"><span class="muted">internal · sealed</span></div>
+      </div>
+    </article>
+
+    <article class="case reveal">
+      <div class="case-id"><span class="no">CASE 24-002</span> · STATUS: <span style="color:var(--stamp); font-weight:700;">LIVE</span> · CLEARANCE: <span style="color:var(--stamp-2)">PUBLIC</span></div>
+      <h3>Ryan&nbsp;OS - a desktop, on the web.</h3>
+      <p class="lede">Answers the question - what is Ryan up to? Draggable widgets, dynamic ambient backgrounds, fluid animations; mobile + desktop in one motion.</p>
+      <dl class="case-grid">
+        <dt>SYMPTOM</dt><dd>"What is Ryan working on?" - asked too many times.</dd>
+        <dt>INVESTIGATION</dt><dd>React frontend + FastAPI backend + Framer Motion choreography.</dd>
+        <dt>RESOLUTION</dt><dd>Live at <em>status.ryanpolasky.com</em></dd>
+      </dl>
+      <div class="case-bottom">
+        <div class="tags"><span>React</span><span>FastAPI</span><span>Framer Motion</span></div>
+        <div class="links"><a href="https://status.ryanpolasky.com" target="_blank" rel="noreferrer">view live ↗</a></div>
+      </div>
+    </article>
+
+    <article class="case reveal">
+      <div class="case-id"><span class="no">CASE 22-003</span> · STATUS: <span style="color:var(--stamp); font-weight:700;">EVERGREEN</span> · CLEARANCE: <span style="color:var(--stamp-2)">PUBLIC</span></div>
+      <h3>Ryan's notes - a digital garden for CS.</h3>
+      <p class="lede">An entire UTD CS curriculum, in public. Comprehensive documentation, LaTeX-formatted algorithms, and study guides written for the next student.</p>
+      <dl class="case-grid">
+        <dt>SYMPTOM</dt><dd>Notes lost between semesters; juniors flying blind.</dd>
+        <dt>INVESTIGATION</dt><dd>Notion as canonical store, LaTeX for math, public read access.</dd>
+        <dt>RESOLUTION</dt><dd>Open garden at <em>ryanpolasky.com/notes</em></dd>
+      </dl>
+      <div class="case-bottom">
+        <div class="tags"><span>Notion</span><span>LaTeX</span><span>Documentation</span></div>
+        <div class="links"><a href="https://ryanpolasky.com/notes">visit ↗</a></div>
+      </div>
+    </article>
+
+    <article class="case reveal">
+      <div class="case-id"><span class="no">CASE 21-X</span> · STATUS: <span style="color:var(--stamp); font-weight:700;">ONGOING</span> · CLEARANCE: <span style="color:var(--stamp-2)">PUBLIC</span></div>
+      <h3>plasky - lo-fi composition.</h3>
+      <p class="lede">A hobbyist music project under the alias "plasky". Lo-fi composed by hand in FL Studio; published on streaming platforms since 2023.</p>
+      <dl class="case-grid">
+        <dt>SYMPTOM</dt><dd>An entire side of the brain unaccounted-for.</dd>
+        <dt>INVESTIGATION</dt><dd>FL Studio + piano + chord theory; midnight mixing sessions.</dd>
+        <dt>RESOLUTION</dt><dd>Published artist since 2023 · streaming everywhere.</dd>
+      </dl>
+      <div class="case-bottom">
+        <div class="tags"><span>FL Studio</span><span>Composition</span><span>Piano</span></div>
+        <div class="links"><a href="spotify.html">listen ↗</a></div>
+      </div>
+    </article>
+
+    <article class="case reveal">
+      <div class="case-id"><span class="no">CASE 25-202</span> · STATUS: <span style="color:var(--stamp); font-weight:700;">IN PROGRESS</span> · CLEARANCE: <span style="color:var(--stamp-2)">PUBLIC</span></div>
+      <h3>MeteorMate - a better roommate match.</h3>
+      <p class="lede">As Project Lead, subject is architecting a full-stack matching platform for UTD students while mentoring junior developers - to replace the impersonal forms students settle for.</p>
+      <dl class="case-grid">
+        <dt>SYMPTOM</dt><dd>UTD's existing roommate matching is broken &amp; impersonal.</dd>
+        <dt>INVESTIGATION</dt><dd>Tech-led architecture + reliable backend + mentored juniors on agile.</dd>
+        <dt>RESOLUTION</dt><dd>Alpha release imminent · React + FastAPI + Postgres.</dd>
+      </dl>
+      <div class="case-bottom">
+        <div class="tags"><span>Tech Lead</span><span>Architecture</span><span>FastAPI</span><span>React</span></div>
+        <div class="links"><a href="https://github.com/acmutd/meteormate-backend" target="_blank" rel="noreferrer">backend ↗</a> &middot; <a href="https://github.com/acmutd/meteormate-client" target="_blank" rel="noreferrer">frontend ↗</a></div>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ─── exhibit d: forensic toolkit ─── -->
+<section id="toolkit" class="exhibit scroll-mt">
+  <header class="exhibit-head">
+    <span class="num">D.</span>
+    <h2>SKILLS<small>Forensic Toolkit &middot; approved instruments</small></h2>
+    <span class="meta">PAGE 14</span>
+  </header>
+
+  <div class="toolkit">
+    <div class="tool-cabinet reveal">
+      <h3>LANGUAGES</h3>
+      <div class="sub">// primary instruments</div>
+      <ul>
+        <li class="adv"><b>Python</b><span class="lvl">advanced</span></li>
+        <li class="adv"><b>TypeScript</b><span class="lvl">advanced</span></li>
+        <li><b>HTML/CSS</b><span class="lvl">advanced</span></li>
+        <li><b>Swift</b><span class="lvl">intermediate</span></li>
+      </ul>
+      <div class="also">+ JS, Java, C++, SwiftUI, R, Obj-C</div>
+    </div>
+    <div class="tool-cabinet reveal">
+      <h3>DATA STORES</h3>
+      <div class="sub">// where the truth lives</div>
+      <ul>
+        <li class="adv"><b>PostgreSQL</b><span class="lvl">advanced</span></li>
+        <li><b>OpenSearch</b><span class="lvl">intermediate</span></li>
+        <li><b>Redis</b><span class="lvl">intermediate</span></li>
+      </ul>
+      <div class="also">+ MySQL, SQLite, vector DBs, MongoDB</div>
+    </div>
+    <div class="tool-cabinet reveal">
+      <h3>AI / LLMs</h3>
+      <div class="sub">// applied intelligence</div>
+      <ul>
+        <li class="adv"><b>LLM Integration</b><span class="lvl">advanced</span></li>
+        <li class="adv"><b>RAG Systems</b><span class="lvl">advanced</span></li>
+        <li><b>Vertex AI</b><span class="lvl">intermediate</span></li>
+      </ul>
+      <div class="also">+ fine-tuning, function calling, embeddings</div>
+    </div>
+    <div class="tool-cabinet reveal">
+      <h3>DEVOPS / CLOUD</h3>
+      <div class="sub">// pipeline as product</div>
+      <ul>
+        <li><b>Kubernetes</b><span class="lvl">intermediate</span></li>
+        <li><b>CI / CD</b><span class="lvl">intermediate</span></li>
+        <li><b>AWS &amp; GCP</b><span class="lvl">intermediate</span></li>
+      </ul>
+      <div class="also">+ Docker, Helm, Terraform, Jenkins</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── exhibit e: witness statements ─── -->
+<section id="witness" class="exhibit scroll-mt">
+  <header class="exhibit-head">
+    <span class="num">E.</span>
+    <h2>WITNESS STATEMENTS<small>three on record · full references on request</small></h2>
+    <span class="meta">PAGES 15 → 17</span>
+  </header>
+
+  <div class="witness">
+    <article class="statement reveal">
+      <div class="stmt-id">DEPOSITION 001</div>
+      <blockquote>Ryan's learning agility is remarkable… he tackles each new challenge with focus and enthusiasm. Strong communicator with clear, impactful presentations.</blockquote>
+      <div class="signed">
+        <div>
+          <div class="name"><a href="https://www.linkedin.com/in/sahilpujari/">Sahil Pujari</a></div>
+          <div class="role">Sr. Software Engineer · Mentor</div>
+        </div>
+        <div class="seal">SWORN</div>
+      </div>
+    </article>
+
+    <article class="statement reveal">
+      <div class="stmt-id">DEPOSITION 002</div>
+      <blockquote>Ryan was a fantastic summer 2025 intern. A fast learner, he delivered his project ahead of schedule and integrated seamlessly. He performed like a full-time hire.</blockquote>
+      <div class="signed">
+        <div>
+          <div class="name"><a href="https://www.linkedin.com/in/jozefkruger/">Jozef Kruger</a></div>
+          <div class="role">Engineering Manager · Manager</div>
+        </div>
+        <div class="seal">SWORN</div>
+      </div>
+    </article>
+
+    <article class="statement reveal">
+      <div class="stmt-id">DEPOSITION 003</div>
+      <blockquote>Ryan was an exceptional intern, contributing valuable test automation tools. His initiative, clear communication, and collaboration made him a joy to work with.</blockquote>
+      <div class="signed">
+        <div>
+          <div class="name"><a href="https://www.linkedin.com/in/jdpaul123/">JD Paul</a></div>
+          <div class="role">Software Engineer · Teammate</div>
+        </div>
+        <div class="seal">SWORN</div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ─── file new report ─── -->
+<section id="report" class="exhibit scroll-mt">
+  <header class="exhibit-head">
+    <span class="num">F.</span>
+    <h2>FILE NEW REPORT<small>open a new case &middot; faster than a redis cache hit</small></h2>
+    <span class="meta">INTAKE / 24h</span>
+  </header>
+
+  <div class="report-grid">
+    <form class="report-form" action="https://formspree.io/f/xldjdlla" method="POST" id="cf">
+      <div class="head"><span class="pulse"></span>&nbsp;DEPT. CORRESPONDENCE &middot; FORM 17-RP</div>
+      <div class="body">
+        <h3>OPEN A NEW CASE</h3>
+        <div class="sub">Tell me what brought you here. Standard reply within 24 hours.</div>
+        <div class="fld-row">
+          <div class="fld">
+            <label for="cf-name">Reporting party (name)</label>
+            <input id="cf-name" name="name" required placeholder="Det. J. Hoffman"/>
+          </div>
+          <div class="fld">
+            <label for="cf-email">Callback (email)</label>
+            <input id="cf-email" name="email" type="email" required placeholder="jhoffman@fbi.gov"/>
+          </div>
+        </div>
+        <div class="fld">
+          <label for="cf-msg">Description of incident</label>
+          <textarea id="cf-msg" name="message" required placeholder="Case #___. Attach evidence. State nature of inquiry and requested action…"></textarea>
+        </div>
+        <div style="display:flex; align-items:center; gap: 14px; flex-wrap: wrap; margin-top: 6px;">
+          <button class="btn-cf" type="submit">▶ submit report</button>
+          <span style="font-family: var(--type); font-size: 12px; color: var(--ink-3);">or use a direct channel →</span>
+        </div>
+      </div>
+    </form>
+
+    <aside class="intake" aria-label="Direct channels">
+      <div class="head">// direct channels &middot; verified</div>
+      <ul>
+        <li>
+          <span class="ic">@</span>
+          <div>
+            <div class="label">EMAIL</div>
+            <div class="val"><a href="mailto:ryanpolasky@hotmail.com">ryanpolasky@hotmail.com</a></div>
+          </div>
+          <span class="arr">→</span>
+        </li>
+        <li>
+          <span class="ic">☏</span>
+          <div>
+            <div class="label">PHONE</div>
+            <div class="val"><a href="tel:+14089406887">+1 (408) 940-6887</a></div>
+          </div>
+          <span class="arr">→</span>
+        </li>
+        <li>
+          <span class="ic">in</span>
+          <div>
+            <div class="label">LINKEDIN</div>
+            <div class="val"><a href="https://www.linkedin.com/in/ryan-polasky/" target="_blank" rel="noreferrer">ryan-polasky</a></div>
+          </div>
+          <span class="arr">→</span>
+        </li>
+        <li>
+          <span class="ic">gh</span>
+          <div>
+            <div class="label">GITHUB</div>
+            <div class="val"><a href="https://github.com/ryanpolasky" target="_blank" rel="noreferrer">ryanpolasky</a></div>
+          </div>
+          <span class="arr">→</span>
+        </li>
+      </ul>
+      <div class="avail">
+        <span class="pulse" style="display:inline-block; width:7px; height:7px; border-radius: 50%; background: var(--stamp-2);"></span>
+        AVAILABLE <b>MAY 2026</b> &middot; OPEN TO REMOTE NOW
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ─── footer ─── -->
+<footer class="foot">
+  <div class="foot-grid">
+    <div class="foot-mark">
+      <p class="name">RYAN&nbsp;POLASKY<span>.</span></p>
+      <div class="tag">CASE 2026-04-RP &middot; END OF FILE</div>
+    </div>
+    <div class="foot-r">
+      <span><a href="https://github.com/ryanpolasky/personal-website" target="_blank" rel="noreferrer">VIEW SOURCE →</a></span>
+      <span><a href="https://cs.utdring.com/#ryanpolasky.com" target="_blank" rel="noreferrer">CS WEBRING →</a></span>
+      <div class="ring">
+        <a href="https://cs.utdring.com/#ryanpolasky.com?nav=prev" aria-label="Previous">←</a>
+        <a href="https://cs.utdring.com/#ryanpolasky.com" aria-label="Ring"><img src="https://cs.utdring.com/icon.white.svg" alt="CS Webring"/></a>
+        <a href="https://cs.utdring.com/#ryanpolasky.com?nav=next" aria-label="Next">→</a>
+      </div>
+    </div>
+  </div>
+  <div class="foot-pn">
+    <span>© <span id="year"></span> RYAN POLASKY · ALL EVIDENCE PRESERVED.</span>
+    <span>FILED <span id="filed-2">-</span> · DET: <a href="mailto:ryanpolasky@hotmail.com">contact</a></span>
+  </div>
+</footer>
+
+</div>
+</main>
+
+<script>
+(function(){
+  const $year = document.getElementById('year'); if($year) $year.textContent = new Date().getFullYear();
+  function fmt(){ return new Date().toISOString().slice(0,10) + ' / ' + new Date().toISOString().slice(11,16) + 'Z'; }
+  const $filed = document.getElementById('filed'), $filed2 = document.getElementById('filed-2');
+  function tick(){ const t = fmt(); if($filed) $filed.textContent = t; if($filed2) $filed2.textContent = t; }
+  tick(); setInterval(tick, 60000);
+})();
+
+
+(function(){
+  const els = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+  els.forEach(el => io.observe(el));
+})();
+
+(function(){
+  const tabs = document.querySelectorAll('.tabs a[data-tab]');
+  const sections = [...tabs].map(t => document.querySelector(t.getAttribute('href')));
+  function setActive(id){ tabs.forEach(t => t.classList.toggle('active', t.getAttribute('href') === '#' + id)); }
+  const io = new IntersectionObserver((entries) => {
+    const visible = entries.filter(e => e.isIntersecting).sort((a,b) => b.intersectionRatio - a.intersectionRatio);
+    if(visible[0]) setActive(visible[0].target.id);
+  }, { threshold: [0.1, 0.25, 0.5, 0.75], rootMargin: '-30% 0px -30% 0px' });
+  sections.forEach(s => s && io.observe(s));
+  tabs.forEach(t => t.addEventListener('click', () => setActive(t.getAttribute('href').slice(1))));
+})();
+
+(function(){
+  const cf = document.getElementById('cf');
+  if(!cf) return;
+  cf.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fd = new FormData(cf);
+    const btn = cf.querySelector('button[type=submit]');
+    const orig = btn.innerHTML;
+    btn.disabled = true; btn.innerHTML = '▶ filing…';
+    try {
+      const res = await fetch(cf.action, { method: cf.method, body: fd, headers: { Accept: 'application/json' }});
+      if(res.ok){ cf.reset(); btn.innerHTML = '✓ FILED'; setTimeout(() => { btn.innerHTML = orig; btn.disabled = false; }, 3000); }
+      else { btn.innerHTML = orig; btn.disabled = false; }
+    } catch (err){ btn.innerHTML = orig; btn.disabled = false; }
+  });
+})();
+
+console.log('%cCASE 2026-04-RP - SUBJECT: POLASKY, R. ', 'background:#A02320; color:#E8DCC0; font-family:Courier, monospace; padding:4px 10px; font-size:14px; letter-spacing:0.18em;');
+console.log('%c   STATUS: ACTIVE / OPEN - Available May 2026', 'color:#3D3328; font-family:Courier, monospace; font-size:12px;');
+
+function npMarquee(el){
+  if(!el) return;
+  if(el._npResizeHandler){
+    window.removeEventListener('resize', el._npResizeHandler);
+    el._npResizeHandler = null;
+  }
+  if(el._npResizeTimer){
+    clearTimeout(el._npResizeTimer);
+    el._npResizeTimer = null;
+  }
+  if(el._npAnim){
+    try { el._npAnim.cancel(); } catch(_) {}
+    el._npAnim = null;
+  }
+
+  var prior = el.querySelector('.np-track');
+  if(prior){
+    var firstCell = prior.querySelector('.np-cell');
+    if(firstCell) el.innerHTML = firstCell.innerHTML;
+    el.style.textOverflow = '';
+  }
+  if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var runId = (el._npRunId || 0) + 1;
+  el._npRunId = runId;
+
+  var fontsReady = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+  fontsReady.then(function(){
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        if(runId !== el._npRunId) return;
+        var contW = el.clientWidth;
+        if(contW <= 0) return;
+        var orig = el.innerHTML;
+        var mirror = document.createElement('span');
+        mirror.style.cssText = 'position:absolute;left:-99999px;top:0;visibility:hidden;white-space:nowrap;font:inherit;letter-spacing:inherit;';
+        mirror.innerHTML = orig;
+        el.appendChild(mirror);
+        var textW = Math.ceil(mirror.getBoundingClientRect().width);
+        mirror.remove();
+        if(textW <= contW + 1) return;
+
+        var seedGap = 32;
+        el.style.textOverflow = 'clip';
+        el.innerHTML =
+          '<span class="np-track" style="display:inline-flex;white-space:nowrap;will-change:transform;transform:translate3d(0,0,0);">' +
+            '<span class="np-cell" style="display:inline-block;flex:0 0 auto;margin-right:' + seedGap + 'px;">' + orig + '</span>' +
+            '<span class="np-cell" aria-hidden="true" style="display:inline-block;flex:0 0 auto;">' + orig + '</span>' +
+          '</span>';
+        var track = el.querySelector('.np-track');
+        if(!track) return;
+
+        var first = track.querySelector('.np-cell');
+        var firstW = first ? Math.ceil(first.getBoundingClientRect().width) : textW;
+        var gap = firstW + 24;
+        if(first) first.style.marginRight = gap + 'px';
+        var dist = firstW + gap;
+        var scrollSec = dist / 20;
+        var pauseSec = 3;
+        var totalSec = scrollSec + pauseSec;
+        var scrollPct = scrollSec / totalSec;
+
+        el._npAnim = track.animate([
+          { transform: 'translate3d(0,0,0)', offset: 0 },
+          { transform: 'translate3d(-' + dist + 'px,0,0)', offset: scrollPct },
+          { transform: 'translate3d(-' + dist + 'px,0,0)', offset: 1 }
+        ], { duration: totalSec * 1000, delay: 2000, iterations: Infinity, easing: 'linear' });
+      });
+    });
+  });
+
+  el._npResizeHandler = function(){
+    clearTimeout(el._npResizeTimer);
+    el._npResizeTimer = setTimeout(function(){ npMarquee(el); }, 90);
+  };
+  window.addEventListener('resize', el._npResizeHandler, { passive: true });
+}
+
+(function(){
+  function fetchNp(){
+    fetch('https://status.ryanpolasky.com/api/music')
+      .then(r => r.json())
+      .then(d => {
+        const label = document.getElementById('np-forensic-label');
+        const el = document.getElementById('np-forensic');
+        if(!el) return;
+        label.textContent = d.isPlaying ? 'Now playing' : 'Last played';
+        el.textContent = d.title + ' — ' + d.artist;
+        npMarquee(el);
+      })
+      .catch(() => {});
+  }
+  fetchNp();
+  setInterval(fetchNp, 10000);
+})();
+
+document.querySelectorAll('a[href^="#"]').forEach(function(a){
+  a.addEventListener('click', function(e){
+    var id = this.getAttribute('href').substring(1);
+    if(!id) return;
+    var el = document.getElementById(id);
+    if(el){ e.preventDefault(); el.scrollIntoView({behavior:'smooth'}); }
+  });
+});
+</script>
+
+</body>
+</html>

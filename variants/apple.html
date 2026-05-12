@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<base href="/"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Ryan Polasky - Software Engineer · 2× Apple Intern · UT Dallas '26</title>
+    <meta name="description" content="Ryan Polasky - Junior Software Engineer. Backend systems, AI/LLM tooling, developer productivity. UT Dallas '26. 2× Apple intern. Open May 2026."/>
+    <meta name="keywords" content="Ryan Polasky, ryan polasky, software engineer, backend developer, AI engineer, LLM tooling, Apple intern, UT Dallas, computer science, devops, python, typescript"/>
+    <meta name="author" content="Ryan Polasky"/>
+    <meta name="creator" content="Ryan Polasky"/>
+    <meta name="publisher" content="Ryan Polasky"/>
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"/>
+
+    <link rel="canonical" href="https://ryanpolasky.com/"/>
+
+    <meta property="og:type" content="profile"/>
+    <meta property="og:site_name" content="Ryan Polasky"/>
+    <meta property="og:locale" content="en_US"/>
+    <meta property="og:url" content="https://ryanpolasky.com/"/>
+    <meta property="og:title" content="Ryan Polasky - Software Engineer · 2× Apple Intern"/>
+    <meta property="og:description" content="Junior Software Engineer specializing in backend systems, AI/LLM tooling, and developer productivity. UT Dallas '26. Open May 2026."/>
+    <meta property="og:image" content="https://ryanpolasky.com/assets/images/site-preview.png"/>
+    <meta property="og:image:alt" content="ryan.polasky / runtime — terminal-style status page for Ryan Polasky's personal site"/>
+    <meta property="profile:first_name" content="Ryan"/>
+    <meta property="profile:last_name" content="Polasky"/>
+    <meta property="profile:username" content="ryanpolasky"/>
+
+    <meta name="twitter:card" content="summary_large_image"/>
+    <meta name="twitter:title" content="Ryan Polasky - Software Engineer · 2× Apple Intern"/>
+    <meta name="twitter:description" content="Junior Software Engineer specializing in backend systems, AI/LLM tooling, and developer productivity. UT Dallas '26. Open May 2026."/>
+    <meta name="twitter:image" content="https://ryanpolasky.com/assets/images/site-preview.png"/>
+    <meta name="twitter:image:alt" content="ryan.polasky / runtime — terminal-style status page for Ryan Polasky's personal site"/>
+
+    <meta name="theme-color" content="#FAFAF7"/>
+    <meta name="application-name" content="Ryan Polasky"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+    <meta name="apple-mobile-web-app-title" content="Ryan Polasky"/>
+    <meta name="format-detection" content="telephone=no"/>
+
+<link rel="icon" type="image/png" href="favicon-96x96.png" sizes="96x96"/>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+<link rel="shortcut icon" href="favicon.ico"/>
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png"/>
+<link rel="manifest" href="manifest.json"/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..900,0..100;1,9..144,300..900,0..100&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+
+<style>
+:root {
+  --paper:    #FAFAF7;
+  --paper-2:  #F2EFE7;
+  --ink:      #111110;
+  --ink-2:    #2A2926;
+  --muted:    #69655A;
+  --muted-2:  #8C8773;
+  --hair:     #DDD7C7;
+  --hair-2:   #ECE7DA;
+  --accent:   #B23A1A;
+  --accent-q: #B23A1A;
+  --shadow:   rgba(20, 18, 12, 0.06);
+  --display:  'Fraunces', 'Times New Roman', Georgia, serif;
+  --serif:    'Newsreader', Georgia, 'Times New Roman', serif;
+  --sans:     -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', system-ui, 'Helvetica Neue', sans-serif;
+  --mono:     'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+*,*::before,*::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--paper); color: var(--ink);
+  font-family: var(--sans); font-size: 17px; line-height: 1.55;
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+::selection { background: var(--ink); color: var(--paper); }
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; }
+img { max-width: 100%; display: block; }
+
+/* ─── grain overlay ─── */
+body::after {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 200;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.06 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  opacity: 0.5; mix-blend-mode: multiply;
+}
+
+.shell { max-width: 1320px; margin: 0 auto; padding: 0 32px; }
+@media (max-width: 720px) { .shell { padding: 0 20px; } }
+
+/* ─── colophon header ─── */
+.colophon {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--paper);
+  border-bottom: 0.5px solid var(--hair);
+  font-family: var(--mono); font-size: 10.5px;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--muted);
+}
+.colophon .row {
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+  height: 44px; padding: 0 32px; gap: 24px;
+}
+.colophon .left, .colophon .right { display: flex; gap: 22px; align-items: center; }
+.colophon .right { justify-content: flex-end; }
+.colophon .center { font-family: var(--display); font-style: italic; font-size: 15px; letter-spacing: 0; text-transform: none; color: var(--ink); font-weight: 400; }
+.colophon .center b { font-weight: 600; }
+.colophon a { transition: color 0.2s; }
+.colophon a:hover { color: var(--accent); }
+.colophon .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); display: inline-block; vertical-align: 1px; margin-right: 6px; }
+@media (max-width: 880px) {
+  .colophon .row { grid-template-columns: auto 1fr auto; padding: 0 20px; gap: 14px; }
+  .colophon .left .meta-2, .colophon .right .meta-2 { display: none; }
+}
+
+.menu-btn {
+  background: transparent; border: 0; cursor: pointer; color: var(--ink);
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 4px 0; display: inline-flex; align-items: center; gap: 8px;
+}
+.menu-btn .bars { display: inline-flex; flex-direction: column; gap: 3px; }
+.menu-btn .bars i { display: block; width: 14px; height: 1px; background: var(--ink); }
+
+/* ─── menu drawer ─── */
+.drawer {
+  position: fixed; inset: 0; background: var(--paper); z-index: 100;
+  display: none; padding: 88px 48px 48px;
+  overflow-y: auto;
+}
+.drawer.open { display: block; }
+.drawer .close {
+  position: fixed; top: 30px; right: 32px;
+  font-family: var(--mono); font-size: 12px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--ink);
+  background: transparent; border: 0; cursor: pointer; padding: 8px 12px;
+}
+.drawer nav ol {
+  list-style: none; counter-reset: dn; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 8px; max-width: 1100px;
+}
+.drawer nav ol li { counter-increment: dn; }
+.drawer nav ol a {
+  display: grid; grid-template-columns: 60px 1fr auto; gap: 24px; align-items: end;
+  padding: 14px 0; border-bottom: 0.5px solid var(--hair);
+  font-family: var(--display); font-size: clamp(36px, 7vw, 80px); font-weight: 300;
+  font-variation-settings: "opsz" 144, "SOFT" 60; letter-spacing: -0.02em; line-height: 1;
+  color: var(--ink); transition: color 0.2s;
+}
+.drawer nav ol a::before {
+  content: counter(dn, decimal-leading-zero);
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em;
+  font-weight: 400; color: var(--muted); padding-bottom: 18px;
+}
+.drawer nav ol a:hover { color: var(--accent); font-style: italic; }
+.drawer nav ol a .meta {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--muted); padding-bottom: 18px; font-weight: 400;
+}
+@media (max-width: 720px) { .drawer { padding: 72px 24px 32px; } }
+
+/* ─── magazine masthead / hero ─── */
+.masthead { padding: 96px 0 64px; position: relative; }
+.masthead .super {
+  font-family: var(--mono); font-size: 11.5px; color: var(--muted);
+  letter-spacing: 0.16em; text-transform: uppercase;
+  display: flex; align-items: center; gap: 14px; margin-bottom: 36px;
+}
+.masthead .super::after { content: ''; flex: 1; height: 0.5px; background: var(--hair); }
+.masthead .super i { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; display: inline-block; }
+
+.title-block { display: grid; grid-template-columns: 1fr; gap: 0; }
+.title-block .name {
+  font-family: var(--display);
+  font-size: clamp(72px, 19vw, 256px);
+  font-weight: 300; letter-spacing: -0.045em; line-height: 0.86;
+  color: var(--ink); margin: 0;
+  font-variation-settings: "opsz" 144, "SOFT" 70;
+}
+.title-block .name em {
+  font-style: italic; font-weight: 300;
+  color: var(--accent);
+  font-variation-settings: "opsz" 144, "SOFT" 100;
+}
+.title-block .name .amp {
+  font-family: var(--display); font-style: italic; font-weight: 300;
+  color: var(--muted); padding: 0 0.05em;
+}
+
+.masthead .standfirst {
+  display: grid; grid-template-columns: 1fr auto 380px; gap: 40px;
+  margin-top: 56px; padding-top: 32px; border-top: 0.5px solid var(--hair);
+  align-items: start;
+}
+.masthead .standfirst .lede {
+  font-family: var(--serif); font-size: clamp(20px, 1.7vw, 26px);
+  line-height: 1.45; color: var(--ink-2); font-weight: 400;
+  max-width: 30ch;
+  font-variation-settings: "opsz" 28;
+}
+.masthead .standfirst .lede em { font-style: italic; color: var(--accent); }
+.masthead .standfirst .rule { width: 0.5px; background: var(--hair); align-self: stretch; }
+.masthead .standfirst .meta {
+  font-family: var(--mono); font-size: 11.5px; line-height: 1.7;
+  color: var(--muted); letter-spacing: 0.06em;
+}
+.masthead .standfirst .meta dt { color: var(--ink); text-transform: uppercase; letter-spacing: 0.1em; font-size: 10.5px; margin-top: 10px; }
+.masthead .standfirst .meta dt:first-of-type { margin-top: 0; }
+.masthead .standfirst .meta dd { margin: 2px 0 0; }
+#np-apple { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.masthead .standfirst .meta { min-width: 0; overflow: hidden; }
+.masthead .standfirst .meta a { color: var(--ink); border-bottom: 0.5px solid var(--hair); transition: border-color 0.2s, color 0.2s; }
+.masthead .standfirst .meta a:hover { color: var(--accent); border-color: var(--accent); }
+.masthead .cta { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+.masthead .cta a {
+  font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--ink); padding: 10px 0; border-bottom: 0.5px solid var(--ink);
+  display: inline-flex; align-items: center; gap: 8px;
+  transition: color 0.2s, border-color 0.2s, gap 0.2s;
+}
+.masthead .cta a:hover { color: var(--accent); border-bottom-color: var(--accent); gap: 14px; }
+.masthead .cta a.muted { color: var(--muted); border-bottom-color: var(--hair); }
+.masthead .cta a.muted:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+@media (max-width: 920px) {
+  .masthead .standfirst { grid-template-columns: 1fr; gap: 28px; }
+  .masthead .standfirst .rule { display: none; }
+}
+@media (max-width: 600px) {
+  .masthead { padding: 56px 0 40px; }
+}
+
+/* ─── section header ─── */
+.section { padding: 96px 0; position: relative; }
+.section + .section { border-top: 0.5px solid var(--hair); }
+.section-mast { display: grid; grid-template-columns: 200px 1fr; gap: 56px; margin-bottom: 56px; align-items: end; }
+.section-mast .num {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.18em;
+  color: var(--muted); text-transform: uppercase;
+}
+.section-mast .num strong { color: var(--accent); font-weight: 500; margin-right: 8px; }
+.section-mast h2 {
+  margin: 0; font-family: var(--display); font-weight: 300;
+  font-size: clamp(40px, 6vw, 76px); letter-spacing: -0.025em; line-height: 0.96;
+  font-variation-settings: "opsz" 144, "SOFT" 70;
+}
+.section-mast h2 em { font-style: italic; color: var(--accent); font-variation-settings: "opsz" 144, "SOFT" 100; }
+@media (max-width: 720px) {
+  .section { padding: 64px 0; }
+  .section-mast { grid-template-columns: 1fr; gap: 16px; }
+}
+
+/* ─── about article ─── */
+.about-grid { display: grid; grid-template-columns: 1fr 320px; gap: 64px; align-items: start; }
+.article-body p {
+  font-family: var(--serif); font-size: 19px; line-height: 1.6;
+  color: var(--ink-2); margin: 0 0 24px; max-width: 60ch;
+  font-variation-settings: "opsz" 22;
+}
+.article-body p.first::first-letter {
+  font-family: var(--display); font-weight: 300;
+  font-size: 5.6em; float: left; line-height: 0.85; padding: 6px 12px 0 0;
+  color: var(--accent);
+  font-variation-settings: "opsz" 144, "SOFT" 100;
+}
+.article-body em { font-style: italic; color: var(--ink); }
+.article-body strong { font-weight: 600; color: var(--ink); }
+.about-side {
+  font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.06em;
+  color: var(--muted); border-top: 0.5px solid var(--hair); padding-top: 14px;
+}
+.about-side dt { color: var(--ink); text-transform: uppercase; letter-spacing: 0.1em; font-size: 10.5px; margin-top: 18px; }
+.about-side dt:first-of-type { margin-top: 0; }
+.about-side dd { margin: 2px 0 0; }
+.about-side .pq {
+  font-family: var(--display); font-style: italic; font-weight: 400;
+  font-size: 22px; line-height: 1.35; color: var(--ink); letter-spacing: -0.005em;
+  margin-top: 32px; padding-top: 20px; border-top: 0.5px solid var(--hair);
+  font-variation-settings: "opsz" 36, "SOFT" 90;
+}
+.about-side .pq::before { content: '“'; color: var(--accent); margin-right: 2px; }
+.about-side .pq::after { content: '”'; color: var(--accent); margin-left: 2px; }
+@media (max-width: 880px) { .about-grid { grid-template-columns: 1fr; gap: 32px; } }
+
+/* ─── experience / timeline ─── */
+.tl { display: grid; grid-template-columns: 200px 1fr; gap: 56px; }
+.tl-meta { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; color: var(--muted); padding-top: 8px; text-transform: uppercase; }
+.tl-meta b { color: var(--ink); display: block; font-weight: 500; letter-spacing: 0.1em; margin-bottom: 4px; }
+.tl-list { list-style: none; padding: 0; margin: 0; }
+.tl-list > li {
+  display: grid; grid-template-columns: 200px 1fr; gap: 56px;
+  padding: 32px 0; border-top: 0.5px solid var(--hair);
+}
+.tl-list > li:last-child { border-bottom: 0.5px solid var(--hair); }
+.tl-list .when { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.06em; line-height: 1.6; padding-top: 6px; }
+.tl-list .when b { display: block; color: var(--ink); font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; font-size: 10.5px; margin-bottom: 6px; }
+.tl-list h3 {
+  font-family: var(--display); font-weight: 400;
+  font-size: clamp(22px, 2.4vw, 32px); margin: 0 0 4px;
+  letter-spacing: -0.01em; line-height: 1.1;
+  font-variation-settings: "opsz" 60, "SOFT" 60;
+}
+.tl-list h3 em { font-style: italic; color: var(--accent); font-variation-settings: "opsz" 60, "SOFT" 100; }
+.tl-list .org { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+.tl-list .body { font-family: var(--serif); font-size: 17px; line-height: 1.6; color: var(--ink-2); max-width: 64ch; font-variation-settings: "opsz" 22; }
+.tl-list .body p { margin: 0 0 10px; }
+.tl-list .body em { font-style: italic; color: var(--ink); font-weight: 500; }
+
+@media (max-width: 720px) { .tl, .tl-list > li { grid-template-columns: 1fr; gap: 14px; } }
+
+/* ─── projects / editorial ─── */
+.proj { padding: 0; }
+.proj-item {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 64px;
+  padding: 64px 0; border-top: 0.5px solid var(--hair);
+  align-items: center;
+}
+.proj-item:last-child { border-bottom: 0.5px solid var(--hair); }
+.proj-item:nth-child(even) .proj-text { grid-column: 1; grid-row: 1; }
+.proj-item:nth-child(even) .proj-figure { grid-column: 2; grid-row: 1; }
+.proj-text .num {
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.16em;
+  color: var(--muted); text-transform: uppercase; margin-bottom: 14px;
+  display: flex; gap: 14px; align-items: center;
+}
+.proj-text .num b { color: var(--accent); font-weight: 500; }
+.proj-text .num .tag { padding: 2px 8px; border: 0.5px solid var(--hair); color: var(--ink); border-radius: 999px; }
+.proj-text h3 {
+  font-family: var(--display); font-weight: 300;
+  font-size: clamp(32px, 4.6vw, 56px); margin: 0 0 14px;
+  letter-spacing: -0.025em; line-height: 1;
+  font-variation-settings: "opsz" 144, "SOFT" 70;
+}
+.proj-text h3 em { font-style: italic; color: var(--accent); font-variation-settings: "opsz" 144, "SOFT" 100; }
+.proj-text .lede { font-family: var(--serif); font-size: 19px; line-height: 1.55; color: var(--ink-2); margin: 0 0 24px; max-width: 50ch; font-variation-settings: "opsz" 22; }
+.proj-text .meta-row { display: flex; flex-wrap: wrap; gap: 4px 16px; font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.06em; margin-bottom: 24px; }
+.proj-text .meta-row span::before { content: '·'; color: var(--accent); margin-right: 8px; }
+.proj-text .meta-row span:first-child::before { content: ''; margin: 0; }
+.proj-text .links { display: flex; flex-wrap: wrap; gap: 28px; font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.1em; text-transform: uppercase; }
+.proj-text .links a { padding-bottom: 4px; border-bottom: 0.5px solid var(--ink); transition: color 0.2s, border-color 0.2s, gap 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+.proj-text .links a:hover { color: var(--accent); border-bottom-color: var(--accent); gap: 12px; }
+.proj-text .links a.muted { color: var(--muted); border-bottom-color: var(--hair); }
+
+.proj-figure {
+  background: var(--paper-2);
+  border: 0.5px solid var(--hair);
+  aspect-ratio: 4 / 3;
+  display: grid; place-items: center;
+  position: relative; overflow: hidden;
+  font-family: var(--display); font-style: italic; font-weight: 300;
+  color: var(--ink);
+  box-shadow: 0 1px 0 var(--shadow), 0 30px 60px -30px rgba(0,0,0,0.08);
+}
+.proj-figure .glyph {
+  font-size: clamp(120px, 18vw, 220px); line-height: 1;
+  color: var(--ink); opacity: 0.92;
+  font-variation-settings: "opsz" 144, "SOFT" 100;
+}
+.proj-figure .caption {
+  position: absolute; bottom: 16px; right: 16px;
+  font-family: var(--mono); font-size: 10.5px; font-style: normal;
+  color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase;
+}
+.proj-figure .top-tag {
+  position: absolute; top: 16px; left: 16px;
+  font-family: var(--mono); font-size: 10.5px; font-style: normal;
+  color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase;
+}
+.proj-figure.dark { background: var(--ink); }
+.proj-figure.dark .glyph { color: var(--paper); }
+.proj-figure.dark .caption { color: var(--muted-2); }
+
+@media (max-width: 880px) {
+  .proj-item { grid-template-columns: 1fr; gap: 28px; padding: 40px 0; }
+  .proj-item:nth-child(even) .proj-text, .proj-item:nth-child(even) .proj-figure { grid-column: 1; grid-row: auto; }
+  .proj-figure { aspect-ratio: 5 / 3; }
+}
+
+/* ─── skills typographic table ─── */
+.skills { display: grid; grid-template-columns: repeat(2, 1fr); gap: 48px; }
+@media (max-width: 720px) { .skills { grid-template-columns: 1fr; gap: 32px; } }
+.skills section h3 {
+  font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--muted); margin: 0 0 4px;
+}
+.skills section h3 b { color: var(--ink); font-weight: 500; }
+.skills section .lead {
+  font-family: var(--display); font-style: italic; font-weight: 300;
+  font-size: clamp(28px, 3vw, 36px); margin: 0 0 18px; line-height: 1.1; letter-spacing: -0.015em;
+  font-variation-settings: "opsz" 60, "SOFT" 100;
+}
+.skills section ul { list-style: none; padding: 0; margin: 0; }
+.skills section li {
+  display: grid; grid-template-columns: 1fr auto; gap: 8px;
+  font-family: var(--serif); font-size: 18px; line-height: 1.5; color: var(--ink);
+  padding: 8px 0; border-top: 0.5px solid var(--hair);
+  font-variation-settings: "opsz" 22; align-items: baseline;
+}
+.skills section li:last-child { border-bottom: 0.5px solid var(--hair); }
+.skills section li .lvl { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; font-variation-settings: normal; }
+.skills section li.featured .lvl { color: var(--accent); }
+.skills section .also { font-family: var(--serif); font-style: italic; font-size: 16px; color: var(--muted); margin-top: 14px; font-variation-settings: "opsz" 22; }
+.skills section .also::before { content: '— '; color: var(--accent); }
+
+/* ─── testimonials / pull quotes ─── */
+.testi { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px; }
+@media (max-width: 1000px) { .testi { grid-template-columns: 1fr; gap: 56px; } }
+.testi figure { margin: 0; padding-top: 40px; position: relative; }
+.testi figure::before {
+  content: '“'; position: absolute; top: -18px; left: -10px;
+  font-family: var(--display); font-style: italic; font-weight: 300;
+  font-size: 96px; line-height: 0.7; color: var(--accent);
+  font-variation-settings: "opsz" 144, "SOFT" 100;
+}
+.testi blockquote {
+  margin: 0 0 22px; font-family: var(--display); font-style: italic; font-weight: 300;
+  font-size: clamp(22px, 2vw, 28px); line-height: 1.35; color: var(--ink); letter-spacing: -0.005em;
+  font-variation-settings: "opsz" 60, "SOFT" 100;
+}
+.testi figcaption {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--muted); border-top: 0.5px solid var(--hair); padding-top: 12px;
+}
+.testi figcaption .name { color: var(--ink); font-weight: 500; }
+.testi figcaption .name a { color: inherit; border-bottom: 0.5px solid var(--hair); transition: color 0.2s, border-color 0.2s; }
+.testi figcaption .name a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+.testi figcaption .role { display: block; margin-top: 4px; }
+
+/* ─── contact ─── */
+.contact-grid { display: grid; grid-template-columns: 1fr 380px; gap: 64px; align-items: start; }
+@media (max-width: 880px) { .contact-grid { grid-template-columns: 1fr; gap: 32px; } }
+form.contact { display: grid; gap: 18px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+@media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+.fld { display: grid; gap: 6px; }
+.fld label {
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--muted);
+}
+.fld input, .fld textarea {
+  font-family: var(--serif); font-size: 18px; color: var(--ink);
+  background: transparent; border: 0; border-bottom: 0.5px solid var(--ink);
+  padding: 8px 0; outline: 0; border-radius: 0; transition: border-color 0.2s;
+  font-variation-settings: "opsz" 22;
+}
+.fld input::placeholder, .fld textarea::placeholder { color: var(--muted-2); font-style: italic; }
+.fld input:focus, .fld textarea:focus { border-bottom-color: var(--accent); }
+.fld textarea { resize: vertical; min-height: 120px; }
+
+.btn-row { margin-top: 8px; display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+.btn-send {
+  font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink); background: transparent; border: 0; cursor: pointer;
+  padding: 12px 0; border-bottom: 0.5px solid var(--ink);
+  display: inline-flex; align-items: center; gap: 8px;
+  transition: color 0.2s, border-color 0.2s, gap 0.2s;
+}
+.btn-send:hover { color: var(--accent); border-bottom-color: var(--accent); gap: 14px; }
+.send-hint { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--muted); font-variation-settings: "opsz" 22; }
+
+.channels {
+  font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.04em;
+  border-top: 0.5px solid var(--hair); padding-top: 14px;
+}
+.channels h3 { font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin: 0 0 14px; }
+.channels ul { list-style: none; padding: 0; margin: 0; }
+.channels li { padding: 14px 0; border-bottom: 0.5px solid var(--hair); display: grid; grid-template-columns: 100px 1fr; gap: 16px; align-items: baseline; }
+.channels li dt { color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; font-size: 10.5px; }
+.channels li dd { margin: 0; font-family: var(--serif); font-size: 18px; color: var(--ink); font-variation-settings: "opsz" 22; }
+.channels li dd a { color: inherit; border-bottom: 0.5px solid var(--hair); transition: color 0.2s, border-color 0.2s; }
+.channels li dd a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+.channels .avail {
+  margin-top: 18px; font-family: var(--display); font-style: italic; font-weight: 400;
+  font-size: 18px; color: var(--ink); line-height: 1.45;
+  font-variation-settings: "opsz" 36, "SOFT" 100;
+}
+.channels .avail::before { content: '∗ '; color: var(--accent); }
+
+/* ─── footer ─── */
+footer { padding: 64px 0 80px; border-top: 0.5px solid var(--hair); margin-top: 32px; }
+.foot-grid { display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: end; }
+@media (max-width: 720px) { .foot-grid { grid-template-columns: 1fr; gap: 24px; } }
+.foot-mark .name {
+  font-family: var(--display); font-style: italic; font-weight: 300;
+  font-size: clamp(56px, 9vw, 110px); line-height: 0.9;
+  letter-spacing: -0.04em; color: var(--ink); margin: 0;
+  font-variation-settings: "opsz" 144, "SOFT" 100;
+}
+.foot-mark .name span { color: var(--accent); }
+.foot-mark .tag { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; color: var(--muted); margin-top: 18px; text-transform: uppercase; }
+.foot-r { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.06em; text-align: right; }
+.foot-r a { color: var(--ink); border-bottom: 0.5px solid var(--hair); transition: color 0.2s, border-color 0.2s; }
+.foot-r a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+.foot-r .ring { display: flex; gap: 12px; align-items: center; margin-top: 8px; }
+.foot-r .ring a { width: 28px; height: 28px; border: 0.5px solid var(--hair); display: grid; place-items: center; padding: 0; }
+.foot-r .ring a:hover { color: var(--accent); border-color: var(--accent); }
+.foot-r .ring img { width: 16px; height: 16px; display: block; filter: brightness(0); opacity: 0.62; transition: opacity 0.18s; }
+.foot-r .ring a:hover img { opacity: 1; }
+.foot-pn { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.14em; color: var(--muted); margin-top: 32px; padding-top: 20px; border-top: 0.5px solid var(--hair); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 14px; }
+
+/* ─── reveal ─── */
+.reveal { opacity: 0; transform: translateY(14px); transition: opacity 0.9s ease, transform 0.9s ease; }
+.reveal.in { opacity: 1; transform: translateY(0); }
+.scroll-mt { scroll-margin-top: 64px; }
+
+/* ─── theme: midnight ─── */
+body.t-midnight {
+  --paper: #0E0D0B;
+  --paper-2: #161412;
+  --ink: #F5F1E6;
+  --ink-2: #D7D2C5;
+  --muted: #A09886;
+  --muted-2: #7A7464;
+  --hair: #2A2620;
+  --hair-2: #3B362E;
+  --accent: #E0664A;
+  --shadow: rgba(0,0,0,0.5);
+}
+body.t-midnight::after { mix-blend-mode: lighten; opacity: 0.18; }
+
+@media (max-width: 480px) {
+  .masthead .super { display: none; }
+  .colophon .row { gap: 8px; padding: 0 12px; height: 40px; }
+  .colophon .center { font-size: 13px; text-align: center; }
+  .colophon .left, .colophon .right { flex: 0; }
+  .section { padding: 48px 0; }
+  .section-mast { margin-bottom: 32px; }
+  .masthead { padding: 40px 0 32px; }
+  .about-side .pq { font-size: 19px; margin-bottom: 0; }
+  .drawer nav ol a { grid-template-columns: 36px 1fr auto; gap: 12px; }
+  .drawer nav ol a::before { padding-bottom: 10px; }
+  .drawer nav ol a .meta { padding-bottom: 10px; }
+  .channels li { grid-template-columns: 72px 1fr; gap: 10px; }
+  .channels li dd { font-size: 15px; }
+  .testi figure::before { font-size: 64px; top: -12px; left: -6px; }
+}
+</style>
+
+<script type="application/ld+json">
+    {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://ryanpolasky.com/#person",
+      "name": "Ryan Polasky",
+      "givenName": "Ryan",
+      "familyName": "Polasky",
+      "alternateName": "ryan.polasky",
+      "url": "https://ryanpolasky.com/",
+      "image": "https://ryanpolasky.com/assets/images/my-avatar.png",
+      "email": "mailto:ryanpolasky@hotmail.com",
+      "jobTitle": "Software Engineer",
+      "description": "Junior Software Engineer specializing in backend systems, AI/LLM tooling, test automation, and developer productivity. UT Dallas '26 graduate and 2\u00d7 Apple intern.",
+      "address": {
+        "@type": "PostalAddress",
+        "addressRegion": "ND",
+        "addressCountry": "US"
+      },
+      "alumniOf": {
+        "@type": "CollegeOrUniversity",
+        "name": "The University of Texas at Dallas",
+        "url": "https://www.utdallas.edu/",
+        "sameAs": "https://en.wikipedia.org/wiki/University_of_Texas_at_Dallas"
+      },
+      "knowsAbout": [
+        "Software Engineering",
+        "Backend Development",
+        "Artificial Intelligence",
+        "Large Language Models",
+        "Developer Tooling",
+        "DevOps",
+        "Test Automation",
+        "CI/CD",
+        "Python",
+        "TypeScript",
+        "Cloud Infrastructure"
+      ],
+      "sameAs": [
+        "https://www.linkedin.com/in/ryan-polasky/",
+        "https://github.com/ryanpolasky"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://ryanpolasky.com/#website",
+      "url": "https://ryanpolasky.com/",
+      "name": "Ryan Polasky",
+      "alternateName": "ryan.polasky / runtime",
+      "description": "Personal site of Ryan Polasky \u2014 Junior Software Engineer specializing in backend systems, AI/LLM tooling, and developer productivity.",
+      "inLanguage": "en",
+      "publisher": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "author": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "copyrightHolder": {
+        "@id": "https://ryanpolasky.com/#person"
+      }
+    },
+    {
+      "@type": "ProfilePage",
+      "@id": "https://ryanpolasky.com/#profile",
+      "url": "https://ryanpolasky.com/",
+      "name": "Ryan Polasky - Software Engineer",
+      "isPartOf": {
+        "@id": "https://ryanpolasky.com/#website"
+      },
+      "about": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "mainEntity": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "primaryImageOfPage": "https://ryanpolasky.com/assets/images/my-avatar.png"
+    },
+    {
+      "@type": "VideoGame",
+      "@id": "https://crashdle.com/#game",
+      "name": "Crashdle",
+      "url": "https://crashdle.com/",
+      "description": "Daily 5-letter word puzzle paired with a live crash multiplier bonus round. Solve the word in six guesses, then optionally risk your winnings on a real-time crash game.",
+      "image": "https://crashdle.com/og.webp",
+      "genre": [
+        "Word Game",
+        "Puzzle",
+        "Casual"
+      ],
+      "playMode": "SinglePlayer",
+      "gamePlatform": "Web Browser",
+      "applicationCategory": "GameApplication",
+      "operatingSystem": "Any",
+      "inLanguage": "en",
+      "creator": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "author": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "publisher": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      }
+    },
+    {
+      "@type": "WebApplication",
+      "@id": "https://ryplay.dev/#app",
+      "name": "ryplay",
+      "alternateName": "ryplay - Your Music, Visualized",
+      "url": "https://ryplay.dev/",
+      "description": "A real-time music dashboard powered by Last.fm. Visualize your listening habits, track streaks, and share your music taste.",
+      "image": "https://ryplay.dev/og.webp",
+      "applicationCategory": "MultimediaApplication",
+      "applicationSubCategory": "Music Visualization",
+      "operatingSystem": "Any",
+      "inLanguage": "en",
+      "creator": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "author": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "publisher": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      }
+    },
+    {
+      "@type": "WebApplication",
+      "@id": "https://ryme.md/#app",
+      "name": "RyMe.md",
+      "alternateName": "readme-ryvamper",
+      "url": "https://ryme.md/",
+      "description": "A browser-based generator for animated GitHub profile README banners. Pick a template, fill in your info, and export as SVG or GIF \u2014 entirely client-side.",
+      "image": "https://ryme.md/og.webp",
+      "applicationCategory": "DeveloperApplication",
+      "applicationSubCategory": "Profile README Generator",
+      "operatingSystem": "Any",
+      "inLanguage": "en",
+      "creator": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "author": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "publisher": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      }
+    },
+    {
+      "@type": "WebApplication",
+      "@id": "https://status.ryanpolasky.com/#app",
+      "name": "WRLT",
+      "alternateName": "What's Ryan Up To?",
+      "url": "https://status.ryanpolasky.com/",
+      "description": "A live personal dashboard with mini-games, an in-app economy, and a desktop-style UI in the browser.",
+      "image": "https://status.ryanpolasky.com/og.webp",
+      "applicationCategory": "LifestyleApplication",
+      "applicationSubCategory": "Personal Dashboard",
+      "operatingSystem": "Any",
+      "inLanguage": "en",
+      "creator": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "author": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "publisher": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      }
+    }
+  ]
+}
+    </script>
+</head>
+<body>
+
+<header class="colophon" role="banner">
+  <div class="row">
+    <div class="left">
+      <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false"><span class="bars"><i></i><i></i><i></i></span><span>Index</span></button>
+      <span class="meta-2"><span class="dot"></span>Issue Nº 04 · Spring 2026</span>
+    </div>
+    <div class="center"><b>Ryan Polasky</b> <em style="color:var(--muted); font-style: normal;">·</em> A Working Portfolio</div>
+    <div class="right">
+      <span class="meta-2">Folio</span>
+      <button class="menu-btn" id="themeBtn" aria-label="Toggle theme">◐&nbsp;Light</button>
+    </div>
+  </div>
+</header>
+
+<div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Site index">
+  <button class="close" id="drawerClose" aria-label="Close menu">Close ✕</button>
+  <nav>
+    <ol>
+      <li><a href="#home" data-nav>Home<span class="meta">Open Folio</span></a></li>
+      <li><a href="#about" data-nav>About<span class="meta">Profile</span></a></li>
+      <li><a href="#experience" data-nav><em style="font-style:italic">Experience</em><span class="meta">Curriculum</span></a></li>
+      <li><a href="#projects" data-nav>Work<span class="meta">Six Selected</span></a></li>
+      <li><a href="#skills" data-nav>Tools<span class="meta">Stack</span></a></li>
+      <li><a href="#testimonials" data-nav><em style="font-style:italic">Voices</em><span class="meta">Testimonials</span></a></li>
+      <li><a href="#contact" data-nav>Contact<span class="meta">Available May 2026</span></a></li>
+    </ol>
+  </nav>
+</div>
+
+<main class="shell" role="main">
+
+<!-- ─── masthead ─── -->
+<section class="masthead scroll-mt" id="home">
+  <div class="super">
+    <i></i><span>Folio · Volume III · Edition 0426</span><span style="color:var(--accent); flex:0; white-space:nowrap;">Currently Available · May 2026</span>
+  </div>
+
+  <div class="title-block">
+    <h1 class="name reveal in">Ryan<br><em>Polasky.</em></h1>
+  </div>
+
+  <div class="standfirst reveal">
+    <p class="lede">
+      A junior software engineer who finds the unglamorous problems and makes them <em>quiet, fast, and reliable</em>.
+      Backend, AI, and the small details that ship.
+    </p>
+    <span class="rule"></span>
+    <dl class="meta">
+      <dt>Now</dt><dd>UT Dallas, '26 — graduating</dd>
+      <dt>Recently</dt><dd>2× Apple Intern · 2× AppleCare Excellence Award</dd>
+      <dt>Specialty</dt><dd>LLM-powered tooling · CI/CD · backend systems</dd>
+      <dt>Based</dt><dd>North Dakota, USA · open to remote</dd>
+      <dt id="np-apple-label">Listening</dt><dd id="np-apple">—</dd>
+      <div class="cta">
+        <a href="#projects">View work →</a>
+        <a href="#contact" class="muted">Get in touch</a>
+        <a href="/assets/Ryan_Polasky_Resume.pdf" download class="muted">Download résumé</a>
+      </div>
+    </dl>
+  </div>
+</section>
+
+<!-- ─── about ─── -->
+<section class="section scroll-mt" id="about">
+  <div class="section-mast">
+    <span class="num"><strong>I.</strong>About</span>
+    <h2>Quietly building software that <em>works</em>, even when no-one's watching.</h2>
+  </div>
+
+  <div class="about-grid">
+    <article class="article-body">
+      <p class="first">
+        I'm a fourth-year Computer Science student at the University of Texas at Dallas, graduating in May 2026.
+        I specialize in solving the <em>unglamorous problems</em> that make engineering teams ten times faster — intelligent
+        log analysis, bulletproof CI/CD pipelines, test automation that actually works, and AI-powered query
+        generation that doesn't fall over the moment a user phrases a question oddly.
+      </p>
+      <p>
+        At Apple, I built LLM-powered tooling for the Camera and Photos team, automated the triage of thousands of
+        flaky test failures with smart categorization, and designed cloud workflows that ship fast without breaking
+        anything. I balance velocity with reliability, security with usability, and prioritize crystal-clear
+        communication. Half of engineering, in my view, is writing things down well.
+      </p>
+      <p>
+        Outside of work I produce lo-fi music as <em>plasky</em> (published since 2023), maintain a public knowledge
+        base of my CS curriculum, and keep a weather eye on the things that go wrong in production at 3am — because
+        that's where the real lessons live.
+      </p>
+    </article>
+
+    <aside class="about-side">
+      <dt>Location</dt><dd>North Dakota, USA</dd>
+      <dt>Education</dt><dd>BS Computer Science · UT Dallas '26</dd>
+      <dt>Tenure</dt><dd>2× Apple Intern · 1× Healthcare IT</dd>
+      <dt>Pronouns</dt><dd>he / him</dd>
+      <dt>Tags</dt><dd>problem-solver · ai engineer · devops</dd>
+      <p class="pq">Half of engineering is writing things down well.</p>
+    </aside>
+  </div>
+</section>
+
+<!-- ─── experience ─── -->
+<section class="section scroll-mt" id="experience">
+  <div class="section-mast">
+    <span class="num"><strong>II.</strong>Experience</span>
+    <h2>A short <em>curriculum</em>, told in five chapters.</h2>
+  </div>
+
+  <ul class="tl-list">
+
+    <li class="reveal">
+      <div class="when"><b>2023 — present</b>Apple, Inc.<br/>At-Home Advisor</div>
+      <div>
+        <h3>Customer-facing engineering at <em>Apple</em>.</h3>
+        <div class="org">AppleCare · Recipient · Excellence Award (2024, 2025)</div>
+        <div class="body">
+          <p>Sustained a <em>6.87% escalation rate</em> through independent research and advanced troubleshooting — well below department average. Average call wrap time of 0.27 minutes while keeping documentation standards premium-quality. CSAT consistently <em>+15% over the department average</em>, recognised twice with the AppleCare Excellence Award.</p>
+        </div>
+      </div>
+    </li>
+
+    <li class="reveal">
+      <div class="when"><b>2025 — present</b>ACM at UT Dallas<br/>Lead &amp; Mentor</div>
+      <div>
+        <h3>Mentorship, hackathons, and a <em>full-stack platform</em>.</h3>
+        <div class="org">Development Lead · HackUTD Mentor · Education Mentor</div>
+        <div class="body">
+          <p>Supported <em>1,200+ HackUTD participants</em> across overnight shifts and debugged critical issues for sixty teams in the largest hackathon in the United States. As Development Lead I'm architecting a full-stack roommate-matching platform (React + FastAPI + PostgreSQL) while coaching juniors through agile workflows. Selected to mentor four underclassmen through interviews, planning, and landing summer internships.</p>
+        </div>
+      </div>
+    </li>
+
+    <li class="reveal">
+      <div class="when"><b>May — Aug 2025</b>Apple, Inc.<br/>Camera API Test</div>
+      <div>
+        <h3>An LLM in the test triage <em>loop</em>.</h3>
+        <div class="org">Camera API Test Automation Intern</div>
+        <div class="body">
+          <p>Automated the parsing, grouping, and analysis of <em>thousands of on-device tests</em> with intelligent categorization. Integrated LLMs into test triage workflows to dramatically speed up root-cause analysis, reducing manual investigation by <em>4,800%</em>. Unified bug-report formats for succinct, actionable communication that teams actually use.</p>
+        </div>
+      </div>
+    </li>
+
+    <li class="reveal">
+      <div class="when"><b>Jun — Nov 2024</b>Apple, Inc.<br/>WTE Tools</div>
+      <div>
+        <h3>Natural-language queries for the <em>Camera &amp; Photos</em> team.</h3>
+        <div class="org">WTE Tools Engineer Intern</div>
+        <div class="body">
+          <p>Built an LLM-powered chat interface and a Python package to generate <em>SQL/NoSQL queries from natural language</em> — no more syntax debugging. Migrated critical services from Java 11 to JDK 21, resolving dependency conflicts and security vulnerabilities. Designed AWS/GCP workflows and CI/CD pipelines for reliable deploys and lightning-fast feedback loops. Optimized an iOS log analyzer (MVVM) to render thousands of events in real-time without a hitch.</p>
+        </div>
+      </div>
+    </li>
+
+    <li class="reveal">
+      <div class="when"><b>Jun 2021 — Jul 2022</b>Altru Health System<br/>IT Intern</div>
+      <div>
+        <h3>The <em>quiet work</em> of healthcare IT.</h3>
+        <div class="org">IT Intern · Grand Forks, ND</div>
+        <div class="body">
+          <p>Repaired, imaged, and deployed hundreds of machines for critical healthcare-system expansion. Handled urgent hardware deliveries and set the department intake record at <em>300+ devices</em> during high-demand periods.</p>
+        </div>
+      </div>
+    </li>
+
+  </ul>
+</section>
+
+<!-- ─── projects ─── -->
+<section class="section scroll-mt" id="projects">
+  <div class="section-mast">
+    <span class="num"><strong>III.</strong>Selected Work</span>
+    <h2>Six things I've made.</h2>
+  </div>
+
+  <div class="proj">
+
+    <article class="proj-item reveal">
+      <div class="proj-text">
+        <div class="num"><b>i</b><span class="tag">Apple · Internal</span><span>Python · FastAPI · Postgres · GCP</span></div>
+        <h3>askdb. <em>Talk</em> to your database.</h3>
+        <p class="lede">A Python package and a chat interface that turn natural-language questions into <em>data-accurate</em> answers — by quietly running the right parameterized SQL or NoSQL query and interpreting the result.</p>
+        <div class="meta-row"><span>Python</span><span>FastAPI</span><span>PostgreSQL</span></div>
+        <div class="links"><span class="muted">Internal tool · private →</span></div>
+      </div>
+      <figure class="proj-figure">
+        <span class="top-tag">Nº I · Internal</span>
+        <span class="glyph">Q.</span>
+        <span class="caption">askdb / v2.4</span>
+      </figure>
+    </article>
+
+    <article class="proj-item reveal">
+      <div class="proj-text">
+        <div class="num"><b>ii</b><span class="tag">Apple · QA</span><span>Python · Jenkins · LLMs</span></div>
+        <h3>An <em>intelligent</em> failure aggregator.</h3>
+        <p class="lede">Classifies test failures, suggests probable root causes through multi-stage LLM analysis, and exports unified bug reports with the right artifacts attached. Triage, finally, that scales.</p>
+        <div class="meta-row"><span>−4,800% manual triage</span><span>Python</span><span>Jenkins</span></div>
+        <div class="links"><span class="muted">Internal tool · private →</span></div>
+      </div>
+      <figure class="proj-figure dark">
+        <span class="top-tag" style="color:var(--accent)">Nº II · Internal</span>
+        <span class="glyph">△</span>
+        <span class="caption">ai-test-analysis / v1.8</span>
+      </figure>
+    </article>
+
+    <article class="proj-item reveal">
+      <div class="proj-text">
+        <div class="num"><b>iii</b><span class="tag">Personal</span><span>React · FastAPI · Framer Motion</span></div>
+        <h3>Ryan&nbsp;OS. A <em>desktop</em>, on the web.</h3>
+        <p class="lede">Answers the age-old question — what is Ryan up to? Draggable widgets, dynamic ambient backgrounds, fluid animations, and a single mobile-first layout that doesn't feel like a compromise.</p>
+        <div class="meta-row"><span>React</span><span>FastAPI</span><span>Framer Motion</span></div>
+        <div class="links"><a href="https://status.ryanpolasky.com" target="_blank" rel="noreferrer">View live ↗</a></div>
+      </div>
+      <figure class="proj-figure">
+        <span class="top-tag">Nº III · Personal</span>
+        <span class="glyph">R<em style="color:var(--accent); font-style:italic;">OS</em></span>
+        <span class="caption">ryan-os / v3.0</span>
+      </figure>
+    </article>
+
+    <article class="proj-item reveal">
+      <div class="proj-text">
+        <div class="num"><b>iv</b><span class="tag">Personal</span><span>Notion · LaTeX · Documentation</span></div>
+        <h3>Notes. A <em>digital garden</em> for CS.</h3>
+        <p class="lede">My entire CS curriculum from UTD, kept in public. Comprehensive documentation, LaTeX-formatted algorithms, study guides — organised in Notion, written for the next student.</p>
+        <div class="meta-row"><span>Notion</span><span>LaTeX</span><span>Open to all</span></div>
+        <div class="links"><a href="https://ryanpolasky.com/notes">Visit garden ↗</a></div>
+      </div>
+      <figure class="proj-figure">
+        <span class="top-tag">Nº IV · Personal</span>
+        <span class="glyph">§</span>
+        <span class="caption">notes / evergreen</span>
+      </figure>
+    </article>
+
+    <article class="proj-item reveal">
+      <div class="proj-text">
+        <div class="num"><b>v</b><span class="tag">Personal</span><span>FL Studio · Lo-fi · Piano</span></div>
+        <h3><em>plasky</em>. Lo-fi, written slowly.</h3>
+        <p class="lede">A hobbyist music project since 2021, focused on lo-fi composition. Published on major streaming platforms since 2023 — written by hand, mixed at midnight, released without a marketing plan.</p>
+        <div class="meta-row"><span>FL Studio</span><span>Composition</span><span>Piano</span></div>
+        <div class="links"><a href="spotify.html">Listen ↗</a></div>
+      </div>
+      <figure class="proj-figure dark">
+        <span class="top-tag" style="color:var(--accent)">Nº V · Personal</span>
+        <span class="glyph"><em>p.</em></span>
+        <span class="caption">plasky / lo-fi</span>
+      </figure>
+    </article>
+
+    <article class="proj-item reveal">
+      <div class="proj-text">
+        <div class="num"><b>vi</b><span class="tag">ACM UTD</span><span>Tech Lead · Architecture · Full-Stack</span></div>
+        <h3>MeteorMate. A <em>better</em> way to find a roommate.</h3>
+        <p class="lede">As Project Lead I'm architecting a full-stack matching platform for UTD students while mentoring junior developers. Reliable, secure, and human — built to replace the impersonal forms students settle for.</p>
+        <div class="meta-row"><span>Tech Lead</span><span>Architecture</span><span>Full Stack</span></div>
+        <div class="links"><a href="https://github.com/acmutd/meteormate-backend" target="_blank" rel="noreferrer">Backend ↗</a><a href="https://github.com/acmutd/meteormate-client" target="_blank" rel="noreferrer">Frontend ↗</a></div>
+      </div>
+      <figure class="proj-figure">
+        <span class="top-tag">Nº VI · ACM</span>
+        <span class="glyph">☄</span>
+        <span class="caption">meteormate / α</span>
+      </figure>
+    </article>
+
+  </div>
+</section>
+
+<!-- ─── skills ─── -->
+<section class="section scroll-mt" id="skills">
+  <div class="section-mast">
+    <span class="num"><strong>IV.</strong>Stack</span>
+    <h2>The tools I reach for, <em>in order of trust</em>.</h2>
+  </div>
+
+  <div class="skills">
+    <section>
+      <h3><b>Languages</b> · primary instruments</h3>
+      <p class="lead">Spoken fluently, daily.</p>
+      <ul>
+        <li class="featured"><span>Python</span><span class="lvl">Advanced · 95</span></li>
+        <li><span>TypeScript</span><span class="lvl">Advanced · 90</span></li>
+        <li><span>HTML/CSS</span><span class="lvl">Advanced · 88</span></li>
+        <li><span>Swift</span><span class="lvl">Intermediate · 80</span></li>
+      </ul>
+      <div class="also">also JavaScript, Java, C++, SwiftUI, R, Objective-C</div>
+    </section>
+
+    <section>
+      <h3><b>Data</b> · what stores the truth</h3>
+      <p class="lead">Where the <em>real</em> bugs live.</p>
+      <ul>
+        <li class="featured"><span>PostgreSQL</span><span class="lvl">Advanced · 95</span></li>
+        <li><span>Redis</span><span class="lvl">Intermediate · 85</span></li>
+        <li><span>OpenSearch</span><span class="lvl">Intermediate · 80</span></li>
+      </ul>
+      <div class="also">also MySQL, SQLite, vector DBs, MongoDB</div>
+    </section>
+
+    <section>
+      <h3><b>AI &amp; LLMs</b> · written carefully</h3>
+      <p class="lead">When the prompt <em>is</em> the architecture.</p>
+      <ul>
+        <li class="featured"><span>LLM Integration</span><span class="lvl">Advanced · 95</span></li>
+        <li class="featured"><span>RAG Systems</span><span class="lvl">Advanced · 95</span></li>
+        <li><span>Vertex AI</span><span class="lvl">Intermediate · 90</span></li>
+      </ul>
+      <div class="also">also fine-tuning, function calling, embeddings</div>
+    </section>
+
+    <section>
+      <h3><b>DevOps &amp; Cloud</b> · deploys without drama</h3>
+      <p class="lead">The pipeline is the <em>product</em>.</p>
+      <ul>
+        <li><span>Kubernetes</span><span class="lvl">Intermediate · 85</span></li>
+        <li><span>Docker</span><span class="lvl">Intermediate · 85</span></li>
+        <li><span>AWS &amp; GCP</span><span class="lvl">Intermediate · 75</span></li>
+      </ul>
+      <div class="also">also CI/CD, Helm, Terraform, Jenkins</div>
+    </section>
+  </div>
+</section>
+
+<!-- ─── testimonials ─── -->
+<section class="section scroll-mt" id="testimonials">
+  <div class="section-mast">
+    <span class="num"><strong>V.</strong>Voices</span>
+    <h2>What people I've worked with <em>say</em>.</h2>
+  </div>
+
+  <div class="testi">
+    <figure class="reveal">
+      <blockquote>Ryan's learning agility is remarkable… he tackles each new challenge with focus and enthusiasm. Strong communicator with clear, impactful presentations.</blockquote>
+      <figcaption>
+        <span class="name"><a href="https://www.linkedin.com/in/sahilpujari/">Sahil Pujari</a></span>
+        <span class="role">Sr. Software Engineer · Mentor</span>
+      </figcaption>
+    </figure>
+
+    <figure class="reveal">
+      <blockquote>Ryan was a fantastic summer 2025 intern. A fast learner, he delivered his project ahead of schedule and integrated seamlessly. He performed like a full-time hire.</blockquote>
+      <figcaption>
+        <span class="name"><a href="https://www.linkedin.com/in/jozefkruger/">Jozef Kruger</a></span>
+        <span class="role">Engineering Manager · Manager</span>
+      </figcaption>
+    </figure>
+
+    <figure class="reveal">
+      <blockquote>Ryan was an exceptional intern, contributing valuable test automation tools. His initiative, clear communication, and collaboration made him a joy to work with.</blockquote>
+      <figcaption>
+        <span class="name"><a href="https://www.linkedin.com/in/jdpaul123/">JD Paul</a></span>
+        <span class="role">Software Engineer · Teammate</span>
+      </figcaption>
+    </figure>
+  </div>
+
+  <p style="margin-top:36px; font-family: var(--serif); font-style: italic; font-size: 16px; color: var(--muted); font-variation-settings: 'opsz' 22;">— Full references available upon request.</p>
+</section>
+
+<!-- ─── contact ─── -->
+<section class="section scroll-mt" id="contact">
+  <div class="section-mast">
+    <span class="num"><strong>VI.</strong>Correspondence</span>
+    <h2>Write me a <em>letter</em>.</h2>
+  </div>
+
+  <div class="contact-grid">
+    <form action="https://formspree.io/f/xldjdlla" method="POST" class="contact" id="cf">
+      <div class="form-row">
+        <div class="fld">
+          <label for="cf-name">Your name</label>
+          <input id="cf-name" name="name" required placeholder="Your Name"/>
+        </div>
+        <div class="fld">
+          <label for="cf-email">Where to reply</label>
+          <input id="cf-email" name="email" type="email" required placeholder="you@icloud.com"/>
+        </div>
+      </div>
+      <div class="fld">
+        <label for="cf-msg">A few words</label>
+        <textarea id="cf-msg" name="message" required placeholder="What inspired you to reach out? Say as little or as much as feels right."></textarea>
+      </div>
+      <div class="btn-row">
+        <button class="btn-send" type="submit">Send → </button>
+        <span class="send-hint">Faster than a Redis cache hit. Usually within a day.</span>
+      </div>
+    </form>
+
+    <aside class="channels">
+      <h3>— Direct channels</h3>
+      <ul>
+        <li><dt>Email</dt><dd><a href="mailto:ryanpolasky@hotmail.com">ryanpolasky@hotmail.com</a></dd></li>
+        <li><dt>Phone</dt><dd><a href="tel:+14089406887">+1 (408) 940 — 6887</a></dd></li>
+        <li><dt>LinkedIn</dt><dd><a href="https://www.linkedin.com/in/ryan-polasky/" target="_blank" rel="noreferrer">ryan-polasky</a></dd></li>
+        <li><dt>GitHub</dt><dd><a href="https://github.com/ryanpolasky" target="_blank" rel="noreferrer">github.com/ryanpolasky</a></dd></li>
+      </ul>
+      <p class="avail">Available May 2026. Open to remote opportunities now.</p>
+    </aside>
+  </div>
+</section>
+
+<!-- ─── footer ─── -->
+<footer>
+  <div class="foot-grid">
+    <div class="foot-mark">
+      <p class="name">Ryan<span>.</span></p>
+      <div class="tag">Software, written carefully.</div>
+    </div>
+    <div class="foot-r">
+      <span><a href="https://github.com/ryanpolasky/personal-website" target="_blank" rel="noreferrer">View source →</a></span>
+      <span><a href="https://cs.utdring.com/#ryanpolasky.com" target="_blank" rel="noreferrer">CS Webring →</a></span>
+      <span class="ring">
+        <a href="https://cs.utdring.com/#ryanpolasky.com?nav=prev" aria-label="Previous">←</a>
+        <a href="https://cs.utdring.com/#ryanpolasky.com" aria-label="Ring"><img src="https://cs.utdring.com/icon.white.svg" alt="CS Webring"/></a>
+        <a href="https://cs.utdring.com/#ryanpolasky.com?nav=next" aria-label="Next">→</a>
+      </span>
+    </div>
+  </div>
+  <div class="foot-pn">
+    <span>© <span id="year"></span> Ryan Polasky · Made with ♥ &amp; too much caffeine</span>
+    <span>End of folio · fin.</span>
+  </div>
+</footer>
+
+</main>
+
+<script>
+(function(){
+  const $year = document.getElementById('year'); if($year) $year.textContent = new Date().getFullYear();
+})();
+
+(function(){
+  const drawer = document.getElementById('drawer');
+  const openBtn = document.getElementById('menuBtn');
+  const closeBtn = document.getElementById('drawerClose');
+  function open(){ drawer.classList.add('open'); openBtn.setAttribute('aria-expanded','true'); document.body.style.overflow='hidden'; }
+  function close(){ drawer.classList.remove('open'); openBtn.setAttribute('aria-expanded','false'); document.body.style.overflow=''; }
+  openBtn.addEventListener('click', open);
+  closeBtn.addEventListener('click', close);
+  drawer.addEventListener('click', (e) => { if(e.target.dataset.nav !== undefined) close(); });
+  document.addEventListener('keydown', (e) => { if(e.key === 'Escape') close(); });
+})();
+
+(function(){
+  const btn = document.getElementById('themeBtn');
+  function apply(t){
+    document.body.classList.toggle('t-midnight', t === 'midnight');
+    btn.innerHTML = t === 'midnight' ? '☾&nbsp;Midnight' : '◐&nbsp;Light';
+    try { localStorage.setItem('ryan-theme-apple', t); } catch(e){}
+  }
+  let saved = 'light'; try { saved = localStorage.getItem('ryan-theme-apple') || 'light'; } catch(e){}
+  apply(saved);
+  btn.addEventListener('click', () => apply(document.body.classList.contains('t-midnight') ? 'light' : 'midnight'));
+})();
+
+(function(){
+  const els = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.12, rootMargin: '0px 0px -10% 0px' });
+  els.forEach(el => io.observe(el));
+})();
+
+(function(){
+  const cf = document.getElementById('cf');
+  if(!cf) return;
+  cf.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fd = new FormData(cf);
+    const btn = cf.querySelector('.btn-send');
+    const orig = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Sending…';
+    try {
+      const res = await fetch(cf.action, { method: cf.method, body: fd, headers: { Accept: 'application/json' }});
+      if(res.ok){ cf.reset(); btn.textContent = 'Sent ✓'; setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 3000); }
+      else { btn.textContent = orig; btn.disabled = false; }
+    } catch (err){ btn.textContent = orig; btn.disabled = false; }
+  });
+})();
+
+console.log('%c\u201cSoftware, written carefully.\u201d', 'color:#B23A1A; font-family:Georgia, serif; font-style:italic; font-size:18px;');
+console.log('%c   Ryan Polasky \u2014 ryanpolasky.com', 'color:#69655A; font-family:monospace; font-size:11px;');
+
+function npMarquee(el){
+  if(!el) return;
+  if(el._npResizeHandler){
+    window.removeEventListener('resize', el._npResizeHandler);
+    el._npResizeHandler = null;
+  }
+  if(el._npResizeTimer){
+    clearTimeout(el._npResizeTimer);
+    el._npResizeTimer = null;
+  }
+  if(el._npAnim){
+    try { el._npAnim.cancel(); } catch(_) {}
+    el._npAnim = null;
+  }
+
+  var prior = el.querySelector('.np-track');
+  if(prior){
+    var firstCell = prior.querySelector('.np-cell');
+    if(firstCell) el.innerHTML = firstCell.innerHTML;
+    el.style.textOverflow = '';
+  }
+  if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var runId = (el._npRunId || 0) + 1;
+  el._npRunId = runId;
+
+  var fontsReady = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+  fontsReady.then(function(){
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        if(runId !== el._npRunId) return;
+        var contW = el.clientWidth;
+        if(contW <= 0) return;
+        var orig = el.innerHTML;
+        var mirror = document.createElement('span');
+        mirror.style.cssText = 'position:absolute;left:-99999px;top:0;visibility:hidden;white-space:nowrap;font:inherit;letter-spacing:inherit;';
+        mirror.innerHTML = orig;
+        el.appendChild(mirror);
+        var textW = Math.ceil(mirror.getBoundingClientRect().width);
+        mirror.remove();
+        if(textW <= contW + 1) return;
+
+        var seedGap = 32;
+        el.style.textOverflow = 'clip';
+        el.innerHTML =
+          '<span class="np-track" style="display:inline-flex;white-space:nowrap;will-change:transform;transform:translate3d(0,0,0);">' +
+            '<span class="np-cell" style="display:inline-block;flex:0 0 auto;margin-right:' + seedGap + 'px;">' + orig + '</span>' +
+            '<span class="np-cell" aria-hidden="true" style="display:inline-block;flex:0 0 auto;">' + orig + '</span>' +
+          '</span>';
+        var track = el.querySelector('.np-track');
+        if(!track) return;
+
+        var first = track.querySelector('.np-cell');
+        var firstW = first ? Math.ceil(first.getBoundingClientRect().width) : textW;
+        var gap = firstW + 24;
+        if(first) first.style.marginRight = gap + 'px';
+        var dist = firstW + gap;
+        var scrollSec = dist / 20;
+        var pauseSec = 3;
+        var totalSec = scrollSec + pauseSec;
+        var scrollPct = scrollSec / totalSec;
+
+        el._npAnim = track.animate([
+          { transform: 'translate3d(0,0,0)', offset: 0 },
+          { transform: 'translate3d(-' + dist + 'px,0,0)', offset: scrollPct },
+          { transform: 'translate3d(-' + dist + 'px,0,0)', offset: 1 }
+        ], { duration: totalSec * 1000, delay: 2000, iterations: Infinity, easing: 'linear' });
+      });
+    });
+  });
+
+  el._npResizeHandler = function(){
+    clearTimeout(el._npResizeTimer);
+    el._npResizeTimer = setTimeout(function(){ npMarquee(el); }, 90);
+  };
+  window.addEventListener('resize', el._npResizeHandler, { passive: true });
+}
+
+(function(){
+  function fetchNp(){
+    fetch('https://status.ryanpolasky.com/api/music')
+      .then(r => r.json())
+      .then(d => {
+        const label = document.getElementById('np-apple-label');
+        const el = document.getElementById('np-apple');
+        if(!el) return;
+        label.textContent = d.isPlaying ? 'Now Playing' : 'Last Played';
+        el.textContent = d.title + ' — ' + d.artist;
+        if(d.trackUrl) {
+          const a = document.createElement('a');
+          a.href = d.trackUrl; a.target = '_blank'; a.rel = 'noreferrer';
+          a.textContent = el.textContent;
+          a.style.cssText = 'color:inherit; border-bottom:0.5px solid var(--hair); transition:color 0.2s, border-color 0.2s;';
+          el.textContent = '';
+          el.appendChild(a);
+        }
+        npMarquee(el);
+      })
+      .catch(() => {});
+  }
+  fetchNp();
+  setInterval(fetchNp, 10000);
+})();
+
+document.querySelectorAll('a[href^="#"]').forEach(function(a){
+  a.addEventListener('click', function(e){
+    var id = this.getAttribute('href').substring(1);
+    if(!id) return;
+    var el = document.getElementById(id);
+    if(el){ e.preventDefault(); el.scrollIntoView({behavior:'smooth'}); }
+  });
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Ryan Polasky · Gallery</title>
+
+<meta name="description" content="Ryan Polasky - Junior Software Engineer. Seven visual interpretations of the same portfolio. Pick the one that resonates."/>
+<meta property="og:title" content="Ryan Polasky · Gallery"/>
+<meta property="og:description" content="A portfolio gallery with seven visual interpretations of the same portfolio."/>
+<meta property="og:type" content="website"/>
+<meta name="theme-color" content="#0A0908"/>
+<meta name="color-scheme" content="dark"/>
+
+<link rel="icon" type="image/png" href="favicon-96x96.png" sizes="96x96"/>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+<link rel="shortcut icon" href="favicon.ico"/>
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png"/>
+<link rel="manifest" href="manifest.json"/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+
+<style>
+:root {
+  --bg: #0A0908;
+  --bg-2: #16140F;
+  --line: rgba(255, 255, 255, 0.08);
+  --line-2: rgba(255, 255, 255, 0.18);
+  --text: #F5F2EC;
+  --text-2: rgba(245, 242, 236, 0.7);
+  --text-3: rgba(245, 242, 236, 0.42);
+  --accent: #FF5A36;
+  --accent-2: #FFB94A;
+  /* live accent pulled from the active variant iframe (set by JS). defaults
+     match --accent so the page looks correct before any variant has loaded. */
+  --variant-accent: #FF5A36;
+  --variant-accent-rgb: 255, 90, 54;
+  /* pre-lightened (mixed ~45% toward white) so glows read evenly even when
+     a variant's accent is a dark red/brown that would otherwise vanish on
+     the near-black backdrop. updated alongside --variant-accent in JS. */
+  --variant-accent-glow-rgb: 255, 164, 145;
+  --shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.7), 0 8px 24px -12px rgba(0, 0, 0, 0.45);
+  --type-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --type-serif: 'Instrument Serif', Georgia, serif;
+  --type-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --ease-soft: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  /* preview frame insets - overridden in media queries below */
+  --pv-top: 12vh;
+  --pv-side: 3vw;
+  --pv-bot: 23vh;
+}
+@media (max-width: 900px) { :root { --pv-top: 10vh; --pv-side: 4vw; --pv-bot: 30vh; } }
+@media (max-width: 600px) { :root { --pv-top: 8vh;  --pv-side: 3vw; --pv-bot: 34vh; } }
+* , *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html { background: var(--bg); }
+body {
+  font-family: var(--type-sans); color: var(--text);
+  background: radial-gradient(ellipse at 20% 0%, rgba(255, 90, 54, 0.06) 0%, transparent 60%),
+              radial-gradient(ellipse at 80% 100%, rgba(255, 185, 74, 0.04) 0%, transparent 60%),
+              var(--bg);
+  height: 100vh; height: 100dvh; overflow: hidden;
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+}
+::selection { background: var(--accent); color: var(--bg); }
+button { font-family: inherit; }
+
+/* faint film grain */
+body::before {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.04 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  mix-blend-mode: overlay; opacity: 0.6;
+}
+
+/* ─── stage with iframes ─── */
+.stage {
+  position: fixed; inset: 0; z-index: 1;
+  background: var(--bg);
+}
+/* iframes are CSS replaced elements: position:fixed + inset:0 + width:auto
+   resolves to the iframe's intrinsic 300×150 box rather than the viewport
+   (CSS 2.1 §10.6.5). Set width/height explicitly so the slide actually fills
+   what we want it to fill. */
+.slide {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh; height: 100dvh;
+  border: 0;
+  background: var(--bg);
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity 380ms ease,
+              visibility 0s linear 380ms,
+              top 700ms var(--ease-soft),
+              left 700ms var(--ease-soft),
+              width 700ms var(--ease-soft),
+              height 700ms var(--ease-soft),
+              border-radius 700ms var(--ease-soft),
+              box-shadow 700ms var(--ease-soft);
+  border-radius: 0;
+}
+.slide.active {
+  opacity: 1; visibility: visible; pointer-events: auto;
+  transition: opacity 380ms ease,
+              visibility 0s linear 0s,
+              top 700ms var(--ease-soft),
+              left 700ms var(--ease-soft),
+              width 700ms var(--ease-soft),
+              height 700ms var(--ease-soft),
+              border-radius 700ms var(--ease-soft),
+              box-shadow 700ms var(--ease-soft);
+  z-index: 2;
+}
+.slide.preview {
+  top: var(--pv-top);
+  left: var(--pv-side);
+  width: calc(100vw - 2 * var(--pv-side));
+  height: calc(100vh - var(--pv-top) - var(--pv-bot));
+  height: calc(100dvh - var(--pv-top) - var(--pv-bot));
+  /* top edge butts against the mac chrome (which carries the top radius), so
+     only round the bottom corners here. */
+  border-radius: 0 0 14px 14px;
+  box-shadow: var(--shadow), 0 0 0 1px var(--line-2);
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* clickable overlay on preview iframe */
+.preview-click {
+  position: absolute;
+  z-index: 6;
+  top: var(--pv-top);
+  left: var(--pv-side);
+  width: calc(100vw - 2 * var(--pv-side));
+  height: calc(100vh - var(--pv-top) - var(--pv-bot));
+  height: calc(100dvh - var(--pv-top) - var(--pv-bot));
+  border-radius: 0 0 14px 14px;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 380ms var(--ease-out);
+}
+.picker[data-phase="3"] .preview-click { opacity: 1; pointer-events: auto; }
+.preview-click:hover { background: rgba(255,255,255,0.03); }
+
+/* ─── picker overlay ─── */
+.picker {
+  position: fixed; inset: 0; z-index: 4;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 480ms var(--ease-out);
+}
+.picker.open { opacity: 1; pointer-events: auto; }
+
+/* warm-neutral backdrop covering the entire picker during phase 1 / 2 - fades
+   out when the cutout opens at phase 3 to reveal the preview underneath.
+   layered radial glows + a faint vertical gradient give it depth without
+   committing to any one variant's palette. */
+.picker::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 70vw 55vh at 50% 0%,   rgba(255, 245, 232, 0.055), transparent 65%),
+    radial-gradient(ellipse 55vw 50vh at 12% 95%,  rgba(var(--variant-accent-glow-rgb), 0.11), transparent 65%),
+    radial-gradient(ellipse 50vw 45vh at 88% 100%, rgba(var(--variant-accent-glow-rgb), 0.16), transparent 65%),
+    linear-gradient(180deg, #17150F 0%, #0D0C0A 60%, #0A0908 100%);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 1;
+  transition: opacity 800ms var(--ease-out), background 600ms var(--ease-out);
+}
+.picker[data-phase="3"]::before { opacity: 0; }
+
+/* four backdrop strips framing the iframe at phase 3. they share one
+   continuous background with the picker::before via background-attachment:
+   fixed + background-size: 100vw 100vh, so the gradient looks unbroken
+   across the whole frame even though it's painted onto four elements. */
+.bg-strip {
+  position: absolute;
+  background:
+    radial-gradient(ellipse 70vw 55vh at 50% 0%,   rgba(255, 245, 232, 0.055), transparent 65%),
+    radial-gradient(ellipse 55vw 50vh at 12% 95%,  rgba(var(--variant-accent-glow-rgb), 0.11), transparent 65%),
+    radial-gradient(ellipse 50vw 45vh at 88% 100%, rgba(var(--variant-accent-glow-rgb), 0.16), transparent 65%),
+    linear-gradient(180deg, #17150F 0%, #0D0C0A 60%, #0A0908 100%);
+  background-attachment: fixed;
+  background-size: 100vw 100vh;
+  opacity: 0;
+  transition: opacity 700ms var(--ease-out), background 600ms var(--ease-out);
+  z-index: 1;
+}
+.picker[data-phase="3"] .bg-strip { opacity: 1; }
+.bg-top    { top: 0; left: 0; right: 0; height: var(--pv-top); }
+.bg-bottom { bottom: 0; left: 0; right: 0; height: var(--pv-bot); }
+.bg-left   { top: var(--pv-top); bottom: var(--pv-bot); left: 0;  width: var(--pv-side); }
+.bg-right  { top: var(--pv-top); bottom: var(--pv-bot); right: 0; width: var(--pv-side); }
+
+/* ─── intro: vertically centered text stage that slides up at phase 3 ─── */
+.head {
+  position: absolute; inset: 0; z-index: 3;
+  display: grid; place-items: center;
+  padding: 4vh 6vw 12vh;
+  text-align: center;
+  transition: opacity 700ms var(--ease-out), transform 850ms var(--ease-soft);
+  will-change: opacity, transform;
+}
+.picker[data-phase="3"] .head {
+  opacity: 0;
+  transform: translateY(-64px);
+  pointer-events: none;
+}
+@media (max-width: 600px) { .head { padding: 4vh 5vw 14vh; } }
+
+.head-stack {
+  position: relative;
+  display: grid; place-items: center;
+  width: 100%;
+  max-width: 980px;
+}
+
+.greeting, .question {
+  position: absolute; left: 0; right: 0;
+  font-family: var(--type-serif);
+  font-weight: 400;
+  color: var(--text);
+  margin: 0;
+  opacity: 0;
+  transform: translateY(28px);
+  filter: blur(12px);
+  transition: opacity 800ms var(--ease-out),
+              transform 900ms var(--ease-soft),
+              filter 800ms var(--ease-out);
+  will-change: opacity, transform, filter;
+}
+.greeting {
+  font-size: clamp(48px, 9vw, 112px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.question {
+  font-size: clamp(26px, 4.2vw, 56px);
+  line-height: 1.32;
+  letter-spacing: -0.005em;
+}
+.greeting em, .question em { font-style: italic; color: var(--variant-accent); font-family: var(--type-serif); transition: color 400ms var(--ease-out); }
+.greeting .cursor, .question .cursor {
+  display: inline-block;
+  width: 0.05em; height: 0.9em;
+  background: var(--variant-accent);
+  margin-left: 0.08em;
+  vertical-align: -0.08em;
+  opacity: 0;
+  transition: opacity 400ms var(--ease-out);
+  animation: blink 1.05s steps(2, jump-none) infinite;
+}
+.picker[data-phase="1"] .greeting .cursor { opacity: 1; }
+.picker[data-phase="2"] .question .cursor { opacity: 1; }
+@keyframes blink { 50% { opacity: 0; } }
+.question .small {
+  display: block;
+  margin-top: 22px;
+  font-family: var(--type-mono);
+  font-size: 13.5px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  color: var(--text-3);
+  text-transform: uppercase;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 600ms var(--ease-out) 500ms,
+              transform 600ms var(--ease-out) 500ms;
+}
+
+/* phase transitions - soft fade-up with a gentle blur de-burr */
+.picker[data-phase="1"] .greeting { opacity: 1; transform: translateY(0); filter: blur(0); }
+.picker[data-phase="2"] .greeting { opacity: 0; transform: translateY(-18px); filter: blur(8px); }
+.picker[data-phase="2"] .question { opacity: 1; transform: translateY(0); filter: blur(0); }
+.picker[data-phase="2"] .question .small { opacity: 1; transform: translateY(0); }
+.picker[data-phase="3"] .greeting { opacity: 0; }
+.picker[data-phase="3"] .question { opacity: 1; transform: translateY(0); filter: blur(0); }
+.picker[data-phase="3"] .question .small { opacity: 1; transform: translateY(0); }
+
+/* ─── window chrome (sits on top edge of cutout) ─── */
+.window-chrome {
+  position: absolute;
+  z-index: 6;
+  top: var(--pv-top); left: var(--pv-side); right: var(--pv-side);
+  height: 36px;
+  transform: translateY(-100%);
+  background: linear-gradient(180deg, rgba(28, 26, 22, 0.92), rgba(20, 19, 16, 0.95));
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--line-2);
+  border-bottom: 0;
+  border-radius: 14px 14px 0 0;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  font-family: var(--type-mono); font-size: 11px;
+  letter-spacing: 0.06em; color: var(--text-3);
+  opacity: 0;
+  /* match the slide's opacity transition exactly so the chrome and the iframe
+     fade in as a single unit at phase 3 (and back out together when locked). */
+  transition: opacity 380ms var(--ease-out);
+}
+.picker[data-phase="3"] .window-chrome { opacity: 1; }
+@media (max-width: 600px) { .window-chrome { height: 30px; padding: 0 10px; } }
+
+.window-chrome .traffic { display: flex; gap: 7px; }
+.window-chrome .traffic span {
+  width: 11px; height: 11px; border-radius: 50%;
+  background: var(--line-2);
+}
+.window-chrome .traffic span:nth-child(1) { background: #FF5F57; }
+.window-chrome .traffic span:nth-child(2) { background: #FEBC2E; }
+.window-chrome .traffic span:nth-child(3) { background: #28C840; }
+.window-chrome .url { text-align: center; opacity: 0.85; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.window-chrome .url b { color: var(--text-2); font-weight: 500; }
+.window-chrome .step { text-align: right; color: var(--text-3); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; }
+
+/* ─── bottom controls band ───
+   flex column with explicit top padding so the rail clears the iframe
+   bottom by a comfortable margin instead of riding the edge. with the grid
+   layout, the 1fr top row collapsed under the rail's intrinsic height and
+   the buttons spilled upward into the iframe. */
+.foot {
+  position: absolute; z-index: 6;
+  bottom: 0; left: 0; right: 0; height: var(--pv-bot);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2.6vh;
+  padding: 5vh 6vw 0;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 600ms var(--ease-out) 700ms,
+              transform 600ms var(--ease-out) 700ms;
+}
+.picker[data-phase="3"] .foot { opacity: 1; transform: translateY(0); }
+
+/* ─── unlock-from-locked animation ───
+   added by JS when the cog is clicked. mirrors the lock-in zoom in reverse:
+   the iframe transitions from fullscreen back to preview-sized, and the
+   surrounding chrome (foot, window bar) fades in alongside it. the intro
+   greeting has no business showing here, so we suppress the head-fade-out
+   path entirely; the foot's intro-pacing delay is also tightened since
+   there's no head to wait on. */
+.picker.from-locked .head {
+  opacity: 0;
+  transform: translateY(-64px);
+  transition: none;
+}
+.picker.from-locked .foot {
+  transition: opacity 380ms var(--ease-out) 220ms,
+              transform 380ms var(--ease-out) 220ms;
+}
+@media (max-width: 600px) { .foot { padding: 4vh 5vw 0; gap: 2.2vh; } }
+
+.foot-rail {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+
+.nav-btn {
+  width: 34px; height: 34px;
+  display: grid; place-items: center;
+  background: rgba(245, 242, 236, 0.04);
+  border: 1px solid var(--line-2);
+  color: var(--text);
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 12px; line-height: 1;
+  transition: background 0.18s, color 0.18s, border-color 0.18s, transform 0.15s;
+}
+.nav-btn:hover { background: rgba(var(--variant-accent-rgb), 0.12); border-color: var(--variant-accent); color: var(--variant-accent); }
+.nav-btn:active { transform: scale(0.94); }
+.nav-btn:disabled { color: var(--text-3); cursor: not-allowed; opacity: 0.45; }
+.nav-btn:disabled:hover { background: rgba(245, 242, 236, 0.04); border-color: var(--line-2); color: var(--text-3); }
+
+.dots {
+  display: flex; gap: 8px; align-items: center;
+  padding: 0 14px;
+}
+.dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--line-2);
+  border: 0; padding: 0; cursor: pointer;
+  transition: background 0.2s, transform 0.2s, width 0.3s var(--ease-soft);
+}
+.dot:hover { background: var(--text-2); }
+.dot.active {
+  background: var(--variant-accent);
+  width: 28px;
+  border-radius: 999px;
+}
+
+.foot-cta {
+  display: flex; align-items: center; justify-content: center; gap: 14px;
+  flex-wrap: wrap;
+}
+
+.pick {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 26px;
+  background: var(--variant-accent); color: var(--bg);
+  border: 0; border-radius: 999px;
+  font-family: var(--type-sans); font-size: 14px; font-weight: 700;
+  letter-spacing: -0.005em;
+  cursor: pointer;
+  transition: transform 0.18s, box-shadow 0.18s, background 0.18s;
+  box-shadow: 0 8px 24px -8px rgba(var(--variant-accent-rgb), 0.5);
+}
+.pick:hover {
+  transform: translateY(-2px);
+  background: color-mix(in srgb, var(--variant-accent), white 8%);
+  box-shadow: 0 14px 32px -8px rgba(var(--variant-accent-rgb), 0.6);
+}
+.pick:active { transform: translateY(0); }
+.pick .arrow { transition: transform 0.2s; }
+.pick:hover .arrow { transform: translateX(3px); }
+.pick .pick-label { white-space: nowrap; letter-spacing: -0.005em; }
+
+.skip {
+  background: transparent; border: 0;
+  font-family: var(--type-mono); font-size: 11.5px;
+  color: var(--text-3);
+  letter-spacing: 0.12em; text-transform: uppercase;
+  cursor: pointer;
+  padding: 8px 12px;
+  transition: color 0.18s;
+}
+.skip:hover { color: var(--text); }
+.skip u { text-decoration-color: var(--text-3); text-underline-offset: 3px; }
+
+/* ─── settings cog (visible after choice) ─── */
+.cog {
+  position: fixed; bottom: 24px; right: 18px; z-index: 6;
+  width: 46px; height: 46px;
+  display: grid; place-items: center;
+  background: rgba(10, 9, 8, 0.65);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 22px; line-height: 1;
+  opacity: 0;
+  transform: translateY(8px) scale(0.95);
+  transition: opacity 380ms var(--ease-out), transform 380ms var(--ease-out), background 0.18s, color 0.18s, border-color 0.18s;
+}
+.cog.show { opacity: 0.55; transform: translateY(0) scale(1); }
+.cog.show:hover { opacity: 1; background: var(--bg-2); color: var(--variant-accent); border-color: var(--variant-accent); }
+.cog .gear { display: inline-block; transform: translateY(-1px); }
+
+/* ─── boot veil ─── */
+.veil {
+  position: fixed; inset: 0; z-index: 50;
+  display: grid; place-items: center;
+  background: var(--bg);
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 360ms ease;
+}
+.veil.gone { opacity: 0; }
+.veil .pulse {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--accent);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{transform:scale(1); opacity:1;} 50%{transform:scale(1.6); opacity:0.4;} }
+
+/* a hairline progress under window-chrome while iframe loads */
+.bar {
+  position: absolute; left: var(--pv-side); right: var(--pv-side); top: var(--pv-top); height: 2px; z-index: 7;
+  background: linear-gradient(90deg, var(--variant-accent), var(--accent-2));
+  transform: scaleX(0); transform-origin: 0 50%;
+  pointer-events: none;
+  opacity: 0;
+  transition: transform 1.2s ease, opacity 240ms ease;
+}
+.bar.go { transform: scaleX(0.7); opacity: 1; }
+.bar.done { transform: scaleX(1); opacity: 0; transition: transform 200ms ease, opacity 360ms ease 180ms; }
+
+/* motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0ms !important; transition-duration: 80ms !important; }
+}
+</style>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://ryanpolasky.com/#person",
+      "name": "Ryan Polasky",
+      "givenName": "Ryan",
+      "familyName": "Polasky",
+      "alternateName": "ryan.polasky",
+      "url": "https://ryanpolasky.com/",
+      "image": "https://ryanpolasky.com/assets/images/my-avatar.png",
+      "email": "mailto:ryanpolasky@hotmail.com",
+      "jobTitle": "Software Engineer",
+      "description": "Junior Software Engineer specializing in backend systems, AI/LLM tooling, test automation, and developer productivity. UT Dallas '26 graduate and 2\u00d7 Apple intern.",
+      "address": {
+        "@type": "PostalAddress",
+        "addressRegion": "ND",
+        "addressCountry": "US"
+      },
+      "alumniOf": {
+        "@type": "CollegeOrUniversity",
+        "name": "The University of Texas at Dallas",
+        "url": "https://www.utdallas.edu/",
+        "sameAs": "https://en.wikipedia.org/wiki/University_of_Texas_at_Dallas"
+      },
+      "knowsAbout": [
+        "Software Engineering",
+        "Backend Development",
+        "Artificial Intelligence",
+        "Large Language Models",
+        "Developer Tooling",
+        "DevOps",
+        "Test Automation",
+        "CI/CD",
+        "Python",
+        "TypeScript",
+        "Cloud Infrastructure"
+      ],
+      "sameAs": [
+        "https://www.linkedin.com/in/ryan-polasky/",
+        "https://github.com/ryanpolasky"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://ryanpolasky.com/#website",
+      "url": "https://ryanpolasky.com/",
+      "name": "Ryan Polasky",
+      "alternateName": "ryan.polasky / runtime",
+      "description": "Personal site of Ryan Polasky \u2014 Junior Software Engineer specializing in backend systems, AI/LLM tooling, and developer productivity.",
+      "inLanguage": "en",
+      "publisher": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "author": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "copyrightHolder": {
+        "@id": "https://ryanpolasky.com/#person"
+      }
+    },
+    {
+      "@type": "ProfilePage",
+      "@id": "https://ryanpolasky.com/#profile",
+      "url": "https://ryanpolasky.com/",
+      "name": "Ryan Polasky - Software Engineer",
+      "isPartOf": {
+        "@id": "https://ryanpolasky.com/#website"
+      },
+      "about": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "mainEntity": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "primaryImageOfPage": "https://ryanpolasky.com/assets/images/my-avatar.png"
+    },
+    {
+      "@type": "VideoGame",
+      "@id": "https://crashdle.com/#game",
+      "name": "Crashdle",
+      "url": "https://crashdle.com/",
+      "description": "Daily 5-letter word puzzle paired with a live crash multiplier bonus round. Solve the word in six guesses, then optionally risk your winnings on a real-time crash game.",
+      "image": "https://crashdle.com/og.webp",
+      "genre": [
+        "Word Game",
+        "Puzzle",
+        "Casual"
+      ],
+      "playMode": "SinglePlayer",
+      "gamePlatform": "Web Browser",
+      "applicationCategory": "GameApplication",
+      "operatingSystem": "Any",
+      "inLanguage": "en",
+      "creator": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "author": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "publisher": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      }
+    },
+    {
+      "@type": "WebApplication",
+      "@id": "https://ryplay.dev/#app",
+      "name": "ryplay",
+      "alternateName": "ryplay - Your Music, Visualized",
+      "url": "https://ryplay.dev/",
+      "description": "A real-time music dashboard powered by Last.fm. Visualize your listening habits, track streaks, and share your music taste.",
+      "image": "https://ryplay.dev/og.webp",
+      "applicationCategory": "MultimediaApplication",
+      "applicationSubCategory": "Music Visualization",
+      "operatingSystem": "Any",
+      "inLanguage": "en",
+      "creator": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "author": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "publisher": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      }
+    },
+    {
+      "@type": "WebApplication",
+      "@id": "https://ryme.md/#app",
+      "name": "RyMe.md",
+      "alternateName": "readme-ryvamper",
+      "url": "https://ryme.md/",
+      "description": "A browser-based generator for animated GitHub profile README banners. Pick a template, fill in your info, and export as SVG or GIF \u2014 entirely client-side.",
+      "image": "https://ryme.md/og.webp",
+      "applicationCategory": "DeveloperApplication",
+      "applicationSubCategory": "Profile README Generator",
+      "operatingSystem": "Any",
+      "inLanguage": "en",
+      "creator": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "author": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "publisher": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      }
+    },
+    {
+      "@type": "WebApplication",
+      "@id": "https://status.ryanpolasky.com/#app",
+      "name": "WRLT",
+      "alternateName": "What's Ryan Up To?",
+      "url": "https://status.ryanpolasky.com/",
+      "description": "A live personal dashboard with mini-games, an in-app economy, and a desktop-style UI in the browser.",
+      "image": "https://status.ryanpolasky.com/og.webp",
+      "applicationCategory": "LifestyleApplication",
+      "applicationSubCategory": "Personal Dashboard",
+      "operatingSystem": "Any",
+      "inLanguage": "en",
+      "creator": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "author": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "publisher": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<!-- boot veil -->
+<div class="veil" id="veil"><span class="pulse"></span></div>
+
+<!-- stage with iframes (lazy-hydrated) -->
+<main class="stage" role="main">
+  <iframe class="slide" data-i="0" data-src="variants/original.html" data-name="The Original" data-key="original" title="The Original" loading="eager"></iframe>
+  <iframe class="slide" data-i="1" data-src="variants/observability.html" data-name="Observability" data-key="observability" title="Observability - systems dashboard" loading="lazy"></iframe>
+  <iframe class="slide" data-i="2" data-src="variants/apple.html" data-name="Editorial" data-key="apple" title="Editorial - Apple-minimal" loading="lazy"></iframe>
+  <iframe class="slide" data-i="3" data-src="variants/forensic.html" data-name="Case File" data-key="forensic" title="Case File - forensic dossier" loading="lazy"></iframe>
+  <iframe class="slide" data-i="4" data-src="variants/lofi.html" data-name="Lo-Fi" data-key="lofi" title="Lo-Fi - vinyl LP" loading="lazy"></iframe>
+  <iframe class="slide" data-i="5" data-src="variants/geocities.html" data-name="Homepage '04" data-key="geocities" title="Homepage '04 - Geocities-era homepage" loading="lazy"></iframe>
+  <iframe class="slide" data-i="6" data-src="variants/risograph.html" data-name="Risograph" data-key="risograph" title="Risograph - 2-color print zine" loading="lazy"></iframe>
+  <iframe class="slide" data-i="7" data-src="variants/grimoire.html" data-name="Grimoire" data-key="grimoire" title="Grimoire - dark medieval pixel RPG" loading="lazy"></iframe>
+  <iframe class="slide" data-i="8" data-src="variants/acid.html" data-name="Acid" data-key="acid" title="Acid - neo-Y2K dark graphics" loading="lazy"></iframe>
+  <iframe class="slide" data-i="9" data-src="variants/no-css.html" data-name="No CSS" data-key="no-css" title="No CSS - unstyled HTML" loading="lazy"></iframe>
+  <iframe class="slide" data-i="10" data-src="variants/directory.html" data-name="Directory" data-key="directory" title="Directory - early 2000s mall kiosk" loading="lazy"></iframe>
+  <iframe class="slide" data-i="11" data-src="variants/gamebro.html" data-name="Gamebro" data-key="gamebro" title="Gamebro - portable cartridge collection" loading="lazy"></iframe>
+  <iframe class="slide" data-i="12" data-src="variants/liminal.html" data-name="Liminal" data-key="liminal" title="Liminal - empty transitional space" loading="lazy"></iframe>
+  <iframe class="slide" data-i="13" data-src="variants/wikipedia.html" data-name="RyanWiki" data-key="ryanwiki" title="RyanWiki - Encyclopedia article" loading="lazy"></iframe>
+</main>
+
+<!-- settings cog (only after a choice is made) -->
+<button class="cog" id="cog" aria-label="Change look">
+  <span class="gear">⚙</span>
+</button>
+
+<!-- the picker -->
+<section class="picker" id="picker" aria-label="Gallery">
+  <div class="bg-strip bg-top"></div>
+  <div class="bg-strip bg-bottom"></div>
+  <div class="bg-strip bg-left"></div>
+  <div class="bg-strip bg-right"></div>
+
+  <div class="head">
+    <div class="head-stack">
+      <h1 class="greeting" id="greeting">hey, i'm <em>ryan</em>.<span class="cursor"></span></h1>
+      <p class="question" id="question">
+        i've always been <em>indecisive</em>, so i'll let <em>you</em> decide.<span class="cursor"></span>
+        <span class="small">which look do you prefer?</span>
+      </p>
+    </div>
+  </div>
+
+  <div class="bar" id="bar" aria-hidden="true"></div>
+
+  <div class="preview-click" id="previewClick" aria-label="Select this variant"></div>
+  <div class="window-chrome">
+    <span class="traffic"><span></span><span></span><span></span></span>
+    <span class="url">ryanpolasky.com / <b id="urlName">observability</b>.html</span>
+    <span class="step" id="step">01 / 05</span>
+  </div>
+
+  <div class="foot">
+    <div class="foot-rail">
+      <button class="nav-btn" id="prev" aria-label="Previous look">←</button>
+      <div class="dots" id="dots" role="tablist"></div>
+      <button class="nav-btn" id="next" aria-label="Next look">→</button>
+    </div>
+
+    <div class="foot-cta">
+      <button class="pick" id="pickBtn">
+        <span class="pick-label">pick &ldquo;<span id="pickName">the original</span>&rdquo;</span>
+        <span class="arrow">→</span>
+      </button>
+      <button class="skip" id="skipBtn">just <u>show me one at random</u></button>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  const STORAGE_KEY = 'rp.choice.v1';
+  const slides = [...document.querySelectorAll('.slide')];
+  const total  = slides.length;
+  const KEYS   = slides.map(s => s.dataset.key);
+  const NAMES  = slides.map(s => s.dataset.name);
+
+  const $picker  = document.getElementById('picker');
+  const $veil    = document.getElementById('veil');
+  const $bar     = document.getElementById('bar');
+  const $prev    = document.getElementById('prev');
+  const $next    = document.getElementById('next');
+  const $dotsEl  = document.getElementById('dots');
+  const $pickBtn = document.getElementById('pickBtn');
+  const $pickName= document.getElementById('pickName');
+  const $skipBtn = document.getElementById('skipBtn');
+  const $cog     = document.getElementById('cog');
+  const $urlName = document.getElementById('urlName');
+  const $step    = document.getElementById('step');
+
+  const pad2 = n => String(n).padStart(2, '0');
+
+  // build dots
+  slides.forEach((s, i) => {
+    const b = document.createElement('button');
+    b.className = 'dot';
+    b.setAttribute('role', 'tab');
+    b.setAttribute('aria-label', `Preview ${i+1}: ${s.dataset.name}`);
+    b.title = `${i+1}. ${s.dataset.name}`;
+    b.addEventListener('click', () => previewIdx(i));
+    $dotsEl.appendChild(b);
+  });
+  const dots = [...$dotsEl.children];
+
+  let mode = 'boot';      // 'boot' | 'picking' | 'locked'
+  let activeIdx = 0;      // index of slide currently shown active
+  let previewIndex = 0;   // index of slide currently previewed in picker
+
+  function hydrate(i){
+    const s = slides[i]; if(!s) return;
+    if(!s.src && s.dataset.src) s.src = s.dataset.src;
+  }
+
+  function notifyVariant(i, active){
+    const s = slides[i];
+    if(!s || !s.contentWindow || !s.src) return;
+    try {
+      s.contentWindow.postMessage({ type: 'rp-variant-visibility', key: KEYS[i], active }, window.location.origin);
+    } catch(e){}
+  }
+
+  function syncVariantVisibility(){
+    slides.forEach((s, i) => notifyVariant(i, i === activeIdx && s.classList.contains('active')));
+  }
+
+  function setActive(i){
+    activeIdx = i;
+    slides.forEach((s, k) => {
+      s.classList.toggle('active', k === i);
+    });
+    syncVariantVisibility();
+  }
+
+  // Switch the preview slide while the picker is open.
+  // Order matters to avoid an inset-transition flicker:
+  //   1. Deactivate the previously-active slide (it still has .preview, so its
+  //      inset stays put while it fades out).
+  //   2. Apply .preview to the new target BEFORE activating it, so when it
+  //      finally gains .active the inset is already at the preview position.
+  //   3. Force a reflow so the snap commits before .active enables transitions.
+  //   4. Add .active so opacity (and only opacity) animates in.
+  function setPreviewSlide(i){
+    if(!$picker.classList.contains('open')){
+      setActive(i); return;
+    }
+    // 1. Deactivate every slide that isn't the target. Previous active keeps
+    //    its .preview so its size doesn't snap during fade-out.
+    slides.forEach((s, k) => { if(k !== i) s.classList.remove('active'); });
+    const target = slides[i];
+    const isActive  = target.classList.contains('active');
+    const hasPreview = target.classList.contains('preview');
+    // Three cases:
+    //   a. unlock from locked: target is .active (fullscreen) but no
+    //      .preview yet (dropPreview cleared it on lock). Add .preview and
+    //      let the size/border-radius/box-shadow transitions animate the
+    //      zoom-out to the preview frame.
+    //   b. truly first-time preview: target is neither .active nor .preview.
+    //      Must snap to the preview frame instantly so the iframe doesn't
+    //      visibly transition from its 100vw/100vh base size.
+    //   c. revisiting a previously-previewed slide: already has .preview,
+    //      nothing to do here - only .active needs to flip.
+    if(isActive && !hasPreview){
+      target.classList.add('preview');
+    } else if(!hasPreview){
+      target.style.transition = 'none';
+      target.classList.add('preview');
+      void target.offsetHeight;
+      target.style.transition = '';
+      void target.offsetHeight;
+    }
+    // Activate the target - opacity fades in; size is either settled or
+    // animating depending on which branch above ran.
+    target.classList.add('active');
+    activeIdx = i;
+    applyAccent(KEYS[i]);
+    syncVariantVisibility();
+  }
+
+  function dropPreview(){
+    slides.forEach(s => s.classList.remove('preview'));
+  }
+
+  function previewIdx(i){
+    // cycle around the ends so prev/next always advance: 5 → 1, 1 ← 5
+    if(i < 0) i = total - 1;
+    if(i >= total) i = 0;
+    if(i === previewIndex && slides[i].classList.contains('preview')) return;
+
+    [i-1, i, i+1].forEach(k => { if(k>=0 && k<total) hydrate(k); });
+
+    $bar.classList.remove('done');
+    $bar.classList.add('go');
+    setTimeout(() => { $bar.classList.add('done'); $bar.classList.remove('go'); setTimeout(() => $bar.classList.remove('done'), 600); }, 220);
+
+    previewIndex = i;
+    setPreviewSlide(i);
+
+    dots.forEach((d, k) => {
+      d.classList.toggle('active', k === i);
+      d.setAttribute('aria-selected', k === i ? 'true' : 'false');
+    });
+    $pickName.textContent = NAMES[i].toLowerCase();
+    $urlName.textContent = KEYS[i];
+    $step.textContent = `${pad2(i+1)} / ${pad2(total)}`;
+    $pickBtn.setAttribute('aria-label', `Pick ${NAMES[i]}`);
+  }
+
+  // ─── intro phases ───
+  function runIntro(startIdx){
+    $picker.classList.add('open');
+    $picker.setAttribute('data-phase', '1');
+    setTimeout(() => $picker.setAttribute('data-phase', '2'), 2100);
+    setTimeout(() => {
+      $picker.setAttribute('data-phase', '3');
+      // start showing the first preview
+      previewIdx(startIdx);
+    }, 4600);
+  }
+
+  function openPicker(startIdx, withIntro){
+    mode = 'picking';
+    $cog.classList.remove('show');
+    document.title = 'Ryan Polasky · Gallery';
+    try { slides[activeIdx]?.contentWindow?.blur(); } catch(e){}
+    if(withIntro){
+      runIntro(startIdx);
+    } else {
+      // mark this open as a from-locked unlock so the css can suppress the
+      // head fade and tighten the foot timing while the iframe zooms out
+      // back to preview size. cleared after the longest involved transition
+      // (slide size = 700ms) so subsequent picker activity is unaffected.
+      $picker.classList.add('from-locked');
+      $picker.classList.add('open');
+      $picker.setAttribute('data-phase', '3');
+      previewIdx(startIdx);
+      setTimeout(() => $picker.classList.remove('from-locked'), 800);
+    }
+  }
+
+  function lockChoice(i){
+    const key = KEYS[i];
+    try { localStorage.setItem(STORAGE_KEY, key); } catch(e){}
+    mode = 'locked';
+    $picker.classList.remove('open');
+    $picker.removeAttribute('data-phase');
+    // settle the chosen slide back to fullscreen
+    dropPreview();
+    setActive(i);
+    document.title = `Ryan Polasky · ${NAMES[i]}`;
+    setTimeout(() => {
+      $cog.classList.add('show');
+    }, 480);
+  }
+
+  // ─── controls ───
+  $prev.addEventListener('click', () => previewIdx(previewIndex - 1));
+  $next.addEventListener('click', () => previewIdx(previewIndex + 1));
+  $pickBtn.addEventListener('click', () => lockChoice(previewIndex));
+  document.getElementById('previewClick').addEventListener('click', () => lockChoice(previewIndex));
+  $skipBtn.addEventListener('click', () => {
+    const r = Math.floor(Math.random() * total);
+    previewIdx(r);
+    setTimeout(() => lockChoice(r), 240);
+  });
+  $cog.addEventListener('click', () => openPicker(activeIdx, false));
+
+  // keyboard nav while the picker is open
+  document.addEventListener('keydown', (e) => {
+    if(mode !== 'picking') return;
+    if(e.key === 'ArrowLeft')       { e.preventDefault(); previewIdx(previewIndex - 1); }
+    else if(e.key === 'ArrowRight') { e.preventDefault(); previewIdx(previewIndex + 1); }
+    else if(e.key === 'Enter')      { e.preventDefault(); lockChoice(previewIndex); }
+  });
+
+  // touch swipe on the picker
+  let tx = null, ty = null;
+  $picker.addEventListener('touchstart', (e) => {
+    if(e.touches.length !== 1) return;
+    tx = e.touches[0].clientX; ty = e.touches[0].clientY;
+  }, { passive: true });
+  $picker.addEventListener('touchend', (e) => {
+    if(tx == null) return;
+    const dx = e.changedTouches[0].clientX - tx;
+    const dy = e.changedTouches[0].clientY - ty;
+    if(Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      if(dx < 0) previewIdx(previewIndex + 1); else previewIdx(previewIndex - 1);
+    }
+    tx = ty = null;
+  }, { passive: true });
+
+  // ─── per-variant accent (read each iframe's CSS var so the picker chrome
+  //     and intro typography pick up whatever color the variant uses, including
+  //     original.html's per-load random color) ───
+  const accents = {};
+  const fixedAccents = {
+    apple: '#F5F2EC',
+    forensic: '#D6362D',
+    geocities: '#FF00FF',
+    grimoire: '#8f63ff',
+    liminal: '#d4cbb8'
+  };
+  function readAccent(slide){
+    try {
+      const doc = slide.contentDocument;
+      if(!doc) return null;
+      // CSS custom properties cascade, so a class-based override on <body>
+      // (e.g. original.html's `.late-night-mode` rule that swaps
+      // --accent-color to #ff6b35 between 9pm and 5am) is only visible from
+      // <body>'s computed style - documentElement still shows the inline
+      // random color set in the early <script>. Read from body to honor
+      // those overrides.
+      const target = doc.body || doc.documentElement;
+      const cs = getComputedStyle(target);
+      for(const v of ['--accent', '--accent-color', '--stamp', '--orange', '--ok']){
+        const c = cs.getPropertyValue(v).trim();
+        if(c) return c;
+      }
+    } catch(e){}
+    return null;
+  }
+  function hexToRgb(hex){
+    hex = (hex || '').replace('#', '').trim();
+    if(hex.length === 3) hex = hex.split('').map(c => c+c).join('');
+    if(!/^[0-9a-fA-F]{6}$/.test(hex)) return null;
+    const n = parseInt(hex, 16);
+    return [(n>>16)&255, (n>>8)&255, n&255];
+  }
+  // mix an rgb triplet toward white by amount t (0-1). used to derive a
+  // perceptually-bright glow color from any variant accent so dark reds and
+  // muted browns still register on the near-black picker backdrop.
+  function lightenRgb(rgb, t){
+    return rgb.map(c => Math.round(c + (255 - c) * t));
+  }
+  function applyAccent(key){
+    const hex = accents[key] || fixedAccents[key];
+    if(!hex) return;
+    const rgb = hexToRgb(hex);
+    if(!rgb) return;
+    const glowRgb = lightenRgb(rgb, 0.45);
+    document.documentElement.style.setProperty('--variant-accent', hex);
+    document.documentElement.style.setProperty('--variant-accent-rgb', rgb.join(', '));
+    document.documentElement.style.setProperty('--variant-accent-glow-rgb', glowRgb.join(', '));
+  }
+  function captureAccent(idx){
+    const key = KEYS[idx];
+    if(fixedAccents[key]){ accents[key] = fixedAccents[key]; return; }
+    if(key === 'original'){
+      const h = new Date().getHours();
+      if(h >= 21 || h <= 5){ accents[key] = '#ff6b35'; return; }
+    }
+    const hex = readAccent(slides[idx]);
+    if(!hex) return;
+    accents[key] = hex;
+  }
+  slides.forEach((s, i) => s.addEventListener('load', () => {
+    captureAccent(i);
+    // if this is the slide we're already previewing, push the new color through
+    if(i === activeIdx) applyAccent(KEYS[i]);
+    notifyVariant(i, i === activeIdx && s.classList.contains('active'));
+  }));
+
+  // Some variants (e.g. original.html) let the user change their accent at
+  // runtime via a color picker / Konami code. They postMessage their new hex
+  // so the picker chrome can follow along instead of staying frozen at
+  // whatever was captured on first load.
+  const _lateNight = (function(){ const h = new Date().getHours(); return h >= 21 || h <= 5; })();
+  window.addEventListener('message', (e) => {
+    const d = e.data;
+    if(!d || d.type !== 'aag-accent' || !d.key || !d.color) return;
+    const idx = KEYS.indexOf(d.key);
+    if(idx < 0) return;
+    if(e.source !== slides[idx].contentWindow) return;
+    if(_lateNight && d.key === 'original' && !d.manual) return;
+    accents[d.key] = d.color;
+    if(idx === activeIdx) applyAccent(d.key);
+  });
+
+  // dev: run __resetChoice() in the devtools console to clear the saved
+  // choice and re-run the intro.
+  window.__resetChoice = () => {
+    try { localStorage.removeItem(STORAGE_KEY); } catch(e){}
+    location.reload();
+  };
+
+  // ─── boot ───
+  function init(){
+    let saved = null;
+    try { saved = localStorage.getItem(STORAGE_KEY); } catch(e){}
+    if(saved === 'plaintext'){
+      saved = 'no-css';
+      try { localStorage.setItem(STORAGE_KEY, saved); } catch(e){}
+    }
+    const savedIdx = saved ? KEYS.indexOf(saved) : -1;
+    const initialIdx = savedIdx >= 0 ? savedIdx : 0;
+    let booted = false;
+    const first = slides[initialIdx];
+
+    const onFirstReady = () => {
+      if(booted) return;
+      booted = true;
+      $veil.classList.add('gone');
+      setTimeout(() => $veil.remove(), 400);
+      // pick up variant 0's accent so the intro typography uses it too
+      captureAccent(initialIdx);
+      applyAccent(KEYS[initialIdx]);
+
+      if(savedIdx >= 0){
+          // returning visitor: lock straight to their choice
+          mode = 'locked';
+          setActive(savedIdx);
+          captureAccent(savedIdx);
+          applyAccent(KEYS[savedIdx]);
+          document.title = `Ryan Polasky · ${NAMES[savedIdx]}`;
+          $cog.classList.add('show');
+          return;
+      }
+      // first visit: run intro
+      openPicker(0, true);
+    };
+
+    if(first) first.addEventListener('load', onFirstReady, { once: true });
+    hydrate(initialIdx);
+    setTimeout(onFirstReady, 2000);
+  }
+
+  init();
+
+  console.log('%c RP · GALLERY ', 'background:#FF5A36; color:#0A0908; font-weight:800; padding:4px 10px; font-size:13px; letter-spacing:0.16em;');
+  console.log('%c   Gallery · choice cached in localStorage["rp.choice.v1"]', 'color:#A6A6A6; font-family:monospace; font-size:12px;');
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<base href="/"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Ryan Polasky · ACID.SYS</title>
+<meta name="description" content="Ryan Polasky · ACID.SYS · Junior software engineer · backend systems · AI/LLM tooling · UT Dallas '26 · 2× Apple intern · open May 2026."/>
+<meta name="author" content="Ryan Polasky"/>
+<meta name="creator" content="Ryan Polasky"/>
+<meta name="publisher" content="Ryan Polasky"/>
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"/>
+
+<link rel="canonical" href="https://ryanpolasky.com/"/>
+
+<meta property="og:type" content="profile"/>
+<meta property="og:site_name" content="Ryan Polasky"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://ryanpolasky.com/"/>
+<meta property="og:title" content="Ryan Polasky · ACID.SYS"/>
+<meta property="og:description" content="Ryan Polasky · ACID.SYS · Junior software engineer · backend systems · AI/LLM tooling · UT Dallas '26 · 2× Apple intern · open May 2026."/>
+<meta property="og:image" content="https://ryanpolasky.com/assets/images/site-preview.png"/>
+<meta property="og:image:alt" content="Ryan Polasky - Software Engineer portfolio"/>
+<meta property="profile:first_name" content="Ryan"/>
+<meta property="profile:last_name" content="Polasky"/>
+<meta property="profile:username" content="ryanpolasky"/>
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Ryan Polasky · ACID.SYS"/>
+<meta name="twitter:description" content="Ryan Polasky · ACID.SYS · Junior software engineer · backend systems · AI/LLM tooling · UT Dallas '26 · 2× Apple intern · open May 2026."/>
+<meta name="twitter:image" content="https://ryanpolasky.com/assets/images/site-preview.png"/>
+<meta name="twitter:image:alt" content="Ryan Polasky - Software Engineer portfolio"/>
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet"/>
+
+<svg style="position:absolute;width:0;height:0;">
+  <defs>
+    <filter id="wireframe">
+      <feColorMatrix type="saturate" values="0"/>
+      <feConvolveMatrix order="3" kernelMatrix="-1 -1 -1  -1  9 -1  -1 -1 -1" preserveAlpha="true"/>
+      <feComponentTransfer>
+        <feFuncR type="linear" slope="3" intercept="-0.5"/>
+        <feFuncG type="linear" slope="3" intercept="-0.5"/>
+        <feFuncB type="linear" slope="3" intercept="-0.5"/>
+      </feComponentTransfer>
+    </filter>
+  </defs>
+</svg>
+<style>
+:root {
+  --bg: #08080a;
+  --lavender: #a090d0;
+  --green: #c8ff00;
+  --white: #e8e8e8;
+  --gray: #444450;
+  --sans: 'Space Grotesk', system-ui, sans-serif;
+  --mono: 'Space Mono', monospace;
+  --jp: 'Noto Sans JP', sans-serif;
+  --accent: #a090d0;
+}
+*,*::before,*::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.04;
+  pointer-events: none;
+  z-index: 9999;
+}
+::selection { background: var(--lavender); color: var(--bg); }
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+
+/* ═══════════════════════════════════════════════════════════════
+   POSTER-COLLAGE LAYOUT - not a website, a specimen sheet
+   ═══════════════════════════════════════════════════════════════ */
+
+.canvas {
+  min-height: 100vh;
+  position: relative;
+  display: grid;
+  grid-template-columns: 80px 1fr 1fr 80px;
+  grid-template-rows: auto 1fr auto;
+  gap: 0;
+}
+
+/* ─── VERTICAL JAPANESE RAILS ─── */
+.jp-rail {
+  writing-mode: vertical-rl;
+  font-family: var(--jp);
+  font-size: 13px;
+  letter-spacing: 0.3em;
+  color: var(--lavender);
+  padding: 40px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid var(--gray);
+  position: relative;
+}
+.jp-rail.right { border-right: 0; border-left: 1px solid var(--gray); }
+.jp-rail::before {
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 12px;
+  border: 1px solid var(--lavender);
+  border-radius: 50%;
+}
+.jp-rail::after {
+  content: '';
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 8px;
+  background: var(--lavender);
+}
+
+/* ─── CHECKERBOARD HERO ─── */
+.hero-zone {
+  grid-column: 2 / 4;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+  position: relative;
+}
+
+.checker-half {
+  background-image:
+    linear-gradient(45deg, #181820 25%, transparent 25%),
+    linear-gradient(-45deg, #181820 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #181820 75%),
+    linear-gradient(-45deg, transparent 75%, #181820 75%);
+  background-size: 40px 40px;
+  background-position: 0 0, 0 20px, 20px -20px, -20px 0px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 40px;
+}
+
+.checker-half.solid {
+  background: var(--bg);
+  border-left: 1px solid var(--gray);
+}
+
+/* ─── NAMEPLATE - WARPED STRETCHED ─── */
+.nameplate {
+  position: absolute;
+  top: 12%;
+  left: -5%;
+  z-index: 10;
+}
+.nameplate h1 {
+  font-family: var(--sans);
+  font-size: clamp(80px, 18vw, 220px);
+  font-weight: 700;
+  letter-spacing: -0.06em;
+  line-height: 0.8;
+  margin: 0;
+  text-transform: uppercase;
+  color: var(--white);
+  mix-blend-mode: difference;
+}
+.nameplate h1 .stretch {
+  display: block;
+  transform: scaleX(1.6);
+  transform-origin: left;
+}
+.nameplate h1 .accent {
+  color: var(--lavender);
+  font-weight: 300;
+  font-style: italic;
+  transform: scaleX(1.2);
+  display: block;
+  transform-origin: left;
+}
+
+/* ─── CHROME AVATAR BLOCK ─── */
+.avatar-block {
+  position: relative;
+  width: 280px;
+  height: 340px;
+  border: 1px solid var(--gray);
+  background: linear-gradient(135deg, #0a0a0c 0%, #1a1a20 100%);
+  overflow: hidden;
+}
+.avatar-block::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(160,144,208,0.15), transparent 50%),
+    radial-gradient(circle at 70% 70%, rgba(200,255,0,0.08), transparent 50%);
+}
+.avatar-block img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(1) contrast(2) brightness(1.2) url(#wireframe);
+  mix-blend-mode: luminosity;
+}
+.avatar-block .label {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 12px;
+  background: var(--bg);
+  border-top: 1px solid var(--gray);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--lavender);
+  display: flex;
+  justify-content: space-between;
+}
+
+/* ─── SPIRAL DECORATION ─── */
+.spiral {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  top: 15%;
+  right: 8%;
+  opacity: 0.5;
+}
+.spiral svg {
+  width: 100%;
+  height: 100%;
+  animation: spin 40s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─── WIREFRAME GLOBE ─── */
+.globe {
+  position: absolute;
+  bottom: 12%;
+  left: 5%;
+  width: 140px;
+  height: 140px;
+}
+.globe svg {
+  width: 100%;
+  height: 100%;
+  animation: spin 30s linear infinite reverse;
+}
+
+/* ─── FLOATING ICONS / SPECIMENS ─── */
+.specimen {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray);
+}
+.specimen .icon {
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--lavender);
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+  color: var(--lavender);
+}
+.specimen.s1 { top: 20px; right: 20px; }
+.specimen.s2 { top: 100px; right: 20px; }
+.specimen.s3 { top: 180px; right: 20px; }
+
+/* ─── INFO STRIP ─── */
+.info-strip {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  border-top: 1px solid var(--gray);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.info-strip .cell {
+  flex: 1;
+  padding: 16px 20px;
+  border-right: 1px solid var(--gray);
+  color: var(--gray);
+}
+.info-strip .cell:last-child { border-right: 0; }
+.info-strip .cell b { color: var(--white); display: block; margin-top: 4px; }
+.info-strip .cell.accent { color: var(--lavender); }
+.info-strip .cell.accent b { color: var(--lavender); }
+
+/* ═══════════════════════════════════════════════════════════════
+   SECTION POSTERS - each section is a standalone graphic
+   ═══════════════════════════════════════════════════════════════ */
+
+.poster {
+  min-height: 100vh;
+  position: relative;
+  border-top: 1px solid var(--gray);
+  display: grid;
+  grid-template-columns: 80px 1fr 80px;
+}
+
+.poster-content {
+  padding: 80px 60px;
+  position: relative;
+}
+
+/* ─── POSTER HEADER ─── */
+.poster-head {
+  display: flex;
+  align-items: baseline;
+  gap: 40px;
+  margin-bottom: 60px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--gray);
+}
+.poster-head .num {
+  font-family: var(--mono);
+  font-size: 72px;
+  font-weight: 700;
+  color: var(--gray);
+  line-height: 1;
+}
+.poster-head h2 {
+  font-size: clamp(36px, 6vw, 64px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin: 0;
+  text-transform: uppercase;
+}
+.poster-head h2 em {
+  font-style: italic;
+  font-weight: 300;
+  color: var(--lavender);
+}
+.poster-head .jp-label {
+  margin-left: auto;
+  font-family: var(--jp);
+  font-size: 18px;
+  color: var(--lavender);
+  writing-mode: vertical-rl;
+}
+
+/* ─── ABOUT - SPLIT WITH DECORATION ─── */
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 80px;
+}
+.about-prose {
+  font-size: 17px;
+  line-height: 1.75;
+  color: #888;
+  max-width: 60ch;
+}
+.about-prose p + p { margin-top: 1.4em; }
+.about-prose strong { color: var(--white); }
+.about-prose em { color: var(--lavender); font-style: normal; }
+.about-prose .pull {
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--white);
+  border-left: 3px solid var(--green);
+  padding: 20px 0 20px 28px;
+  margin: 40px 0;
+  line-height: 1.35;
+}
+.about-deco {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding-top: 20px;
+}
+.about-deco .blob {
+  width: 100%;
+  aspect-ratio: 1;
+  border: 1px solid var(--gray);
+  position: relative;
+  overflow: hidden;
+}
+.about-deco .blob::before {
+  content: '';
+  position: absolute;
+  inset: 20%;
+  border: 1px solid var(--lavender);
+  border-radius: 50%;
+  animation: pulse 3s ease-in-out infinite;
+}
+.about-deco .blob::after {
+  content: '';
+  position: absolute;
+  inset: 35%;
+  background: var(--lavender);
+  border-radius: 50%;
+  opacity: 0.2;
+}
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+}
+
+/* ─── EXPERIENCE - TIMELINE COLLAGE ─── */
+.exp-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.exp-item {
+  display: grid;
+  grid-template-columns: 160px 1fr 200px;
+  gap: 40px;
+  padding: 40px 0;
+  border-bottom: 1px solid var(--gray);
+  position: relative;
+}
+.exp-item::before {
+  content: '';
+  position: absolute;
+  left: 150px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: repeating-linear-gradient(to bottom, var(--gray) 0 4px, transparent 4px 8px);
+}
+.exp-item .when {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--lavender);
+}
+.exp-item h3 {
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0 0 8px;
+  letter-spacing: -0.01em;
+}
+.exp-item h3 em { font-style: italic; font-weight: 400; color: var(--lavender); }
+.exp-item .loc {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray);
+  margin-bottom: 14px;
+}
+.exp-item p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.65;
+  color: #777;
+}
+.exp-item p em { color: var(--green); font-style: normal; }
+.exp-item .badge {
+  align-self: start;
+  padding: 10px 16px;
+  border: 1px solid var(--lavender);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--lavender);
+  text-align: center;
+}
+.exp-item.highlight .badge {
+  background: var(--lavender);
+  color: var(--bg);
+}
+
+/* ─── PROJECTS - GRID OF CARDS WITH NUMBERS ─── */
+.proj-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  background: var(--gray);
+  border: 1px solid var(--gray);
+}
+.proj-card {
+  background: var(--bg);
+  padding: 32px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 280px;
+}
+.proj-card .num {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  font-family: var(--mono);
+  font-size: 48px;
+  font-weight: 700;
+  color: #1a1a1a;
+  line-height: 1;
+}
+.proj-card .tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border: 1px solid var(--gray);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray);
+  margin-bottom: 16px;
+  align-self: flex-start;
+}
+.proj-card .tag.live { border-color: var(--green); color: var(--green); }
+.proj-card h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 12px;
+  letter-spacing: -0.01em;
+}
+.proj-card h3 em { font-style: italic; font-weight: 400; color: var(--lavender); }
+.proj-card p {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #666;
+  margin: 0;
+  flex: 1;
+}
+.proj-card .foot {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #1a1a1a;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.proj-card .foot span {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #444;
+  padding: 3px 8px;
+  border: 1px solid #222;
+}
+.proj-card .link {
+  margin-top: 12px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--lavender);
+}
+.proj-card .link:hover { color: var(--green); }
+
+/* ─── SKILLS - SPECIMEN SHEET ─── */
+.skills-sheet {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px;
+}
+.skill-specimen {
+  text-align: center;
+  padding: 32px 20px;
+  border: 1px solid var(--gray);
+  position: relative;
+}
+.skill-specimen::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 20%;
+  right: 20%;
+  height: 3px;
+  background: var(--lavender);
+}
+.skill-specimen .icon {
+  font-size: 28px;
+  color: var(--lavender);
+  margin-bottom: 16px;
+}
+.skill-specimen h4 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.skill-specimen ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.skill-specimen li {
+  font-size: 12px;
+  color: #666;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.skill-specimen li b { color: var(--white); font-weight: 500; }
+.skill-specimen .bars {
+  display: flex;
+  gap: 2px;
+}
+.skill-specimen .bars i {
+  width: 6px;
+  height: 10px;
+  background: #222;
+}
+.skill-specimen .bars i.on { background: var(--lavender); }
+.skill-specimen li.adv .bars i.on { background: var(--green); }
+.skill-specimen .also {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--gray);
+  font-size: 10px;
+  color: #555;
+  font-family: var(--mono);
+}
+
+/* ─── TESTIMONIALS - OVERLAPPING CARDS ─── */
+.test-stack {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  padding: 20px 0;
+}
+.test-card {
+  background: #0e0e10;
+  border: 1px solid var(--gray);
+  padding: 32px;
+  position: relative;
+}
+.test-card:nth-child(2) { transform: translateY(40px); }
+.test-card::before {
+  content: '"';
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  font-size: 64px;
+  font-weight: 700;
+  color: #1a1a1a;
+  line-height: 1;
+}
+.test-card .hd {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #1a1a1a;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray);
+}
+.test-card .stars { color: var(--lavender); }
+.test-card blockquote {
+  font-size: 14px;
+  line-height: 1.65;
+  color: #999;
+  margin: 0 0 20px;
+  font-style: italic;
+}
+.test-card .who {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.test-card .who a {
+  font-size: 13px;
+  color: var(--white);
+  border-bottom: 1px solid var(--lavender);
+}
+.test-card .who a:hover { color: var(--lavender); }
+.test-card .who small {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray);
+}
+
+/* ─── CONTACT - SPLIT PANEL ─── */
+.contact-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 60vh;
+}
+.contact-form-zone {
+  padding: 60px;
+  border-right: 1px solid var(--gray);
+}
+.contact-form-zone h3 {
+  font-size: 28px;
+  font-weight: 600;
+  margin: 0 0 32px;
+}
+.contact-form-zone h3 em { font-style: italic; font-weight: 400; color: var(--lavender); }
+.contact-form .row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.contact-form .fld { display: flex; flex-direction: column; gap: 6px; }
+.contact-form .fld.full { grid-column: 1 / -1; }
+.contact-form label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--lavender);
+}
+.contact-form input, .contact-form textarea {
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--white);
+  background: transparent;
+  border: 1px solid var(--gray);
+  padding: 14px 16px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.contact-form input::placeholder, .contact-form textarea::placeholder { color: #444; }
+.contact-form input:focus, .contact-form textarea:focus { border-color: var(--lavender); }
+.contact-form textarea { resize: vertical; min-height: 120px; }
+.contact-form .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  background: var(--lavender);
+  border: 1px solid var(--lavender);
+  color: var(--bg);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.contact-form .btn:hover { background: var(--green); border-color: var(--green); }
+.contact-form .fld + .fld.full { margin-top: 0; }
+.contact-form .btn { margin-top: 8px; }
+
+.contact-info-zone {
+  padding: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.contact-info-zone h3 {
+  font-size: 28px;
+  font-weight: 600;
+  margin: 0 0 32px;
+}
+.contact-info-zone h3 em { font-style: italic; font-weight: 400; color: var(--lavender); }
+.contact-info-zone ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.contact-info-zone li {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+}
+.contact-info-zone .lbl {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray);
+  min-width: 80px;
+}
+.contact-info-zone li a { color: var(--white); border-bottom: 1px solid var(--lavender); }
+.contact-info-zone li a:hover { color: var(--lavender); }
+
+/* ─── FOOTER ─── */
+.footer {
+  border-top: 1px solid var(--gray);
+  padding: 24px 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gray);
+}
+.footer a { color: var(--gray); transition: color 0.2s; }
+.footer a:hover { color: var(--lavender); }
+.footer .links { display: flex; gap: 24px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE — TABLET (768–1100px)
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 1100px) {
+  .canvas { grid-template-columns: 1fr; min-height: auto; }
+  .jp-rail { display: none; }
+  .hero-zone { grid-column: 1; grid-template-columns: 1fr; min-height: auto; position: relative; }
+  .checker-half { padding: 100px 260px 80px 40px; min-height: auto; }
+  .checker-half.solid {
+    border-left: 0;
+    border-top: 0;
+    padding: 0;
+    position: absolute;
+    top: 40px;
+    right: 32px;
+    left: auto;
+    width: auto;
+    z-index: 12;
+    display: block;
+    background: transparent;
+    gap: 0;
+  }
+  .nameplate { position: relative; top: auto; left: auto; text-align: left; }
+  .nameplate h1 { font-size: clamp(64px, 10vw, 110px); }
+  .nameplate h1 .stretch { transform: scaleX(1.5); transform-origin: left; }
+  .nameplate h1 .accent { transform: scaleX(1.15); transform-origin: left; }
+  .avatar-block { width: 180px; height: 230px; }
+  .globe { display: none; }
+  .spiral { display: none; }
+  .specimen { position: relative; top: auto !important; right: auto !important; bottom: auto !important; }
+  .checker-half.solid .specimen { display: none; }
+  .poster { grid-template-columns: 1fr; min-height: auto; }
+  .poster-content { padding: 48px 32px 28px; }
+  .about-prose .pull { margin: 28px 0 0; }
+  .about-grid { grid-template-columns: 1fr; }
+  .about-deco { display: none; }
+  .exp-item { grid-template-columns: 1fr; gap: 16px; }
+  .exp-item::before { display: none; }
+  .exp-item .badge { margin-top: 12px; align-self: flex-start; }
+  .proj-grid { grid-template-columns: 1fr 1fr; }
+  .skills-sheet { grid-template-columns: 1fr 1fr; }
+  .test-stack { grid-template-columns: 1fr; gap: 24px; }
+  .test-card:nth-child(2) { transform: none; }
+  .contact-split { grid-template-columns: 1fr; }
+  .contact-form-zone { border-right: 0; border-bottom: 1px solid var(--gray); padding: 48px 32px; }
+  .contact-info-zone { padding: 48px 32px; }
+  .footer { padding: 24px 32px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE — MOBILE (< 768px)
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  /* Hero — single cohesive block */
+  .hero-zone { gap: 0; position: relative; }
+  .checker-half {
+    padding: 48px 130px 20px 20px;
+    min-height: auto;
+    background-size: 24px 24px;
+    background-position: 0 0, 0 12px, 12px -12px, -12px 0px;
+  }
+  .nameplate { text-align: left; }
+  .nameplate h1 { font-size: clamp(52px, 14vw, 72px); letter-spacing: -0.05em; }
+  .nameplate h1 .stretch { transform: scaleX(1.4); transform-origin: left; }
+  .nameplate h1 .accent { font-size: 0.9em; transform: scaleX(1.15); transform-origin: left; }
+  .checker-half.solid {
+    padding: 0 20px 0;
+    gap: 0;
+    border-top: 0;
+    background: transparent;
+    position: absolute;
+    top: 32px;
+    right: 16px;
+    left: auto;
+    width: auto;
+    z-index: 12;
+    display: block;
+  }
+  .avatar-block { width: 100px; height: 130px; }
+  .avatar-block .label { padding: 6px; font-size: 7px; }
+  .globe { display: none; }
+  .info-strip { flex-wrap: nowrap; position: relative; }
+  .info-strip .cell {
+    flex: 1;
+    padding: 10px 12px;
+    font-size: 8px;
+  }
+  .info-strip .cell b { font-size: 10px; }
+  .poster-content { padding: 40px 18px 24px; }
+  .poster-head { flex-direction: column; gap: 8px; align-items: flex-start; margin-bottom: 36px; padding-bottom: 16px; }
+  .poster-head .num { font-size: 40px; }
+  .poster-head h2 { font-size: clamp(24px, 7vw, 36px); }
+  .poster-head .jp-label { display: none; }
+  .poster-head .kicker { font-size: 10px; }
+  .poster { min-height: auto; }
+  .about-prose { font-size: 15px; }
+  .about-prose .pull { font-size: 17px; padding: 14px 0 14px 18px; margin: 24px 0 0; }
+  .exp-item { padding: 24px 0; gap: 12px; }
+  .exp-item h3 { font-size: 17px; }
+  .exp-item .loc { margin-bottom: 10px; }
+  .exp-item p { font-size: 13px; }
+  .exp-item .badge { padding: 8px 14px; font-size: 9px; }
+  .proj-grid { grid-template-columns: 1fr; gap: 2px; }
+  .proj-card { padding: 22px; min-height: auto; }
+  .proj-card .num { font-size: 32px; top: 12px; right: 14px; }
+  .proj-card h3 { font-size: 16px; }
+  .proj-card p { font-size: 12px; }
+  .skills-sheet { grid-template-columns: 1fr; gap: 16px; }
+  .skill-specimen { padding: 22px 16px; }
+  .skill-specimen h4 { font-size: 13px; }
+  .test-stack { gap: 16px; }
+  .test-card { padding: 22px; }
+  .test-card::before { font-size: 48px; top: 14px; right: 16px; }
+  .test-card blockquote { font-size: 13px; }
+  .contact-split { min-height: auto; }
+  .contact-form-zone, .contact-info-zone { padding: 32px 18px; }
+  .contact-form-zone h3, .contact-info-zone h3 { font-size: 20px; margin-bottom: 20px; }
+  .contact-form .row { grid-template-columns: 1fr; }
+  .contact-info-zone .lbl { min-width: 60px; font-size: 9px; }
+  .contact-info-zone li { gap: 12px; }
+  .contact-info-zone li a { font-size: 13px; }
+  .footer {
+    flex-direction: column;
+    gap: 12px;
+    padding: 18px 16px;
+    text-align: center;
+  }
+  .footer .links { gap: 14px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE — SMALL MOBILE (< 480px)
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 480px) {
+  .checker-half { padding: 40px 110px 16px 14px; }
+  .nameplate h1 { font-size: clamp(40px, 12vw, 52px); }
+  .nameplate h1 .stretch { transform: scaleX(1.3); }
+  .checker-half.solid { top: 24px; right: 12px; }
+  .avatar-block { width: 80px; height: 104px; }
+  .avatar-block .label { display: none; }
+  .globe { display: none; }
+  .info-strip .cell { flex: 1 1 100%; border-right: 0; border-bottom: 1px solid var(--gray); padding: 8px 14px; }
+  .info-strip .cell:last-child { border-bottom: 0; }
+  .poster-content { padding: 32px 14px; }
+  .poster-head .num { font-size: 32px; }
+  .poster-head h2 { font-size: 22px; }
+  .poster-head { margin-bottom: 28px; }
+  .exp-item { padding: 20px 0; }
+  .exp-item .badge { padding: 6px 10px; font-size: 8px; }
+  .proj-card { padding: 18px; }
+  .proj-card .num { font-size: 28px; }
+  .skill-specimen { padding: 18px 14px; }
+  .test-card { padding: 18px; }
+  .test-card::before { font-size: 40px; }
+  .contact-form-zone, .contact-info-zone { padding: 24px 14px; }
+  .contact-form input, .contact-form textarea { padding: 12px; font-size: 13px; }
+  .contact-form .btn { width: 100%; justify-content: center; }
+}
+</style>
+<script type="application/ld+json">
+    {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://ryanpolasky.com/#person",
+      "name": "Ryan Polasky",
+      "givenName": "Ryan",
+      "familyName": "Polasky",
+      "alternateName": "ryan.polasky",
+      "url": "https://ryanpolasky.com/",
+      "image": "https://ryanpolasky.com/assets/images/my-avatar.png",
+      "email": "mailto:ryanpolasky@hotmail.com",
+      "jobTitle": "Software Engineer",
+      "description": "Junior Software Engineer specializing in backend systems, AI/LLM tooling, test automation, and developer productivity. UT Dallas '26 graduate and 2\u00d7 Apple intern.",
+      "address": {
+        "@type": "PostalAddress",
+        "addressRegion": "ND",
+        "addressCountry": "US"
+      },
+      "alumniOf": {
+        "@type": "CollegeOrUniversity",
+        "name": "The University of Texas at Dallas",
+        "url": "https://www.utdallas.edu/",
+        "sameAs": "https://en.wikipedia.org/wiki/University_of_Texas_at_Dallas"
+      },
+      "knowsAbout": [
+        "Software Engineering",
+        "Backend Development",
+        "Artificial Intelligence",
+        "Large Language Models",
+        "Developer Tooling",
+        "DevOps",
+        "Test Automation",
+        "CI/CD",
+        "Python",
+        "TypeScript",
+        "Cloud Infrastructure"
+      ],
+      "sameAs": [
+        "https://www.linkedin.com/in/ryan-polasky/",
+        "https://github.com/ryanpolasky"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://ryanpolasky.com/#website",
+      "url": "https://ryanpolasky.com/",
+      "name": "Ryan Polasky",
+      "alternateName": "ryan.polasky / runtime",
+      "description": "Personal site of Ryan Polasky \u2014 Junior Software Engineer specializing in backend systems, AI/LLM tooling, and developer productivity.",
+      "inLanguage": "en",
+      "publisher": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "author": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "copyrightHolder": {
+        "@id": "https://ryanpolasky.com/#person"
+      }
+    },
+    {
+      "@type": "ProfilePage",
+      "@id": "https://ryanpolasky.com/#profile",
+      "url": "https://ryanpolasky.com/",
+      "name": "Ryan Polasky - Software Engineer",
+      "isPartOf": {
+        "@id": "https://ryanpolasky.com/#website"
+      },
+      "about": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "mainEntity": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "primaryImageOfPage": "https://ryanpolasky.com/assets/images/my-avatar.png"
+    },
+    {
+      "@type": "VideoGame",
+      "@id": "https://crashdle.com/#game",
+      "name": "Crashdle",
+      "url": "https://crashdle.com/",
+      "description": "Daily 5-letter word puzzle paired with a live crash multiplier bonus round. Solve the word in six guesses, then optionally risk your winnings on a real-time crash game.",
+      "image": "https://crashdle.com/og.webp",
+      "genre": [
+        "Word Game",
+        "Puzzle",
+        "Casual"
+      ],
+      "playMode": "SinglePlayer",
+      "gamePlatform": "Web Browser",
+      "applicationCategory": "GameApplication",
+      "operatingSystem": "Any",
+      "inLanguage": "en",
+      "creator": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "author": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "publisher": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      }
+    },
+    {
+      "@type": "WebApplication",
+      "@id": "https://ryplay.dev/#app",
+      "name": "ryplay",
+      "alternateName": "ryplay - Your Music, Visualized",
+      "url": "https://ryplay.dev/",
+      "description": "A real-time music dashboard powered by Last.fm. Visualize your listening habits, track streaks, and share your music taste.",
+      "image": "https://ryplay.dev/og.webp",
+      "applicationCategory": "MultimediaApplication",
+      "applicationSubCategory": "Music Visualization",
+      "operatingSystem": "Any",
+      "inLanguage": "en",
+      "creator": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "author": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "publisher": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      }
+    },
+    {
+      "@type": "WebApplication",
+      "@id": "https://ryme.md/#app",
+      "name": "RyMe.md",
+      "alternateName": "readme-ryvamper",
+      "url": "https://ryme.md/",
+      "description": "A browser-based generator for animated GitHub profile README banners. Pick a template, fill in your info, and export as SVG or GIF \u2014 entirely client-side.",
+      "image": "https://ryme.md/og.webp",
+      "applicationCategory": "DeveloperApplication",
+      "applicationSubCategory": "Profile README Generator",
+      "operatingSystem": "Any",
+      "inLanguage": "en",
+      "creator": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "author": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "publisher": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      }
+    },
+    {
+      "@type": "WebApplication",
+      "@id": "https://status.ryanpolasky.com/#app",
+      "name": "WRLT",
+      "alternateName": "What's Ryan Up To?",
+      "url": "https://status.ryanpolasky.com/",
+      "description": "A live personal dashboard with mini-games, an in-app economy, and a desktop-style UI in the browser.",
+      "image": "https://status.ryanpolasky.com/og.webp",
+      "applicationCategory": "LifestyleApplication",
+      "applicationSubCategory": "Personal Dashboard",
+      "operatingSystem": "Any",
+      "inLanguage": "en",
+      "creator": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "author": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "publisher": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      }
+    }
+  ]
+}
+    </script>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════════
+     HERO CANVAS - COLLAGE COMPOSITION
+     ════════════════════════════════════════════════════════════ -->
+<section class="canvas">
+  <div class="jp-rail">ライアン・ポラスキー</div>
+
+  <div class="hero-zone">
+    <div class="checker-half">
+      <div class="nameplate">
+        <h1>
+          <span class="stretch">Ryan</span>
+          <span class="accent">Polasky.</span>
+        </h1>
+      </div>
+
+      <div class="globe">
+        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="0.5" style="color: var(--lavender);">
+          <circle cx="50" cy="50" r="45"/>
+          <ellipse cx="50" cy="50" rx="45" ry="20"/>
+          <ellipse cx="50" cy="50" rx="30" ry="45" transform="rotate(90 50 50)"/>
+          <ellipse cx="50" cy="50" rx="20" ry="45"/>
+          <line x1="5" y1="50" x2="95" y2="50"/>
+          <line x1="50" y1="5" x2="50" y2="95"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="checker-half solid">
+      <div class="avatar-block">
+        <img src="assets/images/my-avatar.png" alt="Ryan Polasky"/>
+        <div class="label">
+          <span>SPECIMEN_001</span>
+          <span>2026</span>
+        </div>
+      </div>
+
+      <div class="spiral">
+        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="0.3" style="color: var(--lavender);">
+          <circle cx="50" cy="50" r="5"/>
+          <circle cx="50" cy="50" r="10"/>
+          <circle cx="50" cy="50" r="15"/>
+          <circle cx="50" cy="50" r="20"/>
+          <circle cx="50" cy="50" r="25"/>
+          <circle cx="50" cy="50" r="30"/>
+          <circle cx="50" cy="50" r="35"/>
+          <circle cx="50" cy="50" r="40"/>
+          <circle cx="50" cy="50" r="45"/>
+        </svg>
+      </div>
+
+      <div class="specimen s1">
+        <div class="icon">⌘</div>
+        <span>sys.cmd</span>
+      </div>
+      <div class="specimen s2">
+        <div class="icon">✦</div>
+        <span>ai.llm</span>
+      </div>
+      <div class="specimen s3">
+        <div class="icon">◉</div>
+        <span>db.vec</span>
+      </div>
+    </div>
+
+    <div class="info-strip">
+      <div class="cell">Status<b>Open May '26</b></div>
+      <div class="cell accent">Experience<b>2× Apple Intern</b></div>
+      <div class="cell">Location<b>Dallas, TX</b></div>
+      <div class="cell">Focus<b>Backend · AI/LLM</b></div>
+    </div>
+  </div>
+
+  <div class="jp-rail right">開発者・音楽家</div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     ABOUT POSTER
+     ════════════════════════════════════════════════════════════ -->
+<section class="poster" id="about">
+  <div class="jp-rail">概要</div>
+  <div class="poster-content">
+    <header class="poster-head">
+      <span class="num">01</span>
+      <h2>SYSTEM.<em>SPEC</em></h2>
+      <span class="jp-label">仕様書</span>
+    </header>
+    <div class="about-grid">
+      <article class="about-prose">
+        <p>
+          <strong>CLASSIFICATION:</strong> Backend systems engineer. Optimized for <em>infrastructure pain points</em> - log parsers, CI/CD hardening, test automation frameworks, natural-language-to-query interfaces.
+        </p>
+        <p>
+          <strong>PRIMARY DEPLOYMENT:</strong> Apple Inc. (2024–2025). Shipped LLM integration for Camera/Photos QA pipeline. Reduced manual triage overhead by <em>4,800%</em>. Java 11 → JDK 21 migration. Cloud workflow architecture (AWS/GCP).
+        </p>
+        <p>
+          <strong>AUXILIARY PROCESSES:</strong> Lo-fi music production under alias <em>plasky</em>. Public CS knowledge base. Real-time incident analysis hobbyist.
+        </p>
+        <p class="pull">// TODO: fix this later - every incident ever</p>
+      </article>
+      <aside class="about-deco">
+        <div class="blob"></div>
+      </aside>
+    </div>
+  </div>
+  <div class="jp-rail right">ポラスキー</div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     EXPERIENCE POSTER
+     ════════════════════════════════════════════════════════════ -->
+<section class="poster" id="experience">
+  <div class="jp-rail">経験</div>
+  <div class="poster-content">
+    <header class="poster-head">
+      <span class="num">02</span>
+      <h2>RUNTIME_<em>HISTORY</em></h2>
+      <span class="jp-label">実行履歴</span>
+    </header>
+    <div class="exp-stack">
+      <article class="exp-item highlight">
+        <div class="when">2023 → present</div>
+        <div>
+          <h3>At-Home Advisor · <em>Apple</em></h3>
+          <div class="loc">Cupertino · CA · Excellence Award recipient</div>
+          <p>Sustained a <em>6.87% escalation rate</em> through independent research - well below department average. CSAT consistently <em>+15% over the department</em>.</p>
+        </div>
+        <span class="badge">★ EXC '24·'25</span>
+      </article>
+
+      <article class="exp-item">
+        <div class="when">2025 → present</div>
+        <div>
+          <h3>Development Lead · <em>ACM at UTD</em></h3>
+          <div class="loc">Dallas · TX · Hackathon mentor</div>
+          <p>Supported <em>1,200+ HackUTD participants</em> over overnight shifts; debugged for sixty teams in the largest hackathon in the US.</p>
+        </div>
+        <span class="badge">1.2K coached</span>
+      </article>
+
+      <article class="exp-item highlight">
+        <div class="when">May → Aug 2025</div>
+        <div>
+          <h3>Camera API Test Automation · <em>Apple</em></h3>
+          <div class="loc">Cupertino · CA · Camera & Photos</div>
+          <p>Automated parsing and analysis of <em>thousands of on-device tests</em>. Integrated LLMs into test triage to slash manual investigation by <em>4,800%</em>.</p>
+        </div>
+        <span class="badge">+4,800%</span>
+      </article>
+
+      <article class="exp-item highlight">
+        <div class="when">Jun → Nov 2024</div>
+        <div>
+          <h3>WTE Tools Engineer · <em>Apple</em></h3>
+          <div class="loc">Cupertino · CA · WTE Tools</div>
+          <p>Built an <em>LLM-powered chat interface</em> to generate SQL/NoSQL from natural language. Migrated services from Java 11 → JDK 21.</p>
+        </div>
+        <span class="badge">JDK 21 ↑</span>
+      </article>
+
+      <article class="exp-item">
+        <div class="when">2021 - 2022</div>
+        <div>
+          <h3>IT Intern · <em>Altru Health System</em></h3>
+          <div class="loc">Grand Forks · ND · Healthcare IT</div>
+          <p>Deployed <em>300+ devices</em> during healthcare-system expansion. Set the department intake record.</p>
+        </div>
+        <span class="badge">300+ deployed</span>
+      </article>
+    </div>
+  </div>
+  <div class="jp-rail right">アップル</div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     PROJECTS POSTER
+     ════════════════════════════════════════════════════════════ -->
+<section class="poster" id="projects">
+  <div class="jp-rail">作品</div>
+  <div class="poster-content">
+    <header class="poster-head">
+      <span class="num">03</span>
+      <h2>OUTPUT_<em>REGISTRY</em></h2>
+      <span class="jp-label">出力記録</span>
+    </header>
+    <div class="proj-grid">
+      <article class="proj-card">
+        <span class="num">01</span>
+        <span class="tag">internal · apple</span>
+        <h3>askdb</h3>
+        <p>NL→SQL/NoSQL query generator. Schema-aware, cost-aware. Python pkg + chat UI.</p>
+        <div class="foot"><span>Python</span><span>FastAPI</span><span>Postgres</span></div>
+      </article>
+
+      <article class="proj-card">
+        <span class="num">02</span>
+        <span class="tag">internal · apple</span>
+        <h3>ai-test-analysis</h3>
+        <p>Multi-stage LLM failure classifier. Root cause suggester. Bug report generator.</p>
+        <div class="foot"><span>Python</span><span>Jenkins</span><span>LLMs</span></div>
+      </article>
+
+      <article class="proj-card">
+        <span class="num">03</span>
+        <span class="tag live">live</span>
+        <h3>ryanos</h3>
+        <p>Web-based status dashboard. Draggable widget system. Ambient background engine.</p>
+        <div class="foot"><span>React</span><span>FastAPI</span><span>Framer</span></div>
+        <a class="link" href="https://status.ryanpolasky.com" target="_blank" rel="noreferrer">visit ↗</a>
+      </article>
+
+      <article class="proj-card">
+        <span class="num">04</span>
+        <span class="tag live">live</span>
+        <h3>notes</h3>
+        <p>Public CS curriculum archive. Notion + LaTeX. Cold-start optimized for incoming students.</p>
+        <div class="foot"><span>Notion</span><span>LaTeX</span><span>docs</span></div>
+        <a class="link" href="https://ryanpolasky.com/notes">read ↗</a>
+      </article>
+
+      <article class="proj-card">
+        <span class="num">05</span>
+        <span class="tag live">live</span>
+        <h3>plasky</h3>
+        <p>Lo-fi audio output. FL Studio. Distributed via streaming platforms since 2023.</p>
+        <div class="foot"><span>FL Studio</span><span>piano</span></div>
+        <a class="link" href="spotify.html">listen ↗</a>
+      </article>
+
+      <article class="proj-card">
+        <span class="num">06</span>
+        <span class="tag">tech lead</span>
+        <h3>meteormate</h3>
+        <p>Roommate matching engine. FastAPI + React. UTD student deployment. Tech lead role.</p>
+        <div class="foot"><span>FastAPI</span><span>React</span></div>
+        <a class="link" href="https://github.com/acmutd/meteormate-backend" target="_blank" rel="noreferrer">view ↗</a>
+      </article>
+    </div>
+  </div>
+  <div class="jp-rail right">コード</div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     SKILLS POSTER
+     ════════════════════════════════════════════════════════════ -->
+<section class="poster" id="skills">
+  <div class="jp-rail">技術</div>
+  <div class="poster-content">
+    <header class="poster-head">
+      <span class="num">04</span>
+      <h2>STACK.<em>MANIFEST</em></h2>
+      <span class="jp-label">依存関係</span>
+    </header>
+    <div class="skills-sheet">
+      <div class="skill-specimen">
+        <div class="icon">⌘</div>
+        <h4>Languages</h4>
+        <ul>
+          <li class="adv"><b>Python</b><span class="bars"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></li>
+          <li class="adv"><b>TypeScript</b><span class="bars"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></li>
+          <li><b>HTML/CSS</b><span class="bars"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></li>
+          <li><b>Swift</b><span class="bars"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></li>
+        </ul>
+        <div class="also">also: JS, Java, C++, SwiftUI, R, Obj-C</div>
+      </div>
+
+      <div class="skill-specimen">
+        <div class="icon">▤</div>
+        <h4>Data Stores</h4>
+        <ul>
+          <li class="adv"><b>PostgreSQL</b><span class="bars"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></li>
+          <li><b>OpenSearch</b><span class="bars"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></li>
+          <li><b>Redis</b><span class="bars"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></li>
+        </ul>
+        <div class="also">also: MySQL, vector DBs</div>
+      </div>
+
+      <div class="skill-specimen">
+        <div class="icon">✦</div>
+        <h4>AI & LLMs</h4>
+        <ul>
+          <li class="adv"><b>LLM Integration</b><span class="bars"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></li>
+          <li class="adv"><b>RAG Systems</b><span class="bars"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></li>
+          <li><b>Vertex AI</b><span class="bars"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></li>
+        </ul>
+        <div class="also">also: fine-tuning, embeddings</div>
+      </div>
+
+      <div class="skill-specimen">
+        <div class="icon">⚙</div>
+        <h4>DevOps</h4>
+        <ul>
+          <li><b>Kubernetes</b><span class="bars"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></li>
+          <li><b>CI / CD</b><span class="bars"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></li>
+          <li><b>AWS & GCP</b><span class="bars"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span></li>
+        </ul>
+        <div class="also">also: Docker, Terraform</div>
+      </div>
+    </div>
+  </div>
+  <div class="jp-rail right">ツール</div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     TESTIMONIALS POSTER
+     ════════════════════════════════════════════════════════════ -->
+<section class="poster" id="testimonials">
+  <div class="jp-rail">推薦</div>
+  <div class="poster-content">
+    <header class="poster-head">
+      <span class="num">05</span>
+      <h2>SIGNAL_<em>INTERCEPTS</em></h2>
+      <span class="jp-label">検証済</span>
+    </header>
+    <div class="test-stack">
+      <article class="test-card">
+        <div class="hd"><span>001 · Mentor</span><span class="stars">★★★★★</span></div>
+        <blockquote>Ryan's learning agility is remarkable… he tackles each new challenge with focus and enthusiasm. Strong communicator with clear, impactful presentations.</blockquote>
+        <div class="who">
+          <a href="https://www.linkedin.com/in/sahilpujari/" target="_blank" rel="noreferrer">- Sahil Pujari</a>
+          <small>Sr. Software Engineer</small>
+        </div>
+      </article>
+
+      <article class="test-card">
+        <div class="hd"><span>002 · Manager</span><span class="stars">★★★★★</span></div>
+        <blockquote>Ryan was a fantastic summer 2025 intern. A fast learner, he delivered his project ahead of schedule. He performed like a full-time hire.</blockquote>
+        <div class="who">
+          <a href="https://www.linkedin.com/in/jozefkruger/" target="_blank" rel="noreferrer">- Jozef Kruger</a>
+          <small>Engineering Manager</small>
+        </div>
+      </article>
+
+      <article class="test-card">
+        <div class="hd"><span>003 · Teammate</span><span class="stars">★★★★★</span></div>
+        <blockquote>Ryan was an exceptional intern, contributing valuable test automation tools. His initiative and collaboration made him a joy to work with.</blockquote>
+        <div class="who">
+          <a href="https://www.linkedin.com/in/jdpaul123/" target="_blank" rel="noreferrer">- JD Paul</a>
+          <small>Software Engineer</small>
+        </div>
+      </article>
+    </div>
+  </div>
+  <div class="jp-rail right">声</div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     CONTACT POSTER
+     ════════════════════════════════════════════════════════════ -->
+<section class="poster" id="contact">
+  <div class="jp-rail">連絡</div>
+  <div class="poster-content" style="padding: 0;">
+    <div class="contact-split">
+      <div class="contact-form-zone">
+        <h3>INIT_<em>HANDSHAKE</em></h3>
+        <form class="contact-form" id="cf" action="https://formspree.io/f/YOUR_ID" method="POST">
+          <div class="row">
+            <div class="fld"><label>sender.name</label><input type="text" name="name" placeholder="_" required/></div>
+            <div class="fld"><label>sender.addr</label><input type="email" name="email" placeholder="_@_._" required/></div>
+          </div>
+          <div class="fld full"><label>subject.line</label><input type="text" name="subject" placeholder="_"/></div>
+          <div class="fld full"><label>payload.body</label><textarea name="message" placeholder="// transmit your message" required></textarea></div>
+          <button class="btn" type="submit">EXEC →</button>
+        </form>
+      </div>
+
+      <div class="contact-info-zone">
+        <h3>DIRECT_<em>CHANNELS</em></h3>
+        <ul>
+          <li><span class="lbl">smtp://</span><a href="mailto:ryanpolasky@hotmail.com">ryanpolasky@hotmail.com</a></li>
+          <li><span class="lbl">ln://</span><a href="https://linkedin.com/in/ryan-polasky" target="_blank" rel="noreferrer">ryan-polasky</a></li>
+          <li><span class="lbl">gh://</span><a href="https://github.com/ryanpolasky" target="_blank" rel="noreferrer">ryanpolasky</a></li>
+          <li><span class="lbl">geo://</span><span>32.7767° N, 96.7970° W</span></li>
+          <li><span class="lbl">status</span><span>AVAILABLE_2026.05</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="jp-rail right">メール</div>
+</section>
+
+<footer class="footer">
+  <span>© 2026 R.POLASKY · ACID.SYS v2.6.1 · BUILD_STABLE</span>
+  <div class="links">
+    <a href="https://github.com/ryanpolasky" target="_blank" rel="noreferrer">gh://ryanpolasky</a>
+    <a href="https://linkedin.com/in/ryan-polasky" target="_blank" rel="noreferrer">ln://ryan-polasky</a>
+    <a href="mailto:ryanpolasky@hotmail.com">smtp://</a>
+  </div>
+</footer>
+
+</body>
+</html>
