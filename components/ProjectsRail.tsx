@@ -366,8 +366,6 @@ export function ProjectsRail() {
     let cueHoldColor: string | undefined;
     const CUE_HOLD_MS = 200;
     let lenisResumeTimer: number | null = null;
-    let wheelBlocker: ((e: WheelEvent) => void) | null = null;
-
     const renderCue = (
       el: HTMLDivElement | null,
       nameEl: HTMLSpanElement | null,
@@ -383,19 +381,38 @@ export function ProjectsRail() {
       if (color) {
         const gradientDir = direction === 1 ? "to left" : "to right";
         el.style.background = `linear-gradient(${gradientDir}, color-mix(in oklab, ${color} 55%, transparent), color-mix(in oklab, ${color} 18%, transparent) 55%, transparent)`;
+      } else {
+        el.style.background = "none";
       }
     };
+
+    let wheelBlocker: ((e: WheelEvent) => void) | null = null;
+    let tailAbsorber: ((e: WheelEvent) => void) | null = null;
 
     const hideCues = () => {
       renderCue(nextCue, nextCueName, 0, 1);
       renderCue(prevCue, prevCueName, 0, -1);
     };
 
+    const releaseTailAbsorber = () => {
+      if (tailAbsorber) {
+        // must match the capture flag from addEventListener or the
+        // listener stays attached, leaking handlers across swipes.
+        window.removeEventListener("wheel", tailAbsorber, {
+          capture: true,
+        } as EventListenerOptions);
+        tailAbsorber = null;
+      }
+    };
+
     const releaseWheelBlock = () => {
       if (wheelBlocker) {
-        window.removeEventListener("wheel", wheelBlocker);
+        window.removeEventListener("wheel", wheelBlocker, {
+          capture: true,
+        } as EventListenerOptions);
         wheelBlocker = null;
       }
+      releaseTailAbsorber();
     };
 
     const lockScrollDuringSwipe = (
@@ -404,30 +421,35 @@ export function ProjectsRail() {
       _duration: number,
     ) => {
       releaseWheelBlock();
-      const blocker = (e: WheelEvent) => e.preventDefault();
-      window.addEventListener("wheel", blocker, { passive: false });
+
+      let lastWheelTime = performance.now();
+      let lastWheelDelta = 0;
+      let firstSeenAfterLock = false;
+      let absorberInstalledAt = 0;
+
+      // CRITICAL: capture + stopImmediatePropagation is what actually keeps
+      // wheel events from reaching Lenis. Lenis registers its own wheel
+      // listener in bubble phase from SmoothScrollProvider (which mounted
+      // before us), so a bubble-phase blocker fires AFTER Lenis - too late;
+      // Lenis has already updated targetScroll by the time preventDefault
+      // runs. capture phase fires first, and stopImmediatePropagation
+      // outright cancels Lenis's bubble listener for the event. without
+      // these two changes, momentum still leaks because Lenis silently
+      // accumulates input the whole time we think we have it locked out.
+      const blocker = (e: WheelEvent) => {
+        lastWheelTime = performance.now();
+        lastWheelDelta = Math.abs(e.deltaY || e.deltaX);
+        e.preventDefault();
+        e.stopImmediatePropagation();
+      };
+      window.addEventListener("wheel", blocker, {
+        passive: false,
+        capture: true,
+      });
       wheelBlocker = blocker;
 
       const l = lenisRef.current;
       if (l) {
-        // snap the page to the slot edge with no animation, then halt lenis
-        // for the entire lock window. previously we used a duration-based
-        // scrollTo with lock:true, but lenis's lock auto-releases when its
-        // animation completes (after `duration`) - leaving a ~120ms tail
-        // where lenis was live and quietly accumulating targetScroll from
-        // any wheel input still arriving. that tail leaked into perceptible
-        // post-swipe momentum the instant our wheel blocker came off.
-        //
-        // with immediate+stop:
-        //   - scrollY jumps to the slot edge (no "drift back" animation
-        //     since the user's overshoot is collapsed instantly)
-        //   - velocity is hard-zeroed
-        //   - lenis stops processing input for the full lockMs window;
-        //     wheel events arrive but our blocker preventDefaults them and
-        //     lenis isn't ticking so they don't accumulate targetScroll
-        //   - on resume we resync targetScroll/animatedScroll to the real
-        //     scrollY before calling start(), so lenis doesn't tween from
-        //     a stale internal value on its next frame.
         l.scrollTo(targetScrollY, { immediate: true, force: true });
         l.velocity = 0;
         l.lastVelocity = 0;
@@ -438,13 +460,74 @@ export function ProjectsRail() {
 
       if (lenisResumeTimer !== null) window.clearTimeout(lenisResumeTimer);
       lenisResumeTimer = window.setTimeout(() => {
-        releaseWheelBlock();
+        // drop the hard lock
+        if (wheelBlocker) {
+          window.removeEventListener("wheel", wheelBlocker, {
+            capture: true,
+          } as EventListenerOptions);
+          wheelBlocker = null;
+        }
+
+        // momentum absorber. eats decaying wheel-event tails (trackpad
+        // kinetic scroll, OS-level wheel inertia) so they can't pan the
+        // newly-entered project. tuned for both extremes:
+        //   - trackpad: long decaying tail of small-delta events, ~16ms
+        //     apart. heuristic catches them by "delta is not bigger than
+        //     last + small fudge" and "<60ms gap since last".
+        //   - mousewheel (no real OS inertia): a single click after lock
+        //     release should NOT be eaten. heuristic catches it because
+        //     the click arrives >60ms after the last absorbed event, OR
+        //     the absorber hard-times-out at ABSORBER_MAX_MS.
+        //
+        // also uses capture+stopImmediatePropagation for the same reason
+        // as the blocker above - preventDefault alone leaks to Lenis.
+        const ABSORBER_MAX_MS = 850;
+        absorberInstalledAt = performance.now();
+        const absorber = (e: WheelEvent) => {
+          const now = performance.now();
+          const delta = Math.abs(e.deltaY || e.deltaX);
+
+          // hard time cap: never absorb past this. catches the case where
+          // the user keeps wheeling smoothly through the transition and
+          // their genuine input looks identical to the tail.
+          if (now - absorberInstalledAt > ABSORBER_MAX_MS) {
+            releaseTailAbsorber();
+            return;
+          }
+
+          // first event after lock release: anchor our reference timing
+          // to NOW rather than to the pre-lock lastWheelTime (which would
+          // make the gap-since-last check meaningless on the first call).
+          if (!firstSeenAfterLock) {
+            firstSeenAfterLock = true;
+            lastWheelTime = now;
+            lastWheelDelta = delta;
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            return;
+          }
+
+          // gap > 60ms or sharp delta spike = new physical input.
+          if (now - lastWheelTime > 60 || delta > lastWheelDelta * 1.5 + 4) {
+            releaseTailAbsorber();
+            return;
+          }
+
+          // otherwise: residual momentum. eat it.
+          lastWheelTime = now;
+          lastWheelDelta = delta;
+          e.preventDefault();
+          e.stopImmediatePropagation();
+        };
+
+        window.addEventListener("wheel", absorber, {
+          passive: false,
+          capture: true,
+        });
+        tailAbsorber = absorber;
+
         const l2 = lenisRef.current;
         if (l2) {
-          // re-sync internal scroll state to wherever scrollY actually sits
-          // now, then resume input processing. without the resync, lenis's
-          // first post-resume frame can yank scroll toward an animatedScroll
-          // value from before the snap.
           l2.scrollTo(window.scrollY, { immediate: true, force: true });
           l2.velocity = 0;
           l2.lastVelocity = 0;
@@ -455,7 +538,6 @@ export function ProjectsRail() {
     };
 
     const ctx = gsap.context(() => {
-      gsap.set(rail, { x: 0 });
 
       const jumpToIdx = (rawTarget: number) => {
         const target = Math.max(0, Math.min(N - 1, rawTarget));
