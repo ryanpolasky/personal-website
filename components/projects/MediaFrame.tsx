@@ -80,6 +80,12 @@ export function MediaFrame({
   // sprite and march bypass the next/image render path entirely.
   const isSprite = !!item?.src && !!item?.sprite;
   const isMarch = !!item?.march;
+  // svg sources (ryme.md gallery) are self-styled and self-animated. the
+  // dual-Image blurred-backdrop pattern doubles the SVG decode cost and
+  // forces the browser to apply a heavy CSS blur over the animated SVG
+  // every frame, which compounds into visible jank when 6 are on screen
+  // at once. for svgs we render a single Image without the backdrop.
+  const isSvg = !!item?.src && /\.svg(\?|$)/i.test(item.src);
   // animated content drops the card chrome (border/bg/shadow) so pixel
   // art doesn't look gallery-framed.
   const isAnimated = isSprite || isMarch;
@@ -116,6 +122,19 @@ export function MediaFrame({
         sizes={sizes}
         className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.025]"
       />
+    ) : isSvg ? (
+      // single-Image render for svgs: no blurred backdrop and no second
+      // decode. preserves the inset padding so the svg sits inside the
+      // card chrome the same way bitmap screenshots do.
+      <div className="absolute inset-2.5 sm:inset-3.5">
+        <Image
+          src={item.src}
+          alt={item.alt ?? label}
+          fill
+          sizes={sizes}
+          className="object-contain drop-shadow-[0_18px_32px_rgba(0,0,0,0.28)] transition-transform duration-700 ease-out group-hover:scale-[1.015]"
+        />
+      </div>
     ) : (
       <>
         <Image

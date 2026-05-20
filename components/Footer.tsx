@@ -1,8 +1,19 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import { ContactBlobView } from "@/components/scenes/ContactBlobView";
+
+// ContactBlobView is a decorative WebGL "period" at the end of the wordmark.
+// dynamic-import with ssr:false keeps three.js out of the footer chunk so the
+// SEO-critical footer text/links ship without dragging in the 3d runtime.
+const ContactBlobView = dynamic(
+  () =>
+    import("@/components/scenes/ContactBlobView").then((m) => ({
+      default: m.ContactBlobView,
+    })),
+  { ssr: false },
+);
 
 // magazine-back-cover footer. oversize wordmark + three-col meta block,
 // sits flush against the bottom of the contact band so there's no exposed
@@ -30,28 +41,32 @@ export function Footer() {
           >
             ryan
           </span>{" "}
-          <span style={{ fontFamily: "var(--font-display)", fontWeight: 600 }}>
-            polasky
-          </span>
-          {/* contact blob as the wordmark's decorative period. inline-block
-              with baseline alignment + em-relative size so the dot scales
-              with the wordmark on desktop; the max() floor of 1.5rem keeps
-              the canvas large enough on mobile to actually render the blob
-              recognizably (below ~24px the 3D shape becomes mush). the
-              translateY shifts the sphere's visual center down toward the
-              text baseline - without it, the sphere floats at the height
-              of lowercase letter middles because three.js centers the mesh
-              inside the canvas box rather than at the box's bottom. */}
+          {/* the blob lives INSIDE the "polasky" span as an absolutely-
+              positioned sibling so it contributes zero width to line layout.
+              previously it was an inline-block with width = max(1.5rem,
+              0.25em); at the wordmark's large display sizes that ~0.25em
+              pushed the wordmark over the container's right edge on wide
+              monitors and the blob wrapped to a second line. anchoring it
+              at left: 100% of "polasky" plants it just past the y, never
+              consumes inline budget, and naturally follows wherever the
+              text breaks if the line ever does wrap. */}
           <span
-            className="relative inline-block align-baseline"
-            style={{
-              width: "max(1.5rem, 0.25em)",
-              height: "max(1.5rem, 0.25em)",
-              transform: "translateY(0.1em)",
-            }}
-            aria-hidden
+            className="relative inline-block"
+            style={{ fontFamily: "var(--font-display)", fontWeight: 600 }}
           >
-            <ContactBlobView className="absolute inset-0" />
+            polasky
+            <span
+              className="absolute"
+              style={{
+                left: "100%",
+                bottom: "0.05em",
+                width: "max(1.5rem, 0.25em)",
+                height: "max(1.5rem, 0.25em)",
+              }}
+              aria-hidden
+            >
+              <ContactBlobView className="absolute inset-0" />
+            </span>
           </span>
         </h2>
 

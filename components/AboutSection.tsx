@@ -1,8 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { RibbonView3D } from "@/components/scenes/RibbonView3D";
+import dynamic from "next/dynamic";
 import { useSectionTravel } from "@/lib/scroll";
+
+// RibbonView3D is the heaviest below-the-fold WebGL scene. dynamic-import
+// with ssr:false keeps three.js + drei out of the initial chunk; the ribbon
+// renders nothing during SSR (canvases can't anyway) and streams in after
+// hydration, which is fine because it's a decorative backdrop behind text.
+const RibbonView3D = dynamic(
+  () =>
+    import("@/components/scenes/RibbonView3D").then((m) => ({
+      default: m.RibbonView3D,
+    })),
+  { ssr: false },
+);
 
 // about + experience: one continuous tall section sharing a sticky 3D ribbon
 // backdrop. the ribbon is pinned at viewport top for the entire scroll-through;
@@ -135,7 +147,6 @@ export function AboutSection() {
     <section
       ref={ref}
       id="about"
-      data-snap
       className="relative px-4 sm:px-6"
       aria-label="about"
     >
@@ -235,12 +246,9 @@ export function AboutSection() {
       </div>
 
       {/* ───── experience timeline ─────
-          shares the section's sticky ribbon backdrop. its own data-snap makes
-          it a second proximity landing point inside the section, so users get
-          pulled cleanly onto the experience header after the about block. */}
+          shares the section's sticky ribbon backdrop. */}
       <div
         id="experience"
-        data-snap
         className="relative z-10 mx-auto max-w-7xl pt-32 pb-28 sm:pt-48 sm:pb-40"
       >
         <p className="section-index" style={{ fontFamily: "var(--font-mono)" }}>

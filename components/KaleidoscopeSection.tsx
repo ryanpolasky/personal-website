@@ -1,8 +1,20 @@
 "use client";
 
 import { useLayoutEffect, useRef } from "react";
-import { InfinityMirrorBoxView } from "@/components/scenes/InfinityMirrorBoxView";
+import dynamic from "next/dynamic";
 import { useReducedMotion } from "@/lib/scroll";
+
+// InfinityMirrorBoxView is the heaviest scene in the app (MeshReflectorMaterial
+// + Bloom + ChromaticAberration + Vignette + postprocessing). dynamic-import
+// with ssr:false splits its chunk out of the initial bundle and skips wasted
+// SSR work for a client-only canvas.
+const InfinityMirrorBoxView = dynamic(
+  () =>
+    import("@/components/scenes/InfinityMirrorBoxView").then((m) => ({
+      default: m.InfinityMirrorBoxView,
+    })),
+  { ssr: false },
+);
 
 // kaleidoscope section: a tall scroll-driven tunnel section whose inner sticky
 // stage morphs from inset-rounded card to edge-to-edge fullscreen as it enters,

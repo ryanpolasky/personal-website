@@ -28,8 +28,8 @@ export function CombinedEditorialSpread({
     ? `minmax(0, 1.15fr) ${"minmax(0, 1fr) ".repeat(sections.length).trim()}`
     : `repeat(${sections.length}, minmax(0, 1fr))`;
   return (
-    <section className="flex h-full w-[100svw] shrink-0 px-5 pb-24 pt-14 sm:px-8 sm:pb-28 sm:pt-20 md:px-12 lg:px-20">
-      <div className="mx-auto flex h-full w-full max-w-[1500px] flex-col gap-4 sm:gap-6">
+    <section className="flex h-full w-[100svw] shrink-0 px-5 pb-24 pt-14 sm:px-8 sm:pb-28 sm:pt-20 md:px-12 lg:px-10 xl:px-14">
+      <div className="mx-auto flex h-full w-full max-w-[min(90svw,1900px)] flex-col gap-4 sm:gap-6">
         <div
           className="flex items-baseline justify-between gap-6 text-[var(--color-text-invert-faint)]"
           style={{ fontFamily: "var(--font-mono)" }}

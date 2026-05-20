@@ -159,9 +159,19 @@ export function ProjectPanel({
           />
         </h3>
       ) : (
+        // 3-col intro (title | stacked media | aside) compresses the title
+        // column to ~53% of grid width; at the wider clamp's 11rem cap, the
+        // project name overflows that column on wide monitors and ends up
+        // visually underneath the media column. drop the cap + vw scale
+        // when we're in that layout so the text always fits the cell it
+        // was given. 2-col projects get the full dramatic typography.
         <h3
           id={`project-${project.id}-name`}
-          className="display relative z-10 max-w-[11ch] text-[clamp(3.4rem,9.8vw,11rem)] leading-[0.82] tracking-[-0.055em] text-[var(--color-text-invert)]"
+          className={`display relative z-10 max-w-[11ch] leading-[0.82] tracking-[-0.055em] text-[var(--color-text-invert)] ${
+            hasIntroHero
+              ? "text-[clamp(3rem,7vw,8rem)]"
+              : "text-[clamp(3.4rem,9.8vw,11rem)]"
+          }`}
         >
           {project.name}
         </h3>
@@ -290,8 +300,8 @@ export function ProjectPanel({
       <div className="pointer-events-none absolute inset-y-0 left-[100svw] -z-10 w-px bg-[linear-gradient(to_bottom,transparent,rgba(255,255,255,0.16),transparent)] opacity-70" />
       <div className="flex h-full">
         {/* INTRO SPREAD */}
-        <section className="flex h-full w-[100svw] shrink-0 px-5 pb-24 pt-14 sm:px-8 sm:pb-28 sm:pt-20 md:px-12 lg:px-20">
-          <div className="mx-auto grid h-full w-full max-w-[1500px] grid-rows-[auto_1fr] gap-5 sm:gap-8">
+        <section className="flex h-full w-[100svw] shrink-0 px-5 pb-24 pt-14 sm:px-8 sm:pb-28 sm:pt-20 md:px-12 lg:px-10 xl:px-14">
+          <div className="mx-auto grid h-full w-full max-w-[min(90svw,1900px)] grid-rows-[auto_1fr] gap-5 sm:gap-8">
             <div
               className="flex items-baseline justify-between gap-6 text-[var(--color-text-invert-faint)]"
               style={{ fontFamily: "var(--font-mono)" }}
@@ -337,9 +347,9 @@ export function ProjectPanel({
           return (
             <section
               key={section.eyebrow}
-              className="flex h-full w-[100svw] shrink-0 px-5 pb-24 pt-14 sm:px-8 sm:pb-28 sm:pt-20 md:px-12 lg:px-20"
+              className="flex h-full w-[100svw] shrink-0 px-5 pb-24 pt-14 sm:px-8 sm:pb-28 sm:pt-20 md:px-12 lg:px-10 xl:px-14"
             >
-              <div className="mx-auto flex h-full w-full max-w-[1500px] flex-col gap-4 sm:gap-6">
+              <div className="mx-auto flex h-full w-full max-w-[min(90svw,1900px)] flex-col gap-4 sm:gap-6">
                 {isHero ? null : (
                   <div
                     className="flex items-baseline justify-between gap-6 text-[var(--color-text-invert-faint)]"

@@ -15,22 +15,73 @@ export function useElementProgress<T extends HTMLElement = HTMLElement>() {
     const el = ref.current;
     if (!el) return;
     let raf = 0;
-    // always tick. the previous IO-gated version could freeze `progress`
-    // at a stale value when a snap-scroll jumped past the section faster
-    // than the IO threshold crossing fired, leaving consumers (ribbon
-    // draw-range) stuck at partial reveal.
-    const tick = () => {
+    let running = false;
+
+    const readProgress = () => {
       const rect = el.getBoundingClientRect();
       const vh = window.innerHeight || 1;
       const total = rect.height + vh;
       const traveled = vh - rect.top;
       const p = Math.max(0, Math.min(1, traveled / total));
       setProgress((prev) => (Math.abs(prev - p) > 0.001 ? p : prev));
+    };
+
+    const tick = () => {
+      readProgress();
       raf = requestAnimationFrame(tick);
     };
-    raf = requestAnimationFrame(tick);
+
+    const start = () => {
+      if (running) return;
+      running = true;
+      raf = requestAnimationFrame(tick);
+    };
+
+    const stop = () => {
+      running = false;
+      if (raf) cancelAnimationFrame(raf);
+      raf = 0;
+    };
+
+    // pause the per-frame work when the element is far off-screen. the wide
+    // rootMargin (one viewport above/below) is intentional: it keeps the
+    // rAF running through the snap-scroll danger zone the original
+    // "always tick" version was guarding against. on every IO crossing we
+    // also do one synchronous read so a snap-jump that skips most of the
+    // section can't leave progress stuck at a stale value.
+    const io =
+      typeof IntersectionObserver === "undefined"
+        ? null
+        : new IntersectionObserver(
+            ([entry]) => {
+              readProgress();
+              if (entry.isIntersecting) start();
+              else stop();
+            },
+            { rootMargin: "100% 0px" },
+          );
+
+    // also pause when the tab is hidden. backgrounded tabs still receive
+    // rAF callbacks at ~1Hz, but setState in a hidden tab is wasted work.
+    const onVisibility = () => {
+      if (document.visibilityState === "hidden") stop();
+      else if (io) {
+        // resume only if the element is still in the IO-active region.
+        // the next IO callback (if any) will (re)kick the loop.
+        readProgress();
+      } else {
+        start();
+      }
+    };
+
+    if (io) io.observe(el);
+    else start();
+    document.addEventListener("visibilitychange", onVisibility);
+
     return () => {
-      cancelAnimationFrame(raf);
+      stop();
+      io?.disconnect();
+      document.removeEventListener("visibilitychange", onVisibility);
     };
   }, []);
 

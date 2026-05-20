@@ -59,6 +59,21 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/* hide the native browser scrollbar everywhere. Lenis is driving smooth
+   scroll already, so the chunky native scrollbar (especially the wide
+   Windows/Edge one) is pure visual noise that also forces a layout
+   gutter. firefox uses scrollbar-width, webkit/blink use the pseudo.
+   the page is still scrollable via wheel, keyboard, and touch. */
+html {
+  scrollbar-width: none;
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
 /* display headings: fraunces, high optical size, slightly tightened. */
 .display {
   font-family: var(--font-display);

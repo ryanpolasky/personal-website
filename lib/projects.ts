@@ -97,9 +97,8 @@ export const PROJECTS: Project[] = [
       items: [
         {
           label: "the landing",
-          src: "/assets/projects/autopsy/aut_hero.png",
+          src: "/assets/projects/autopsy/aut_hero.webp",
           alt: "Autopsy landing page hero",
-          cover: true,
         },
       ],
     },
@@ -133,7 +132,6 @@ export const PROJECTS: Project[] = [
             label: "run details",
             src: "/assets/projects/autopsy/aut_details.png",
             alt: "Autopsy per-run details view",
-            cover: true,
           },
         ],
       },
@@ -174,7 +172,6 @@ export const PROJECTS: Project[] = [
       label: "install cta",
       src: "/assets/projects/autopsy/aut_footer.png",
       alt: "Autopsy install CTA section",
-      cover: true,
     },
     tintHsl: { h: 232, s: 70, l: 60 },
     enabled: true,
@@ -205,12 +202,12 @@ export const PROJECTS: Project[] = [
       items: [
         {
           label: "the front door",
-          src: "/assets/projects/meteormate/mm_hero.png",
+          src: "/assets/projects/meteormate/mm_hero.webp",
           alt: "MeteorMate landing hero",
         },
         {
           label: "the pitch",
-          src: "/assets/projects/meteormate/mm_features.png",
+          src: "/assets/projects/meteormate/mm_features.webp",
           alt: "MeteorMate feature overview",
         },
       ],
@@ -229,13 +226,13 @@ export const PROJECTS: Project[] = [
         media: [
           {
             label: "how they live",
-            src: "/assets/projects/meteormate/mm_lifestyle.png",
+            src: "/assets/projects/meteormate/mm_lifestyle.webp",
             alt: "MeteorMate lifestyle preferences intake",
             cover: true,
           },
           {
             label: "what they like",
-            src: "/assets/projects/meteormate/mm_interests.png",
+            src: "/assets/projects/meteormate/mm_interests.webp",
             alt: "MeteorMate interests selection",
             cover: true,
           },
@@ -254,14 +251,13 @@ export const PROJECTS: Project[] = [
         media: [
           {
             label: "on the way in",
-            src: "/assets/projects/meteormate/mm_auth.png",
+            src: "/assets/projects/meteormate/mm_auth.webp",
             alt: "MeteorMate authentication flow",
           },
           {
             label: "in product",
-            src: "/assets/projects/meteormate/mm_carousel.png",
+            src: "/assets/projects/meteormate/mm_carousel.webp",
             alt: "MeteorMate main carousel view",
-            cover: true,
           },
         ],
       },
@@ -277,12 +273,12 @@ export const PROJECTS: Project[] = [
         media: [
           {
             label: "on-campus",
-            src: "/assets/projects/meteormate/mm_oncampus.png",
+            src: "/assets/projects/meteormate/mm_oncampus.webp",
             alt: "MeteorMate on-campus housing view",
           },
           {
             label: "off-campus",
-            src: "/assets/projects/meteormate/mm_offcampus.png",
+            src: "/assets/projects/meteormate/mm_offcampus.webp",
             alt: "MeteorMate off-campus housing view",
           },
         ],
@@ -321,22 +317,22 @@ export const PROJECTS: Project[] = [
         media: [
           {
             label: "druid walk cycle",
-            src: "/assets/projects/nimby/nim_druid_walk.png",
+            src: "/assets/projects/nimby/nim_druid_walk.webp",
             alt: "NIMBY druid form walk-cycle spritesheet",
           },
           {
             label: "fox walk cycle",
-            src: "/assets/projects/nimby/nim_fox_walk.png",
+            src: "/assets/projects/nimby/nim_fox_walk.webp",
             alt: "NIMBY fox form walk-cycle spritesheet",
           },
           {
             label: "bear walk cycle",
-            src: "/assets/projects/nimby/nim_bear_walk.png",
+            src: "/assets/projects/nimby/nim_bear_walk.webp",
             alt: "NIMBY bear form walk-cycle spritesheet",
           },
           {
             label: "frog walk cycle",
-            src: "/assets/projects/nimby/nim_frog_walk.png",
+            src: "/assets/projects/nimby/nim_frog_walk.webp",
             alt: "NIMBY frog form walk-cycle spritesheet",
           },
         ],
@@ -389,8 +385,8 @@ export const PROJECTS: Project[] = [
       items: [
         {
           label: "side angle",
-          src: "/assets/projects/rycord/ryc_side.png",
-          alt: "rycord side angle showing shelf depth",
+          src: "/assets/projects/rycord/ryc_main.webp",
+          alt: "rycord main scene view",
           cover: true,
         },
       ],
@@ -410,12 +406,12 @@ export const PROJECTS: Project[] = [
         media: [
           {
             label: "the room",
-            src: "/assets/projects/rycord/ryc_main.png",
-            alt: "rycord main scene view",
+            src: "/assets/projects/rycord/ryc_side.webp",
+            alt: "rycord side scene view",
           },
           {
             label: "pulled vinyl",
-            src: "/assets/projects/rycord/ryc_vinyl.png",
+            src: "/assets/projects/rycord/ryc_vinyl.webp",
             alt: "rycord vinyl pulled out of the shelf showing back jacket",
             cover: true,
           },
