@@ -366,6 +366,14 @@ export function ProjectsRail() {
     let cueHoldColor: string | undefined;
     const CUE_HOLD_MS = 200;
     let lenisResumeTimer: number | null = null;
+    // two-step project boundary gate. when a slot crossing is detected we
+    // first "wall lock" at the current slot's edge so the user has to
+    // explicitly scroll again to advance into the next project. armed
+    // direction is preserved across the absorber window; the next crossing
+    // in the SAME direction advances. crossing in the opposite direction
+    // re-arms the wall on the other side. cleared on programmatic nav
+    // (jumpToIdx / landOnEntry).
+    let boundaryArmedDir: 1 | -1 | 0 = 0;
     const renderCue = (
       el: HTMLDivElement | null,
       nameEl: HTMLSpanElement | null,
@@ -546,6 +554,7 @@ export function ProjectsRail() {
         if (target === currentIdx && Math.abs(currentX - targetX) < 1) return;
         lockedUntil = 0;
         cueHoldUntil = 0;
+        boundaryArmedDir = 0;
         if (lenisResumeTimer !== null) {
           window.clearTimeout(lenisResumeTimer);
           lenisResumeTimer = null;
@@ -622,11 +631,85 @@ export function ProjectsRail() {
         }
       };
 
+      // "wall lock" - the first half of the two-step project boundary
+      // gate. when the user crosses (or is about to cross) from one
+      // project into another, we first snap the rail to the FAR edge of
+      // the current project (last subsection for forward, hero for
+      // backward) and absorb their scroll momentum. they then have to
+      // make a fresh, deliberate scroll input to actually advance into
+      // the next project. without this, a fast wheel/trackpad fling
+      // blasts straight through the boundary into the next project's
+      // hero with no tactile "you've reached the end" feedback.
+      const lockAtWall = (idx: number, dir: 1 | -1) => {
+        const sectionTop =
+          section.getBoundingClientRect().top + window.scrollY;
+        const vh = window.innerHeight;
+        const slotStartY = slotStarts[idx] * vh;
+        const slotEndY = (slotStarts[idx] + slotBudgets[idx]) * vh;
+        const targetSlotY = dir === 1 ? slotEndY - 1 : slotStartY + 1;
+        const targetScrollY = sectionTop + targetSlotY;
+        const railTargetVw =
+          dir === 1
+            ? -(panelStarts[idx] + slotPan[idx])
+            : -panelStarts[idx];
+
+        gsap.killTweensOf(rail);
+        gsap.to(rail, {
+          x: railTargetVw * window.innerWidth,
+          duration: TRANSITION_S,
+          ease: "power3.inOut",
+        });
+
+        const lockMs = TRANSITION_S * 1000 + 120;
+        lockedUntil = performance.now() + lockMs;
+        lockScrollDuringSwipe(lockMs, targetScrollY, TRANSITION_S);
+      };
+
+      // shared "land + absorb" used when the user enters the section from
+      // outside (from kaleido above or contact below). reuses the exact
+      // same lock / momentum-absorber machinery as slot-to-slot swipes so
+      // a fast scroll into autopsy (or up into the last project) cannot
+      // blow past the entry hero into a mid-pan position.
+      const landOnEntry = (idx: number, fromBelow: boolean) => {
+        const sectionTop =
+          section.getBoundingClientRect().top + window.scrollY;
+        const vh = window.innerHeight;
+        const slotStartY = slotStarts[idx] * vh;
+        const slotEndY = (slotStarts[idx] + slotBudgets[idx]) * vh;
+        const targetSlotY = fromBelow ? slotEndY - 1 : slotStartY + 1;
+        const targetScrollY = sectionTop + targetSlotY;
+        const railTargetVw = fromBelow
+          ? -(panelStarts[idx] + slotPan[idx])
+          : -panelStarts[idx];
+
+        gsap.killTweensOf(rail);
+        gsap.set(rail, { x: railTargetVw * window.innerWidth });
+        currentIdx = idx;
+        setActiveIdx(idx);
+        smoothedForward = 0;
+        smoothedBackward = 0;
+        cueHoldUntil = 0;
+        boundaryArmedDir = 0;
+        hideCues();
+
+        const lockMs = TRANSITION_S * 1000 + 120;
+        lockedUntil = performance.now() + lockMs;
+        lockScrollDuringSwipe(lockMs, targetScrollY, TRANSITION_S);
+      };
+
       ScrollTrigger.create({
         trigger: section,
         start: "top top",
         end: () => `+=${getTravel()}`,
         invalidateOnRefresh: true,
+        // entering from above (down scroll from kaleido). lock to autopsy
+        // so trackpad inertia can't carry the user past the first project's
+        // hero into a half-revealed second subsection.
+        onEnter: () => landOnEntry(0, false),
+        // entering from below (up scroll from contact). same treatment for
+        // the last project so they land cleanly on its final subsection
+        // instead of overshooting into the middle.
+        onEnterBack: () => landOnEntry(N - 1, true),
         onUpdate: (self) => {
           if (performance.now() < lockedUntil) return;
 
@@ -643,18 +726,41 @@ export function ProjectsRail() {
             }
           }
           if (requested !== currentIdx) {
-            const step =
-              requested > currentIdx ? currentIdx + 1 : currentIdx - 1;
-            const dir: 1 | -1 = step > currentIdx ? 1 : -1;
-            cueHoldUntil = performance.now() + CUE_HOLD_MS;
-            cueHoldDirection = dir;
-            cueHoldName = projects[step]?.name;
-            cueHoldColor = projects[step]
-              ? projectTint(projects[step])
-              : undefined;
-            currentIdx = step;
-            setActiveIdx(step);
-            swipeTo(step, false, dir);
+            const dir: 1 | -1 = requested > currentIdx ? 1 : -1;
+            const step = currentIdx + dir;
+            const now = performance.now();
+
+            if (boundaryArmedDir === dir) {
+              // SECOND crossing in the same direction = user has made a
+              // deliberate follow-up scroll after the wall. actually
+              // advance into the next project now.
+              boundaryArmedDir = 0;
+              cueHoldUntil = now + CUE_HOLD_MS;
+              cueHoldDirection = dir;
+              cueHoldName = projects[step]?.name;
+              cueHoldColor = projects[step]
+                ? projectTint(projects[step])
+                : undefined;
+              currentIdx = step;
+              setActiveIdx(step);
+              swipeTo(step, false, dir);
+            } else {
+              // FIRST crossing (or direction change) = wall lock. snap to
+              // the current project's far edge and absorb momentum. the
+              // user must scroll again in the same direction to advance.
+              // we DO NOT change currentIdx - they're still "in" the
+              // current project, just at its boundary.
+              boundaryArmedDir = dir;
+              // show the next project's cue as a hint of what they'll
+              // get when they scroll again.
+              cueHoldUntil = now + CUE_HOLD_MS;
+              cueHoldDirection = dir;
+              cueHoldName = projects[step]?.name;
+              cueHoldColor = projects[step]
+                ? projectTint(projects[step])
+                : undefined;
+              lockAtWall(currentIdx, dir);
+            }
           }
         },
         onRefresh: () => {
