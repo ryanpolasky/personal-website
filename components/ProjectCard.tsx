@@ -4,10 +4,7 @@ import { forwardRef } from "react";
 import type { Project } from "@/lib/projects";
 import { WIDTH_VW } from "@/lib/projects";
 
-// individual card on the horizontal rail. variable width in vw, parallax-aware
-// sub-elements get data attributes that the rail's gsap timeline targets.
-//
-// invert color tokens because cards sit on the dark stage background.
+// individual rail card; data-attrs target the rail's gsap parallax timeline.
 
 interface ProjectCardProps {
   project: Project;

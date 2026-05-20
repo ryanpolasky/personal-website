@@ -1,10 +1,6 @@
 "use client";
 
-// layout B: poster banner. primary media stretches across the top as a
-// full-width hero, with the eyebrow + title burnt into its bottom-left
-// corner like a magazine cover. supporting content (body, secondary
-// media, signal card) lives in a three-cell strip below. good for
-// sections where the visual *is* the punchline.
+// layout B: poster banner. primary media top, eyebrow+title overlay, 3-cell strip below.
 
 import { MediaFrame } from "./MediaFrame";
 import type { SectionLayoutProps } from "./types";

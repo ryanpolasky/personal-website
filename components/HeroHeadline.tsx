@@ -2,11 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-// the hero headline ("i build small, useful things on purpose.") + a thin
-// accent-colored bar that sits *behind* the text and grows from left to right
-// as the user scrolls through the hero. the bar's scaleX is updated each
-// frame from the headline's own bounding-rect so the growth feels physically
-// attached to the text rather than to a global scroll counter.
+// hero headline + accent bar that grows L→R with scroll, anchored to the text rect.
 
 export function HeroHeadline() {
   const headlineRef = useRef<HTMLHeadingElement>(null);

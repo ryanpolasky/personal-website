@@ -4,29 +4,22 @@ import { useEffect, useMemo, useRef } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 
-// fluid particle canvas - the heavy three.js half of FluidParticleBand,
-// extracted into its own module so the parent section (text + cta + pointer
-// wiring) can dynamic-import this with ssr:false. keeping three + r3f out of
-// the main chunk shaves ~200kb off first-load js. the particle physics and
-// rendering code is unchanged from when it lived inline; only the module
-// boundary moved.
+// fluid particle canvas - heavy three.js half of FluidParticleBand, dynamic-imported.
 
 const PARTICLE_COUNT = 1000;
-const SUBSTEPS = 6; // higher sub-steps for incompressible liquid feel.
-const CELL_SIZE = 0.35; // spatial-hash cell width in world units.
-const GRAVITY = 20; // stronger gravity so they settle faster and feel heavy.
-const FRICTION = 0.995; // low air drag so waves keep moving.
-const FLOOR_FRICTION = 0.9; // slippery floor so the pool levels out horizontally.
-const MAX_CURSOR_SPEED = 30.0; // clamp cursor velocity to prevent insane forces.
-const MAX_PARTICLE_STEP = 0.15; // clamp verlet velocity so no particle can explode.
+const SUBSTEPS = 6;
+const CELL_SIZE = 0.35;
+const GRAVITY = 20;
+const FRICTION = 0.995;
+const FLOOR_FRICTION = 0.9;
+const MAX_CURSOR_SPEED = 30.0;
+const MAX_PARTICLE_STEP = 0.15;
 
 const PRESSURE_RADIUS = 0.42;
 const REST_DENSITY = 2.15;
 const PRESSURE_STRENGTH = 0.018;
 const MAX_PRESSURE_PUSH = 0.008;
 
-// increased so particles have a personal space bubble and read as
-// individual shapes rather than fusing into a continuous blob.
 const SEPARATION_PADDING = 0.1;
 
 type Shape = 0 | 1 | 2 | 3; // 0 square, 1 circle, 2 plus, 3 x
@@ -42,10 +35,7 @@ interface Particle {
   scale: number; // visual size multiplier
 }
 
-// PointerState is the contract between the parent section (which wires
-// window pointer events) and the canvas (which reads the latest pointer
-// state inside useFrame). exported so the parent can `import type` it
-// without dragging in three.
+// PointerState: shared between parent's window pointer wiring and canvas useFrame.
 export interface PointerState {
   nx: number;
   ny: number;
@@ -168,30 +158,14 @@ function ParticleField({
   const pressureRef = useRef(new Float32Array(particles.length));
   const initRef = useRef(false);
 
-  const debugRef = useRef({
-    frameCount: 0,
-    lastLogTime: 0,
-    maxDt: 0,
-    bigStutterCount: 0,
-    contextLostAt: 0,
-  });
-
   useEffect(() => {
     const canvas = gl.domElement;
-    const onLost = (e: Event) => {
-      e.preventDefault();
-      debugRef.current.contextLostAt = performance.now();
-    };
-    const onRestored = () => {
-      debugRef.current.contextLostAt = 0;
-    };
+    const onLost = (e: Event) => e.preventDefault();
     canvas.addEventListener("webglcontextlost", onLost);
-    canvas.addEventListener("webglcontextrestored", onRestored);
     return () => {
       canvas.removeEventListener("webglcontextlost", onLost);
-      canvas.removeEventListener("webglcontextrestored", onRestored);
     };
-  }, [gl, particles.length]);
+  }, [gl]);
 
   const advancePhysics = (
     dt: number,
@@ -455,19 +429,6 @@ function ParticleField({
     const halfW = viewport.width / 2;
     const halfH = viewport.height / 2;
 
-    const dbg = debugRef.current;
-    dbg.frameCount++;
-    if (deltaSec > dbg.maxDt) dbg.maxDt = deltaSec;
-    if (deltaSec > 0.5) dbg.bigStutterCount++;
-    const now = performance.now();
-    if (dbg.lastLogTime === 0) dbg.lastLogTime = now;
-    if (now - dbg.lastLogTime > 2000) {
-      dbg.frameCount = 0;
-      dbg.maxDt = 0;
-      dbg.bigStutterCount = 0;
-      dbg.lastLogTime = now;
-    }
-
     if (
       !Number.isFinite(halfW) ||
       !Number.isFinite(halfH) ||
@@ -624,8 +585,6 @@ export default function FluidParticleCanvas({
   pointerRef: React.MutableRefObject<PointerState>;
   visible: boolean;
 }) {
-  // build the particle array once, lazily inside this client-only module so
-  // the heavy Particle[] allocation also stays out of the main chunk.
   const { particles, counts } = useMemo(() => {
     const arr: Particle[] = [];
     const counts = [0, 0, 0, 0];

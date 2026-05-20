@@ -1,21 +1,9 @@
-/**
- * Canonical manifest of the visual variants.
- *
- * Each entry mirrors what the old `index.html` set on its `<iframe class="slide">`
- * elements via `data-*` attributes. The order here is the order they appear in
- * the gallery picker.
- *
- * Variants live as fully-self-contained HTML files at `/public/variants/*.html`
- * and are loaded inside iframes; they are intentionally NOT React components.
- */
+// Visual variant manifest. Each entry is a self-contained HTML file loaded
+// into an iframe by the gallery picker. Order = picker order.
 export type Variant = {
-  /** Stable slug. Used in URLs and localStorage. */
   key: string;
-  /** Human label shown in the picker UI. */
   name: string;
-  /** Iframe title attribute. */
   title: string;
-  /** Path served by next.js from the public/ dir. */
   src: string;
 };
 

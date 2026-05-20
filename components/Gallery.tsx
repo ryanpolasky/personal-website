@@ -18,11 +18,8 @@ type Mode = "boot" | "picking" | "locked";
 
 type State = {
   mode: Mode;
-  /** Slide index currently rendered fullscreen (only meaningful in 'locked'). */
-  activeIdx: number;
-  /** Slide index shown in the preview frame (only meaningful in 'picking'). */
-  previewIdx: number;
-  /** Booted (first iframe ready) - used to fade out the loading veil. */
+  activeIdx: number; // fullscreen slide (meaningful in 'locked')
+  previewIdx: number; // preview slide (meaningful in 'picking')
   booted: boolean;
 };
 
@@ -52,7 +49,7 @@ function loadSavedKey(): string | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw === "plaintext") {
-      // The old site renamed `plaintext` → `no-css`. Honor that migration.
+      // legacy migration: old key `plaintext` → `no-css`.
       localStorage.setItem(STORAGE_KEY, "no-css");
       return "no-css";
     }
@@ -62,18 +59,9 @@ function loadSavedKey(): string | null {
   }
 }
 
-/**
- * The picker / variant gallery - React port of the old `index.html`.
- *
- * Behavior mirrors the original site:
- *   - Returning visitors with a saved choice are locked straight into their
- *     variant (cog button re-opens the picker).
- *   - First-time visitors enter the picker with an animated intro.
- *   - `?gallery=1` URL param forces picker mode regardless of saved choice.
- *   - Variants live in iframes and are hydrated lazily (current ± 1).
- *   - The picker chrome reads each variant's accent color and posts a
- *     visibility message on activation, matching the original handshake.
- */
+// variant gallery (React port of the original index.html picker). returning
+// visitors lock to their saved choice; first-time + ?gallery=1 open the
+// picker. variants live in iframes hydrated lazily (current ±1).
 export function Gallery() {
   const router = useRouter();
   const search = useSearchParams();
@@ -97,7 +85,7 @@ export function Gallery() {
   const previewName = VARIANTS[state.previewIdx]?.name ?? "";
   const previewKey = VARIANTS[state.previewIdx]?.key ?? "";
 
-  /** Lazily set iframe.src on hydration. */
+  // lazily set iframe.src on hydration.
   const hydrate = useCallback(
     (idx: number) => {
       if (idx < 0 || idx >= total) return;
@@ -114,7 +102,7 @@ export function Gallery() {
     [total],
   );
 
-  /** Tell a variant whether it's currently the active/visible slide. */
+  // tell a variant whether it's currently the active/visible slide.
   const notifyVariant = useCallback((idx: number, active: boolean) => {
     const el = iframeRefs.current[idx];
     if (!el || !el.contentWindow || !el.src) return;
@@ -128,7 +116,7 @@ export function Gallery() {
     }
   }, []);
 
-  /** Read a variant's accent color from its computed CSS so the chrome matches. */
+  // read a variant's accent from its computed CSS so the chrome matches.
   const readAccent = useCallback((idx: number): string | null => {
     const el = iframeRefs.current[idx];
     if (!el) return null;
@@ -153,7 +141,7 @@ export function Gallery() {
     return null;
   }, []);
 
-  /** Apply an accent color to the picker chrome. */
+  // apply an accent color to the picker chrome.
   const applyAccent = useCallback(
     (idx: number) => {
       const c = readAccent(idx);
@@ -288,13 +276,9 @@ export function Gallery() {
       className="relative h-[100svh] w-screen overflow-hidden bg-[var(--color-bg)]"
       style={stageStyle}
     >
-      {/* ─── stage: iframes ─── */}
-      {/*
-        Iframes are CSS replaced elements: setting only `inset:0` resolves to
-        the iframe's intrinsic 300×150 box, NOT the parent. So we wrap each
-        iframe in an absolutely-positioned div that holds the layout, and
-        make the iframe `width:100%; height:100%` inside it.
-      */}
+      {/* stage: iframes. each is wrapped in an abs-positioned div because
+          iframes are replaced elements - `inset:0` alone resolves to their
+          intrinsic 300×150 box, not the parent. */}
       <div className="absolute inset-0">
         {VARIANTS.map((v, i) => {
           const isLockedActive =
@@ -353,14 +337,9 @@ export function Gallery() {
           aria-label="Gallery"
           className="pointer-events-none absolute inset-0 z-30"
         >
-          {/*
-            Picker chrome: deliberately minimal - the iframe is the star. The
-            old big "hey, i'm ryan" intro lived on the *front* door of the site
-            and got moved to the landing page; the gallery is now just a quiet
-            selector for the easter-egg variants.
-          */}
+          {/* picker chrome - deliberately minimal; iframe is the star. */}
 
-          {/* Top row: back-home link (left) + url chrome + step counter (right) */}
+          {/* top row */}
           <div
             className="pointer-events-auto absolute top-0 left-0 right-0 flex items-center gap-3 px-6 pt-6 text-[11px] text-[var(--color-text-faint)] sm:px-12 sm:pt-10"
             style={{ fontFamily: "var(--font-mono)" }}
@@ -390,7 +369,7 @@ export function Gallery() {
             </span>
           </div>
 
-          {/* Footer: nav + pick */}
+          {/* footer */}
           <div className="pointer-events-auto absolute bottom-0 left-0 right-0 px-6 pb-6 sm:px-12 sm:pb-10">
             <div className="flex flex-wrap items-center justify-between gap-6">
               <div className="flex items-center gap-3">

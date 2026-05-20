@@ -8,19 +8,8 @@ import {
   useState,
 } from "react";
 
-/**
- * Per-visit random accent - Ryan's signature from the original site.
- *
- * On mount we pick one of N curated accents and write its components onto:
- *   - CSS custom properties (--color-accent, --color-accent-warm,
- *     --color-accent-soft) so HTML inherits the accent everywhere.
- *   - An R3F-friendly context exposing the same triplet so 3D scenes can
- *     re-tint their materials without recomputing on every render.
- *
- * The accent is *not* persisted across sessions - each visit is a new color.
- * Clicking the hero advances to the next accent (`useAccentCycle`), so the
- * site has a "toy" that visitors can play with.
- */
+// per-visit random accent. writes CSS vars (--color-accent*) globally and
+// exposes the triplet via context for R3F scenes. hero click cycles.
 
 type Accent = {
   name: string;
@@ -61,9 +50,8 @@ export function useAccentCycle(): () => void {
 }
 
 export function AccentProvider({ children }: { children: React.ReactNode }) {
-  /* SSR renders with index 0 (cobalt) so the server output is stable.
-     On client mount we replace it with a random pick - no hydration mismatch
-     because the CSS vars only change post-hydration via the effect below. */
+  // SSR renders index 0; randomized on client mount (CSS vars only change
+  // post-hydration so no mismatch).
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
@@ -72,8 +60,6 @@ export function AccentProvider({ children }: { children: React.ReactNode }) {
 
   const accent = ACCENTS[index];
 
-  /* Push the accent into the global CSS scope so plain HTML elements that
-     use var(--color-accent) get the new color. Re-runs on every cycle. */
   useEffect(() => {
     const root = document.documentElement;
     root.style.setProperty("--color-accent", accent.base);

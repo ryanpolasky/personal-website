@@ -47,26 +47,48 @@ export function Nav() {
   }, []);
 
   useEffect(() => {
-    let raf = 0;
-    const tick = () => {
+    // active-section + scrolled flag, driven by scroll events rather than a
+    // permanent 60fps rAF. rAF-coalesced so a fast wheel doesn't run the
+    // measure multiple times per frame; result-cached so unchanged values
+    // don't re-render the whole nav (and its curtain) every tick.
+    let rafId = 0;
+    let queued = false;
+    let lastScrolled = false;
+    let lastActive = "";
+    const measure = () => {
+      queued = false;
       const y = window.scrollY;
-      setScrolled(y > 80);
-      // last matching section wins, so nested sections can override wrappers.
+      const nextScrolled = y > 80;
+      if (nextScrolled !== lastScrolled) {
+        lastScrolled = nextScrolled;
+        setScrolled(nextScrolled);
+      }
       const threshold = window.innerHeight * 0.4;
       let best = "";
       for (const s of SECTIONS) {
         const el = document.getElementById(s.id);
         if (!el) continue;
         const rect = el.getBoundingClientRect();
-        if (rect.top <= threshold && rect.bottom >= 0) {
-          best = s.id;
-        }
+        if (rect.top <= threshold && rect.bottom >= 0) best = s.id;
       }
-      setActive(best);
-      raf = requestAnimationFrame(tick);
+      if (best !== lastActive) {
+        lastActive = best;
+        setActive(best);
+      }
     };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
+    const onScroll = () => {
+      if (queued) return;
+      queued = true;
+      rafId = requestAnimationFrame(measure);
+    };
+    measure();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, []);
 
   // shared wash trigger for nav anchors and the global 'nav:wash' event.
@@ -152,15 +174,8 @@ export function Nav() {
           );
         }
 
-        // tell ProjectsRail to reset its rail position to slot 0's hero.
-        // without this, the scrollTo above lands scrollY at sectionTopAbs
-        // but the rail's internal currentIdx (and gsap rail.x) is still at
-        // whatever project the user was previously viewing - the next
-        // ScrollTrigger onUpdate tick steps backward through the slots
-        // and, because backward entry into an XL slot lands at the slot's
-        // *end* (editorial overview spread for apple-triage), the user
-        // sees the editorial card on entry instead of the hero. firing
-        // this event lets the rail short-circuit to a clean jumpToIdx(0).
+        // tell ProjectsRail to reset to slot 0; without this the rail's
+        // internal currentIdx stays at the previously-viewed project.
         if (pending.id === "projects" && typeof window !== "undefined") {
           window.dispatchEvent(new CustomEvent("projects:reset"));
         }
@@ -176,17 +191,10 @@ export function Nav() {
       }
 
       if (phase === "opening") {
-        // snap the panel invisibly back to its idle position with a one-frame
-        // transition:none window. then immediately re-enter idle so the
-        // transition is re-armed for the next click.
+        // reset to idle over two frames - one to commit transition:none
+        // + translateY(100%), one to restore the normal transition.
         pendingTarget.current = null;
         setPhase("resetting");
-        // wait two frames before returning to idle. first frame commits
-        // transition:none + translateY(100%) while the panel is already fully
-        // offscreen; second frame restores the normal transition. doing this
-        // over two frames prevents Chrome/Safari from occasionally coalescing
-        // the reset with the end of the opening animation, which made the
-        // curtain visibly come back down.
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
             transitionTimer.current = null;
@@ -200,10 +208,7 @@ export function Nav() {
 
   return (
     <>
-      {/* Simple curtain wash transition overlay. A single accent panel sweeps
-          up from the bottom, covers the screen for the teleport, and continues
-          sweeping up off the top. Clean, minimal. When idle, it snaps instantly
-          back to the bottom without animating. */}
+      {/* curtain wash overlay: accent panel sweeps up, covers, sweeps off top. */}
       <div
         aria-hidden
         className={`fixed inset-0 z-[200] bg-[var(--color-accent)] ${

@@ -1,9 +1,6 @@
 "use client";
 
-// layout A: 3-column editorial mosaic. text left, dominant primary media
-// center as the visual anchor, sidecar on the right (secondary media
-// stacked over a numbered signal card). good for sections whose narrative
-// leans on a single hero asset with supporting bullets.
+// layout A: 3-col mosaic. text left, hero primary center, sidecar right.
 
 import { MediaFrame } from "./MediaFrame";
 import type { SectionLayoutProps } from "./types";

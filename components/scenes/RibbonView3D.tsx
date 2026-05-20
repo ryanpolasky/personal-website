@@ -16,30 +16,14 @@ import {
   useReducedMotion,
 } from "@/lib/scroll";
 
-// 3d ribbon mesh: tube extruded along a catmull-rom curve. control points
-// morph by sin(t) + scroll progress, giving the ribbon a slow weave through
-// the about section. geometry is disposed + rebuilt each frame at low
-// segment counts so the gpu/cpu cost stays bounded.
+// 3d ribbon: catmull-rom tube morphed by sin(t) + scroll progress.
 
 const SEG_ALONG = 224;
-// segAround controls how many faces ring the tube cross-section. was 8 (very
-// faceted in silhouette) - at 14 the tube reads as cleanly cylindrical from
-// every angle without doubling vert count vs the original spec.
 const SEG_AROUND = 14;
 
-// the ribbon's curve is a vertical snake that spans Y_TOP → Y_BOTTOM in
-// model space. as scroll progress goes 0 → 1, the entire group is translated
-// vertically so the "drawing head" moves from upper viewport → lower viewport.
-// effect: the ribbon visually flows downward through the page as the user
-// scrolls past about + experience, reading as one continuous thread woven
-// through the content rather than a static horizontal decorative layer.
 const Y_TOP = 4.0;
 const Y_BOTTOM = -11.2;
 const Y_RANGE = Y_TOP - Y_BOTTOM;
-// where the drawing head sits vertically in world coords at p=0 vs p=1.
-// chosen so head enters from top-of-viewport (y≈+2) and exits at
-// bottom-of-viewport (y≈-2), giving ~4 units of head travel through the
-// 6.9-unit-tall camera frustum at z=9 fov=42.
 const HEAD_WORLD_Y_AT_START = 2.0;
 const HEAD_WORLD_Y_AT_END = -2.0;
 
@@ -53,31 +37,19 @@ function Ribbon({
   const accent = useAccent();
   const groupRef = useRef<THREE.Group>(null);
   const meshRef = useRef<THREE.Mesh>(null);
-  // hemispherical caps plugging the open ends of the tube. without these,
-  // the tube reads as hollow - both the leftmost (fixed start) and the
-  // rightmost (current draw-head as the tube grows with scroll) ends show
-  // an empty circular hole right into the void. each cap is a sphere the
-  // size of the tube radius; only the outward-facing hemisphere is
-  // visible from outside the tube, so it reads as a clean rounded plug.
+  // hemispherical caps plug the open tube ends so they don't read as hollow.
   const leftCapRef = useRef<THREE.Mesh>(null);
   const rightCapRef = useRef<THREE.Mesh>(null);
   const lastGeometryAt = useRef(-Infinity);
   const segAlong = tier === "low" ? 96 : tier === "medium" ? 144 : SEG_ALONG;
   const segAround = tier === "low" ? 8 : tier === "medium" ? 12 : SEG_AROUND;
   const rebuildFps = tier === "low" ? 18 : tier === "medium" ? 36 : 48;
-  // local time accumulator. only advances via clamped useFrame dt so a paused
-  // frameloop (when the about section scrolls off-screen) cannot produce a
-  // huge phase jump on resume.
+  // clamped-dt accumulator survives paused frameloops without phase jump.
   const timeRef = useRef(0);
-  // only the geometries WE generate live here. `initial` is owned by the
-  // useMemo below and is referenced by the <mesh geometry={...}> jsx prop,
-  // so disposing it would leave the mesh attached to a freed buffer on any
-  // future re-render that re-diffs the prop (which is exactly the
-  // disappear-after-scrolling-back failure mode this fixes).
+  // only OUR generated geometries live here; `initial` is owned by the useMemo.
   const generatedRef = useRef<THREE.TubeGeometry | null>(null);
 
-  // base control points form a descending path with depth variation in z so
-  // the ribbon visibly passes "behind" and "in front of" the camera plane.
+  // base control points form a descending path with z-depth variation.
   const baseCtrl = useMemo(
     () => [
       new THREE.Vector3(-8.8, Y_TOP, -0.7),
@@ -118,17 +90,13 @@ function Ribbon({
     return geometry;
   }, [baseCtrl, segAlong, segAround]);
 
-  // re-use a scratch buffer of vectors so we don't allocate every frame.
+  // scratch buffer reused each frame to avoid allocation.
   const scratch = useMemo(
     () => baseCtrl.map(() => new THREE.Vector3()),
     [baseCtrl],
   );
 
-  // single shared material for the tube + both caps. critical that they
-  // share an instance so the iridescent reading is identical across the
-  // three meshes - separate materials would technically have the same
-  // params but the visual hand-off where cap meets tube would be subtly
-  // misaligned. disposed via the effect below when tier/accent changes.
+  // shared material across tube + caps so iridescence reads as one surface.
   const material = useMemo<THREE.Material>(() => {
     if (tier === "low") {
       return new THREE.MeshStandardMaterial({
@@ -170,10 +138,7 @@ function Ribbon({
     const g = groupRef.current;
     const m = meshRef.current;
     if (!g || !m) return;
-    // unclamped dt tells us whether the frameloop just resumed from a long
-    // pause (visible→invisible→visible). that's when we must force a
-    // rebuild so the tube reflects the current scroll progress, not the
-    // stale geometry that was on screen when the loop paused.
+    // long-pause resume forces geometry rebuild so tube matches current scroll.
     const longPauseResume = dt > 0.1;
     const safeDt = Math.min(dt, 1 / 30);
     timeRef.current += safeDt;
@@ -204,10 +169,7 @@ function Ribbon({
         false,
       );
 
-      // grow the tube from top to bottom as we scroll. TubeGeometry packs
-      // its index buffer in (tubular, radial) order, so the first
-      // visibleSegments * SEG_AROUND * 6 indices are exactly the leading
-      // segments. clamp to at least one segment so p=0 isn't fully blank.
+      // grow tube top→bottom by trimming index buffer to leading segments.
       const visibleSegments = Math.max(1, Math.floor(p * segAlong));
       const indexCount = visibleSegments * segAround * 6;
       next.setDrawRange(0, indexCount);
@@ -219,14 +181,7 @@ function Ribbon({
       m.geometry = next;
       lastGeometryAt.current = t;
 
-      // park the caps at the tube's current start + current draw-head,
-      // scaled to match the tube radius exactly. the left cap stays at
-      // u=0 (the catmull-rom curve passes through scratch[0] there), the
-      // right cap rides u = visibleSegments / segAlong as the tube grows.
-      // scale slightly under tubeRadius so the cap reads as a tucked-in
-      // rounded end rather than a bulging bead - the sphere's outermost
-      // extent now sits ~tubeRadius * 0.96 past the tube end (vs full
-      // tubeRadius before), which kills the "ball on a stick" silhouette.
+      // caps ride curve endpoints, scaled just under tubeRadius for clean tuck.
       const capRadius = tubeRadius * 0.96;
       const leftCap = leftCapRef.current;
       const rightCap = rightCapRef.current;
@@ -251,8 +206,6 @@ function Ribbon({
       headTargetY - headLocalY,
       -0.25 + Math.sin(p * Math.PI * 1.5) * 0.18,
     );
-    // rotate the whole group (tube + caps) so the caps stay locked to the
-    // tube ends through the scroll-driven roll.
     g.rotation.x = Math.sin(t * 0.18 + p * 2.2) * 0.035;
     g.rotation.y = Math.sin(t * 0.16 + p * 1.8) * 0.08;
     g.rotation.z =
@@ -268,11 +221,7 @@ function Ribbon({
         castShadow={tier === "high"}
         receiveShadow={tier === "high"}
       />
-      {/* left cap: sphereGeometry of radius 1 - actual size is set per
-          frame via mesh.scale so it always matches the tube radius.
-          initial position + scale match what useFrame will set on the
-          first tick so there's no "giant sphere at origin" flash before
-          the frameloop starts. */}
+      {/* left cap: radius set per-frame via mesh.scale to match tube radius. */}
       <mesh
         ref={leftCapRef}
         material={material}
@@ -289,10 +238,7 @@ function Ribbon({
           ]}
         />
       </mesh>
-      {/* right cap: same shape, parks at the current draw-head so the
-          growing leading edge of the tube reads as a rounded tip rather
-          than an open hole. starts co-located with the left cap because
-          at p=0 the tube has only one visible segment. */}
+      {/* right cap: parks at current draw-head so leading edge reads rounded. */}
       <mesh
         ref={rightCapRef}
         material={material}
@@ -356,11 +302,7 @@ export function RibbonView3D({
   progress: externalProgress,
 }: {
   className?: string;
-  // optional externally-measured progress (0-1). when the ribbon container
-  // is sticky, its own bounding rect is fixed at viewport top through the
-  // scroll-through so internal measurement stalls - pass the parent
-  // section's `useElementProgress` value in to drive the ribbon's grow +
-  // weave through a longer scroll runway.
+  // optional externally-measured progress (0-1) for sticky containers.
   progress?: number;
 }) {
   const { ref: progRef, progress: internalProgress } =
@@ -382,7 +324,6 @@ export function RibbonView3D({
         ? "always"
         : "never";
 
-  // attach both refs to the same wrapping div.
   const setRef = (el: HTMLDivElement | null) => {
     progRef.current = el;
     visRef.current = el;

@@ -151,6 +151,8 @@ export function ProjectsRail() {
     ro.observe(rail);
 
     let raf = 0;
+    let tickRunning = false;
+    let nearViewport = true;
     let lastScrollY = window.scrollY;
     let lastActivityAt = -Infinity;
     let lastDirection: 0 | 1 | -1 = 0;
@@ -354,9 +356,38 @@ export function ProjectsRail() {
         displayBackwardColor,
       );
 
+      raf = nearViewport ? requestAnimationFrame(morphTick) : 0;
+      if (!nearViewport) tickRunning = false;
+    };
+    const startTick = () => {
+      if (tickRunning) return;
+      tickRunning = true;
+      lastTickAt = performance.now();
+      lastScrollY = window.scrollY;
       raf = requestAnimationFrame(morphTick);
     };
-    raf = requestAnimationFrame(morphTick);
+    const stopTick = () => {
+      tickRunning = false;
+      if (raf) cancelAnimationFrame(raf);
+      raf = 0;
+    };
+    // sync run on mount so CSS vars settle if section already overlaps viewport.
+    morphTick();
+    // io-gated rAF: pause when section is far off-screen. wide rootMargin keeps
+    // the loop warm a viewport above/below so entry/exit are never stale.
+    const tickIO =
+      typeof IntersectionObserver === "undefined"
+        ? null
+        : new IntersectionObserver(
+            ([entry]) => {
+              nearViewport = entry.isIntersecting;
+              if (nearViewport) startTick();
+              else stopTick();
+            },
+            { rootMargin: "100% 0px" },
+          );
+    if (tickIO) tickIO.observe(section);
+    else startTick();
 
     let currentIdx = 0;
     let lockedUntil = 0;
@@ -366,13 +397,8 @@ export function ProjectsRail() {
     let cueHoldColor: string | undefined;
     const CUE_HOLD_MS = 200;
     let lenisResumeTimer: number | null = null;
-    // two-step project boundary gate. when a slot crossing is detected we
-    // first "wall lock" at the current slot's edge so the user has to
-    // explicitly scroll again to advance into the next project. armed
-    // direction is preserved across the absorber window; the next crossing
-    // in the SAME direction advances. crossing in the opposite direction
-    // re-arms the wall on the other side. cleared on programmatic nav
-    // (jumpToIdx / landOnEntry).
+    // two-step boundary gate: first crossing wall-locks at the slot edge;
+    // a second same-direction crossing advances. cleared on programmatic nav.
     let boundaryArmedDir: 1 | -1 | 0 = 0;
     const renderCue = (
       el: HTMLDivElement | null,
@@ -404,8 +430,7 @@ export function ProjectsRail() {
 
     const releaseTailAbsorber = () => {
       if (tailAbsorber) {
-        // must match the capture flag from addEventListener or the
-        // listener stays attached, leaking handlers across swipes.
+        // capture flag must match addEventListener or removal silently no-ops.
         window.removeEventListener("wheel", tailAbsorber, {
           capture: true,
         } as EventListenerOptions);
@@ -426,7 +451,6 @@ export function ProjectsRail() {
     const lockScrollDuringSwipe = (
       lockMs: number,
       targetScrollY: number,
-      _duration: number,
     ) => {
       releaseWheelBlock();
 
@@ -435,15 +459,8 @@ export function ProjectsRail() {
       let firstSeenAfterLock = false;
       let absorberInstalledAt = 0;
 
-      // CRITICAL: capture + stopImmediatePropagation is what actually keeps
-      // wheel events from reaching Lenis. Lenis registers its own wheel
-      // listener in bubble phase from SmoothScrollProvider (which mounted
-      // before us), so a bubble-phase blocker fires AFTER Lenis - too late;
-      // Lenis has already updated targetScroll by the time preventDefault
-      // runs. capture phase fires first, and stopImmediatePropagation
-      // outright cancels Lenis's bubble listener for the event. without
-      // these two changes, momentum still leaks because Lenis silently
-      // accumulates input the whole time we think we have it locked out.
+      // capture + stopImmediatePropagation: required to beat Lenis's bubble
+      // listener (otherwise Lenis still accumulates wheel input during lock).
       const blocker = (e: WheelEvent) => {
         lastWheelTime = performance.now();
         lastWheelDelta = Math.abs(e.deltaY || e.deltaX);
@@ -476,36 +493,21 @@ export function ProjectsRail() {
           wheelBlocker = null;
         }
 
-        // momentum absorber. eats decaying wheel-event tails (trackpad
-        // kinetic scroll, OS-level wheel inertia) so they can't pan the
-        // newly-entered project. tuned for both extremes:
-        //   - trackpad: long decaying tail of small-delta events, ~16ms
-        //     apart. heuristic catches them by "delta is not bigger than
-        //     last + small fudge" and "<60ms gap since last".
-        //   - mousewheel (no real OS inertia): a single click after lock
-        //     release should NOT be eaten. heuristic catches it because
-        //     the click arrives >60ms after the last absorbed event, OR
-        //     the absorber hard-times-out at ABSORBER_MAX_MS.
-        //
-        // also uses capture+stopImmediatePropagation for the same reason
-        // as the blocker above - preventDefault alone leaks to Lenis.
+        // momentum absorber: eats decaying wheel tails (trackpad inertia)
+        // without swallowing a fresh mousewheel click after lock release.
         const ABSORBER_MAX_MS = 850;
         absorberInstalledAt = performance.now();
         const absorber = (e: WheelEvent) => {
           const now = performance.now();
           const delta = Math.abs(e.deltaY || e.deltaX);
 
-          // hard time cap: never absorb past this. catches the case where
-          // the user keeps wheeling smoothly through the transition and
-          // their genuine input looks identical to the tail.
+          // hard time cap: never absorb past this.
           if (now - absorberInstalledAt > ABSORBER_MAX_MS) {
             releaseTailAbsorber();
             return;
           }
 
-          // first event after lock release: anchor our reference timing
-          // to NOW rather than to the pre-lock lastWheelTime (which would
-          // make the gap-since-last check meaningless on the first call).
+          // first event after release: re-anchor timing to NOW.
           if (!firstSeenAfterLock) {
             firstSeenAfterLock = true;
             lastWheelTime = now;
@@ -627,19 +629,12 @@ export function ProjectsRail() {
 
           const lockMs = TRANSITION_S * 1000 + 120;
           lockedUntil = performance.now() + lockMs;
-          lockScrollDuringSwipe(lockMs, targetScrollY, TRANSITION_S);
+          lockScrollDuringSwipe(lockMs, targetScrollY);
         }
       };
 
-      // "wall lock" - the first half of the two-step project boundary
-      // gate. when the user crosses (or is about to cross) from one
-      // project into another, we first snap the rail to the FAR edge of
-      // the current project (last subsection for forward, hero for
-      // backward) and absorb their scroll momentum. they then have to
-      // make a fresh, deliberate scroll input to actually advance into
-      // the next project. without this, a fast wheel/trackpad fling
-      // blasts straight through the boundary into the next project's
-      // hero with no tactile "you've reached the end" feedback.
+      // wall lock: snap the rail to the current project's far edge and
+      // absorb momentum. user must scroll again to actually cross.
       const lockAtWall = (idx: number, dir: 1 | -1) => {
         const sectionTop =
           section.getBoundingClientRect().top + window.scrollY;
@@ -662,14 +657,10 @@ export function ProjectsRail() {
 
         const lockMs = TRANSITION_S * 1000 + 120;
         lockedUntil = performance.now() + lockMs;
-        lockScrollDuringSwipe(lockMs, targetScrollY, TRANSITION_S);
+        lockScrollDuringSwipe(lockMs, targetScrollY);
       };
 
-      // shared "land + absorb" used when the user enters the section from
-      // outside (from kaleido above or contact below). reuses the exact
-      // same lock / momentum-absorber machinery as slot-to-slot swipes so
-      // a fast scroll into autopsy (or up into the last project) cannot
-      // blow past the entry hero into a mid-pan position.
+      // land + absorb on section entry; same lock machinery as slot swipes.
       const landOnEntry = (idx: number, fromBelow: boolean) => {
         const sectionTop =
           section.getBoundingClientRect().top + window.scrollY;
@@ -694,7 +685,7 @@ export function ProjectsRail() {
 
         const lockMs = TRANSITION_S * 1000 + 120;
         lockedUntil = performance.now() + lockMs;
-        lockScrollDuringSwipe(lockMs, targetScrollY, TRANSITION_S);
+        lockScrollDuringSwipe(lockMs, targetScrollY);
       };
 
       ScrollTrigger.create({
@@ -702,13 +693,9 @@ export function ProjectsRail() {
         start: "top top",
         end: () => `+=${getTravel()}`,
         invalidateOnRefresh: true,
-        // entering from above (down scroll from kaleido). lock to autopsy
-        // so trackpad inertia can't carry the user past the first project's
-        // hero into a half-revealed second subsection.
+        // entering top-down: land on first project's hero.
         onEnter: () => landOnEntry(0, false),
-        // entering from below (up scroll from contact). same treatment for
-        // the last project so they land cleanly on its final subsection
-        // instead of overshooting into the middle.
+        // entering bottom-up: land on last project's final subsection.
         onEnterBack: () => landOnEntry(N - 1, true),
         onUpdate: (self) => {
           if (performance.now() < lockedUntil) return;
@@ -731,9 +718,7 @@ export function ProjectsRail() {
             const now = performance.now();
 
             if (boundaryArmedDir === dir) {
-              // SECOND crossing in the same direction = user has made a
-              // deliberate follow-up scroll after the wall. actually
-              // advance into the next project now.
+              // second crossing same direction = advance into next project.
               boundaryArmedDir = 0;
               cueHoldUntil = now + CUE_HOLD_MS;
               cueHoldDirection = dir;
@@ -745,14 +730,9 @@ export function ProjectsRail() {
               setActiveIdx(step);
               swipeTo(step, false, dir);
             } else {
-              // FIRST crossing (or direction change) = wall lock. snap to
-              // the current project's far edge and absorb momentum. the
-              // user must scroll again in the same direction to advance.
-              // we DO NOT change currentIdx - they're still "in" the
-              // current project, just at its boundary.
+              // first crossing (or direction change) = wall lock; don't
+              // change currentIdx, user is still in the current project.
               boundaryArmedDir = dir;
-              // show the next project's cue as a hint of what they'll
-              // get when they scroll again.
               cueHoldUntil = now + CUE_HOLD_MS;
               cueHoldDirection = dir;
               cueHoldName = projects[step]?.name;
@@ -788,7 +768,8 @@ export function ProjectsRail() {
     window.addEventListener("projects:reset", onProjectsReset);
 
     return () => {
-      cancelAnimationFrame(raf);
+      stopTick();
+      tickIO?.disconnect();
       window.removeEventListener("resize", setSectionHeight);
       window.removeEventListener("projects:reset", onProjectsReset);
       ro.disconnect();

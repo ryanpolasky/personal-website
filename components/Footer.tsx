@@ -4,9 +4,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 
-// ContactBlobView is a decorative WebGL "period" at the end of the wordmark.
-// dynamic-import with ssr:false keeps three.js out of the footer chunk so the
-// SEO-critical footer text/links ship without dragging in the 3d runtime.
+// decorative WebGL "period" at end of wordmark; ssr:false keeps three out of footer chunk.
 const ContactBlobView = dynamic(
   () =>
     import("@/components/scenes/ContactBlobView").then((m) => ({
@@ -15,11 +13,7 @@ const ContactBlobView = dynamic(
   { ssr: false },
 );
 
-// magazine-back-cover footer. oversize wordmark + three-col meta block,
-// sits flush against the bottom of the contact band so there's no exposed
-// page-bg gap between the two sections. the wordmark itself ends in a
-// decorative WebGL blob period (see inline span below). renders the
-// current year client-side after mount to dodge SSR drift.
+// magazine-back-cover footer: oversize wordmark + three-col meta block.
 
 export function Footer() {
   const [year, setYear] = useState<number | null>(null);

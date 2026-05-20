@@ -153,8 +153,7 @@ function MirrorWall({
   tier: PerformanceTier;
 }) {
   if (tier === "low") {
-    // dark not-quite-mirror - still reads as a wall of the room and catches
-    // the central sigil's light, but skips the per-frame reflection pass.
+    // dark non-mirror wall - skips per-frame reflection pass.
     return (
       <mesh position={position} rotation={rotation}>
         <planeGeometry args={size} />
@@ -171,12 +170,7 @@ function MirrorWall({
     <mesh position={position} rotation={rotation}>
       <planeGeometry args={size} />
       <MeshReflectorMaterial
-        // blur kernel adds depth + hides the fact that we're only doing one
-        // real reflection bounce (not true recursive infinity). higher blur
-        // at high tier sells the "fog of mirrors" feel better.
         blur={tier === "high" ? [120, 40] : [56, 22]}
-        // 160 at high is the sweet spot - 192 was overkill for a wall that's
-        // usually viewed at an oblique angle. cheaper per frame.
         resolution={tier === "high" ? 160 : 88}
         mixBlur={0.92}
         mixStrength={tier === "high" ? 4.6 : 2.6}
@@ -193,15 +187,7 @@ function MirrorWall({
 }
 
 function MirrorRoom({ tier }: { tier: PerformanceTier }) {
-  // walls are ordered by importance to the infinity-room illusion when the
-  // camera is INSIDE the box looking toward a corner:
-  //   0 floor  - catches sigil light, grounds the scene
-  //   1 back   - primary depth corridor
-  //   2 left   - sidewall recursion
-  //   3 right  - sidewall recursion
-  //   4 ceiling - only matters when camera tilts up
-  //   5 front  - behind the camera most of the time, expensive for nothing
-  // tier slicing trims from the end so we keep the visually critical walls.
+  // walls ordered by visual importance; tier slices trim from end.
   const walls = useMemo(() => {
     const s = 7.6;
     return [
@@ -221,11 +207,7 @@ function MirrorRoom({ tier }: { tier: PerformanceTier }) {
       size: [number, number];
     }>;
   }, []);
-  // high: 5 walls (skip front - camera is between mid and back of box, the
-  //   front wall behind it adds reflection cost with almost no visual gain).
-  // medium: 4 walls (skip front + ceiling).
-  // low: still renders all 6 walls but as cheap meshStandard (no per-frame
-  //   reflection pass at all), so the cost is negligible.
+  // high: 5 walls (no front); medium: 4 (no front/ceiling); low: 6 cheap.
   const activeWalls =
     tier === "high"
       ? walls.slice(0, 5)
@@ -248,12 +230,7 @@ function MirrorRoom({ tier }: { tier: PerformanceTier }) {
   );
 }
 
-// glow shards orbiting the central sigil at varying radii + speeds. these
-// don't carry their own point lights (would blow the per-frame light budget
-// in the reflection passes), but they ARE emissive + meshBasic + additive,
-// so they read as small bright streaks in every mirror reflection. the
-// recursive bounce of moving streaks is what really sells the infinity-room
-// feel beyond just "the room is mirrored."
+// emissive shards orbiting the sigil; bounced in reflections to sell depth.
 function OrbitingShards({
   tier,
   progressRef,
@@ -267,8 +244,7 @@ function OrbitingShards({
   const shards = useMemo(() => {
     const count = tier === "high" ? 7 : tier === "medium" ? 5 : 3;
     return Array.from({ length: count }, (_, i) => ({
-      // each shard gets its own orbit plane + speed so they don't sync up
-      // into an obvious ring - feels more like fireflies in a cathedral.
+      // staggered plane/speed per shard prevents an obvious ring pattern.
       radius: 1.6 + (i % 3) * 0.55 + Math.sin(i * 1.7) * 0.18,
       tilt: (i / count) * Math.PI * 1.4 + Math.sin(i) * 0.4,
       yawSpeed: 0.18 + ((i * 7) % 5) * 0.04,
@@ -308,9 +284,6 @@ function OrbitingShards({
       {shards.map((shard, i) => (
         <mesh key={i}>
           <octahedronGeometry args={[1, 0]} />
-          {/* shards softened from 0.92 → 0.65 opacity. additive blending
-              already stacks brightness in mirror reflections; full-strength
-              shards combined with the dimmed sigil were still over-glaring. */}
           <meshBasicMaterial
             color={shard.tint}
             transparent
@@ -370,14 +343,6 @@ function LightSigil({
     const pulse = Math.sin(p * Math.PI);
     const pointer = pointerRef.current;
     if (group) {
-      // scroll-driven rotation amounts intentionally larger than they look on
-      // paper: the camera also orbits during scroll, so the *visible* sigil
-      // rotation is the sum of the sigil spin + camera arc. previous values
-      // (x: 0.22, y: 0, z: π*0.28) made the core element feel static while
-      // the camera did all the work. these give the sigil a near-full spin
-      // on the Y axis and a meaningful tilt + roll over the section so the
-      // central object actually sells the "scrolling through a chamber"
-      // feel rather than just rotating "a little."
       group.rotation.x = THREE.MathUtils.damp(
         group.rotation.x,
         pointer.smoothY * 0.22 + p * 0.72 + pulse * 0.16,
@@ -404,8 +369,6 @@ function LightSigil({
       knot.rotation.x += step * 0.22;
       knot.rotation.y += step * 0.18;
       const mat = knot.material as THREE.MeshStandardMaterial;
-      // dimmer base + smaller scroll ramp. previous values (1.7 + p*1.1)
-      // blew out the bloom pass and reads as a sun rather than a glow.
       mat.emissiveIntensity = 0.5 + p * 0.32 + pulse * 0.42;
       if (sigilTexture) {
         sigilTexture.offset.x = (sigilTexture.offset.x + step * 0.018) % 1;
@@ -452,9 +415,7 @@ function LightSigil({
         <sphereGeometry
           args={[0.58, tier === "high" ? 64 : 32, tier === "high" ? 32 : 16]}
         />
-        {/* the inner additive glow sphere - halved from 0.16 to 0.08 so it's
-            a halo not a beacon. additive blending stacks the brightness in
-            reflections, so what feels mild here goes nuclear when bounced. */}
+        {/* inner additive glow - additive blending amplifies in reflections. */}
         <meshBasicMaterial
           color={accent.base}
           transparent
@@ -489,8 +450,6 @@ function LightSigil({
           />
         </mesh>
       ))}
-      {/* main fill light from inside the sigil. dropped 6.5 → 3.2 because
-          mirror reflections were doubling/tripling the perceived intensity. */}
       <pointLight
         ref={coreLightRef}
         color={accent.base}
@@ -508,16 +467,7 @@ function LightSigil({
   );
 }
 
-// camera anchored INSIDE the box, locked to a constant 1.9-unit radius
-// from the central sigil. scroll only rotates the ORBIT angle (covers
-// ~80° of arc end-to-end) - there's no forward dolly. previous version
-// dollied through the box on scroll, which felt like flying and broke
-// the "infinity room" frame; now you're observing the room from
-// gradually shifting angles, which is what an infinity room actually
-// invites you to do.
-//
-// box half-width is 3.8 units, so a 1.9-unit camera radius leaves ~1.9
-// units of clearance to any wall - we never clip or poke through.
+// camera orbits at fixed radius inside the box; scroll rotates orbit angle.
 function MirrorCamera({
   pointerRef,
   reduced,
@@ -540,14 +490,9 @@ function MirrorCamera({
     pointer.smoothX = THREE.MathUtils.damp(pointer.smoothX, pointer.x, 4, step);
     pointer.smoothY = THREE.MathUtils.damp(pointer.smoothY, pointer.y, 4, step);
     const t = timeRef.current;
-    // orbit angle: -0.55 (front-right corner view) → +0.85 (past front-left).
-    // sin wobble keeps it alive when scroll is paused. pointer nudge lets
-    // the user push the orbit slightly without taking control.
     const angle =
       -0.7 + p * 1.75 + Math.sin(t * 0.07) * 0.08 + pointer.smoothX * 0.2;
     const radius = 1.9;
-    // vertical: subtle bob + pointer parallax. NO scroll-driven y change,
-    // so it doesn't feel like an elevator.
     const yOffset = 0.42 + Math.sin(t * 0.06) * 0.14 + pointer.smoothY * 0.18;
     camera.position.x = THREE.MathUtils.damp(
       camera.position.x,
@@ -569,15 +514,10 @@ function MirrorCamera({
     );
     camera.fov = THREE.MathUtils.damp(camera.fov, 66 + pulse * 8, 2.8, step);
     camera.updateProjectionMatrix();
-    // always look at the central sigil. small pointer-driven offset for
-    // micro-parallax without the lookpoint feeling unanchored.
     camera.lookAt(pointer.smoothX * 0.15, pointer.smoothY * 0.12, 0);
-    // slight cinematic roll, capped tight.
     camera.rotateZ(Math.sin(t * 0.09) * 0.022 + (p - 0.5) * 0.035);
   });
 
-  // FOV 68 inside the small box stretches the recursive reflections
-  // toward the frame edges - reads as more depth than the geometry has.
   return (
     <PerspectiveCamera
       ref={cameraRef}
@@ -630,13 +570,8 @@ function InfinityMirrorScene({
   return (
     <>
       <color attach="background" args={["#010105"]} />
-      {/* tight fog so distant reflections fade into pure black - gives
-          the corridor depth even with only one real bounce, and hides
-          the far-mirror seams completely. */}
       <fog attach="fog" args={["#010105", 3.2, 11]} />
       <MirrorCamera pointerRef={pointerRef} reduced={reduced} />
-      {/* near-zero ambient keeps the room genuinely dark - the only light
-          should be coming from the sigil itself + its orbiting shards. */}
       <ambientLight intensity={0.035} />
       <MirrorRoom tier={tier} />
       <LightSigil

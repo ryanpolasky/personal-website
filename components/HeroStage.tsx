@@ -3,17 +3,9 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import { useAccentCycle } from "@/components/AccentProvider";
 
-// thin client wrapper around the hero's dark stage that turns the whole
-// background into a click toy: clicking anywhere on the canvas (or on the
-// empty space around the headline) advances the site-wide accent color to
-// the next one in the palette. clicks that land on real interactive elements
-// (buttons, links, magnetic ctas, anything tagged `data-no-cycle`) are
-// ignored so navigation still works.
-//
-// also drives a subtle exit-transform on the stage itself: as the hero
-// scrolls past the viewport top the stage scales down + lifts + fades,
-// reading as if the card is being pushed back into z-depth while the next
-// section rises underneath. transform + opacity only (gpu-cheap, no layout).
+// hero stage wrapper: bg-click cycles the accent palette (excludes real
+// interactive elements + `data-no-cycle`); also drives a transform+opacity
+// scroll-exit on the stage itself.
 
 export function HeroStage({ children }: { children: ReactNode }) {
   const cycle = useAccentCycle();
@@ -46,9 +38,7 @@ export function HeroStage({ children }: { children: ReactNode }) {
       if (alive) {
         const rect = el.getBoundingClientRect();
         const vh = window.innerHeight || 1;
-        // exit progress: hero stage top scrolling past viewport top.
-        // 0 = hero still fully (or mostly) in view, 1 = hero has scrolled
-        // half a viewport past the top edge. tapers naturally beyond that.
+        // exit progress: 0 = in view, 1 = scrolled half a vh past the top.
         const past = -rect.top;
         const exitDistance = vh * 0.5;
         const t = past / exitDistance;

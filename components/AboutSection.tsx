@@ -4,10 +4,8 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useSectionTravel } from "@/lib/scroll";
 
-// RibbonView3D is the heaviest below-the-fold WebGL scene. dynamic-import
-// with ssr:false keeps three.js + drei out of the initial chunk; the ribbon
-// renders nothing during SSR (canvases can't anyway) and streams in after
-// hydration, which is fine because it's a decorative backdrop behind text.
+// dynamic-import keeps three.js + drei out of the initial chunk; the
+// decorative ribbon streams in after hydration.
 const RibbonView3D = dynamic(
   () =>
     import("@/components/scenes/RibbonView3D").then((m) => ({
@@ -16,14 +14,9 @@ const RibbonView3D = dynamic(
   { ssr: false },
 );
 
-// about + experience: one continuous tall section sharing a sticky 3D ribbon
-// backdrop. the ribbon is pinned at viewport top for the entire scroll-through;
-// useSectionTravel measures how far the section has traveled past viewport top
-// (0 → 1) and feeds that into RibbonView3D so the tube keeps weaving + grows
-// further left-to-right as the user reads through the experience rows. without
-// the external progress, RibbonView3D's own getBoundingClientRect on the
-// sticky container stalls (rect stuck at viewport top) and the ribbon freezes
-// mid-draw.
+// about + experience share a sticky 3D ribbon backdrop. progress is fed
+// externally because the sticky container's own bounding rect is fixed at
+// viewport top during pin, stalling internal measurement.
 
 interface Role {
   company: string;
@@ -83,10 +76,7 @@ const ROLES: Role[] = [
   },
 ];
 
-// skill categories, traced 1:1 to the original.html skills section so the
-// chips read as a real resume skill matrix instead of a free-form tag cloud.
-// each group's lead items are the ones marked Advanced/Intermediate on the
-// original; trailing items are the "also" mono caption row from the same card.
+// skill categories, mirrors the original.html skill matrix.
 const SKILL_GROUPS: { label: string; items: string[] }[] = [
   {
     label: "languages",
@@ -150,22 +140,9 @@ export function AboutSection() {
       className="relative px-4 sm:px-6"
       aria-label="about"
     >
-      {/* sticky ribbon backdrop. one viewport tall, pinned to top of viewport
-          for the entire scroll through about + experience. negative bottom
-          margin = -h so the sibling content stacks on top of the sticky child
-          instead of being pushed down by its 100svh height. progress is fed
-          externally so the ribbon keeps animating + growing while the section
-          scrolls past; sticky containers' own bounding rect stays fixed at
-          viewport top during pin, which stalls RibbonView3D's internal
-          measurement.
-          
-          IMPORTANT: section is `relative` only (no overflow-hidden); per css
-          spec, any non-`visible` overflow makes that element the sticky's
-          scrolling container ancestor, and since the section doesn't scroll,
-          sticky would degrade to relative (ribbon scrolls past in the first
-          100vh instead of pinning). overflow-hidden lives ON THE STICKY div
-          instead, where it clips the ribbon's bleed to viewport bounds. same
-          pattern as the projects rail's sticky stage. */}
+      {/* sticky ribbon backdrop. negative mb cancels the sticky's height
+          so siblings stack on top. overflow-hidden is on the sticky child
+          (not the section), or sticky degrades to relative per css spec. */}
       <div className="pointer-events-none sticky top-0 -mx-4 -mb-[100svh] h-[100svh] overflow-hidden sm:-mx-6">
         <div className="absolute inset-0 -my-16 sm:-my-32">
           <RibbonView3D
@@ -221,9 +198,7 @@ export function AboutSection() {
           </p>
         </div>
 
-        {/* skill matrix - grouped chips so each category reads as its own
-            line on a resume, not a flat soup of tags. four columns of two
-            on wide viewports, two columns on tablet, single column mobile. */}
+        {/* skill matrix - grouped chips by category. */}
         <div className="mt-10 grid max-w-5xl gap-x-10 gap-y-7 sm:mt-14 sm:grid-cols-2 md:gap-x-14">
           {SKILL_GROUPS.map((group) => (
             <div key={group.label}>
@@ -245,8 +220,7 @@ export function AboutSection() {
         </div>
       </div>
 
-      {/* ───── experience timeline ─────
-          shares the section's sticky ribbon backdrop. */}
+      {/* experience timeline - shares the sticky ribbon backdrop. */}
       <div
         id="experience"
         className="relative z-10 mx-auto max-w-7xl pt-32 pb-28 sm:pt-48 sm:pb-40"

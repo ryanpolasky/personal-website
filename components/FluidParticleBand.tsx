@@ -6,18 +6,9 @@ import { useIsVisible, useReducedMotion } from "@/lib/scroll";
 import { MagneticButton } from "@/components/MagneticButton";
 import type { PointerState } from "@/components/scenes/FluidParticleCanvas";
 
-// fluid particle band, inspired by lusion.co's contact transition. roughly
-// 1000 small white geometric shapes (squares, dots, plus signs, x marks)
-// fall, pile up, and collide on an accent-colored stage. the cursor pushes
-// them outward in a radial force field so it feels like dragging a finger
-// through a sandbox of beads.
-//
-// the heavy three.js half (physics + r3f Canvas) lives in
-// scenes/FluidParticleCanvas and is dynamic-imported with ssr:false so it
-// stays out of the initial js chunk. this wrapper owns the section layout,
-// the SEO-critical contact lockup (headline + cta + link row), and the
-// window pointer wiring that feeds the canvas's physics loop via a shared
-// ref. reduced-motion users get the static accent banner with no canvas.
+// fluid particle band (lusion-style contact). canvas is dynamic-imported;
+// this wrapper owns the section layout, SEO lockup, and pointer wiring.
+// reduced-motion users get the static accent banner with no canvas.
 
 const FluidParticleCanvas = dynamic(
   () => import("@/components/scenes/FluidParticleCanvas"),
@@ -49,12 +40,8 @@ export function FluidParticleBand() {
 
     const onMove = (e: PointerEvent) => {
       const rect = el.getBoundingClientRect();
-      // guard against zero-area rects from in-flight layout reflows. without
-      // this, dividing pointer x by rect.width=0 yields Infinity/NaN, which
-      // then poisons pointer.nx → targetX → smoothX → cursorRadius and
-      // ultimately every particle position. observed in the wild on page
-      // refresh as "all particles disappear with site lag" (NaN-propagating
-      // physics costs ~50x the cpu of valid math).
+      // guard against zero-area rects (in-flight reflow) to avoid NaN
+      // propagating into particle positions.
       if (rect.width <= 0 || rect.height <= 0) {
         pointerRef.current.target = 0;
         return;

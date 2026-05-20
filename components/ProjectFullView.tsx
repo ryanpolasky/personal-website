@@ -2,17 +2,8 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Project } from "@/lib/projects";
 
-// shared content for the expanded project view. used both by the standalone
-// /work/[id] page (server-rendered, accessible via direct URL) and by the
-// intercepted modal route (mounted over the home page when clicking a card
-// from the projects rail). the wrappers around this content differ (the
-// modal adds a backdrop + close button + scroll lock), but the content
-// itself stays identical so we never drift the two.
-//
-// when the rail card morphs into the modal via framer-motion layoutId, the
-// outer container of THIS view becomes the morph target. that's why every
-// element below sits inside the single root div: padding + grid live on
-// children, not on a wrapper that would shift mid-morph.
+// expanded project view shared by /work/[id] and the rail-modal. children
+// (not the root) hold padding/grid so the root stays a stable morph target.
 
 interface ProjectFullViewProps {
   project: Project;
@@ -135,9 +126,6 @@ export function ProjectFullView({ project, tintColor }: ProjectFullViewProps) {
                 ))}
               </div>
             ) : null}
-            {/* room for additional copy / images per project later; the
-                modal/standalone page will grow naturally as the data model
-                expands. for now, body is the substantive content. */}
           </div>
 
           <aside

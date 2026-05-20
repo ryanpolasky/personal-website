@@ -10,28 +10,12 @@ import { ProjectsRail } from "@/components/ProjectsRail";
 import { FluidParticleBand } from "@/components/FluidParticleBand";
 import { Footer } from "@/components/Footer";
 
-// v9 landing.
-//
-//   01. hero          tumbling cluster, dark inset stage, headline left/center
-//   02. marquee       full-bleed running text band, brand tokens
-//   03. about + experience   3d ribbon (sticky backdrop) behind huge type +
-//                            stack chips, then the experience timeline scrolls
-//                            over the same ribbon - one continuous tall section.
-//   04. kaleidoscope  mood breath, morphs to fullscreen, floating section words
-//   05. projects      pinned stage, vertical scroll drives horizontal pan
-//   06. contact       fluid particle band IS the contact section - accent-color
-//                     finale with section index + headline + CTA + link row
-//                     layered above an interactive particle sim.
-//   07. footer        magazine-back-cover footer with tucked contact blob demo.
-
 export default function HomePage() {
   return (
     <main id="main" className="relative">
       <Cursor />
 
-      {/* ============================================================== */}
-      {/* 01. HERO                                                        */}
-      {/* ============================================================== */}
+      {/* 01. HERO */}
       <section
         id="hero"
         data-snap
@@ -73,16 +57,12 @@ export default function HomePage() {
                 memory for ai coding agents.
               </p>
 
-              {/* hero CTAs extracted into a client component (HeroCtas)
-                  so this page can stay a server component. both buttons
-                  intercept the native anchor jump and dispatch the
-                  'nav:wash' custom event that Nav listens for, so the
-                  curtain-wash teleport runs identically to nav clicks. */}
+              {/* extracted client component so this page stays server-rendered. */}
               <HeroCtas />
             </div>
           </div>
 
-          {/* scroll cue - a thin animated indicator pinned bottom-center. */}
+          {/* scroll cue */}
           <div
             className="pointer-events-none absolute bottom-5 left-1/2 z-30 flex -translate-x-1/2 flex-col items-center gap-2"
             aria-hidden
@@ -98,45 +78,26 @@ export default function HomePage() {
         </HeroStage>
       </section>
 
-      {/* ============================================================== */}
-      {/* 02. MARQUEE BAND                                                */}
-      {/* ============================================================== */}
+      {/* 02. MARQUEE */}
       <MarqueeBand />
 
-      {/* ============================================================== */}
-      {/* 03. ABOUT + EXPERIENCE                                          */}
-      {/* one tall section with a sticky 3d ribbon backdrop. the ribbon  */}
-      {/* pins to viewport-top and keeps weaving as the user scrolls     */}
-      {/* through both blocks. see components/AboutSection.tsx.          */}
-      {/* ============================================================== */}
+      {/* 03. ABOUT + EXPERIENCE */}
       <AboutSection />
 
-      {/* ============================================================== */}
-      {/* 04. KALEIDOSCOPE                                                */}
-      {/* ============================================================== */}
-      {/* pb on the wrapper gives a cream breath between kaleido's exit
-          (where it morphs back to picture-frame card) and the projects
-          rail's entry morph. without it, the two pinned sections butt
-          straight against each other and the visual contract feels rushed. */}
+      {/* 04. KALEIDOSCOPE (pb gives breath before the projects morph in) */}
       <div className="pb-16 sm:pb-24">
         <KaleidoscopeSection />
       </div>
 
-      {/* ============================================================== */}
-      {/* 05. PROJECTS RAIL                                               */}
-      {/* ============================================================== */}
+      {/* 05. PROJECTS RAIL */}
       <div className="pb-8 sm:pb-12">
         <ProjectsRail />
       </div>
 
-      {/* ============================================================== */}
-      {/* 06. CONTACT  (fluid particle band IS the contact finale)        */}
-      {/* ============================================================== */}
+      {/* 06. CONTACT */}
       <FluidParticleBand />
 
-      {/* ============================================================== */}
-      {/* 07. FOOTER                                                      */}
-      {/* ============================================================== */}
+      {/* 07. FOOTER */}
       <Footer />
     </main>
   );

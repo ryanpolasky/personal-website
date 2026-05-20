@@ -4,15 +4,7 @@ import type { Metadata } from "next";
 import { PROJECTS } from "@/lib/projects";
 import { ProjectFullView, projectTint } from "@/components/ProjectFullView";
 
-// standalone page for /work/[id] - what users see when they hit the URL
-// directly (refresh, paste link, shared link) instead of clicking a card
-// from the home rail. the intercepted version (app/@modal/(.)work/[id])
-// handles the card-click case and renders as a modal over the home page.
-//
-// note that both versions render the same ProjectFullView component, so the
-// content stays in lockstep. only the wrapping chrome differs: the modal
-// adds a backdrop + close + framer-motion layout morph, this page adds a
-// page-level back link + dark-stage container.
+// standalone /work/[id] page for direct visits; modal route handles card clicks.
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -46,9 +38,7 @@ export default async function ProjectStandalonePage({ params }: PageProps) {
         className="stage relative h-[calc(100svh-32px)] w-full overflow-hidden"
         style={{ borderRadius: "28px", minHeight: "600px" }}
       >
-        {/* back link to home - mirrors the close button on the modal
-            version, but routes to / instead of router.back() since direct
-            visits don't have a meaningful history. */}
+        {/* back link to home */}
         <Link
           href="/"
           className="absolute left-4 top-4 z-20 inline-flex items-center gap-2 rounded-full border border-[var(--color-line-invert-strong)] px-4 py-2 text-[11px] uppercase tracking-[0.28em] text-[var(--color-text-invert)] transition-colors hover:border-[var(--color-accent-soft)] hover:text-[var(--color-accent-soft)] sm:left-6 sm:top-6"
