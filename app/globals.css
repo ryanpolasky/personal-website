@@ -1,0 +1,259 @@
+@import "tailwindcss";
+
+@theme {
+  /* v9 palette: cream page; dark rounded stages show the webgl canvases. */
+  --color-bg: #eeeeef;
+  --color-bg-soft: #e5e5e7;
+  --color-stage: #0b0b0f;
+  --color-stage-soft: #14131b;
+  --color-text: #0e0d0b;
+  --color-text-muted: rgba(14, 13, 11, 0.66);
+  --color-text-faint: rgba(14, 13, 11, 0.42);
+  --color-text-invert: #f4f2ee;
+  --color-text-invert-muted: rgba(244, 242, 238, 0.66);
+  --color-text-invert-faint: rgba(244, 242, 238, 0.42);
+  --color-line: rgba(14, 13, 11, 0.1);
+  --color-line-strong: rgba(14, 13, 11, 0.22);
+  --color-line-invert: rgba(244, 242, 238, 0.1);
+  --color-line-invert-strong: rgba(244, 242, 238, 0.22);
+
+  /* accent: cobalt default, overridden per-visit by AccentProvider. */
+  --color-accent: #2d2bc8;
+  --color-accent-warm: #4a48e4;
+  --color-accent-soft: #c5c4f2;
+
+  /* type system: inter body / ui, fraunces display, jetbrains mono. */
+  --font-fallback-sans: ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-fallback-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-fallback-serif: ui-serif, Georgia, Cambria, "Times New Roman", serif;
+  --font-sans: var(--font-inter), var(--font-fallback-sans);
+  --font-display: var(--font-fraunces), var(--font-fallback-serif);
+  --font-mono: var(--font-jetbrains), var(--font-fallback-mono);
+
+  --ease-soft: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  background: var(--color-bg);
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+body {
+  font-family: var(--font-sans);
+  font-feature-settings:
+    "ss01", "cv11"; /* Inter stylistic alts for tighter feel */
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* display headings: fraunces, high optical size, slightly tightened. */
+.display {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 0.92;
+  font-variation-settings:
+    "opsz" 144,
+    "SOFT" 50;
+  font-feature-settings: "ss01", "ss02";
+}
+
+.display-italic {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  line-height: 0.92;
+  font-variation-settings:
+    "opsz" 144,
+    "SOFT" 80,
+    "WONK" 1;
+}
+
+/* ui sans (for hero, marquee tokens). inter, tighter. */
+.sans-tight {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 0.92;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-bg);
+}
+
+/* --------------------------------------------------------------------- */
+/* dark rounded stage card. used by hero, kaleidoscope, projects rail.   */
+/* --------------------------------------------------------------------- */
+
+.stage {
+  background: var(--color-stage);
+  border-radius: 28px;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.stage::before {
+  /* radial backplate vignette for depth behind webgl scenes. */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 50% 35%,
+    color-mix(in oklab, var(--color-stage-soft) 70%, var(--color-accent) 30%) 0%,
+    var(--color-stage) 60%,
+    #050507 100%
+  );
+  opacity: 0.55;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.stage > :not(.stage-edge):not([class*="z-"]) {
+  z-index: 1;
+}
+
+.stage-edge {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+    inset 0 30px 60px -30px rgba(0, 0, 0, 0.45),
+    inset 0 -30px 60px -30px rgba(0, 0, 0, 0.45);
+  z-index: 2;
+}
+
+/* section index lockup (big oversize numerals top-left of a section). */
+.section-index {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+}
+
+/* marquee band rule helpers. */
+.rule-top {
+  border-top: 1px solid var(--color-line-strong);
+}
+.rule-bottom {
+  border-bottom: 1px solid var(--color-line-strong);
+}
+
+/* stack chip used on about + project cards. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  height: 26px;
+  padding: 0 10px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-line);
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--color-bg) 70%, transparent);
+  transition:
+    color 0.2s var(--ease-out),
+    border-color 0.2s var(--ease-out);
+}
+.chip:hover {
+  color: var(--color-text);
+  border-color: var(--color-line-strong);
+}
+.chip-invert {
+  color: var(--color-text-invert-muted);
+  border-color: var(--color-line-invert-strong);
+  background: color-mix(in oklab, var(--color-stage) 60%, transparent);
+}
+.chip-invert:hover {
+  color: var(--color-text-invert);
+  border-color: var(--color-line-invert-strong);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* subtle printed-stock grain over everything. fixed; cheap. */
+.grain::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.05 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  mix-blend-mode: multiply;
+  opacity: 0.35;
+}
+
+/* horizontal marquee track helpers. animation paused while a parent has
+   data-paused="true" so we can sync velocity-driven direction in js. */
+@keyframes marquee-x {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-x linear infinite;
+  will-change: transform;
+}
+[data-marquee-dir="reverse"] .marquee-track {
+  animation-direction: reverse;
+}
+
+/* hide scrollbars on rail wrappers where we drive translate ourselves. */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* slow idle bob used by per-project logo art in the intro title column.
+   matches how the NIMBY title logo hovers in-game; reusable for any
+   logotype that wants a touch of life. respects prefers-reduced-motion
+   via the global rule earlier in this file (which kills all animations
+   to ~0s for users who request reduced motion). */
+@keyframes subtle-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -10px, 0);
+  }
+}
+.animate-subtle-float {
+  animation: subtle-float 4.2s ease-in-out infinite;
+  will-change: transform;
+}

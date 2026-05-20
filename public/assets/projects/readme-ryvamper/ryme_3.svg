@@ -1,0 +1,145 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="300" viewBox="0 0 800 300">
+  <style>
+    .name-glow { animation: nameGlow 12s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+    .chrome-r { animation: chromeR 12s ease-out infinite; }
+    .chrome-c { animation: chromeC 12s ease-out infinite; }
+    .scan { animation: scanDrift 12s linear infinite; }
+    .grid { animation: gridMove 12s linear infinite; transform-box: fill-box; }
+    .sun { animation: sunPulse 12s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+    .horizon { animation: horizonGlow 12s ease-in-out infinite; }
+
+    @keyframes nameGlow {
+      0%, 100% { filter: drop-shadow(0 0 10px #ff2bd6) drop-shadow(0 0 18px #ff2bd6); }
+      50% { filter: drop-shadow(0 0 16px #ff2bd6) drop-shadow(0 0 28px #ff2bd6); }
+    }
+    @keyframes chromeR {
+      0%, 4%, 8%, 88%, 92%, 96%, 100% { opacity: 0.45; transform: translate(-2px, 0); }
+      6%, 90%, 94% { opacity: 0.95; transform: translate(-5px, 0); }
+    }
+    @keyframes chromeC {
+      0%, 4%, 8%, 88%, 92%, 96%, 100% { opacity: 0.45; transform: translate(2px, 0); }
+      6%, 90%, 94% { opacity: 0.95; transform: translate(5px, 0); }
+    }
+    @keyframes scanDrift {
+      from { transform: translateY(0); }
+      to { transform: translateY(8px); }
+    }
+    @keyframes gridMove {
+      from { transform: translateY(-32px); }
+      to { transform: translateY(0); }
+    }
+    @keyframes sunPulse {
+      0%, 100% { opacity: 0.85; }
+      50% { opacity: 1; }
+    }
+    @keyframes horizonGlow {
+      0%, 100% { stroke-opacity: 0.7; }
+      50% { stroke-opacity: 1; }
+    }
+  </style>
+  <defs>
+    <linearGradient id="neon-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0a0118"/>
+      <stop offset="55%" stop-color="#0a0118"/>
+      <stop offset="100%" stop-color="#ff2bd6" stop-opacity="0.18"/>
+    </linearGradient>
+    <radialGradient id="sun-grad" cx="50%" cy="55%" r="55%">
+      <stop offset="0%" stop-color="#ffe066"/>
+      <stop offset="40%" stop-color="#ff2bd6"/>
+      <stop offset="100%" stop-color="#7c1d6f"/>
+    </radialGradient>
+    <pattern id="scanlines" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect width="4" height="2" fill="#ffffff" fill-opacity="0.03"/>
+    </pattern>
+    <linearGradient id="grid-fade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="white" stop-opacity="0"/>
+      <stop offset="40%" stop-color="white" stop-opacity="1"/>
+      <stop offset="100%" stop-color="white" stop-opacity="1"/>
+    </linearGradient>
+    <mask id="grid-mask">
+      <rect x="0" y="180" width="800" height="120" fill="url(#grid-fade)"/>
+    </mask>
+    <clipPath id="sun-clip">
+      <circle cx="400" cy="180" r="50"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="url(#neon-bg)" rx="14" ry="14"/>
+
+  <!-- Perspective grid (lower half, fades in near horizon) -->
+  <g mask="url(#grid-mask)">
+    <g class="grid">
+    <line x1="0" y1="181.60" x2="800" y2="181.60" stroke="#ff2bd6" stroke-width="1" stroke-opacity="0.23"/>
+    <line x1="0" y1="186.40" x2="800" y2="186.40" stroke="#ff2bd6" stroke-width="1" stroke-opacity="0.28"/>
+    <line x1="0" y1="194.40" x2="800" y2="194.40" stroke="#ff2bd6" stroke-width="1" stroke-opacity="0.33"/>
+    <line x1="0" y1="205.60" x2="800" y2="205.60" stroke="#ff2bd6" stroke-width="1" stroke-opacity="0.38"/>
+    <line x1="0" y1="220.00" x2="800" y2="220.00" stroke="#ff2bd6" stroke-width="1" stroke-opacity="0.43"/>
+    <line x1="0" y1="237.60" x2="800" y2="237.60" stroke="#ff2bd6" stroke-width="1" stroke-opacity="0.48"/>
+    <line x1="0" y1="258.40" x2="800" y2="258.40" stroke="#ff2bd6" stroke-width="1" stroke-opacity="0.53"/>
+    <line x1="0" y1="282.40" x2="800" y2="282.40" stroke="#ff2bd6" stroke-width="1" stroke-opacity="0.58"/>
+    <line x1="0" y1="309.60" x2="800" y2="309.60" stroke="#ff2bd6" stroke-width="1" stroke-opacity="0.63"/>
+    <line x1="0" y1="340.00" x2="800" y2="340.00" stroke="#ff2bd6" stroke-width="1" stroke-opacity="0.68"/>
+    <line x1="400" y1="180" x2="-80.00" y2="340" stroke="#ff2bd6" stroke-width="1" stroke-opacity="0.32"/>
+    <line x1="400" y1="180" x2="-36.36" y2="340" stroke="#ff2bd6" stroke-width="1" stroke-opacity="0.34"/>
+    <line x1="400" y1="180" x2="7.27" y2="340" stroke="#ff2bd6" stroke-width="1" stroke-opacity="0.35"/>
+    <line x1="400" y1="180" x2="50.91" y2="340" stroke="#ff2bd6" stroke-width="1" stroke-opacity="0.37"/>
+    <line x1="400" y1="180" x2="94.55" y2="340" stroke="#ff2bd6" stroke-width="1" stroke-opacity="0.39"/>
+    <line x1="400" y1="180" x2="138.18" y2="340" stroke="#ff2bd6" stroke-width="1" stroke-opacity="0.40"/>
+    <line x1="400" y1="180" x2="181.82" y2="340" stroke="#ff2bd6" stroke-width="1" stroke-opacity="0.42"/>
+    <line x1="400" y1="180" x2="225.45" y2="340" stroke="#ff2bd6" stroke-width="1" stroke-opacity="0.43"/>
+    <line x1="400" y1="180" x2="269.09" y2="340" stroke="#ff2bd6" stroke-width="1" stroke-opacity="0.45"/>
+    <line x1="400" y1="180" x2="312.73" y2="340" stroke="#ff2bd6" stroke-width="1" stroke-opacity="0.47"/>
+    <line x1="400" y1="180" x2="356.36" y2="340" stroke="#ff2bd6" stroke-width="1" stroke-opacity="0.48"/>
+    <line x1="400" y1="180" x2="400" y2="340" stroke="#ff2bd6" stroke-width="1" stroke-opacity="0.55"/>
+    <line x1="400" y1="180" x2="443.64" y2="340" stroke="#ff2bd6" stroke-width="1" stroke-opacity="0.48"/>
+    <line x1="400" y1="180" x2="487.27" y2="340" stroke="#ff2bd6" stroke-width="1" stroke-opacity="0.47"/>
+    <line x1="400" y1="180" x2="530.91" y2="340" stroke="#ff2bd6" stroke-width="1" stroke-opacity="0.45"/>
+    <line x1="400" y1="180" x2="574.55" y2="340" stroke="#ff2bd6" stroke-width="1" stroke-opacity="0.43"/>
+    <line x1="400" y1="180" x2="618.18" y2="340" stroke="#ff2bd6" stroke-width="1" stroke-opacity="0.42"/>
+    <line x1="400" y1="180" x2="661.82" y2="340" stroke="#ff2bd6" stroke-width="1" stroke-opacity="0.40"/>
+    <line x1="400" y1="180" x2="705.45" y2="340" stroke="#ff2bd6" stroke-width="1" stroke-opacity="0.39"/>
+    <line x1="400" y1="180" x2="749.09" y2="340" stroke="#ff2bd6" stroke-width="1" stroke-opacity="0.37"/>
+    <line x1="400" y1="180" x2="792.73" y2="340" stroke="#ff2bd6" stroke-width="1" stroke-opacity="0.35"/>
+    <line x1="400" y1="180" x2="836.36" y2="340" stroke="#ff2bd6" stroke-width="1" stroke-opacity="0.34"/>
+    <line x1="400" y1="180" x2="880.00" y2="340" stroke="#ff2bd6" stroke-width="1" stroke-opacity="0.32"/>
+    </g>
+  </g>
+
+  <!-- Sun disk peeking above the horizon, with horizontal slit cutouts -->
+  <g class="sun">
+    <circle cx="400" cy="180" r="50" fill="url(#sun-grad)" clip-path="url(#sun-clip)"/>
+    <g clip-path="url(#sun-clip)"><rect x="350" y="144" width="100" height="2" fill="#0a0118"/><rect x="350" y="152" width="100" height="3" fill="#0a0118"/><rect x="350" y="162" width="100" height="4" fill="#0a0118"/><rect x="350" y="174" width="100" height="5" fill="#0a0118"/></g>
+  </g>
+
+  <!-- Horizon line (the bright bar where ground meets sky) -->
+  <line class="horizon" x1="0" y1="180" x2="800" y2="180" stroke="#ff2bd6" stroke-width="2" stroke-opacity="0.85" filter="drop-shadow(0 0 6px #ff2bd6)"/>
+
+  <!-- Tag chip in upper-left: small mono callout -->
+  <g class="tag" transform="translate(56 32)">
+    <rect x="-8" y="-12" width="120" height="20" rx="4" fill="#0a0118" stroke="#22d3ee" stroke-width="1" stroke-opacity="0.6"/>
+    <circle cx="2" cy="-2" r="2" fill="#22d3ee" opacity="1">
+      <animate attributeName="opacity" values="0.4;1;0.4" dur="12s" repeatCount="indefinite"/>
+    </circle>
+    <text x="12" y="2" fill="#22d3ee" font-family="ui-monospace, monospace" font-size="10" letter-spacing="1.5">SYSTEM.ONLINE</text>
+  </g>
+
+  <!-- Name with RGB chromatic ghosts. Three text layers stacked: cyan
+       offset right, magenta offset left, fg on top. The bloom layer
+       (.name-glow) wraps the whole group so all ghosts share the pulse. -->
+  <g class="name-glow">
+    <g class="name">
+      <text class="chrome-r" x="400" y="120" text-anchor="middle" fill="#ff0080" font-family='"Inter", system-ui, sans-serif' font-size="60" font-weight="800" letter-spacing="-1.5" opacity="0.45" transform="translate(-2 0)" style="mix-blend-mode:screen">Ryan Polasky</text>
+      <text class="chrome-c" x="400" y="120" text-anchor="middle" fill="#00ffff" font-family='"Inter", system-ui, sans-serif' font-size="60" font-weight="800" letter-spacing="-1.5" opacity="0.45" transform="translate(2 0)" style="mix-blend-mode:screen">Ryan Polasky</text>
+      <text x="400" y="120" text-anchor="middle" fill="#fde7ff" font-family='"Inter", system-ui, sans-serif' font-size="60" font-weight="800" letter-spacing="-1.5">Ryan Polasky</text>
+    </g>
+  </g>
+
+  <!-- Meta line below name -->
+  <text class="meta" x="400" y="146" text-anchor="middle" fill="#22d3ee" font-family="ui-monospace, monospace" font-size="12" letter-spacing="3">SOFTWARE ENGINEER   //   UT DALLAS &apos;26   //   DALLAS, TX</text>
+
+  <!-- Scanlines overlay (very subtle, drifts down) -->
+  <g class="scan">
+    <rect width="800" height="308" fill="url(#scanlines)" pointer-events="none"/>
+  </g>
+</svg>

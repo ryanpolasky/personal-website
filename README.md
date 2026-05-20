@@ -1,84 +1,39 @@
-# Ryan Polasky - Portfolio Website
+# ryan polasky · personal site
 
-A modern, responsive portfolio website showcasing my work as a Junior Software Engineer.
+Next.js 15 + react-three-fiber + Tailwind v4. Static-exported, deployed to Cloudflare Pages.
 
-![Site Preview](assets/images/site-preview.png)
+## architecture
 
-## About
+- `app/`: Next.js App Router pages.
+  - `app/page.tsx`: landing (lazy r3f hero, scroll content, footer "door" to the gallery).
+  - `app/gallery/page.tsx`: easter-egg picker for the 14 design variants. Served via iframes from `/public/variants/*.html`.
+  - `app/not-found.tsx`: 404.
+- `components/`: Hero canvas, smooth scroll, custom cursor, magnetic button, gallery state machine.
+- `lib/`: fonts + the canonical 14-variant manifest.
+- `public/variants/*.html`: fully self-contained HTML variants. **Do not port to React**; they're intentionally weird and stay weird.
+- `public/assets/`, `public/photography.html`, `public/spotify.html`, favicons, etc.: static assets carried over from the old site.
 
-This is my personal portfolio website built with modern web technologies. It features a dark theme with customizable accent colors, smooth animations, and a professional design.
+## scripts
 
-## Features
+```bash
+npm install
+npm run dev        # next dev (defaults to :3000)
+npm run build      # static export → out/
+npm run lint
+npm run typecheck
+```
 
-- **Responsive Design**: Works seamlessly across desktop, tablet, and mobile devices
-- **Dark Theme**: Professional dark theme with customizable accent colors
-- **Interactive Elements**: Smooth scrolling, hover effects, and animated components
-- **Contact Form**: Functional contact form powered by Formspree
-- **Performance Optimized**: Fast loading with optimized assets and animations
+## deploy
 
-## Sections
+`next.config.mjs` is set to `output: 'export'` so `npm run build` writes a static `out/` directory. Cloudflare Pages serves that directory; `_headers` and `_redirects` live in `public/` and are copied through.
 
-- **Home**: Introduction and overview
-- **About**: Personal background and quick stats
-- **Experience**: Professional work history and achievements
-- **Projects**: Featured projects and technical work
-- **Skills**: Technical skills with visual progress indicators
-- **Testimonials**: Feedback from colleagues and teammates
-- **Contact**: Contact form and quick contact options
+## variant gallery
 
-## Technologies Used
+- Discoverable from the landing footer ("explore 14 versions of this site →") or directly at `/gallery`.
+- Returning visitors are locked into their saved choice; the cog button re-opens the picker.
+- Force the picker open with `/gallery?gallery=1`.
+- Each variant is a static HTML file. Treat them as a museum, not a codebase; edit only when fixing absolute asset paths.
 
-- **Frontend**: HTML5, CSS3, JavaScript
-- **Styling**: Tailwind CSS
-- **Fonts**: Inter (sans-serif), JetBrains Mono (monospace)
-- **Form Handling**: Formspree
-- **Animations**: CSS animations and transitions
+## history note
 
-## Color Themes
-
-The website features a customizable color picker with multiple accent color options:
-- Blue
-- Purple
-- Green
-- Orange
-- Red
-- Magenta
-- Cyan
-- Pink
-
-Colors are randomly selected on each page load for a fresh experience every time!
-
-## Local Development
-
-1. Clone the repository
-2. Install dependencies: `npm install`
-3. Build CSS: `npm run build` (or `npm run build:debug` for verbose output)
-4. Open `index.html` in your browser
-
-### Build Process
-
-This project uses Tailwind CSS for styling. The build process compiles the utility classes from `src/input.css` into the final `styles.css` file.
-
-**Available Scripts:**
-- `npm run build` - Build CSS for production
-- `npm run build:debug` - Build CSS with verbose logging
-- `npm run watch` - Watch for changes and rebuild automatically
-
-**Note:** Make sure to run the build command after making changes to HTML files or Tailwind classes to ensure all utility classes are generated properly.
-
-## Extras
-
-- **Variant Gallery** (`variants/`): 14 alternate design takes on the site (Geocities, Risograph, Liminal, Wikipedia, etc.) — each a fully self-contained HTML file.
-
-## About & Contact
-
-You're more than welcome to clone this repository, steal the code, say you wrote it yourself! It's open source for a 
-reason! If you have any questions, you can reach me via any of the following:
-
-- **Email**: ryanpolasky@hotmail.com
-- **LinkedIn**: [ryan-polasky](https://www.linkedin.com/in/ryan-polasky/)
-- **Discord**: [eggyb0i](https://discordapp.com/users/209393428570570752)
-
-## License
-
-© 2026 Ryan Polasky. All rights reserved.
+_Note: The git history of this repository was squashed and rewritten during the V2 redesign to start fresh and remove old template/fork history. The original V1 site and its various iterations over the years are preserved as interactive snapshots in the `public/variants` directory._

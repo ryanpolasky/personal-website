@@ -1,0 +1,2087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<base href="/">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ryan Polasky · GAMEBRO</title>
+<meta name="description" content="Ryan Polasky. Software Engineer. Backend systems, AI/LLM tooling. 2× Apple intern. Available May 2026.">
+<meta name="author" content="Ryan Polasky"/>
+<meta name="creator" content="Ryan Polasky"/>
+<meta name="publisher" content="Ryan Polasky"/>
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1"/>
+
+<link rel="canonical" href="https://ryanpolasky.com/"/>
+
+<meta property="og:type" content="profile"/>
+<meta property="og:site_name" content="Ryan Polasky"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://ryanpolasky.com/"/>
+<meta property="og:title" content="Ryan Polasky · GAMEBRO"/>
+<meta property="og:description" content="Ryan Polasky. Software Engineer. Backend systems, AI/LLM tooling. 2× Apple intern. Available May 2026."/>
+<meta property="og:image" content="https://ryanpolasky.com/assets/images/site-preview.png"/>
+<meta property="og:image:alt" content="Ryan Polasky - Software Engineer portfolio"/>
+<meta property="profile:first_name" content="Ryan"/>
+<meta property="profile:last_name" content="Polasky"/>
+<meta property="profile:username" content="ryanpolasky"/>
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Ryan Polasky · GAMEBRO"/>
+<meta name="twitter:description" content="Ryan Polasky. Software Engineer. Backend systems, AI/LLM tooling. 2× Apple intern. Available May 2026."/>
+<meta name="twitter:image" content="https://ryanpolasky.com/assets/images/site-preview.png"/>
+<meta name="twitter:image:alt" content="Ryan Polasky - Software Engineer portfolio"/>
+
+<meta name="theme-color" content="#9bbc0f">
+<link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Classic DMG LCD palette */
+  --lcd-darkest: #0f380f;
+  --lcd-dark: #306230;
+  --lcd-light: #8bac0f;
+  --lcd-lightest: #9bbc0f;
+
+  /* Hardware */
+  --shell: #c4c1b8;
+  --shell-dark: #a09e95;
+  --shell-shadow: #7a7972;
+  --shell-deep: #5a5953;
+  --bezel: #4d4d4d;
+  --bezel-dark: #2a2a2a;
+  --button-purple: #5c4a72;
+  --button-purple-dark: #3d3251;
+  --button-red: #b8324a;
+  --power-led: #ff3030;
+  --power-led-glow: #ff8080;
+
+  /* Typography */
+  --font-pixel: 'Press Start 2P', monospace;
+  --font-screen: 'VT323', monospace;
+
+  /* Accent (for picker) */
+  --accent: #9bbc0f;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+html, body {
+  margin: 0;
+  background: #1a1a1a;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-pixel);
+  color: var(--lcd-darkest);
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: grayscale;
+  image-rendering: pixelated;
+  padding: 12px;
+  background:
+    radial-gradient(ellipse at top, #2a2a2a, #0a0a0a 70%),
+    #1a1a1a;
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   STAGE — fits the fixed-proportion gameboy into the available
+   container by computing transform: scale at runtime. The site
+   chrome (bg, footer) flows around it; the gameboy itself is
+   immutable in proportion.
+   ═══════════════════════════════════════════════════════════════ */
+.gb-stage {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* the scaled gameboy never visually overflows the stage, but the
+     un-transformed layout box can — overflow:hidden keeps any stray
+     drop-shadow tail tidy without affecting the visible chrome. */
+  overflow: hidden;
+}
+
+::selection { background: var(--lcd-light); color: var(--lcd-darkest); }
+
+a { color: inherit; text-decoration: none; }
+
+/* ═══════════════════════════════════════════════════════════════
+   GAME BOY HARDWARE SHELL
+   ═══════════════════════════════════════════════════════════════ */
+.gameboy {
+  /* fixed natural design size — the device itself never reflows; it scales
+     uniformly via transform to fit whatever stage it lives in. */
+  width: 400px;
+  flex-shrink: 0;
+  transform: scale(var(--gb-scale, 1));
+  transform-origin: center center;
+  background:
+    linear-gradient(180deg, var(--shell) 0%, var(--shell-dark) 100%);
+  border-radius: 18px 18px 80px 14px;
+  padding: 22px 26px 28px;
+  box-shadow:
+    inset 0 3px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -4px 0 var(--shell-shadow),
+    inset 4px 0 0 rgba(255, 255, 255, 0.15),
+    inset -4px 0 0 var(--shell-shadow),
+    0 8px 0 var(--shell-deep),
+    0 16px 32px rgba(0, 0, 0, 0.6),
+    0 32px 56px rgba(0, 0, 0, 0.4);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* speaker grille (bottom RIGHT - authentic DMG position, under the curve) */
+.gameboy::after {
+  content: '';
+  position: absolute;
+  right: 28px;
+  bottom: 22px;
+  width: 86px;
+  height: 62px;
+  background:
+    repeating-linear-gradient(
+      62deg,
+      transparent 0,
+      transparent 5px,
+      var(--shell-shadow) 5px,
+      var(--shell-shadow) 7px,
+      transparent 7px,
+      transparent 12px,
+      var(--shell-deep) 12px,
+      var(--shell-deep) 13px
+    );
+  border-radius: 2px;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* “Rytendo GAMEBRO” branding strip below screen */
+.brand-strip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 4px 6px 8px;
+  font-family: var(--font-pixel);
+  font-size: 8px;
+  color: var(--shell-deep);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.brand-strip .strip-line {
+  flex: 1;
+  height: 4px;
+  margin: 0 8px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      var(--button-purple) 0,
+      var(--button-purple) 6px,
+      transparent 6px,
+      transparent 8px
+    );
+  opacity: 0.4;
+}
+
+.brand-strip .nin {
+  font-family: var(--font-pixel);
+  font-style: italic;
+  font-size: 10px;
+  color: var(--shell-deep);
+}
+
+.brand-strip .gb-logo {
+  font-family: var(--font-pixel);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--shell-deep);
+  letter-spacing: 0.15em;
+}
+
+.brand-strip .gb-logo b {
+  font-weight: 700;
+  color: #6d6c64;
+}
+
+.brand-strip .reg {
+  font-size: 6px;
+  vertical-align: super;
+  margin-left: 2px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SCREEN BEZEL + LCD
+   ═══════════════════════════════════════════════════════════════ */
+.screen-bezel {
+  background: var(--bezel);
+  border-radius: 8px 8px 36px 8px;
+  padding: 26px 44px 30px;
+  position: relative;
+  box-shadow:
+    inset 0 2px 0 rgba(0, 0, 0, 0.4),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.05),
+    inset 2px 0 4px rgba(0, 0, 0, 0.3),
+    inset -2px 0 4px rgba(0, 0, 0, 0.3);
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+}
+
+/* corner labels on bezel */
+.bezel-label {
+  position: absolute;
+  font-family: var(--font-pixel);
+  font-size: 6px;
+  color: rgba(255, 255, 255, 0.45);
+  letter-spacing: 0.1em;
+}
+
+.bezel-label.tl {
+  top: 8px;
+  left: 14px;
+  font-size: 7px;
+}
+
+.bezel-label.tr {
+  top: 8px;
+  right: 14px;
+  font-size: 7px;
+}
+
+/* power LED */
+.power-led {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.power-led .dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--power-led);
+  box-shadow:
+    0 0 4px var(--power-led-glow),
+    0 0 8px rgba(255, 48, 48, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  animation: led-pulse 3s ease-in-out infinite;
+}
+
+.power-led .lbl {
+  font-size: 6px;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.1em;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+@keyframes led-pulse {
+  0%, 100% { box-shadow: 0 0 4px var(--power-led-glow), 0 0 8px rgba(255, 48, 48, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.4); }
+  50% { box-shadow: 0 0 6px var(--power-led-glow), 0 0 14px rgba(255, 48, 48, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.5); }
+}
+
+.lcd {
+  background: var(--lcd-lightest);
+  border-radius: 4px;
+  width: 100%;
+  max-width: 260px;
+  aspect-ratio: 10 / 9;
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    inset 0 2px 8px rgba(15, 56, 15, 0.3),
+    inset 0 0 0 1px rgba(15, 56, 15, 0.2);
+  font-family: var(--font-screen);
+  color: var(--lcd-darkest);
+}
+
+/* LCD scanline overlay */
+.lcd::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 2px,
+      rgba(15, 56, 15, 0.06) 2px,
+      rgba(15, 56, 15, 0.06) 3px
+    );
+  z-index: 50;
+}
+
+/* LCD subtle vignette */
+.lcd::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 60%, rgba(15, 56, 15, 0.15) 100%);
+  z-index: 49;
+}
+
+.lcd-inner {
+  position: absolute;
+  inset: 0;
+  padding: 8px 10px;
+  overflow: hidden;
+  touch-action: none;
+}
+
+.game-content {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  overscroll-behavior: contain;
+}
+.game-content::-webkit-scrollbar { display: none; }
+
+/* scroll hint chevron when content overflows */
+.lcd .scroll-hint {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-pixel);
+  font-size: 8px;
+  color: var(--lcd-darkest);
+  z-index: 55;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+  animation: scroll-hint-blink 1.1s steps(2) infinite;
+}
+.lcd .scroll-hint.visible { opacity: 0.85; }
+.lcd .scroll-hint.top { top: 2px; }
+.lcd .scroll-hint.bottom { bottom: 2px; }
+
+@keyframes scroll-hint-blink {
+  50% { opacity: 0.25; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BOOT SCREEN
+   ═══════════════════════════════════════════════════════════════ */
+.boot-screen {
+  position: absolute;
+  inset: 0;
+  background: var(--lcd-lightest);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 60;
+  animation: boot-fade 2.4s ease-out forwards;
+}
+
+.boot-logo {
+  font-family: var(--font-pixel);
+  font-size: 14px;
+  color: var(--lcd-darkest);
+  letter-spacing: 0.15em;
+  animation: boot-drop 1.2s ease-out forwards;
+  opacity: 0;
+  transform: translateY(-100px);
+}
+
+@keyframes boot-drop {
+  0% { opacity: 0; transform: translateY(-100px); }
+  60% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes boot-fade {
+  0%, 70% { opacity: 1; visibility: visible; }
+  100% { opacity: 0; visibility: hidden; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CARTRIDGE SHELF VIEW
+   ═══════════════════════════════════════════════════════════════ */
+.shelf-view {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-family: var(--font-screen);
+}
+
+.shelf-view.hidden { display: none; }
+
+.shelf-title {
+  font-family: var(--font-pixel);
+  font-size: 7px;
+  text-align: center;
+  letter-spacing: 0.1em;
+  margin-bottom: 0;
+  text-transform: uppercase;
+}
+
+.shelf-title::before, .shelf-title::after {
+  content: '★';
+  margin: 0 4px;
+}
+
+.shelf-subtitle {
+  font-family: var(--font-screen);
+  font-size: 14px;
+  text-align: center;
+  line-height: 1.05;
+  margin-bottom: 2px;
+}
+
+.cart-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+}
+
+.cart {
+  background: var(--lcd-light);
+  border: 2px solid var(--lcd-darkest);
+  padding: 0 2px 6px;
+  cursor: pointer;
+  position: relative;
+  font-family: var(--font-pixel);
+  text-align: center;
+  transition: transform 0.08s steps(2);
+  box-shadow: 2px 2px 0 var(--lcd-darkest);
+  min-height: 48px;
+}
+
+.cart:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 var(--lcd-darkest);
+  outline: none;
+}
+
+.cart:focus-visible,
+.cart.focused {
+  outline: none;
+  background: var(--lcd-darkest);
+  color: var(--lcd-lightest);
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 var(--lcd-darkest);
+}
+
+.cart.focused .label-strip {
+  background: var(--lcd-lightest);
+  color: var(--lcd-darkest);
+}
+
+.cart.focused .cart-genre,
+.cart.focused .cart-no {
+  color: var(--lcd-light);
+}
+
+.cart:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 var(--lcd-darkest);
+}
+
+.cart .label-strip {
+  background: var(--lcd-darkest);
+  color: var(--lcd-lightest);
+  padding: 1px 2px;
+  font-size: 5px;
+  letter-spacing: 0.05em;
+  margin: 0 -2px 3px;
+}
+
+.cart .cart-name {
+  font-size: 6px;
+  line-height: 1.4;
+  letter-spacing: 0.03em;
+  margin: 2px 0;
+}
+
+.cart .cart-genre {
+  font-family: var(--font-screen);
+  font-size: 10px;
+  color: var(--lcd-dark);
+  margin-top: 1px;
+  line-height: 1;
+}
+
+.cart .cart-no {
+  position: absolute;
+  bottom: 1px;
+  right: 3px;
+  font-family: var(--font-screen);
+  font-size: 8px;
+  color: var(--lcd-dark);
+}
+
+.shelf-prompt {
+  font-family: var(--font-pixel);
+  font-size: 6px;
+  text-align: center;
+  margin-top: 4px;
+  letter-spacing: 0.1em;
+  animation: blink 1s steps(2) infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+.title-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 8px;
+  cursor: pointer;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   GAME SCREEN VIEW (CONTENT)
+   ═══════════════════════════════════════════════════════════════ */
+.game-view {
+  display: none;
+  flex-direction: column;
+  height: 100%;
+  font-family: var(--font-screen);
+}
+
+.game-view.active {
+  display: flex;
+  animation: screen-wipe 0.4s steps(4);
+}
+
+@keyframes screen-wipe {
+  0% { clip-path: inset(0 0 100% 0); }
+  100% { clip-path: inset(0 0 0 0); }
+}
+
+.game-header {
+  font-family: var(--font-pixel);
+  font-size: 7px;
+  text-align: center;
+  padding: 2px 0 4px;
+  border-bottom: 2px solid var(--lcd-darkest);
+  letter-spacing: 0.1em;
+  margin-bottom: 6px;
+  position: relative;
+}
+
+.game-header::before, .game-header::after {
+  content: '═';
+  margin: 0 4px;
+  font-family: var(--font-screen);
+  font-size: 12px;
+  vertical-align: -2px;
+}
+
+.game-content {
+  flex: 1;
+  font-family: var(--font-screen);
+  font-size: 14px;
+  line-height: 1.1;
+  overflow-y: auto;
+}
+
+.game-footer {
+  font-family: var(--font-pixel);
+  font-size: 5px;
+  text-align: center;
+  padding-top: 4px;
+  border-top: 2px solid var(--lcd-darkest);
+  margin-top: 4px;
+  letter-spacing: 0.1em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.game-footer .btn-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.game-footer .btn-hint .key {
+  display: inline-grid;
+  place-items: center;
+  width: 10px;
+  height: 10px;
+  background: var(--lcd-darkest);
+  color: var(--lcd-lightest);
+  border-radius: 50%;
+  font-size: 5px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   GAME CONTENT BLOCKS
+   ═══════════════════════════════════════════════════════════════ */
+.entry {
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px dashed var(--lcd-dark);
+}
+
+.entry:last-child {
+  border-bottom: 0;
+}
+
+.entry .name {
+  font-family: var(--font-pixel);
+  font-size: 7px;
+  letter-spacing: 0.05em;
+  margin-bottom: 2px;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.entry .name .role {
+  font-family: var(--font-screen);
+  font-size: 12px;
+  color: var(--lcd-dark);
+}
+
+.entry .meta {
+  font-family: var(--font-screen);
+  font-size: 11px;
+  color: var(--lcd-dark);
+  margin-bottom: 2px;
+}
+
+.entry .desc {
+  font-size: 13px;
+  line-height: 1.15;
+}
+
+.entry .tag {
+  display: inline-block;
+  font-family: var(--font-pixel);
+  font-size: 5px;
+  background: var(--lcd-darkest);
+  color: var(--lcd-lightest);
+  padding: 1px 3px;
+  margin-left: 2px;
+  letter-spacing: 0.05em;
+  vertical-align: 1px;
+}
+
+/* Stats list (about screen) */
+.stat-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3px;
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 1px dotted var(--lcd-dark);
+  padding-bottom: 2px;
+}
+
+.stat-row .lbl {
+  font-family: var(--font-pixel);
+  font-size: 6px;
+  letter-spacing: 0.05em;
+  color: var(--lcd-darkest);
+}
+
+.stat-row .val {
+  font-family: var(--font-screen);
+  font-size: 13px;
+}
+
+.intro-block {
+  background: var(--lcd-light);
+  padding: 6px;
+  margin-bottom: 6px;
+  border: 1px solid var(--lcd-darkest);
+  font-size: 12px;
+  line-height: 1.15;
+}
+
+.intro-block .pixel {
+  font-family: var(--font-pixel);
+  font-size: 6px;
+  letter-spacing: 0.05em;
+  display: block;
+  margin-bottom: 3px;
+}
+
+/* Skill bars */
+.skill-section {
+  margin-bottom: 6px;
+}
+
+.skill-section h3 {
+  font-family: var(--font-pixel);
+  font-size: 7px;
+  margin: 0 0 3px;
+  letter-spacing: 0.05em;
+}
+
+.skill-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  margin-bottom: 1px;
+}
+
+.skill-row .bar {
+  font-family: var(--font-screen);
+  font-size: 13px;
+  letter-spacing: 0;
+  color: var(--lcd-darkest);
+}
+
+.skill-also {
+  font-family: var(--font-screen);
+  font-size: 11px;
+  color: var(--lcd-dark);
+  margin-top: 2px;
+  font-style: italic;
+}
+
+/* Quote/testimonial */
+.quote {
+  background: var(--lcd-light);
+  border: 1px solid var(--lcd-darkest);
+  padding: 6px;
+  margin-bottom: 6px;
+  font-size: 12px;
+  line-height: 1.15;
+  position: relative;
+}
+
+.quote::before {
+  content: '"';
+  font-family: var(--font-pixel);
+  font-size: 12px;
+  position: absolute;
+  top: 1px;
+  left: 3px;
+}
+
+.quote .who {
+  font-family: var(--font-pixel);
+  font-size: 5px;
+  margin-top: 4px;
+  letter-spacing: 0.05em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.quote .who a {
+  text-decoration: underline;
+}
+
+.quote p {
+  margin: 0 0 0 8px;
+}
+
+/* Contact form */
+.contact-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 12px;
+}
+
+.contact-fields .field {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  border-bottom: 1px dashed var(--lcd-dark);
+  padding-bottom: 2px;
+}
+
+.contact-fields .field .lbl {
+  font-family: var(--font-pixel);
+  font-size: 6px;
+  letter-spacing: 0.05em;
+  min-width: 48px;
+}
+
+.contact-fields .field a {
+  text-decoration: underline;
+}
+
+.link-prompt {
+  font-family: var(--font-pixel);
+  font-size: 6px;
+  text-align: center;
+  margin-top: 6px;
+  padding: 4px;
+  background: var(--lcd-darkest);
+  color: var(--lcd-lightest);
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  display: block;
+}
+
+.link-prompt:hover {
+  background: var(--lcd-dark);
+}
+
+/* High scores layout for testimonials */
+.scores-header {
+  font-family: var(--font-pixel);
+  font-size: 6px;
+  text-align: center;
+  margin-bottom: 4px;
+  letter-spacing: 0.1em;
+}
+
+.scores-header::before, .scores-header::after {
+  content: '═';
+  font-family: var(--font-screen);
+  margin: 0 4px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CONTROLS (D-PAD, A/B, START/SELECT)
+   ═══════════════════════════════════════════════════════════════ */
+.controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 6px 24px;
+  align-items: center;
+  padding: 16px 6px 10px;
+  flex-shrink: 0;
+  margin-top: auto;
+}
+
+/* D-Pad */
+.dpad {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto;
+  grid-row: 1;
+  grid-column: 1;
+}
+
+.dpad button {
+  position: absolute;
+  background: linear-gradient(180deg, #2a2a2a, #1a1a1a);
+  border: 0;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  color: #888;
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+  font-family: var(--font-pixel);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 2px 0 rgba(0, 0, 0, 0.6);
+}
+
+.dpad button:active,
+.dpad button.pressed {
+  background: linear-gradient(180deg, #1a1a1a, #2a2a2a);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.dpad .up { top: 0; left: 50%; transform: translateX(-50%); border-radius: 4px 4px 0 0; }
+.dpad .down { bottom: 0; left: 50%; transform: translateX(-50%); border-radius: 0 0 4px 4px; }
+.dpad .left { left: 0; top: 50%; transform: translateY(-50%); border-radius: 4px 0 0 4px; }
+.dpad .right { right: 0; top: 50%; transform: translateY(-50%); border-radius: 0 4px 4px 0; }
+.dpad .center {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px; height: 40px;
+  background: linear-gradient(180deg, #2a2a2a, #1a1a1a);
+  pointer-events: none;
+}
+
+/* A/B buttons */
+.ab-buttons {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(-25deg);
+  grid-row: 1;
+  grid-column: 2;
+  padding: 14px 0 8px;
+}
+
+.ab-button {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background:
+    linear-gradient(155deg, #8a3858 0%, var(--button-red) 50%, #8a2842 100%);
+  border: 0;
+  font-family: var(--font-pixel);
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.25),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.3),
+    0 5px 0 #4a1224,
+    0 7px 7px rgba(0, 0, 0, 0.4);
+  position: relative;
+}
+
+.ab-button:active,
+.ab-button.pressed {
+  transform: translateY(3px);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+    0 2px 0 #4a1224,
+    0 3px 4px rgba(0, 0, 0, 0.4);
+}
+
+.ab-label {
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%) rotate(25deg);
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  color: var(--shell-deep);
+  letter-spacing: 0.05em;
+}
+
+/* Start/Select */
+.start-select {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  display: flex;
+  gap: 36px;
+  justify-content: center;
+  align-items: center;
+  transform: rotate(-25deg);
+  margin: 30px auto 14px;
+  width: 100%;
+}
+
+.pill-button {
+  background: linear-gradient(180deg, #6a6a6a, #4a4a4a);
+  border: 0;
+  width: 52px;
+  height: 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  position: relative;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 3px 0 rgba(0, 0, 0, 0.5);
+}
+
+.pill-button:active,
+.pill-button.pressed {
+  background: linear-gradient(180deg, #4a4a4a, #6a6a6a);
+  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+.pill-button .pill-label {
+  position: absolute;
+  bottom: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-pixel);
+  font-size: 6px;
+  color: var(--shell-deep);
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FOOTER (under the gameboy)
+   ═══════════════════════════════════════════════════════════════ */
+.gb-footer {
+  text-align: center;
+  font-family: var(--font-pixel);
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 7px;
+  line-height: 1.6;
+  letter-spacing: 0.1em;
+  flex-shrink: 0;
+  padding-top: 10px;
+}
+
+.gb-footer a {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: underline;
+}
+
+.gb-footer a:hover { color: var(--lcd-lightest); }
+
+.webring {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 0;
+}
+
+.webring a {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.7);
+  font-family: var(--font-pixel);
+  font-size: 8px;
+  text-decoration: none;
+  border-radius: 2px;
+}
+
+.webring a:hover {
+  background: rgba(255, 255, 255, 0.18);
+  color: var(--lcd-lightest);
+}
+
+.webring a img {
+  width: 10px;
+  height: 10px;
+  filter: brightness(0) invert(1);
+  opacity: 0.7;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE — site chrome only (the gameboy is fixed-proportion
+   and scaled uniformly via JS, so it never needs media-query
+   adjustments). These rules tighten the body padding and the
+   footer text on very short viewports so the stage gets a bit
+   more vertical room for the gameboy.
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-height: 580px) {
+  body { padding: 4px; gap: 6px; }
+  .gb-footer { font-size: 5px; line-height: 1.3; padding-top: 4px; }
+  .webring { margin: 2px 0; }
+  .webring a { width: 16px; height: 16px; font-size: 7px; }
+  .webring a img { width: 8px; height: 8px; }
+}
+
+@media (max-height: 420px) {
+  body { padding: 2px; gap: 2px; }
+  .gb-footer { font-size: 4px; padding-top: 2px; }
+  .webring { display: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FULLSCREEN LCD MODE
+   ═══════════════════════════════════════════════════════════════ */
+.fs {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: var(--lcd-lightest);
+  z-index: 100;
+  flex-direction: column;
+  font-family: var(--font-screen);
+  color: var(--lcd-darkest);
+  overflow: hidden;
+}
+.fs.active { display: flex; animation: screen-wipe 0.4s steps(4); }
+
+.fs::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(0deg, transparent 0, transparent 3px, rgba(15, 56, 15, 0.05) 3px, rgba(15, 56, 15, 0.05) 4px);
+  z-index: 110;
+}
+.fs::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(15, 56, 15, 0.18) 100%);
+  z-index: 109;
+}
+
+.fs-head {
+  font-family: var(--font-pixel);
+  text-align: center;
+  padding: 24px 16px 16px;
+  flex-shrink: 0;
+}
+.fs-head .fs-title {
+  font-size: 16px;
+  letter-spacing: 0.12em;
+  margin-bottom: 4px;
+}
+.fs-head .fs-title::before, .fs-head .fs-title::after { content: '★'; margin: 0 8px; }
+.fs-head .fs-sub {
+  font-family: var(--font-screen);
+  font-size: 22px;
+  color: var(--lcd-dark);
+}
+
+.fs-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 12px;
+  flex: 1;
+  padding: 0 24px 12px;
+  min-height: 0;
+}
+
+.fs-cart {
+  background: var(--lcd-light);
+  border: 3px solid var(--lcd-darkest);
+  color: var(--lcd-darkest);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  font-family: var(--font-pixel);
+  text-align: center;
+  box-shadow: 4px 4px 0 var(--lcd-darkest);
+  transition: transform 0.08s steps(2);
+  padding: 12px 8px;
+}
+.fs-cart:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--lcd-darkest);
+}
+.fs-cart:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 var(--lcd-darkest);
+}
+.fs-cart.focused {
+  background: var(--lcd-darkest);
+  color: var(--lcd-lightest);
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--lcd-dark);
+}
+.fs-cart .fs-pak {
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  opacity: 0.7;
+}
+.fs-cart .fs-name {
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  line-height: 1.3;
+}
+.fs-cart .fs-genre {
+  font-family: var(--font-screen);
+  font-size: 18px;
+  color: var(--lcd-dark);
+}
+.fs-cart.focused .fs-genre { color: var(--lcd-light); }
+
+.fs-foot {
+  font-family: var(--font-pixel);
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 24px 16px;
+  border-top: 2px solid var(--lcd-darkest);
+  flex-shrink: 0;
+}
+
+/* fullscreen game view */
+.fs-game {
+  display: none;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  padding: 0 24px;
+  overflow: hidden;
+}
+.fs-game.active { display: flex; animation: screen-wipe 0.3s steps(4); }
+
+.fs-game .game-header {
+  font-family: var(--font-pixel);
+  font-size: 14px;
+  text-align: center;
+  padding: 8px 0 12px;
+  border-bottom: 3px solid var(--lcd-darkest);
+  letter-spacing: 0.1em;
+  margin-bottom: 12px;
+  flex-shrink: 0;
+}
+.fs-game .game-header::before, .fs-game .game-header::after {
+  content: '═';
+  font-family: var(--font-screen);
+  font-size: 18px;
+  margin: 0 8px;
+  vertical-align: -2px;
+}
+.fs-game .game-content {
+  flex: 1;
+  overflow-y: auto;
+  font-size: 20px;
+  line-height: 1.3;
+  scrollbar-width: none;
+}
+.fs-game .game-content::-webkit-scrollbar { display: none; }
+.fs-game .game-footer {
+  font-family: var(--font-pixel);
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0 4px;
+  border-top: 3px solid var(--lcd-darkest);
+  margin-top: 12px;
+  flex-shrink: 0;
+}
+.fs-game .entry { margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px dashed var(--lcd-dark); }
+.fs-game .entry:last-child { border-bottom: 0; }
+.fs-game .entry .name { font-family: var(--font-pixel); font-size: 11px; letter-spacing: 0.05em; margin-bottom: 4px; display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+.fs-game .entry .name .role { font-family: var(--font-screen); font-size: 18px; color: var(--lcd-dark); }
+.fs-game .entry .meta { font-size: 17px; color: var(--lcd-dark); margin-bottom: 4px; }
+.fs-game .entry .tag { display: inline-block; font-family: var(--font-pixel); font-size: 7px; background: var(--lcd-darkest); color: var(--lcd-lightest); padding: 2px 4px; margin-left: 4px; letter-spacing: 0.05em; vertical-align: 2px; }
+.fs-game .stat-list { display: grid; gap: 6px; font-size: 20px; margin-bottom: 12px; }
+.fs-game .stat-row { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px dotted var(--lcd-dark); padding-bottom: 4px; }
+.fs-game .stat-row .lbl { font-family: var(--font-pixel); font-size: 9px; letter-spacing: 0.05em; }
+.fs-game .intro-block { background: var(--lcd-light); padding: 12px; margin-bottom: 12px; border: 2px solid var(--lcd-darkest); font-size: 18px; line-height: 1.25; }
+.fs-game .intro-block .pixel { font-family: var(--font-pixel); font-size: 9px; letter-spacing: 0.05em; display: block; margin-bottom: 6px; }
+.fs-game .skill-section { margin-bottom: 12px; }
+.fs-game .skill-section h3 { font-family: var(--font-pixel); font-size: 10px; margin: 0 0 6px; letter-spacing: 0.05em; }
+.fs-game .skill-row { display: flex; justify-content: space-between; align-items: center; font-size: 18px; margin-bottom: 2px; }
+.fs-game .skill-row .bar { letter-spacing: 0; }
+.fs-game .skill-also { font-size: 16px; color: var(--lcd-dark); margin-top: 4px; font-style: italic; }
+.fs-game .scores-header { font-family: var(--font-pixel); font-size: 10px; text-align: center; margin-bottom: 8px; letter-spacing: 0.1em; }
+.fs-game .quote { background: var(--lcd-light); border: 2px solid var(--lcd-darkest); padding: 12px; margin-bottom: 12px; font-size: 18px; line-height: 1.25; position: relative; }
+.fs-game .quote::before { content: '"'; font-family: var(--font-pixel); font-size: 18px; position: absolute; top: 2px; left: 6px; }
+.fs-game .quote p { margin: 0 0 0 14px; }
+.fs-game .quote .who { font-family: var(--font-pixel); font-size: 7px; margin-top: 8px; letter-spacing: 0.05em; display: flex; justify-content: space-between; }
+.fs-game .quote .who a { text-decoration: underline; }
+.fs-game .contact-fields { display: flex; flex-direction: column; gap: 8px; font-size: 20px; }
+.fs-game .contact-fields .field { display: flex; align-items: baseline; gap: 8px; border-bottom: 1px dashed var(--lcd-dark); padding-bottom: 6px; }
+.fs-game .contact-fields .field .lbl { font-family: var(--font-pixel); font-size: 9px; letter-spacing: 0.05em; min-width: 72px; }
+.fs-game .contact-fields .field a { text-decoration: underline; }
+.fs-game .link-prompt { font-family: var(--font-pixel); font-size: 9px; text-align: center; margin-top: 12px; padding: 8px; background: var(--lcd-darkest); color: var(--lcd-lightest); letter-spacing: 0.1em; cursor: pointer; display: block; }
+.fs-game .link-prompt:hover { background: var(--lcd-dark); }
+
+.fs-game .btn-hint { display: inline-flex; align-items: center; gap: 4px; }
+.fs-game .btn-hint .key { display: inline-grid; place-items: center; width: 16px; height: 16px; background: var(--lcd-darkest); color: var(--lcd-lightest); border-radius: 50%; font-size: 7px; }
+
+@media (max-width: 600px) {
+  .fs-grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(3, 1fr); gap: 8px; padding: 0 16px 8px; }
+  .fs-head { padding: 16px 12px 10px; }
+  .fs-head .fs-title { font-size: 12px; }
+  .fs-head .fs-sub { font-size: 18px; }
+  .fs-cart .fs-name { font-size: 11px; }
+  .fs-cart .fs-genre { font-size: 15px; }
+  .fs-foot { padding: 8px 16px 12px; font-size: 6px; }
+  .fs-game { padding: 0 16px; }
+  .fs-game .game-content { font-size: 17px; }
+  .fs-game .game-header { font-size: 11px; }
+}
+</style>
+<script type="application/ld+json">
+    {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://ryanpolasky.com/#person",
+      "name": "Ryan Polasky",
+      "givenName": "Ryan",
+      "familyName": "Polasky",
+      "alternateName": "ryan.polasky",
+      "url": "https://ryanpolasky.com/",
+      "image": "https://ryanpolasky.com/assets/images/my-avatar.png",
+      "email": "mailto:ryanpolasky@hotmail.com",
+      "jobTitle": "Software Engineer",
+      "description": "Junior Software Engineer specializing in backend systems, AI/LLM tooling, test automation, and developer productivity. UT Dallas '26 graduate and 2\u00d7 Apple intern.",
+      "address": {
+        "@type": "PostalAddress",
+        "addressRegion": "ND",
+        "addressCountry": "US"
+      },
+      "alumniOf": {
+        "@type": "CollegeOrUniversity",
+        "name": "The University of Texas at Dallas",
+        "url": "https://www.utdallas.edu/",
+        "sameAs": "https://en.wikipedia.org/wiki/University_of_Texas_at_Dallas"
+      },
+      "knowsAbout": [
+        "Software Engineering",
+        "Backend Development",
+        "Artificial Intelligence",
+        "Large Language Models",
+        "Developer Tooling",
+        "DevOps",
+        "Test Automation",
+        "CI/CD",
+        "Python",
+        "TypeScript",
+        "Cloud Infrastructure"
+      ],
+      "sameAs": [
+        "https://www.linkedin.com/in/ryan-polasky/",
+        "https://github.com/ryanpolasky"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://ryanpolasky.com/#website",
+      "url": "https://ryanpolasky.com/",
+      "name": "Ryan Polasky",
+      "alternateName": "ryan.polasky / runtime",
+      "description": "Personal site of Ryan Polasky \u2014 Junior Software Engineer specializing in backend systems, AI/LLM tooling, and developer productivity.",
+      "inLanguage": "en",
+      "publisher": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "author": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "copyrightHolder": {
+        "@id": "https://ryanpolasky.com/#person"
+      }
+    },
+    {
+      "@type": "ProfilePage",
+      "@id": "https://ryanpolasky.com/#profile",
+      "url": "https://ryanpolasky.com/",
+      "name": "Ryan Polasky - Software Engineer",
+      "isPartOf": {
+        "@id": "https://ryanpolasky.com/#website"
+      },
+      "about": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "mainEntity": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "primaryImageOfPage": "https://ryanpolasky.com/assets/images/my-avatar.png"
+    },
+    {
+      "@type": "VideoGame",
+      "@id": "https://crashdle.com/#game",
+      "name": "Crashdle",
+      "url": "https://crashdle.com/",
+      "description": "Daily 5-letter word puzzle paired with a live crash multiplier bonus round. Solve the word in six guesses, then optionally risk your winnings on a real-time crash game.",
+      "image": "https://crashdle.com/og.webp",
+      "genre": [
+        "Word Game",
+        "Puzzle",
+        "Casual"
+      ],
+      "playMode": "SinglePlayer",
+      "gamePlatform": "Web Browser",
+      "applicationCategory": "GameApplication",
+      "operatingSystem": "Any",
+      "inLanguage": "en",
+      "creator": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "author": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "publisher": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      }
+    },
+    {
+      "@type": "WebApplication",
+      "@id": "https://ryplay.dev/#app",
+      "name": "ryplay",
+      "alternateName": "ryplay - Your Music, Visualized",
+      "url": "https://ryplay.dev/",
+      "description": "A real-time music dashboard powered by Last.fm. Visualize your listening habits, track streaks, and share your music taste.",
+      "image": "https://ryplay.dev/og.webp",
+      "applicationCategory": "MultimediaApplication",
+      "applicationSubCategory": "Music Visualization",
+      "operatingSystem": "Any",
+      "inLanguage": "en",
+      "creator": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "author": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "publisher": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      }
+    },
+    {
+      "@type": "WebApplication",
+      "@id": "https://ryme.md/#app",
+      "name": "RyMe.md",
+      "alternateName": "readme-ryvamper",
+      "url": "https://ryme.md/",
+      "description": "A browser-based generator for animated GitHub profile README banners. Pick a template, fill in your info, and export as SVG or GIF \u2014 entirely client-side.",
+      "image": "https://ryme.md/og.webp",
+      "applicationCategory": "DeveloperApplication",
+      "applicationSubCategory": "Profile README Generator",
+      "operatingSystem": "Any",
+      "inLanguage": "en",
+      "creator": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "author": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "publisher": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      }
+    },
+    {
+      "@type": "WebApplication",
+      "@id": "https://rycord.dev/#app",
+      "name": "rycord",
+      "alternateName": "rycord - 3D Record Room",
+      "url": "https://rycord.dev/",
+      "description": "A cache-first 3D record room built from a personal Discogs collection. Pull records off a Kallax-style shelf, flip the jackets, and browse tracklists in a cozy bedroom scene.",
+      "image": "https://rycord.dev/og.webp",
+      "applicationCategory": "MultimediaApplication",
+      "applicationSubCategory": "Record Collection Visualizer",
+      "operatingSystem": "Any",
+      "inLanguage": "en",
+      "creator": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "author": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "publisher": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      }
+    },
+    {
+      "@type": "WebApplication",
+      "@id": "https://status.ryanpolasky.com/#app",
+      "name": "WRLT",
+      "alternateName": "What's Ryan Up To?",
+      "url": "https://status.ryanpolasky.com/",
+      "description": "A live personal dashboard with mini-games, an in-app economy, and a desktop-style UI in the browser.",
+      "image": "https://status.ryanpolasky.com/og.webp",
+      "applicationCategory": "LifestyleApplication",
+      "applicationSubCategory": "Personal Dashboard",
+      "operatingSystem": "Any",
+      "inLanguage": "en",
+      "creator": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "author": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "publisher": {
+        "@id": "https://ryanpolasky.com/#person"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      }
+    }
+  ]
+}
+    </script>
+</head>
+<body>
+
+<div class="gb-stage" id="gbStage">
+<div class="gameboy">
+
+  <!-- Screen bezel + LCD -->
+  <div class="screen-bezel">
+    <span class="bezel-label tl">DOT MATRIX WITH STEREO SOUND</span>
+
+    <div class="power-led">
+      <span class="dot"></span>
+      <span class="lbl">BATTERY</span>
+    </div>
+
+    <div class="lcd" id="lcd">
+      <div class="lcd-inner" id="lcdInner">
+
+        <!-- BOOT SCREEN -->
+        <div class="boot-screen" id="bootScreen">
+          <div class="boot-logo">RYAN</div>
+        </div>
+
+        <!-- TITLE SCREEN -->
+        <div class="title-screen" id="titleScreen">
+          <div class="shelf-title">RYAN.GB</div>
+          <div class="shelf-subtitle">Software Engineer · AI/LLM</div>
+          <div class="shelf-prompt">▶ PRESS START</div>
+        </div>
+
+      </div>
+    </div>
+
+    <span class="bezel-label tr">▶ ON</span>
+  </div>
+
+  <!-- Brand strip (below screen, authentic DMG position) -->
+  <div class="brand-strip">
+    <span class="strip-line"></span>
+    <span class="nin">RYTENDO</span>
+    <span class="strip-line"></span>
+    <span class="gb-logo">GAMEBRO<span class="reg">®</span></span>
+    <span class="strip-line"></span>
+  </div>
+
+  <!-- Controls -->
+  <div class="controls">
+    <div class="dpad" role="group" aria-label="D-pad">
+      <button class="up" id="dpadUp" aria-label="Up">▲</button>
+      <button class="down" id="dpadDown" aria-label="Down">▼</button>
+      <button class="left" id="dpadLeft" aria-label="Left">◀</button>
+      <button class="right" id="dpadRight" aria-label="Right">▶</button>
+      <span class="center"></span>
+    </div>
+
+    <div class="ab-buttons">
+      <button class="ab-button" id="btnB" aria-label="B button">
+        B
+        <span class="ab-label">B</span>
+      </button>
+      <button class="ab-button" id="btnA" aria-label="A button">
+        A
+        <span class="ab-label">A</span>
+      </button>
+    </div>
+
+    <div class="start-select">
+      <button class="pill-button" id="btnSelect" aria-label="Select">
+        <span class="pill-label">SELECT</span>
+      </button>
+      <button class="pill-button" id="btnStart" aria-label="Start">
+        <span class="pill-label">START</span>
+      </button>
+    </div>
+  </div>
+
+</div><!-- /.gameboy -->
+</div><!-- /.gb-stage -->
+
+<!-- FULLSCREEN LCD OVERLAY -->
+<div class="fs" id="fs">
+  <div class="fs-head">
+    <div class="fs-title">RYAN.GB</div>
+    <div class="fs-sub">My Game Collection</div>
+  </div>
+
+  <div class="fs-grid" id="fsGrid">
+    <button class="fs-cart" data-game="about">
+      <div class="fs-pak">PAK 01</div>
+      <div class="fs-name">ABOUT<br>RYAN</div>
+      <div class="fs-genre">~bio~</div>
+    </button>
+    <button class="fs-cart" data-game="experience">
+      <div class="fs-pak">PAK 02</div>
+      <div class="fs-name">WORK<br>QUEST</div>
+      <div class="fs-genre">~rpg~</div>
+    </button>
+    <button class="fs-cart" data-game="projects">
+      <div class="fs-pak">PAK 03</div>
+      <div class="fs-name">PROJECTS<br>LAND</div>
+      <div class="fs-genre">~sandbox~</div>
+    </button>
+    <button class="fs-cart" data-game="skills">
+      <div class="fs-pak">PAK 04</div>
+      <div class="fs-name">SKILLS<br>WORLD</div>
+      <div class="fs-genre">~action~</div>
+    </button>
+    <button class="fs-cart" data-game="testimonials">
+      <div class="fs-pak">PAK 05</div>
+      <div class="fs-name">REFS<br>WORLD</div>
+      <div class="fs-genre">~puzzle~</div>
+    </button>
+    <button class="fs-cart" data-game="contact">
+      <div class="fs-pak">PAK 06</div>
+      <div class="fs-name">CONTACT<br>LINK</div>
+      <div class="fs-genre">~co-op~</div>
+    </button>
+  </div>
+
+  <div class="fs-foot" id="fsFoot">
+    <span id="fsBack" style="cursor:pointer">◀ BACK</span>
+    <span>A/ENTER · SELECT</span>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="fs-game" data-game="about">
+    <div class="game-header">ABOUT RYAN</div>
+    <div class="game-content">
+      <div class="intro-block">
+        <span class="pixel">> RYAN POLASKY</span>
+        Software Engineer · Backend & AI/LLM Tooling. UT Dallas '26. Open May 2026.
+      </div>
+      <div class="stat-list">
+        <div class="stat-row"><span class="lbl">Class</span><span class="val">Software Engineer</span></div>
+        <div class="stat-row"><span class="lbl">Level</span><span class="val">Senior Yr · UTD</span></div>
+        <div class="stat-row"><span class="lbl">EXP</span><span class="val">2× Apple Intern</span></div>
+        <div class="stat-row"><span class="lbl">Spec</span><span class="val">Backend / AI / LLMs</span></div>
+        <div class="stat-row"><span class="lbl">Status</span><span class="val">★ Open May '26</span></div>
+        <div class="stat-row"><span class="lbl">Region</span><span class="val">Dallas → Anywhere</span></div>
+      </div>
+      <div style="font-size: inherit; line-height: 1.25;">
+        Ships fast. Built LLM tooling at Apple that cut investigation time by 4,800%. Mentored 1,200+ devs at HackUTD. Likes turning messy systems into pleasant ones.
+      </div>
+    </div>
+    <div class="game-footer">
+      <span class="btn-hint fs-game-back" style="cursor:pointer"><span class="key">B</span> Back</span>
+      <span>PAK 01 · ABOUT</span>
+      <span class="btn-hint">↑↓ Scroll</span>
+    </div>
+  </div>
+
+  <!-- EXPERIENCE -->
+  <div class="fs-game" data-game="experience">
+    <div class="game-header">WORK QUEST</div>
+    <div class="game-content">
+      <div class="entry">
+        <div class="name">APPLE <span class="role">· Camera API Tests</span><span class="tag">INTERN</span></div>
+        <div class="meta">May–Aug 2025 · Cupertino</div>
+        <div class="desc">Built automated parsing for thousands of on-device tests. LLM triage cut manual investigation by 4,800%.</div>
+      </div>
+      <div class="entry">
+        <div class="name">APPLE <span class="role">· WTE Tools Eng.</span><span class="tag">INTERN</span></div>
+        <div class="meta">Jun–Nov 2024 · Cupertino</div>
+        <div class="desc">Built LLM-powered NL→SQL/NoSQL interface. Migrated Java 11→JDK 21. Designed AWS/GCP CI/CD.</div>
+      </div>
+      <div class="entry">
+        <div class="name">APPLE <span class="role">· At-Home Advisor</span><span class="tag">★ EXC</span></div>
+        <div class="meta">2023–Now · Remote</div>
+        <div class="desc">6.87% escalation rate (below avg). CSAT +15% over dept. Excellence '24 + '25.</div>
+      </div>
+      <div class="entry">
+        <div class="name">ACM @ UTD <span class="role">· Dev Lead + Mentor</span><span class="tag">LEAD</span></div>
+        <div class="meta">2025–May 2026 · Dallas</div>
+        <div class="desc">Mentored 1,200+ HackUTD participants. Tech lead for roommate matching platform. Education Mentor; guided 4 underclassmen through interviews + internships.</div>
+      </div>
+      <div class="entry">
+        <div class="name">ALTRU HEALTH <span class="role">· IT Intern</span><span class="tag">INTERN</span></div>
+        <div class="meta">2021–2022 · Grand Forks, ND</div>
+        <div class="desc">Repaired/imaged hundreds of machines for healthcare expansion. Set department intake record (300+ devices) during high-demand periods.</div>
+      </div>
+    </div>
+    <div class="game-footer">
+      <span class="btn-hint fs-game-back" style="cursor:pointer"><span class="key">B</span> Back</span>
+      <span>PAK 02 · WORK</span>
+      <span class="btn-hint">↑↓ Scroll</span>
+    </div>
+  </div>
+
+  <!-- PROJECTS -->
+  <div class="fs-game" data-game="projects">
+    <div class="game-header">PROJECTS LAND</div>
+    <div class="game-content">
+      <div class="entry">
+        <div class="name">askdb <span class="tag">L1</span></div>
+        <div class="meta">Python · FastAPI · Postgres</div>
+        <div class="desc">NL→SQL/NoSQL query generator. Schema-aware, cost-aware. <em>Apple internal.</em></div>
+      </div>
+      <div class="entry">
+        <div class="name">ai-test-analysis <span class="tag">L2</span></div>
+        <div class="meta">Python · Jenkins · LLMs</div>
+        <div class="desc">Multi-stage LLM failure classifier + root cause suggester. <em>Apple internal.</em></div>
+      </div>
+      <div class="entry">
+        <div class="name">ryanos <span class="tag">L3</span></div>
+        <div class="meta">React · FastAPI · Framer</div>
+        <div class="desc">Web status dashboard with draggable widgets. <a href="https://status.ryanpolasky.com" target="_blank" style="text-decoration:underline;">[VISIT →]</a></div>
+      </div>
+      <div class="entry">
+        <div class="name">notes <span class="tag">L4</span></div>
+        <div class="meta">Notion · LaTeX</div>
+        <div class="desc">Public CS curriculum archive (UTD). <a href="/notes" style="text-decoration:underline;">[VISIT →]</a></div>
+      </div>
+      <div class="entry">
+        <div class="name">plasky <span class="tag">L5</span></div>
+        <div class="meta">FL Studio</div>
+        <div class="desc">Lo-fi music. Streaming since 2023. <a href="/spotify.html" style="text-decoration:underline;">[LISTEN →]</a></div>
+      </div>
+      <div class="entry">
+        <div class="name">meteormate <span class="tag">L6</span></div>
+        <div class="meta">FastAPI · React</div>
+        <div class="desc">Roommate matching for UTD students. <a href="https://github.com/acmutd/meteormate-backend" target="_blank" style="text-decoration:underline;">[GITHUB →]</a></div>
+      </div>
+    </div>
+    <div class="game-footer">
+      <span class="btn-hint fs-game-back" style="cursor:pointer"><span class="key">B</span> Back</span>
+      <span>PAK 03 · PROJ</span>
+      <span class="btn-hint">↑↓ Scroll</span>
+    </div>
+  </div>
+
+  <!-- SKILLS -->
+  <div class="fs-game" data-game="skills">
+    <div class="game-header">SKILLS WORLD</div>
+    <div class="game-content">
+      <div class="skill-section">
+        <h3>▸ LANGUAGES</h3>
+        <div class="skill-row"><span>Python</span><span class="bar">█████</span></div>
+        <div class="skill-row"><span>TypeScript</span><span class="bar">█████</span></div>
+        <div class="skill-row"><span>HTML/CSS</span><span class="bar">████░</span></div>
+        <div class="skill-row"><span>Swift</span><span class="bar">████░</span></div>
+        <div class="skill-also">Also: JS, Java, C++, SwiftUI, R, Obj-C</div>
+      </div>
+      <div class="skill-section">
+        <h3>▸ DATA STORES</h3>
+        <div class="skill-row"><span>PostgreSQL</span><span class="bar">█████</span></div>
+        <div class="skill-row"><span>OpenSearch</span><span class="bar">████░</span></div>
+        <div class="skill-row"><span>Redis</span><span class="bar">████░</span></div>
+        <div class="skill-row"><span>MongoDB</span><span class="bar">███░░</span></div>
+        <div class="skill-also">Also: MySQL, SQLite, vector DBs</div>
+      </div>
+      <div class="skill-section">
+        <h3>▸ AI &amp; LLMs</h3>
+        <div class="skill-row"><span>LLM Integration</span><span class="bar">█████</span></div>
+        <div class="skill-row"><span>RAG Systems</span><span class="bar">█████</span></div>
+        <div class="skill-row"><span>Vertex AI</span><span class="bar">████░</span></div>
+        <div class="skill-also">Also: fine-tuning, function calling, embeddings</div>
+      </div>
+      <div class="skill-section">
+        <h3>▸ DEVOPS</h3>
+        <div class="skill-row"><span>Kubernetes</span><span class="bar">████░</span></div>
+        <div class="skill-row"><span>CI/CD</span><span class="bar">████░</span></div>
+        <div class="skill-row"><span>AWS &amp; GCP</span><span class="bar">███░░</span></div>
+        <div class="skill-row"><span>Jenkins</span><span class="bar">███░░</span></div>
+        <div class="skill-also">Also: Docker, Helm, Terraform</div>
+      </div>
+    </div>
+    <div class="game-footer">
+      <span class="btn-hint fs-game-back" style="cursor:pointer"><span class="key">B</span> Back</span>
+      <span>PAK 04 · SKILL</span>
+      <span class="btn-hint">↑↓ Scroll</span>
+    </div>
+  </div>
+
+  <!-- TESTIMONIALS -->
+  <div class="fs-game" data-game="testimonials">
+    <div class="game-header">REFS WORLD</div>
+    <div class="game-content">
+      <div class="scores-header">★ HIGH SCORES ★</div>
+      <div class="quote">
+        <p>Learning agility is remarkable. Tackles each new challenge with focus and enthusiasm. Strong communicator with clear, impactful presentations.</p>
+        <div class="who"><span>SAHIL P. · SR. ENG</span><a href="https://www.linkedin.com/in/sahilpujari/" target="_blank">[VIEW]</a></div>
+      </div>
+      <div class="quote">
+        <p>Fantastic intern. Fast learner, delivered ahead of schedule. Performed like a full-time hire.</p>
+        <div class="who"><span>JOZEF K. · ENG MGR</span><a href="https://www.linkedin.com/in/jozefkruger/" target="_blank">[VIEW]</a></div>
+      </div>
+      <div class="quote">
+        <p>Exceptional intern, contributing valuable test automation tools. Initiative and collaboration made him a joy to work with.</p>
+        <div class="who"><span>JD P. · SOFTWARE ENG</span><a href="https://www.linkedin.com/in/jdpaul123/" target="_blank">[VIEW]</a></div>
+      </div>
+    </div>
+    <div class="game-footer">
+      <span class="btn-hint fs-game-back" style="cursor:pointer"><span class="key">B</span> Back</span>
+      <span>PAK 05 · REFS</span>
+      <span class="btn-hint">↑↓ Scroll</span>
+    </div>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="fs-game" data-game="contact">
+    <div class="game-header">CONTACT LINK</div>
+    <div class="game-content">
+      <div class="intro-block">
+        <span class="pixel">> LINK CABLE READY</span>
+        Connect player 2! Send a message any way you like.
+      </div>
+      <div class="contact-fields">
+        <div class="field">
+          <span class="lbl">EMAIL</span>
+          <a href="mailto:ryanpolasky@hotmail.com">ryanpolasky@hotmail.com</a>
+        </div>
+        <div class="field">
+          <span class="lbl">PHONE</span>
+          <a href="tel:+14089406887">+1 (408) 940-6887</a>
+        </div>
+        <div class="field">
+          <span class="lbl">LINKEDIN</span>
+          <a href="https://linkedin.com/in/ryan-polasky" target="_blank">ryan-polasky</a>
+        </div>
+        <div class="field">
+          <span class="lbl">GITHUB</span>
+          <a href="https://github.com/ryanpolasky" target="_blank">ryanpolasky</a>
+        </div>
+        <div class="field">
+          <span class="lbl">REGION</span>
+          <span>Dallas, TX (will relocate)</span>
+        </div>
+      </div>
+      <a class="link-prompt" href="mailto:ryanpolasky@hotmail.com">▶ START LINK SESSION</a>
+    </div>
+    <div class="game-footer">
+      <span class="btn-hint fs-game-back" style="cursor:pointer"><span class="key">B</span> Back</span>
+      <span>PAK 06 · LINK</span>
+      <span class="btn-hint">↑↓ Scroll</span>
+    </div>
+  </div>
+</div>
+
+<footer class="gb-footer">
+  <div>© 2026 RYAN POLASKY · ALL RIGHTS RESERVED</div>
+  <div>RYTENDO® · GAMEBRO® ARE TRADEMARKS · NOT REALLY THOUGH</div>
+  <div class="webring">
+    <a href="https://cs.utdring.com/#ryanpolasky.com?nav=prev" aria-label="Previous">←</a>
+    <a href="https://cs.utdring.com/#ryanpolasky.com" aria-label="CS Webring">
+      <img src="https://cs.utdring.com/icon.white.svg" alt="ring">
+    </a>
+    <a href="https://cs.utdring.com/#ryanpolasky.com?nav=next" aria-label="Next">→</a>
+  </div>
+</footer>
+
+<script>
+(function(){
+  if (window.parent !== window) document.body.classList.add('in-iframe');
+
+  /* ============== STAGE SCALE ==============
+     The .gameboy is laid out at its fixed natural design size (400px wide,
+     content-driven height). We measure the available .gb-stage box and
+     compute a uniform scale factor so the device fits without ever changing
+     its proportions. The scale is published as the --gb-scale CSS variable
+     which the .gameboy's transform: scale() consumes. */
+  const stage = document.getElementById('gbStage');
+  const gameboy = document.querySelector('.gameboy');
+
+  function fitStage() {
+    if (!stage || !gameboy) return;
+    const sw = stage.clientWidth;
+    const sh = stage.clientHeight;
+    /* offsetWidth/offsetHeight are pre-transform layout dimensions, so they
+       remain stable regardless of the current --gb-scale value. */
+    const gw = gameboy.offsetWidth;
+    const gh = gameboy.offsetHeight;
+    if (!sw || !sh || !gw || !gh) return;
+    /* tiny breathing-room margin so the gameboy never kisses the stage edges. */
+    const pad = 6;
+    const sx = (sw - pad * 2) / gw;
+    const sy = (sh - pad * 2) / gh;
+    /* allow a little growth on huge screens but cap it so the device never
+       looks comically oversized. */
+    const s = Math.min(sx, sy, 1.4);
+    document.body.style.setProperty('--gb-scale', s > 0 ? s.toFixed(4) : '1');
+  }
+
+  if (stage) {
+    const ro = new ResizeObserver(fitStage);
+    ro.observe(stage);
+    /* re-measure once after fonts and async layout settle. */
+    requestAnimationFrame(fitStage);
+    setTimeout(fitStage, 60);
+    window.addEventListener('load', fitStage);
+  }
+
+  const fs = document.getElementById('fs');
+  const fsGrid = document.getElementById('fsGrid');
+  const fsFoot = document.getElementById('fsFoot');
+  const fsCarts = document.querySelectorAll('.fs-cart');
+  const fsGames = document.querySelectorAll('.fs-game');
+  const bootScreen = document.getElementById('bootScreen');
+
+  let state = 'boot';
+  let currentGame = null;
+  let cartFocus = 0;
+
+  function getCols() { return window.innerWidth <= 600 ? 2 : 3; }
+
+  setTimeout(() => {
+    bootScreen.style.display = 'none';
+    state = 'title';
+  }, 2400);
+
+  function focusCart(idx) {
+    cartFocus = ((idx % fsCarts.length) + fsCarts.length) % fsCarts.length;
+    fsCarts.forEach((c, i) => c.classList.toggle('focused', i === cartFocus));
+    fsCarts[cartFocus].focus({ preventScroll: true });
+  }
+
+  function enterGrid() {
+    state = 'grid';
+    fs.classList.add('active');
+    fsGrid.style.display = '';
+    fsFoot.style.display = '';
+    fsGames.forEach(g => g.classList.remove('active'));
+    focusCart(cartFocus);
+  }
+
+  function exitGrid() {
+    state = 'title';
+    fs.classList.remove('active');
+  }
+
+  function enterGame(game) {
+    if (!game) return;
+    state = 'game';
+    currentGame = game;
+    fsGrid.style.display = 'none';
+    fsFoot.style.display = 'none';
+    fsGames.forEach(g => g.classList.toggle('active', g.dataset.game === game));
+    const sc = fs.querySelector('.fs-game.active .game-content');
+    if (sc) sc.scrollTop = 0;
+  }
+
+  function exitGame() {
+    if (!currentGame) return;
+    currentGame = null;
+    fsGames.forEach(g => g.classList.remove('active'));
+    state = 'grid';
+    fsGrid.style.display = '';
+    fsFoot.style.display = '';
+    focusCart(cartFocus);
+  }
+
+  function scrollGame(dir) {
+    const sc = fs.querySelector('.fs-game.active .game-content');
+    if (!sc) return;
+    const step = Math.max(60, Math.floor(sc.clientHeight * 0.4));
+    sc.scrollBy({ top: dir * step, behavior: 'smooth' });
+  }
+
+  // Cart interactions
+  fsCarts.forEach((c, i) => {
+    c.addEventListener('click', () => { if (state === 'grid') enterGame(c.dataset.game); });
+    c.addEventListener('mouseenter', () => { if (state === 'grid') focusCart(i); });
+  });
+
+  // Back from grid
+  document.getElementById('fsBack').addEventListener('click', () => {
+    if (state === 'grid') exitGrid();
+  });
+
+  // Back from game (delegated)
+  fs.addEventListener('click', (e) => {
+    if (state === 'game' && e.target.closest('.fs-game-back')) exitGame();
+  });
+
+  // On-screen Game Boy buttons
+  document.getElementById('btnStart').addEventListener('click', () => {
+    if (state === 'title') enterGrid();
+  });
+
+  // Tap title screen to enter
+  document.getElementById('titleScreen').addEventListener('click', () => {
+    if (state === 'title') enterGrid();
+  });
+
+  // Visual button press feedback for keyboard input
+  const keyToBtn = {
+    arrowup: document.getElementById('dpadUp'),
+    arrowdown: document.getElementById('dpadDown'),
+    arrowleft: document.getElementById('dpadLeft'),
+    arrowright: document.getElementById('dpadRight'),
+    a: document.getElementById('btnA'),
+    b: document.getElementById('btnB'),
+    enter: document.getElementById('btnStart'),
+    ' ': document.getElementById('btnStart'),
+    escape: document.getElementById('btnB'),
+  };
+
+  function pressBtn(k) {
+    const btn = keyToBtn[k];
+    if (btn) btn.classList.add('pressed');
+  }
+  function releaseBtn(k) {
+    const btn = keyToBtn[k];
+    if (btn) btn.classList.remove('pressed');
+  }
+
+  // Keyboard
+  document.addEventListener('keydown', (e) => {
+    if (!document.hasFocus()) return;
+    const tag = (e.target.tagName || '').toLowerCase();
+    if (tag === 'input' || tag === 'textarea' || tag === 'select' || e.target.isContentEditable) return;
+    const k = e.key.toLowerCase();
+
+    pressBtn(k);
+
+    if (state === 'title') {
+      if (k === 'enter' || k === ' ') { e.preventDefault(); enterGrid(); }
+      return;
+    }
+
+    if (['arrowup','arrowdown','arrowleft','arrowright',' ','enter','escape','b','a'].includes(k)) e.preventDefault();
+
+    if (state === 'grid') {
+      const cols = getCols();
+      if (k === 'arrowup') focusCart(cartFocus - cols);
+      else if (k === 'arrowdown') focusCart(cartFocus + cols);
+      else if (k === 'arrowleft') focusCart(cartFocus - 1);
+      else if (k === 'arrowright') focusCart(cartFocus + 1);
+      else if (k === 'enter' || k === ' ' || k === 'a') {
+        const c = fsCarts[cartFocus];
+        if (c) enterGame(c.dataset.game);
+      }
+      else if (k === 'escape' || k === 'b') exitGrid();
+    }
+
+    else if (state === 'game') {
+      if (k === 'escape' || k === 'b') exitGame();
+      else if (k === 'arrowup') scrollGame(-1);
+      else if (k === 'arrowdown') scrollGame(1);
+    }
+  });
+
+  document.addEventListener('keyup', (e) => {
+    releaseBtn(e.key.toLowerCase());
+  });
+})();
+</script>
+
+</body>
+</html>
