@@ -1,11 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  PerspectiveCamera,
-  ContactShadows,
-  Environment,
-} from "@react-three/drei";
+import { PerspectiveCamera, Environment } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { useAccent } from "@/components/AccentProvider";
@@ -16,30 +12,11 @@ import {
 } from "@/lib/performance";
 import { useIsVisible, useReducedMotion } from "@/lib/scroll";
 
-// hero scene: a compact set of polished objects with soft collisions, smooth
-// pointer response, and controlled studio lighting.
-
-// horizontal offset (in world units) applied to the whole cluster group so
-// the cluster sits to one side of the hero text instead of directly behind
-// it. positive = right, negative = left. tweak freely.
 const CLUSTER_OFFSET_X = 3;
 
-// depth offset (in world units). negative pushes the cluster further away
-// from the camera, making it feel less claustrophobic. positive pulls it
-// closer. tweak freely.
 const CLUSTER_OFFSET_Z = -4;
 
 type ShapeKind = "glyphR";
-// 3 finishes × 3 colors = 9 distinct material identities. what separates the
-// finishes is *how they reflect light*, not the color tint:
-//   matte    - zero specular. fully rough surface, only diffuse shading.
-//              reads like chalk, paper, unpolished plaster.
-//   jelly    - wide soft specular. clearcoat layer with HIGH clearcoat
-//              roughness so the highlight is a smudge, not a dot. reads like
-//              gummy candy, silicone, rubber.
-//   plastic  - narrow sharp specular. clearcoat with VERY low clearcoat
-//              roughness so the highlight is a tight crisp dot. reads like
-//              polished LEGO / molded ABS / a glossy phone case.
 type MatKind =
   | "whiteMatte"
   | "whiteJelly"
@@ -71,6 +48,7 @@ interface PointerState {
   velocity: number;
   down: number;
   active: number;
+  pulse: number;
 }
 
 interface BodyState {
@@ -83,8 +61,6 @@ interface BodyState {
 type PointerRef = { current: PointerState };
 type BodiesRef = { current: BodyState[] };
 
-// 16 hero pieces. order roughly alternates so neighboring instances rarely
-// share a finish, keeping the cluster visually busy.
 const SHAPES: ShapeData[] = [
   {
     position: [-1.65, 0.42, 0.35],
@@ -234,11 +210,6 @@ const SHAPES: ShapeData[] = [
 const MEDIUM_SHAPES = SHAPES.slice(0, 13);
 const LOW_SHAPES = SHAPES.slice(0, 10);
 
-// build the (color × finish) material. each finish is driven primarily by
-// specular behavior (roughness + clearcoatRoughness), not by color tinting.
-// matte gets no specular at all, jelly gets wide smudgy highlights, plastic
-// gets crisp pinpoint highlights - that's what makes them feel different
-// under the studio lights.
 function useMaterial(
   mat: MatKind,
   tier: PerformanceTier,
@@ -250,11 +221,6 @@ function useMaterial(
       "Matte" | "Jelly" | "Plastic",
     ];
 
-    // per-finish body colors. each finish gets a *slightly* different tint
-    // within its color column so the viewer can read "matte vs jelly vs
-    // plastic" from the body alone (warmer/chalkier for matte, creamier for
-    // jelly, cooler/cleaner for plastic) - the highlight identity then
-    // doubles down on it.
     const colorMap: Record<typeof palette, Record<typeof finish, string>> = {
       white: {
         Matte: "#E0DDD3", // chalky beige-white, soaks up light
@@ -303,11 +269,6 @@ function useMaterial(
     }
 
     if (finish === "Matte") {
-      // velvet/chalk. roughness pegged to 1.0 (env reflection fully blurred),
-      // zero specular, zero clearcoat. heavy sheen with a tinted sheenColor
-      // gives a soft halo on the silhouette - that's what reads as "this is
-      // a fuzzy/papery thing" vs the next two finishes. accent matte gets a
-      // faint pigment-style emissive so it doesn't go dead in shadow.
       return new THREE.MeshPhysicalMaterial({
         color: colorMap[palette].Matte,
         roughness: 1.0,
@@ -332,11 +293,6 @@ function useMaterial(
     }
 
     if (finish === "Jelly") {
-      // gummy candy / silicone. wide blurry clearcoat halo from a moderate
-      // clearcoatRoughness (0.45) blurs the env reflection into a soft
-      // smudge. transmission + thickness allows the studio HDRI to refract
-      // through the volume, instantly selling it as a dense gummy/glass.
-      // higher ior + sheen + emissive together simulate subsurface scatter.
       return new THREE.MeshPhysicalMaterial({
         color: colorMap[palette].Jelly,
         roughness: tier === "medium" ? 0.46 : 0.35,
@@ -366,11 +322,6 @@ function useMaterial(
       });
     }
 
-    // Plastic - molded ABS / glossy phone case. clearcoatRoughness 0.02
-    // keeps the env reflection razor-crisp. low base roughness so the
-    // body is heavily glossed. black plastic gets slight metalness for a
-    // lacquered-piano sheen. specularIntensity boosted so the pinpoint
-    // highlight punches through.
     return new THREE.MeshPhysicalMaterial({
       color: colorMap[palette].Plastic,
       roughness: tier === "medium" ? 0.2 : 0.1,
@@ -390,17 +341,8 @@ function useMaterial(
   }, [mat, tier, accent.base, accent.warm, accent.soft]);
 }
 
-// procedural extruded R: a 2D shape with the letter outline plus a bowl-hole
-// path, extruded with generous bevel so the front + back faces and the bowl
-// rim all have chamfered edges that catch the studio lights. the stem has a
-// vertical right edge and the leg slopes off the bowl-stem junction, so the
-// negative space below the bowl reads as an asymmetric right triangle (an R)
-// rather than a symmetric A-style counter. evaluated once at module scope and
-// shared across every hero body.
 function makeRGeometry(tier: PerformanceTier): THREE.ExtrudeGeometry {
   const shape = new THREE.Shape();
-  // outer outline, counterclockwise. coordinates live in a roughly
-  // [-0.6, 0.6] x [-1.0, 1.0] box, normalized by geom.scale below.
   shape.moveTo(-0.6, 1.0); // top-left of stem
   shape.lineTo(-0.6, -1.0); // down the left edge of stem
   shape.lineTo(-0.35, -1.0); // along the bottom of the stem
@@ -408,13 +350,10 @@ function makeRGeometry(tier: PerformanceTier): THREE.ExtrudeGeometry {
   shape.lineTo(0.3, -1.0); // diagonal back down along the leg's inner edge
   shape.lineTo(0.6, -1.0); // along the bottom of the leg
   shape.lineTo(-0.05, 0.05); // up the leg's outer-right edge (parallel to the inner edge for uniform stroke width)
-  // up the right side of the bowl, sweeping out to the right
   shape.bezierCurveTo(0.5, 0.05, 0.7, 0.4, 0.6, 0.66);
-  // over the top of the bowl
   shape.bezierCurveTo(0.55, 0.92, 0.4, 1.0, 0.2, 1.0);
   shape.lineTo(-0.6, 1.0); // along the top back to start
 
-  // bowl interior hole. clockwise (opposite winding from outer).
   const hole = new THREE.Path();
   hole.moveTo(-0.32, 0.8);
   hole.lineTo(0.16, 0.8);
@@ -434,8 +373,6 @@ function makeRGeometry(tier: PerformanceTier): THREE.ExtrudeGeometry {
     steps: 1,
   });
 
-  // center on origin so rotation/physics pivot through the visual middle,
-  // then normalize the longest axis to 1.55 like the old gltf fit math.
   geom.center();
   geom.computeBoundingBox();
   const size = geom.boundingBox!.getSize(new THREE.Vector3());
@@ -483,23 +420,16 @@ function useViewportPointer() {
     velocity: 0,
     down: 0,
     active: 0,
+    pulse: 0,
   });
 
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    // scroll gate: trackpad / wheel scrolling can fire micro pointermoves with
-    // tiny dx/dy. those accumulate into ref.current.velocity which feeds the
-    // cluster's push force, making the simulation react every time the user
-    // scrolls. while a scroll is in flight we still update the pointer's
-    // position (so smoothX/Y stay in sync with the real cursor) but skip the
-    // velocity + move-delta accumulation that drives the kinetic push.
     let scrolling = false;
     let scrollTimer: ReturnType<typeof setTimeout> | null = null;
     const onScroll = () => {
       scrolling = true;
-      // also drop any velocity already accumulated this gesture so the cluster
-      // doesn't continue coasting into a scroll.
       ref.current.velocity = 0;
       ref.current.moveX = 0;
       ref.current.moveY = 0;
@@ -534,8 +464,16 @@ function useViewportPointer() {
       );
     };
 
-    const onPointerDown = () => {
+    const onPointerDown = (e: PointerEvent) => {
+      // snap raw cursor position to the click point so the explosion uses
+      // exactly where the click landed, not the previous smoothed position.
+      const nextX = (e.clientX / window.innerWidth) * 2 - 1;
+      const nextY = -((e.clientY / window.innerHeight) * 2 - 1);
+      ref.current.x = THREE.MathUtils.clamp(nextX, -1, 1);
+      ref.current.y = THREE.MathUtils.clamp(nextY, -1, 1);
+      ref.current.active = 1;
       ref.current.down = 1;
+      ref.current.pulse = 1;
     };
 
     const onPointerUp = () => {
@@ -692,23 +630,18 @@ function Cluster({
 }) {
   const groupRef = useRef<THREE.Group>(null);
   const bodiesRef = useRef<BodyState[]>([]);
-  // local time accumulator. only advances while useFrame actually runs, so
-  // when the canvas pauses (scroll out of view) and resumes minutes later,
-  // any sin(t)/cos(t)/linear-in-t targets driven by this clock don't jump
-  // forward by the whole pause duration. avoids the "mach 20 catch-up" spin
-  // that state.clock.elapsedTime produces when the wallclock keeps ticking
-  // through a frameloop=never window.
+  const raycasterRef = useRef(new THREE.Raycaster());
+  const clusterPlaneRef = useRef(
+    new THREE.Plane(new THREE.Vector3(0, 0, 1), -CLUSTER_OFFSET_Z),
+  );
+  const ndcRef = useRef(new THREE.Vector2());
+  const hitRef = useRef(new THREE.Vector3());
   const timeRef = useRef(0);
   const shapes =
     tier === "low" ? LOW_SHAPES : tier === "medium" ? MEDIUM_SHAPES : SHAPES;
   const collisionPasses = tier === "high" ? 6 : tier === "medium" ? 3 : 0;
 
   if (bodiesRef.current.length !== shapes.length) {
-    // tight bounding sphere derived from the extruded R geometry. fudge factor
-    // < 1 because the R has empty space (the bowl hole, the V notch) so a
-    // strict bounding sphere reads as 'bouncing off thin air'. tuning lower
-    // lets neighbors overlap slightly which looks more natural for non-
-    // spherical shapes.
     const sphereRadius = getRGeometry(tier).boundingSphere!.radius;
     bodiesRef.current = shapes.map((shape) => ({
       position: new THREE.Vector3(...shape.position),
@@ -727,8 +660,49 @@ function Cluster({
     const pointerX = pointerActive ? pointer.smoothX * 3.55 : 0;
     const pointerY = pointerActive ? pointer.smoothY * 2.75 : 0;
     const pointerZ = pointerActive ? 0.35 + pointer.down * 0.6 : 0;
+    g.updateMatrixWorld();
 
     const bodies = bodiesRef.current;
+
+    if (pointer.pulse > 0) {
+      const ndc = ndcRef.current;
+      // raw (un-smoothed) cursor coords so the epicenter is exactly where
+      // the click landed; smoothX/smoothY lag behind by ~150ms which reads
+      // as a sluggish explosion when the user clicks mid-cursor-move.
+      ndc.set(pointer.x, pointer.y);
+      const ray = raycasterRef.current;
+      ray.setFromCamera(ndc, state.camera);
+      const hit = hitRef.current;
+      const intersected = ray.ray.intersectPlane(
+        clusterPlaneRef.current,
+        hit,
+      );
+      if (intersected) {
+        g.worldToLocal(hit);
+      } else {
+        hit.set(0, 0, 0);
+      }
+      const epicenterX = hit.x;
+      const epicenterY = hit.y;
+      const epicenterZ = hit.z;
+      const strength = tier === "low" ? 11 : tier === "medium" ? 14 : 18;
+      for (let i = 0; i < bodies.length; i += 1) {
+        const body = bodies[i];
+        const dx = body.position.x - epicenterX;
+        const dy = body.position.y - epicenterY;
+        const dz = body.position.z - epicenterZ;
+        const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+        const safeDist = Math.max(dist, 0.05);
+        const invDist = 1 / safeDist;
+        const falloff = Math.max(0.4, 1 - safeDist / 8);
+        const impulse = (strength * falloff) / body.mass;
+        body.velocity.x += dx * invDist * impulse;
+        body.velocity.y += dy * invDist * impulse;
+        body.velocity.z += dz * invDist * impulse * 0.85;
+      }
+      pointer.pulse = 0;
+    }
+
     const step = Math.min(dt, 1 / 30);
     const damping = Math.exp(-3.55 * step);
     const spring = tier === "low" ? 0.62 : 0.82;
@@ -870,13 +844,8 @@ function Cluster({
       }
     }
 
-    // advance our local time only by the clamped step. crucially this does
-    // NOT use state.clock.elapsedTime, which jumps forward by the entire
-    // pause duration whenever the frameloop resumes.
     timeRef.current += step;
     const t = timeRef.current;
-    // idle drift: when pointer hasn't moved recently, slightly amplify the
-    // ambient orbital motion so the cluster keeps breathing.
     const idleBoost = pointer.active < 0.5 ? 1.4 : 1.0;
     const targetRotX =
       Math.sin(t * 0.32) * 0.065 * idleBoost + pointer.smoothY * 0.16;
@@ -931,10 +900,6 @@ function HeroScene({ tier }: { tier: PerformanceTier }) {
 
       <fog attach="fog" args={["#0B0B0F", 7.5, 16]} />
 
-      {/* studio HDRI lights up the clearcoat layer of plastic + jelly with
-          real environment reflections - without this, plastic looks dull
-          and jelly's smudgy halo has nothing to reflect. matte is unaffected
-          because its roughness=1 + zero specular skip the env contribution. */}
       {tier !== "low" && (
         <Environment
           preset="studio"
@@ -992,17 +957,6 @@ function HeroScene({ tier }: { tier: PerformanceTier }) {
         />
       )}
       <ambientLight intensity={tier === "low" ? 0.24 : 0.12} />
-
-      {tier === "high" && (
-        <ContactShadows
-          position={[0, -2.6, 0]}
-          opacity={0.62}
-          scale={14}
-          blur={3.4}
-          far={5}
-          color="#000000"
-        />
-      )}
 
       <Cluster pointerRef={pointerRef} tier={tier} />
     </>
