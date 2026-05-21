@@ -25,10 +25,17 @@ const SECTIONS = [
   { id: "contact", label: "contact" },
 ];
 
+function destLabelFor(id: string): string {
+  if (!id) return "welcome";
+  const sec = SECTIONS.find((s) => s.id === id);
+  return sec?.label ?? id;
+}
+
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [active, setActive] = useState<string>("");
   const [phase, setPhase] = useState<NavPhase>("idle");
+  const [destLabel, setDestLabel] = useState("welcome");
   const transitionTimer = useRef<number | null>(null);
   const pendingTarget = useRef<{ id: string; element: HTMLElement } | null>(
     null,
@@ -100,6 +107,7 @@ export function Nav() {
       transitionTimer.current = null;
     }
     pendingTarget.current = { id, element: target };
+    setDestLabel(destLabelFor(id));
     setPhase("closing");
   }, []);
 
@@ -139,6 +147,7 @@ export function Nav() {
     }
 
     pendingTarget.current = { id: "", element: document.body };
+    setDestLabel("welcome");
     setPhase("closing");
   }, []);
 
@@ -216,7 +225,7 @@ export function Nav() {
       {/* curtain wash overlay: accent panel sweeps up, covers, sweeps off top. */}
       <div
         aria-hidden
-        className={`fixed inset-0 z-[200] bg-[var(--color-accent)] ${
+        className={`fixed inset-0 z-[200] flex items-center justify-center overflow-hidden bg-[var(--color-accent)] ${
           phase === "idle" || phase === "resetting"
             ? "pointer-events-none"
             : "pointer-events-auto"
@@ -235,7 +244,25 @@ export function Nav() {
           willChange: "transform",
         }}
         onTransitionEnd={handleCurtainTransitionEnd}
-      />
+      >
+        <span
+          className="display select-none text-white"
+          style={{
+            fontFamily: "var(--font-display)",
+            fontStyle: "italic",
+            fontWeight: 400,
+            fontSize: "clamp(3.5rem, 12vw, 10rem)",
+            lineHeight: 1,
+            letterSpacing: "-0.02em",
+            fontVariationSettings: '"opsz" 144, "SOFT" 80, "WONK" 1',
+            opacity:
+              phase === "closing" || phase === "closed" ? 1 : 0,
+            transition: `opacity ${SLIDE_MS - 80}ms ease ${phase === "closing" ? 120 : 0}ms`,
+          }}
+        >
+          {destLabel}
+        </span>
+      </div>
       <nav
         aria-label="primary"
         className={`fixed left-1/2 z-[80] -translate-x-1/2 transition-all duration-500 ease-out ${

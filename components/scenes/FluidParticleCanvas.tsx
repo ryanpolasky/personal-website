@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 
@@ -114,7 +114,8 @@ function makeXGeom(w: number, t: number): THREE.BufferGeometry {
 
 function ResponsiveCamera() {
   const { camera, size } = useThree();
-  useEffect(() => {
+  // useLayoutEffect: zoom must commit before first frame, else init uses stale viewport.
+  useLayoutEffect(() => {
     const ortho = camera as THREE.OrthographicCamera;
     if (!ortho.isOrthographicCamera) return;
     const targetZoom = Math.max(110, Math.min(240, size.height / 6.5));
@@ -438,10 +439,10 @@ function ParticleField({
   useFrame((state, deltaSec) => {
     const dt = Math.min(deltaSec, 1 / 30);
     const pointer = pointerRef.current;
-    // read viewport from live state - ResponsiveCamera mutates camera.zoom
-    // imperatively, so the closure-captured viewport from useThree() goes stale.
-    const halfW = state.viewport.width / 2;
-    const halfH = state.viewport.height / 2;
+    // getCurrentViewport: live recompute; state.viewport caches stale on zoom change.
+    const v = state.viewport.getCurrentViewport(state.camera);
+    const halfW = v.width / 2;
+    const halfH = v.height / 2;
 
     if (
       !Number.isFinite(halfW) ||

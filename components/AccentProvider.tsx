@@ -50,12 +50,16 @@ export function useAccentCycle(): () => void {
 }
 
 export function AccentProvider({ children }: { children: React.ReactNode }) {
-  // SSR renders index 0; randomized on client mount (CSS vars only change
-  // post-hydration so no mismatch).
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    setIndex(Math.floor(Math.random() * ACCENTS.length));
+    const boot = (window as Window & { __bootAccentIndex?: number })
+      .__bootAccentIndex;
+    setIndex(
+      typeof boot === "number" && boot >= 0 && boot < ACCENTS.length
+        ? boot
+        : Math.floor(Math.random() * ACCENTS.length),
+    );
   }, []);
 
   const accent = ACCENTS[index];

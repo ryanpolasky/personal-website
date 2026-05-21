@@ -30,18 +30,48 @@ export function SmoothScrollProvider({
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    // cold-load hash: snap to top, let Nav curtain-wash down to the anchor.
-    // runs before any early return so touch/reduced-motion users get it too.
-    const initialHash = window.location.hash;
-    let bootHashScroll = 0;
-    if (initialHash && initialHash !== "#") {
-      window.scrollTo(0, 0);
-      bootHashScroll = window.setTimeout(() => {
-        window.dispatchEvent(
-          new CustomEvent("nav:wash", { detail: { id: initialHash.slice(1) } }),
-        );
-      }, 80);
-    }
+    const w = window as Window & { __bootHash?: string };
+    const bootHash = w.__bootHash;
+    delete w.__bootHash;
+    const bootTimers: number[] = [];
+    const bootStart = performance.now();
+    const MIN_BOOT_MS = 900;
+    const liftBootCurtain = () => {
+      const curtain = document.getElementById("__boot-curtain");
+      if (!curtain) return;
+      curtain.style.transform = "translate3d(0, -100%, 0)";
+      bootTimers.push(window.setTimeout(() => curtain.remove(), 700));
+    };
+    const teleportToBootHash = () => {
+      if (!bootHash || bootHash === "#") return;
+      history.replaceState(
+        null,
+        "",
+        window.location.pathname + window.location.search + bootHash,
+      );
+      const target = document.getElementById(bootHash.slice(1));
+      if (!target) return;
+      window.dispatchEvent(new CustomEvent("nav:teleport"));
+      const l = lenisRef.current;
+      if (l) l.scrollTo(target, { immediate: true });
+      else target.scrollIntoView({ behavior: "auto" });
+    };
+    const runBootTeleport = () => {
+      teleportToBootHash();
+      const elapsed = performance.now() - bootStart;
+      const remaining = Math.max(0, MIN_BOOT_MS - elapsed);
+      const lift = () =>
+        bootTimers.push(window.setTimeout(liftBootCurtain, remaining));
+      if (document.readyState === "complete") {
+        lift();
+      } else {
+        const onLoad = () => {
+          window.removeEventListener("load", onLoad);
+          lift();
+        };
+        window.addEventListener("load", onLoad);
+      }
+    };
 
     const isTouch = window.matchMedia("(pointer: coarse)").matches;
     const reduced = window.matchMedia(
@@ -50,8 +80,9 @@ export function SmoothScrollProvider({
     if (isTouch || reduced) {
       // skip lenis; ScrollTrigger falls back to native scroll.
       ScrollTrigger.refresh();
+      bootTimers.push(window.setTimeout(runBootTeleport, 50));
       return () => {
-        window.clearTimeout(bootHashScroll);
+        bootTimers.forEach((id) => window.clearTimeout(id));
       };
     }
 
@@ -102,11 +133,13 @@ export function SmoothScrollProvider({
     window.addEventListener("resize", refresh);
     const t = window.setTimeout(refresh, 500);
 
+    bootTimers.push(window.setTimeout(runBootTeleport, 50));
+
     return () => {
       window.removeEventListener("load", refresh);
       window.removeEventListener("resize", refresh);
       window.clearTimeout(t);
-      window.clearTimeout(bootHashScroll);
+      bootTimers.forEach((id) => window.clearTimeout(id));
       removeSnaps.forEach((off) => off());
       snap.destroy();
       lenis.off("scroll", onScroll);
