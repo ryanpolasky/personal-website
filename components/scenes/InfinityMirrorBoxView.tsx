@@ -27,6 +27,21 @@ type PointerState = {
   active: number;
 };
 
+// scroll-arc phase helpers: split 720vh of travel into perceptual acts.
+// ignition peaks at ~0.5 (apex). dive is a narrow camera-dolly window.
+function smoothstep01(edge0: number, edge1: number, x: number): number {
+  const t = THREE.MathUtils.clamp((x - edge0) / (edge1 - edge0), 0, 1);
+  return t * t * (3 - 2 * t);
+}
+function ignitionT(p: number): number {
+  return smoothstep01(0.3, 0.5, p) * (1 - smoothstep01(0.5, 0.85, p));
+}
+function diveT(p: number): number {
+  return Math.sin(
+    THREE.MathUtils.clamp((p - 0.42) / 0.16, 0, 1) * Math.PI,
+  );
+}
+
 function makeSigilTexture(accent: {
   base: string;
   warm: string;
@@ -146,14 +161,29 @@ function MirrorWall({
   rotation,
   size,
   tier,
+  progressRef,
 }: {
   position: [number, number, number];
   rotation: [number, number, number];
   size: [number, number];
   tier: PerformanceTier;
+  progressRef: React.MutableRefObject<number>;
 }) {
+  // drei's MeshReflectorMaterial subclasses MeshStandardMaterial; ref the
+  // shared base shape so we can mutate .color each frame for the wall drift.
+  const matRef = useRef<THREE.MeshStandardMaterial | null>(null);
+  const baseColor = useMemo(() => new THREE.Color(0x020208), []);
+  const tintColor = useMemo(() => new THREE.Color(0x190a23), []);
+
+  useFrame(() => {
+    if (tier === "low") return;
+    const mat = matRef.current;
+    if (!mat || !mat.color) return;
+    const ignition = ignitionT(progressRef.current);
+    mat.color.copy(baseColor).lerp(tintColor, ignition * 0.35);
+  });
+
   if (tier === "low") {
-    // dark non-mirror wall - skips per-frame reflection pass.
     return (
       <mesh position={position} rotation={rotation}>
         <planeGeometry args={size} />
@@ -170,6 +200,8 @@ function MirrorWall({
     <mesh position={position} rotation={rotation}>
       <planeGeometry args={size} />
       <MeshReflectorMaterial
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ref={matRef as any}
         blur={tier === "high" ? [120, 40] : [56, 22]}
         resolution={tier === "high" ? 160 : 88}
         mixBlur={0.92}
@@ -186,8 +218,13 @@ function MirrorWall({
   );
 }
 
-function MirrorRoom({ tier }: { tier: PerformanceTier }) {
-  // walls ordered by visual importance; tier slices trim from end.
+function MirrorRoom({
+  tier,
+  progressRef,
+}: {
+  tier: PerformanceTier;
+  progressRef: React.MutableRefObject<number>;
+}) {
   const walls = useMemo(() => {
     const s = 7.6;
     return [
@@ -195,19 +232,18 @@ function MirrorRoom({ tier }: { tier: PerformanceTier }) {
         position: [0, -s / 2, 0],
         rotation: [-Math.PI / 2, 0, 0],
         size: [s, s],
-      }, // floor
-      { position: [0, 0, -s / 2], rotation: [0, 0, 0], size: [s, s] }, // back
-      { position: [-s / 2, 0, 0], rotation: [0, Math.PI / 2, 0], size: [s, s] }, // left
-      { position: [s / 2, 0, 0], rotation: [0, -Math.PI / 2, 0], size: [s, s] }, // right
-      { position: [0, s / 2, 0], rotation: [Math.PI / 2, 0, 0], size: [s, s] }, // ceiling
-      { position: [0, 0, s / 2], rotation: [0, Math.PI, 0], size: [s, s] }, // front
+      },
+      { position: [0, 0, -s / 2], rotation: [0, 0, 0], size: [s, s] },
+      { position: [-s / 2, 0, 0], rotation: [0, Math.PI / 2, 0], size: [s, s] },
+      { position: [s / 2, 0, 0], rotation: [0, -Math.PI / 2, 0], size: [s, s] },
+      { position: [0, s / 2, 0], rotation: [Math.PI / 2, 0, 0], size: [s, s] },
+      { position: [0, 0, s / 2], rotation: [0, Math.PI, 0], size: [s, s] },
     ] as Array<{
       position: [number, number, number];
       rotation: [number, number, number];
       size: [number, number];
     }>;
   }, []);
-  // high: 5 walls (no front); medium: 4 (no front/ceiling); low: 6 cheap.
   const activeWalls =
     tier === "high"
       ? walls.slice(0, 5)
@@ -224,9 +260,239 @@ function MirrorRoom({ tier }: { tier: PerformanceTier }) {
           rotation={wall.rotation}
           size={wall.size}
           tier={tier}
+          progressRef={progressRef}
         />
       ))}
     </group>
+  );
+}
+
+// armillary outer cage: 2-3 thin emissive toruses counter-rotating at
+// different tilts. mirror walls turn this into an orrery-style infinity.
+function ArmillaryRings({
+  tier,
+  progressRef,
+}: {
+  tier: PerformanceTier;
+  progressRef: React.MutableRefObject<number>;
+}) {
+  const groupRef = useRef<THREE.Group>(null);
+  const ring1Ref = useRef<THREE.Mesh>(null);
+  const ring2Ref = useRef<THREE.Mesh>(null);
+  const ring3Ref = useRef<THREE.Mesh>(null);
+  const timeRef = useRef(0);
+  const accent = useAccent();
+
+  useFrame((_, dt) => {
+    const step = Math.min(dt, 1 / 30);
+    timeRef.current += step;
+    const t = timeRef.current;
+    const p = progressRef.current;
+    const ignition = ignitionT(p);
+
+    if (groupRef.current) {
+      groupRef.current.scale.setScalar(1 + ignition * 0.12);
+    }
+    if (ring1Ref.current) {
+      ring1Ref.current.rotation.y = t * 0.35 + p * 1.2;
+      ring1Ref.current.rotation.z = Math.sin(t * 0.2) * 0.08;
+    }
+    if (ring2Ref.current) {
+      ring2Ref.current.rotation.x = -t * 0.42 - p * 0.9;
+      ring2Ref.current.rotation.y = Math.cos(t * 0.18) * 0.12;
+    }
+    if (ring3Ref.current) {
+      ring3Ref.current.rotation.z = t * 0.28 + p * 0.6;
+      ring3Ref.current.rotation.x = Math.sin(t * 0.16) * 0.1;
+    }
+  });
+
+  return (
+    <group ref={groupRef}>
+      <mesh ref={ring1Ref} rotation={[0.5, 0, 0]}>
+        <torusGeometry args={[1.05, 0.018, 10, 96]} />
+        <meshBasicMaterial
+          color={accent.soft}
+          transparent
+          opacity={0.92}
+          blending={THREE.AdditiveBlending}
+          toneMapped={false}
+          depthWrite={false}
+        />
+      </mesh>
+      <mesh ref={ring2Ref} rotation={[0, 0, Math.PI / 2.4]}>
+        <torusGeometry args={[1.22, 0.014, 10, 96]} />
+        <meshBasicMaterial
+          color={accent.warm}
+          transparent
+          opacity={0.88}
+          blending={THREE.AdditiveBlending}
+          toneMapped={false}
+          depthWrite={false}
+        />
+      </mesh>
+      {tier === "high" && (
+        <mesh ref={ring3Ref} rotation={[Math.PI / 3, 0, Math.PI / 3]}>
+          <torusGeometry args={[1.38, 0.011, 8, 80]} />
+          <meshBasicMaterial
+            color={accent.base}
+            transparent
+            opacity={0.78}
+            blending={THREE.AdditiveBlending}
+            toneMapped={false}
+            depthWrite={false}
+          />
+        </mesh>
+      )}
+    </group>
+  );
+}
+
+// instanced dust ring around the sigil. one draw call for 130-420 particles.
+// per-instance color cycles warm/base/soft for chromatic variety in bloom.
+function OrbitingParticles({ tier }: { tier: PerformanceTier }) {
+  const meshRef = useRef<THREE.InstancedMesh>(null);
+  const accent = useAccent();
+  const count = tier === "high" ? 420 : tier === "medium" ? 260 : 130;
+  const particles = useMemo(() => {
+    return Array.from({ length: count }, (_, i) => {
+      const a = (i / count) * Math.PI * 2;
+      const layer = i % 6;
+      return {
+        a,
+        baseR: 1.1 + layer * 0.22 + Math.sin(i * 17.3) * 0.05,
+        baseY: (layer - 2.5) * 0.2,
+        s: 0.018 + ((i * 13) % 9) * 0.003,
+        speed: 0.04 + ((i * 7) % 5) * 0.012,
+      };
+    });
+  }, [count]);
+
+  const dummy = useMemo(() => new THREE.Object3D(), []);
+  const timeRef = useRef(0);
+
+  useEffect(() => {
+    const mesh = meshRef.current;
+    if (!mesh) return;
+    const c = new THREE.Color();
+    for (let i = 0; i < count; i += 1) {
+      const hex =
+        i % 3 === 0
+          ? accent.warm
+          : i % 3 === 1
+            ? accent.base
+            : accent.soft;
+      c.set(hex);
+      mesh.setColorAt(i, c);
+    }
+    if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
+  }, [accent, count]);
+
+  useFrame((_, dt) => {
+    const mesh = meshRef.current;
+    if (!mesh) return;
+    const step = Math.min(dt, 1 / 30);
+    timeRef.current += step;
+    const t = timeRef.current;
+    for (let i = 0; i < count; i += 1) {
+      const cfg = particles[i];
+      const angle = cfg.a + t * cfg.speed;
+      const r = cfg.baseR + Math.sin(t * 0.6 + i) * 0.04;
+      dummy.position.set(
+        Math.cos(angle) * r,
+        cfg.baseY,
+        Math.sin(angle) * r,
+      );
+      const s = cfg.s * (1 + Math.sin(t * 2.2 + i) * 0.18);
+      dummy.scale.setScalar(s);
+      dummy.updateMatrix();
+      mesh.setMatrixAt(i, dummy.matrix);
+    }
+    mesh.instanceMatrix.needsUpdate = true;
+  });
+
+  return (
+    <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
+      <sphereGeometry args={[1, 6, 6]} />
+      <meshBasicMaterial
+        transparent
+        opacity={0.72}
+        blending={THREE.AdditiveBlending}
+        depthWrite={false}
+        toneMapped={false}
+      />
+    </instancedMesh>
+  );
+}
+
+function randomOuterPointInto(v: THREE.Vector3) {
+  const theta = Math.random() * Math.PI * 2;
+  const phi = Math.acos(2 * Math.random() - 1);
+  const r = 2.5 + Math.random() * 0.9;
+  v.set(
+    Math.sin(phi) * Math.cos(theta) * r,
+    Math.cos(phi) * r * 0.7,
+    Math.sin(phi) * Math.sin(theta) * r,
+  );
+}
+
+// inward-streaming energy sparks: each spawns at a random outer point,
+// travels toward origin with eased trajectory, fades out, respawns.
+// sells the sigil as "gathering energy". very cheap (instanced, low count).
+function EnergySparks({ tier }: { tier: PerformanceTier }) {
+  const meshRef = useRef<THREE.InstancedMesh>(null);
+  const accent = useAccent();
+  const count = tier === "high" ? 36 : tier === "medium" ? 20 : 8;
+
+  const sparks = useMemo(() => {
+    return Array.from({ length: count }, () => {
+      const origin = new THREE.Vector3();
+      randomOuterPointInto(origin);
+      return {
+        origin,
+        t: Math.random(),
+        duration: 1.6 + Math.random() * 1.4,
+      };
+    });
+  }, [count]);
+
+  const dummy = useMemo(() => new THREE.Object3D(), []);
+
+  useFrame((_, dt) => {
+    const mesh = meshRef.current;
+    if (!mesh) return;
+    const step = Math.min(dt, 1 / 30);
+    for (let i = 0; i < count; i += 1) {
+      const s = sparks[i];
+      s.t += step / s.duration;
+      if (s.t >= 1) {
+        randomOuterPointInto(s.origin);
+        s.t = 0;
+        s.duration = 1.6 + Math.random() * 1.4;
+      }
+      const eased = 1 - Math.pow(1 - s.t, 3);
+      const k = 1 - eased;
+      dummy.position.set(s.origin.x * k, s.origin.y * k, s.origin.z * k);
+      const fade = Math.sin(s.t * Math.PI);
+      dummy.scale.setScalar(0.055 * fade);
+      dummy.updateMatrix();
+      mesh.setMatrixAt(i, dummy.matrix);
+    }
+    mesh.instanceMatrix.needsUpdate = true;
+  });
+
+  return (
+    <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
+      <sphereGeometry args={[1, 8, 8]} />
+      <meshBasicMaterial
+        color={accent.warm}
+        transparent
+        opacity={0.98}
+        blending={THREE.AdditiveBlending}
+        depthWrite={false}
+        toneMapped={false}
+      />
+    </instancedMesh>
   );
 }
 
@@ -244,7 +510,6 @@ function OrbitingShards({
   const shards = useMemo(() => {
     const count = tier === "high" ? 7 : tier === "medium" ? 5 : 3;
     return Array.from({ length: count }, (_, i) => ({
-      // staggered plane/speed per shard prevents an obvious ring pattern.
       radius: 1.6 + (i % 3) * 0.55 + Math.sin(i * 1.7) * 0.18,
       tilt: (i / count) * Math.PI * 1.4 + Math.sin(i) * 0.4,
       yawSpeed: 0.18 + ((i * 7) % 5) * 0.04,
@@ -290,6 +555,7 @@ function OrbitingShards({
             opacity={0.65}
             blending={THREE.AdditiveBlending}
             depthWrite={false}
+            toneMapped={false}
           />
         </mesh>
       ))}
@@ -313,20 +579,23 @@ function LightSigil({
   const timeRef = useRef(0);
   const accent = useAccent();
   const sigilTexture = useMemo(() => makeSigilTexture(accent), [accent]);
-  const particles = useMemo(() => {
-    const count = tier === "high" ? 180 : tier === "medium" ? 110 : 56;
-    return Array.from({ length: count }, (_, i) => {
-      const a = (i / count) * Math.PI * 2;
-      const layer = i % 5;
-      return {
-        a,
-        layer,
-        r: 1.1 + layer * 0.22 + Math.sin(i * 17.3) * 0.05,
-        y: (layer - 2) * 0.22,
-        s: 0.018 + ((i * 13) % 9) * 0.003,
-      };
-    });
-  }, [tier]);
+
+  const baseEmissive = useMemo(
+    () => new THREE.Color(accent.soft),
+    [accent.soft],
+  );
+  const warmEmissive = useMemo(
+    () => new THREE.Color(accent.warm),
+    [accent.warm],
+  );
+  const baseLightColor = useMemo(
+    () => new THREE.Color(accent.base),
+    [accent.base],
+  );
+  const warmLightColor = useMemo(
+    () => new THREE.Color(accent.warm),
+    [accent.warm],
+  );
 
   useEffect(() => {
     return () => {
@@ -341,6 +610,7 @@ function LightSigil({
     timeRef.current += step;
     const p = progressRef.current;
     const pulse = Math.sin(p * Math.PI);
+    const ignition = ignitionT(p);
     const pointer = pointerRef.current;
     if (group) {
       group.rotation.x = THREE.MathUtils.damp(
@@ -362,24 +632,35 @@ function LightSigil({
         step,
       );
       group.scale.setScalar(
-        1 + Math.sin(timeRef.current * 0.8) * 0.035 + p * 0.24 + pulse * 0.2,
+        1 +
+          Math.sin(timeRef.current * 0.8) * 0.035 +
+          p * 0.24 +
+          pulse * 0.2 +
+          ignition * 0.18,
       );
     }
     if (knot) {
       knot.rotation.x += step * 0.22;
       knot.rotation.y += step * 0.18;
-      const mat = knot.material as THREE.MeshStandardMaterial;
-      mat.emissiveIntensity = 0.5 + p * 0.32 + pulse * 0.42;
+      const mat = knot.material as THREE.MeshPhysicalMaterial;
+      mat.emissiveIntensity =
+        0.5 + p * 0.32 + pulse * 0.42 + ignition * 0.55;
+      mat.emissive.copy(baseEmissive).lerp(warmEmissive, ignition);
       if (sigilTexture) {
         sigilTexture.offset.x = (sigilTexture.offset.x + step * 0.018) % 1;
         sigilTexture.offset.y = (sigilTexture.offset.y + step * 0.006) % 1;
       }
     }
     if (coreLightRef.current) {
-      coreLightRef.current.intensity = 2.75 + p * 0.65 + pulse * 2.25;
+      coreLightRef.current.intensity =
+        2.75 + p * 0.65 + pulse * 2.25 + ignition * 1.8;
+      coreLightRef.current.color
+        .copy(baseLightColor)
+        .lerp(warmLightColor, ignition * 0.6);
     }
     if (warmLightRef.current) {
-      warmLightRef.current.intensity = 1.15 + pulse * 1.25;
+      warmLightRef.current.intensity =
+        1.15 + pulse * 1.25 + ignition * 0.9;
     }
   });
 
@@ -411,11 +692,11 @@ function LightSigil({
           sheenColor={accent.warm}
         />
       </mesh>
+      {/* inner additive glow core - amplified by bloom + bounced in reflections. */}
       <mesh>
         <sphereGeometry
           args={[0.58, tier === "high" ? 64 : 32, tier === "high" ? 32 : 16]}
         />
-        {/* inner additive glow - additive blending amplifies in reflections. */}
         <meshBasicMaterial
           color={accent.base}
           transparent
@@ -424,32 +705,8 @@ function LightSigil({
           depthWrite={false}
         />
       </mesh>
-      {particles.map((particle, i) => (
-        <mesh
-          key={i}
-          position={[
-            Math.cos(particle.a) * particle.r,
-            particle.y,
-            Math.sin(particle.a) * particle.r,
-          ]}
-          scale={particle.s}
-        >
-          <sphereGeometry args={[1, 8, 8]} />
-          <meshBasicMaterial
-            color={
-              i % 3 === 0
-                ? accent.warm
-                : i % 3 === 1
-                  ? accent.base
-                  : accent.soft
-            }
-            transparent
-            opacity={0.72}
-            blending={THREE.AdditiveBlending}
-            depthWrite={false}
-          />
-        </mesh>
-      ))}
+      {/* armillary cage around the knot */}
+      <ArmillaryRings tier={tier} progressRef={progressRef} />
       <pointLight
         ref={coreLightRef}
         color={accent.base}
@@ -467,16 +724,18 @@ function LightSigil({
   );
 }
 
-// camera orbits at fixed radius inside the box; scroll rotates orbit angle.
+// camera path: base orbit + apex dive (narrow window at ~p=0.5 that dollies
+// inward + widens FOV for a single dramatic beat instead of constant motion).
 function MirrorCamera({
   pointerRef,
   reduced,
+  progressRef,
 }: {
   pointerRef: React.MutableRefObject<PointerState>;
   reduced: boolean;
+  progressRef: React.MutableRefObject<number>;
 }) {
   const cameraRef = useRef<THREE.PerspectiveCamera>(null);
-  const progressRef = useSectionProgress();
   const timeRef = useRef(0);
 
   useFrame((_, dt) => {
@@ -486,14 +745,16 @@ function MirrorCamera({
     timeRef.current += step;
     const p = reduced ? 0.5 : progressRef.current;
     const pulse = Math.sin(p * Math.PI);
+    const dive = diveT(p);
     const pointer = pointerRef.current;
     pointer.smoothX = THREE.MathUtils.damp(pointer.smoothX, pointer.x, 4, step);
     pointer.smoothY = THREE.MathUtils.damp(pointer.smoothY, pointer.y, 4, step);
     const t = timeRef.current;
     const angle =
       -0.7 + p * 1.75 + Math.sin(t * 0.07) * 0.08 + pointer.smoothX * 0.2;
-    const radius = 1.9;
-    const yOffset = 0.42 + Math.sin(t * 0.06) * 0.14 + pointer.smoothY * 0.18;
+    const radius = 1.9 - dive * 0.55;
+    const yOffset =
+      0.42 + Math.sin(t * 0.06) * 0.14 + pointer.smoothY * 0.18 - dive * 0.18;
     camera.position.x = THREE.MathUtils.damp(
       camera.position.x,
       Math.sin(angle) * radius,
@@ -512,7 +773,12 @@ function MirrorCamera({
       2.6,
       step,
     );
-    camera.fov = THREE.MathUtils.damp(camera.fov, 66 + pulse * 8, 2.8, step);
+    camera.fov = THREE.MathUtils.damp(
+      camera.fov,
+      66 + pulse * 8 + dive * 7,
+      2.8,
+      step,
+    );
     camera.updateProjectionMatrix();
     camera.lookAt(pointer.smoothX * 0.15, pointer.smoothY * 0.12, 0);
     camera.rotateZ(Math.sin(t * 0.09) * 0.022 + (p - 0.5) * 0.035);
@@ -528,6 +794,23 @@ function MirrorCamera({
       far={45}
     />
   );
+}
+
+// fog opens up during ignition for visual clarity at the apex.
+function FogAnimator({
+  progressRef,
+}: {
+  progressRef: React.MutableRefObject<number>;
+}) {
+  const { scene } = useThree();
+  useFrame(() => {
+    const fog = scene.fog as THREE.Fog | null;
+    if (!fog) return;
+    const ignition = ignitionT(progressRef.current);
+    fog.far = 11 + ignition * 3.5;
+    fog.near = 3.2 - ignition * 0.7;
+  });
+  return null;
 }
 
 function MirrorPost({ tier }: { tier: PerformanceTier }) {
@@ -571,15 +854,22 @@ function InfinityMirrorScene({
     <>
       <color attach="background" args={["#010105"]} />
       <fog attach="fog" args={["#010105", 3.2, 11]} />
-      <MirrorCamera pointerRef={pointerRef} reduced={reduced} />
+      <FogAnimator progressRef={progressRef} />
+      <MirrorCamera
+        pointerRef={pointerRef}
+        reduced={reduced}
+        progressRef={progressRef}
+      />
       <ambientLight intensity={0.035} />
-      <MirrorRoom tier={tier} />
+      <MirrorRoom tier={tier} progressRef={progressRef} />
       <LightSigil
         pointerRef={pointerRef}
         progressRef={progressRef}
         tier={tier}
       />
       <OrbitingShards tier={tier} progressRef={progressRef} />
+      <OrbitingParticles tier={tier} />
+      <EnergySparks tier={tier} />
       <MirrorPost tier={tier} />
     </>
   );

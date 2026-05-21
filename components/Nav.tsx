@@ -9,6 +9,7 @@ import {
   type TransitionEvent,
 } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useLenis } from "@/components/SmoothScrollProvider";
 
 // floating nav with active-section tracking and curtain-masked anchor teleports.
@@ -32,6 +33,12 @@ function destLabelFor(id: string): string {
 }
 
 export function Nav() {
+  // nav anchors target home-page section ids (about/experience/projects/contact)
+  // via document.getElementById. on any other route those ids are absent, so
+  // clicks are dead. hide the nav entirely outside `/` for now.
+  const pathname = usePathname();
+  const homeRoute = pathname === "/";
+
   const [scrolled, setScrolled] = useState(false);
   const [active, setActive] = useState<string>("");
   const [phase, setPhase] = useState<NavPhase>("idle");
@@ -219,6 +226,8 @@ export function Nav() {
     },
     [lenis, phase],
   );
+
+  if (!homeRoute) return null;
 
   return (
     <>

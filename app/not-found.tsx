@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { MagneticButton } from "@/components/MagneticButton";
 
 export default function NotFound() {
   return (
@@ -20,19 +20,13 @@ export default function NotFound() {
         You followed a broken link or typed something that doesn&apos;t exist.
         That happens.
       </p>
-      <div className="mt-10 flex items-center gap-4">
-        <Link
+      <div className="mt-10 flex justify-center">
+        <MagneticButton
           href="/"
-          className="inline-flex items-center gap-2 rounded-full bg-[var(--color-accent)] px-6 py-3 text-sm text-[var(--color-bg)] hover:bg-[var(--color-accent-warm)] transition-colors"
+          className="inline-flex items-center gap-2 rounded-full bg-[var(--color-accent)] px-6 py-3 text-sm text-[var(--color-bg)] transition-colors hover:bg-[var(--color-accent-warm)]"
         >
           take me home →
-        </Link>
-        <Link
-          href="/gallery"
-          className="inline-flex items-center gap-2 rounded-full border border-[var(--color-line-strong)] px-6 py-3 text-sm text-[var(--color-text)] hover:border-[var(--color-text)] transition-colors"
-        >
-          or browse the gallery
-        </Link>
+        </MagneticButton>
       </div>
     </main>
   );
