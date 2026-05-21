@@ -168,6 +168,16 @@ export function ProjectsRail() {
     const ACTIVE_HOLD_MS = 60;
     const FADE_MS = 220;
 
+    // declared before morphTick because the rAF tick closes over them and
+    // can fire synchronously on mount (sync run + IO entry) before the
+    // later `let` block would otherwise initialize them.
+    let currentIdx = 0;
+    let lockedUntil = 0;
+    let cueHoldUntil = 0;
+    let cueHoldDirection: 1 | -1 = 1;
+    let cueHoldName: string | undefined;
+    let cueHoldColor: string | undefined;
+
     const insetX = () =>
       window.innerWidth >= 1024 ? 112 : window.innerWidth >= 640 ? 64 : 24;
     const insetTop = () =>
@@ -389,12 +399,6 @@ export function ProjectsRail() {
     if (tickIO) tickIO.observe(section);
     else startTick();
 
-    let currentIdx = 0;
-    let lockedUntil = 0;
-    let cueHoldUntil = 0;
-    let cueHoldDirection: 1 | -1 = 1;
-    let cueHoldName: string | undefined;
-    let cueHoldColor: string | undefined;
     const CUE_HOLD_MS = 200;
     let lenisResumeTimer: number | null = null;
     // two-step boundary gate: first crossing wall-locks at the slot edge;
