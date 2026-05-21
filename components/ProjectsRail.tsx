@@ -178,6 +178,26 @@ export function ProjectsRail() {
     let cueHoldName: string | undefined;
     let cueHoldColor: string | undefined;
 
+    const renderCue = (
+      el: HTMLDivElement | null,
+      nameEl: HTMLSpanElement | null,
+      tension: number,
+      direction: 1 | -1,
+      name?: string,
+      color?: string,
+    ) => {
+      if (!el || !nameEl) return;
+      if (name && nameEl.textContent !== name) nameEl.textContent = name;
+      el.style.opacity = `${tension}`;
+      el.style.transform = `translate3d(${direction * (1 - tension) * 30}px, 0, 0)`;
+      if (color) {
+        const gradientDir = direction === 1 ? "to left" : "to right";
+        el.style.background = `linear-gradient(${gradientDir}, color-mix(in oklab, ${color} 55%, transparent), color-mix(in oklab, ${color} 18%, transparent) 55%, transparent)`;
+      } else {
+        el.style.background = "none";
+      }
+    };
+
     const insetX = () =>
       window.innerWidth >= 1024 ? 112 : window.innerWidth >= 640 ? 64 : 24;
     const insetTop = () =>
@@ -404,25 +424,6 @@ export function ProjectsRail() {
     // two-step boundary gate: first crossing wall-locks at the slot edge;
     // a second same-direction crossing advances. cleared on programmatic nav.
     let boundaryArmedDir: 1 | -1 | 0 = 0;
-    const renderCue = (
-      el: HTMLDivElement | null,
-      nameEl: HTMLSpanElement | null,
-      tension: number,
-      direction: 1 | -1,
-      name?: string,
-      color?: string,
-    ) => {
-      if (!el || !nameEl) return;
-      if (name && nameEl.textContent !== name) nameEl.textContent = name;
-      el.style.opacity = `${tension}`;
-      el.style.transform = `translate3d(${direction * (1 - tension) * 30}px, 0, 0)`;
-      if (color) {
-        const gradientDir = direction === 1 ? "to left" : "to right";
-        el.style.background = `linear-gradient(${gradientDir}, color-mix(in oklab, ${color} 55%, transparent), color-mix(in oklab, ${color} 18%, transparent) 55%, transparent)`;
-      } else {
-        el.style.background = "none";
-      }
-    };
 
     let wheelBlocker: ((e: WheelEvent) => void) | null = null;
     let tailAbsorber: ((e: WheelEvent) => void) | null = null;
