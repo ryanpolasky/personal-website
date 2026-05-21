@@ -112,6 +112,18 @@ function makeXGeom(w: number, t: number): THREE.BufferGeometry {
   return g;
 }
 
+function ResponsiveCamera() {
+  const { camera, size } = useThree();
+  useEffect(() => {
+    const ortho = camera as THREE.OrthographicCamera;
+    if (!ortho.isOrthographicCamera) return;
+    const targetZoom = Math.max(110, Math.min(240, size.height / 6.5));
+    ortho.zoom = targetZoom;
+    ortho.updateProjectionMatrix();
+  }, [camera, size.width, size.height]);
+  return null;
+}
+
 /* ----- particle field (canvas-internal scene + physics rAF) ----- */
 
 function ParticleField({
@@ -627,6 +639,7 @@ export default function FluidParticleCanvas({
         pointerEvents: "none",
       }}
     >
+      <ResponsiveCamera />
       <ParticleField
         pointerRef={pointerRef}
         particles={particles}

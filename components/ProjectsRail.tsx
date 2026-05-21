@@ -429,6 +429,17 @@ export function ProjectsRail() {
     let wheelBlocker: ((e: WheelEvent) => void) | null = null;
     let tailAbsorber: ((e: WheelEvent) => void) | null = null;
 
+    // input-type classifier. trackpads need the full lock + tail absorber to
+    // soak up inertia events; mouse wheels are discrete notches with no
+    // inertia and feel laggy if blocked. classify per-event so input type
+    // can flip mid-session (user switches from trackpad to plugged-in mouse).
+    let lastInputIsMouseWheel = false;
+    const wheelClassifier = (e: WheelEvent) => {
+      lastInputIsMouseWheel =
+        e.deltaMode === 1 || Math.abs(e.deltaY) >= 80;
+    };
+    window.addEventListener("wheel", wheelClassifier, { passive: true });
+
     const hideCues = () => {
       renderCue(nextCue, nextCueName, 0, 1);
       renderCue(prevCue, prevCueName, 0, -1);
@@ -460,13 +471,18 @@ export function ProjectsRail() {
     ) => {
       releaseWheelBlock();
 
+      // mouse wheel: short blocker (just the transition), no inertia absorber.
+      // trackpad: full lock + absorber to soak inertia tail.
+      const isMouseWheel = lastInputIsMouseWheel;
+      const effectiveLockMs = isMouseWheel
+        ? Math.min(lockMs, TRANSITION_S * 1000)
+        : lockMs;
+
       let lastWheelTime = performance.now();
       let lastWheelDelta = 0;
       let firstSeenAfterLock = false;
       let absorberInstalledAt = 0;
 
-      // capture + stopImmediatePropagation: required to beat Lenis's bubble
-      // listener (otherwise Lenis still accumulates wheel input during lock).
       const blocker = (e: WheelEvent) => {
         lastWheelTime = performance.now();
         lastWheelDelta = Math.abs(e.deltaY || e.deltaX);
@@ -491,7 +507,6 @@ export function ProjectsRail() {
 
       if (lenisResumeTimer !== null) window.clearTimeout(lenisResumeTimer);
       lenisResumeTimer = window.setTimeout(() => {
-        // drop the hard lock
         if (wheelBlocker) {
           window.removeEventListener("wheel", wheelBlocker, {
             capture: true,
@@ -499,21 +514,34 @@ export function ProjectsRail() {
           wheelBlocker = null;
         }
 
-        // momentum absorber: eats decaying wheel tails (trackpad inertia)
-        // without swallowing a fresh mousewheel click after lock release.
+        const restartLenis = () => {
+          const l2 = lenisRef.current;
+          if (l2) {
+            l2.scrollTo(window.scrollY, { immediate: true, force: true });
+            l2.velocity = 0;
+            l2.lastVelocity = 0;
+            l2.start();
+          }
+        };
+
+        if (isMouseWheel) {
+          // no inertia to absorb on a discrete-notch wheel - release cleanly.
+          restartLenis();
+          lenisResumeTimer = null;
+          return;
+        }
+
         const ABSORBER_MAX_MS = 850;
         absorberInstalledAt = performance.now();
         const absorber = (e: WheelEvent) => {
           const now = performance.now();
           const delta = Math.abs(e.deltaY || e.deltaX);
 
-          // hard time cap: never absorb past this.
           if (now - absorberInstalledAt > ABSORBER_MAX_MS) {
             releaseTailAbsorber();
             return;
           }
 
-          // first event after release: re-anchor timing to NOW.
           if (!firstSeenAfterLock) {
             firstSeenAfterLock = true;
             lastWheelTime = now;
@@ -523,13 +551,11 @@ export function ProjectsRail() {
             return;
           }
 
-          // gap > 60ms or sharp delta spike = new physical input.
           if (now - lastWheelTime > 60 || delta > lastWheelDelta * 1.5 + 4) {
             releaseTailAbsorber();
             return;
           }
 
-          // otherwise: residual momentum. eat it.
           lastWheelTime = now;
           lastWheelDelta = delta;
           e.preventDefault();
@@ -542,15 +568,9 @@ export function ProjectsRail() {
         });
         tailAbsorber = absorber;
 
-        const l2 = lenisRef.current;
-        if (l2) {
-          l2.scrollTo(window.scrollY, { immediate: true, force: true });
-          l2.velocity = 0;
-          l2.lastVelocity = 0;
-          l2.start();
-        }
+        restartLenis();
         lenisResumeTimer = null;
-      }, lockMs);
+      }, effectiveLockMs);
     };
 
     const ctx = gsap.context(() => {
@@ -666,9 +686,6 @@ export function ProjectsRail() {
         lockScrollDuringSwipe(lockMs, targetScrollY);
       };
 
-      // land + absorb on section entry; same lock machinery as slot swipes.
-      // suppressed during nav teleports so a scrollTo(0) that passes through
-      // the rail bottom-up doesn't get hijacked into the last project's slot.
       const landOnEntry = (idx: number, fromBelow: boolean) => {
         if (performance.now() < suppressEntryLandingsUntil) return;
         const sectionTop =
@@ -757,7 +774,8 @@ export function ProjectsRail() {
         },
       });
 
-      if (window.location.hash === "#projects") {
+      const initialHash = window.location.hash;
+      if (initialHash === "#projects") {
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
             const sectionTop =
@@ -770,6 +788,8 @@ export function ProjectsRail() {
             }
           });
         });
+      } else if (initialHash && initialHash !== "#") {
+        suppressEntryLandingsUntil = performance.now() + 1500;
       }
     }, section);
 
@@ -788,6 +808,7 @@ export function ProjectsRail() {
       window.removeEventListener("resize", setSectionHeight);
       window.removeEventListener("projects:reset", onProjectsReset);
       window.removeEventListener("nav:teleport", onNavTeleport);
+      window.removeEventListener("wheel", wheelClassifier);
       ro.disconnect();
       if (lenisResumeTimer !== null) {
         window.clearTimeout(lenisResumeTimer);

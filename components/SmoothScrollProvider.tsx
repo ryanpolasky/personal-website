@@ -30,6 +30,19 @@ export function SmoothScrollProvider({
   useEffect(() => {
     if (typeof window === "undefined") return;
 
+    // cold-load hash: snap to top, let Nav curtain-wash down to the anchor.
+    // runs before any early return so touch/reduced-motion users get it too.
+    const initialHash = window.location.hash;
+    let bootHashScroll = 0;
+    if (initialHash && initialHash !== "#") {
+      window.scrollTo(0, 0);
+      bootHashScroll = window.setTimeout(() => {
+        window.dispatchEvent(
+          new CustomEvent("nav:wash", { detail: { id: initialHash.slice(1) } }),
+        );
+      }, 80);
+    }
+
     const isTouch = window.matchMedia("(pointer: coarse)").matches;
     const reduced = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
@@ -37,7 +50,9 @@ export function SmoothScrollProvider({
     if (isTouch || reduced) {
       // skip lenis; ScrollTrigger falls back to native scroll.
       ScrollTrigger.refresh();
-      return;
+      return () => {
+        window.clearTimeout(bootHashScroll);
+      };
     }
 
     const instance = new Lenis({
@@ -91,6 +106,7 @@ export function SmoothScrollProvider({
       window.removeEventListener("load", refresh);
       window.removeEventListener("resize", refresh);
       window.clearTimeout(t);
+      window.clearTimeout(bootHashScroll);
       removeSnaps.forEach((off) => off());
       snap.destroy();
       lenis.off("scroll", onScroll);
