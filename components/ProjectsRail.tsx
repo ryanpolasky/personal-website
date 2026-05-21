@@ -177,6 +177,7 @@ export function ProjectsRail() {
     let cueHoldDirection: 1 | -1 = 1;
     let cueHoldName: string | undefined;
     let cueHoldColor: string | undefined;
+    let suppressEntryLandingsUntil = 0;
 
     const renderCue = (
       el: HTMLDivElement | null,
@@ -666,7 +667,10 @@ export function ProjectsRail() {
       };
 
       // land + absorb on section entry; same lock machinery as slot swipes.
+      // suppressed during nav teleports so a scrollTo(0) that passes through
+      // the rail bottom-up doesn't get hijacked into the last project's slot.
       const landOnEntry = (idx: number, fromBelow: boolean) => {
+        if (performance.now() < suppressEntryLandingsUntil) return;
         const sectionTop =
           section.getBoundingClientRect().top + window.scrollY;
         const vh = window.innerHeight;
@@ -771,12 +775,19 @@ export function ProjectsRail() {
 
     const onProjectsReset = () => jumpToIdxRef.current(0);
     window.addEventListener("projects:reset", onProjectsReset);
+    // nav curtain teleports briefly suppress landOnEntry so a scrollTo(0)
+    // crossing the rail bottom-up doesn't trigger onEnterBack → last-project land.
+    const onNavTeleport = () => {
+      suppressEntryLandingsUntil = performance.now() + 800;
+    };
+    window.addEventListener("nav:teleport", onNavTeleport);
 
     return () => {
       stopTick();
       tickIO?.disconnect();
       window.removeEventListener("resize", setSectionHeight);
       window.removeEventListener("projects:reset", onProjectsReset);
+      window.removeEventListener("nav:teleport", onNavTeleport);
       ro.disconnect();
       if (lenisResumeTimer !== null) {
         window.clearTimeout(lenisResumeTimer);

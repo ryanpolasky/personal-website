@@ -7,21 +7,22 @@ import { useEffect, useRef } from "react";
 export function HeroHeadline() {
   const headlineRef = useRef<HTMLHeadingElement>(null);
   const barRef = useRef<HTMLSpanElement>(null);
+  const wrapperRef = useRef<HTMLSpanElement>(null);
+  const buildRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     const headline = headlineRef.current;
     const bar = barRef.current;
-    if (!headline || !bar) return;
+    const wrapper = wrapperRef.current;
+    const buildEl = buildRef.current;
+    if (!headline || !bar || !wrapper || !buildEl) return;
 
     let raf = 0;
     let alive = true;
-    // damped progress + last-frame timestamp. raw scroll-derived `target` jumps
-    // instantly with the viewport; `current` chases it with a per-frame lerp
-    // so the bar's growth never feels mechanically locked to scroll.
+    // damped progress (0 = fully under "build", 1 = extended through "stuff.")
     let current = 0;
     let lastNow = 0;
 
-    // visibility gate so we don't keep ticking when the hero is way offscreen.
     const io =
       typeof IntersectionObserver === "undefined"
         ? null
@@ -33,24 +34,33 @@ export function HeroHeadline() {
           );
     io?.observe(headline);
 
+    // Range gives the actual rendered text bounds (offsetWidth on inline
+    // spans is unreliable for italic display fonts with overhanging glyphs).
+    const range = document.createRange();
+    const wrapperRect = () => wrapper.getBoundingClientRect();
+
     const tick = (now: number) => {
       if (alive) {
         const dt = Math.min(0.05, lastNow ? (now - lastNow) / 1000 : 1 / 60);
-        const rect = headline.getBoundingClientRect();
         const vh = window.innerHeight || 1;
-        // map the headline's top position to a 0..1 fill. when the headline's
-        // top is ~60% down the viewport (resting position on page load) the
-        // bar is empty; when the headline's top reaches the viewport top the
-        // bar is full. the 0.6 reference gives the bar a comfortable scroll
-        // distance to grow over without snapping.
-        const t = (vh * 0.6 - rect.top) / (vh * 0.6);
+        // 0 at page top (bar under "build"), 1 once scrolled a viewport down
+        // (bar extended through "stuff."). decoupled from the headline's own
+        // rect so initial paint always starts at exactly "build".
+        const t = window.scrollY / vh;
         const target = t < 0 ? 0 : t > 1 ? 1 : t;
-        // damp current toward target. k tuned so the bar settles ~120ms behind
-        // the cursor wheel, which feels like an inertial fill rather than a
-        // direct read of scroll position.
         const k = 1 - Math.exp(-dt * 9);
         current += (target - current) * k;
-        bar.style.transform = `scaleX(${current.toFixed(4)})`;
+        const wrap = wrapperRect();
+        range.selectNodeContents(buildEl);
+        const buildBox = range.getBoundingClientRect();
+        const buildWidth = buildBox.width;
+        const buildLeft = buildBox.left - wrap.left;
+        range.selectNodeContents(wrapper);
+        const totalBox = range.getBoundingClientRect();
+        const fullEnd = totalBox.right - wrap.left;
+        const startWidth = buildLeft + buildWidth;
+        const width = startWidth + (fullEnd - startWidth) * current;
+        bar.style.width = `${width.toFixed(2)}px`;
       }
       lastNow = now;
       raf = requestAnimationFrame(tick);
@@ -70,32 +80,27 @@ export function HeroHeadline() {
     >
       i&apos;m ryan,
       <br />i{" "}
-      <span className="relative inline-block mt-2">
+      <span
+        ref={wrapperRef}
+        className="relative inline-block mt-2"
+        style={{
+          fontFamily: "var(--font-display)",
+          fontStyle: "italic",
+          fontVariationSettings: '"opsz" 144, "SOFT" 80, "WONK" 1',
+        }}
+      >
         <span
           ref={barRef}
           aria-hidden
-          className="pointer-events-none absolute left-0 block w-full origin-left bg-[var(--color-accent)]"
+          className="pointer-events-none absolute left-0 block bg-[var(--color-accent)]"
           style={{
-            // sit the bar low against the text baseline like a thick underline
-            // that's partially obscured by the descenders. em-based so it scales
-            // with the clamp() font size.
             bottom: "0.04em",
             height: "0.16em",
-            // start collapsed so the first paint matches the page-load progress.
-            transform: "scaleX(0)",
+            width: 0,
             zIndex: -1,
           }}
         />
-        <span
-          style={{
-            fontFamily: "var(--font-display)",
-            fontStyle: "italic",
-            fontVariationSettings: '"opsz" 144, "SOFT" 80, "WONK" 1',
-          }}
-        >
-          build
-        </span>{" "}
-        stuff.
+        <span ref={buildRef}>build</span> stuff.
       </span>
     </h1>
   );

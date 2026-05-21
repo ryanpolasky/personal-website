@@ -153,6 +153,11 @@ export function Nav() {
 
         setPhase("closed");
 
+        // notify ProjectsRail (and any other listeners) that the next scroll
+        // change is a curtain-masked teleport, not user-driven; rail uses this
+        // to skip onEnter/onEnterBack landings that would hijack the teleport.
+        window.dispatchEvent(new CustomEvent("nav:teleport"));
+
         if (lenis) {
           if (pending.id) {
             lenis.scrollTo(pending.element, { immediate: true });

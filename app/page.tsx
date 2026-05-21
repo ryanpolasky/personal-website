@@ -18,7 +18,6 @@ export default function HomePage() {
       {/* 01. HERO */}
       <section
         id="hero"
-        data-snap
         className="relative flex min-h-[100svh] items-center px-4 py-6 sm:px-6 sm:py-8"
         aria-label="intro"
       >
