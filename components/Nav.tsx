@@ -26,7 +26,7 @@ const SECTIONS = [
 ];
 
 function destLabelFor(id: string): string {
-  if (!id) return "welcome";
+  if (!id) return "ryan";
   const sec = SECTIONS.find((s) => s.id === id);
   return sec?.label ?? id;
 }
@@ -35,7 +35,7 @@ export function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [active, setActive] = useState<string>("");
   const [phase, setPhase] = useState<NavPhase>("idle");
-  const [destLabel, setDestLabel] = useState("welcome");
+  const [destLabel, setDestLabel] = useState("ryan");
   const transitionTimer = useRef<number | null>(null);
   const pendingTarget = useRef<{ id: string; element: HTMLElement } | null>(
     null,
@@ -147,7 +147,7 @@ export function Nav() {
     }
 
     pendingTarget.current = { id: "", element: document.body };
-    setDestLabel("welcome");
+    setDestLabel("ryan");
     setPhase("closing");
   }, []);
 
