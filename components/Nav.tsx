@@ -11,6 +11,7 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLenis } from "@/components/SmoothScrollProvider";
+import { UtdWebringButtons } from "@/components/UtdWebringButtons";
 
 // floating nav with active-section tracking and curtain-masked anchor teleports.
 
@@ -43,6 +44,8 @@ export function Nav() {
   const [active, setActive] = useState<string>("");
   const [phase, setPhase] = useState<NavPhase>("idle");
   const [destLabel, setDestLabel] = useState("ryan");
+  // mobile drawer toggle; only relevant <sm. opens via top-left hamburger.
+  const [mobileOpen, setMobileOpen] = useState(false);
   const transitionTimer = useRef<number | null>(null);
   const pendingTarget = useRef<{ id: string; element: HTMLElement } | null>(
     null,
@@ -274,7 +277,7 @@ export function Nav() {
       </div>
       <nav
         aria-label="primary"
-        className={`fixed left-1/2 z-[80] -translate-x-1/2 transition-all duration-500 ease-out ${
+        className={`fixed left-1/2 z-[80] hidden -translate-x-1/2 transition-all duration-500 ease-out sm:block ${
           scrolled ? "top-3" : "top-5"
         }`}
       >
@@ -336,6 +339,131 @@ export function Nav() {
           </span>
         </div>
       </nav>
+
+      <button
+        type="button"
+        onClick={() => setMobileOpen((v) => !v)}
+        aria-label={mobileOpen ? "close menu" : "open menu"}
+        aria-expanded={mobileOpen}
+        className="fixed right-[max(1rem,env(safe-area-inset-right))] top-[max(1rem,env(safe-area-inset-top))] z-[190] flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-black/45 text-white backdrop-blur-md shadow-[0_8px_30px_-12px_rgba(0,0,0,0.35)] transition-transform duration-300 active:scale-95 sm:hidden"
+      >
+        <span className="relative block h-3.5 w-5">
+          <span
+            className={`absolute left-0 right-0 top-0 h-px bg-current transition-transform duration-300 ${
+              mobileOpen ? "translate-y-[7px] rotate-45" : ""
+            }`}
+          />
+          <span
+            className={`absolute left-0 right-0 top-1/2 h-px bg-current transition-opacity duration-200 ${
+              mobileOpen ? "opacity-0" : "opacity-100"
+            }`}
+          />
+          <span
+            className={`absolute bottom-0 left-0 right-0 h-px bg-current transition-transform duration-300 ${
+              mobileOpen ? "-translate-y-[7px] -rotate-45" : ""
+            }`}
+          />
+        </span>
+      </button>
+
+      <div
+        aria-hidden={!mobileOpen}
+        className={`fixed inset-0 z-[180] sm:hidden ${
+          mobileOpen ? "pointer-events-auto" : "pointer-events-none"
+        }`}
+      >
+        <div
+          onClick={() => setMobileOpen(false)}
+          className={`absolute inset-0 bg-black/45 backdrop-blur-sm transition-opacity duration-300 ${
+            mobileOpen ? "opacity-100" : "opacity-0"
+          }`}
+        />
+        <div
+          className={`absolute right-0 top-0 flex h-full w-[min(86vw,360px)] flex-col gap-7 overflow-y-auto border-l border-[var(--color-line)] bg-[var(--color-bg)] px-7 pb-[max(2.5rem,env(safe-area-inset-bottom))] pt-[max(5rem,calc(env(safe-area-inset-top)+4.25rem))] shadow-2xl transition-transform duration-300 ease-out ${
+            mobileOpen ? "translate-x-0" : "translate-x-full"
+          }`}
+        >
+          <Link
+            href="/"
+            onClick={(e) => {
+              setMobileOpen(false);
+              handleHomeClick(e);
+            }}
+            className="display text-3xl leading-none tracking-tight text-[var(--color-text)]"
+            data-hoverable
+          >
+            ryan polasky
+          </Link>
+          <span
+            className="flex w-fit items-center gap-2 rounded-full bg-[var(--color-accent)]/10 px-3 py-1.5 text-[10px] uppercase tracking-[0.24em] text-[var(--color-text)]"
+            style={{ fontFamily: "var(--font-mono)" }}
+          >
+            <span className="relative inline-flex h-1.5 w-1.5">
+              <span className="absolute inset-0 animate-ping rounded-full bg-[var(--color-accent-warm)] opacity-60" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]" />
+            </span>
+            available may 2026
+          </span>
+          <nav
+            aria-label="mobile primary"
+            className="mt-2 flex flex-col gap-3"
+          >
+            {SECTIONS.map((s) => (
+              <a
+                key={s.id}
+                href={`#${s.id}`}
+                onClick={(e) => {
+                  setMobileOpen(false);
+                  handleNavClick(e, s.id);
+                }}
+                className="display flex min-h-12 items-baseline gap-3 text-[2.25rem] leading-none tracking-tight text-[var(--color-text)] transition-colors hover:text-[var(--color-accent)]"
+                data-hoverable
+              >
+                <span
+                  className="text-[10px] uppercase tracking-[0.24em] text-[var(--color-text-faint)]"
+                  style={{ fontFamily: "var(--font-mono)" }}
+                >
+                  0{SECTIONS.indexOf(s) + 1}
+                </span>
+                {s.label}
+              </a>
+            ))}
+          </nav>
+          <div
+            className="rounded-[1.25rem] border border-[var(--color-line)] bg-[color-mix(in_oklab,var(--color-bg)_70%,transparent)] p-3"
+            style={{ fontFamily: "var(--font-mono)" }}
+          >
+            <p className="mb-3 text-[10px] uppercase tracking-[0.24em] text-[var(--color-text-faint)]">
+              utd cs webring
+            </p>
+            <UtdWebringButtons
+              className="justify-start"
+              onNavigate={() => setMobileOpen(false)}
+            />
+          </div>
+          <div
+            className="mt-auto flex flex-col gap-2 text-[11px] uppercase tracking-[0.22em] text-[var(--color-text-muted)]"
+            style={{ fontFamily: "var(--font-mono)" }}
+          >
+            <a
+              href="mailto:ryanpolasky@hotmail.com"
+              onClick={() => setMobileOpen(false)}
+              className="transition-colors hover:text-[var(--color-text)]"
+            >
+              ryanpolasky@hotmail.com →
+            </a>
+            <a
+              href="/assets/Ryan_Polasky_Resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setMobileOpen(false)}
+              className="transition-colors hover:text-[var(--color-text)]"
+            >
+              resume.pdf ↗
+            </a>
+          </div>
+        </div>
+      </div>
     </>
   );
 }

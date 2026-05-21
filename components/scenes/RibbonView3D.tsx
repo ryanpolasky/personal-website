@@ -41,9 +41,11 @@ function Ribbon({
   const leftCapRef = useRef<THREE.Mesh>(null);
   const rightCapRef = useRef<THREE.Mesh>(null);
   const lastGeometryAt = useRef(-Infinity);
-  const segAlong = tier === "low" ? 96 : tier === "medium" ? 144 : SEG_ALONG;
-  const segAround = tier === "low" ? 8 : tier === "medium" ? 12 : SEG_AROUND;
-  const rebuildFps = tier === "low" ? 18 : tier === "medium" ? 36 : 48;
+  const segAlong = tier === "low" ? 72 : tier === "medium" ? 144 : SEG_ALONG;
+  const segAround = tier === "low" ? 6 : tier === "medium" ? 12 : SEG_AROUND;
+  // rebuild cadence: mobile/low rebuilds 12x/sec (half-fast still looks fluid
+  // since the tube path is smooth and small phase shifts blend visually).
+  const rebuildFps = tier === "low" ? 12 : tier === "medium" ? 36 : 48;
   // clamped-dt accumulator survives paused frameloops without phase jump.
   const timeRef = useRef(0);
   // only OUR generated geometries live here; `initial` is owned by the useMemo.

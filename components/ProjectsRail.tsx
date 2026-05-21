@@ -7,6 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type Lenis from "lenis";
 import { getEnabledProjects, WIDTH_VW } from "@/lib/projects";
 import { ProjectPanel } from "@/components/ProjectPanel";
+import { MobileProjectsStack } from "@/components/MobileProjectsStack";
 import { useLenis } from "@/components/SmoothScrollProvider";
 
 if (typeof window !== "undefined") {
@@ -106,6 +107,7 @@ export function ProjectsRail() {
 
   useLayoutEffect(() => {
     if (typeof window === "undefined") return;
+    if (!window.matchMedia("(min-width: 640px)").matches) return;
     const section = sectionRef.current;
     const stage = stageRef.current;
     const rail = railRef.current;
@@ -126,6 +128,10 @@ export function ProjectsRail() {
         "snap-mandatory",
         "no-scrollbar",
       );
+      rail.style.touchAction = "pan-x pan-y pinch-zoom";
+      rail.style.overscrollBehaviorX = "contain";
+      rail.style.overscrollBehaviorY = "auto";
+      rail.style.setProperty("-webkit-overflow-scrolling", "touch");
       stage.style.setProperty("--rail-clip-x", "0px");
       stage.style.setProperty("--rail-clip-top", "0px");
       stage.style.setProperty("--rail-clip-bottom", "0px");
@@ -831,27 +837,28 @@ export function ProjectsRail() {
   }, []);
 
   return (
-    <section
-      ref={sectionRef}
-      id="projects"
-      data-snap
-      className="relative w-full"
-      aria-label="projects"
-    >
-      <div
-        ref={stageRef}
-        data-stage="dark"
-        className="stage sticky w-full"
-        style={{
-          top: 0,
-          height: "100svh",
-          borderRadius: "var(--rail-radius, 28px)",
-          clipPath:
-            "inset(var(--rail-clip-top, 128px) var(--rail-clip-x, 112px) var(--rail-clip-bottom, 128px) var(--rail-clip-x, 112px) round var(--rail-radius, 28px))",
-          WebkitClipPath:
-            "inset(var(--rail-clip-top, 128px) var(--rail-clip-x, 112px) var(--rail-clip-bottom, 128px) var(--rail-clip-x, 112px) round var(--rail-radius, 28px))",
-        }}
+    <div id="projects" data-snap>
+      <MobileProjectsStack />
+      <section
+        ref={sectionRef}
+        id="projects-desktop"
+        className="relative hidden w-full sm:block"
+        aria-label="projects"
       >
+        <div
+          ref={stageRef}
+          data-stage="dark"
+          className="stage sticky w-full"
+          style={{
+            top: 0,
+            height: "100svh",
+            borderRadius: "var(--rail-radius, 28px)",
+            clipPath:
+              "inset(var(--rail-clip-top, 128px) var(--rail-clip-x, 112px) var(--rail-clip-bottom, 128px) var(--rail-clip-x, 112px) round var(--rail-radius, 28px))",
+            WebkitClipPath:
+              "inset(var(--rail-clip-top, 128px) var(--rail-clip-x, 112px) var(--rail-clip-bottom, 128px) var(--rail-clip-x, 112px) round var(--rail-radius, 28px))",
+          }}
+        >
         <div
           className="stage-edge"
           aria-hidden
@@ -986,7 +993,8 @@ export function ProjectsRail() {
             scroll to translate
           </p>
         </div>
-      </div>
-    </section>
+        </div>
+      </section>
+    </div>
   );
 }

@@ -135,7 +135,9 @@ function Blob({
   const target = useRef({ distort: 0.32, rotY: 0, rotX: 0 });
   // capped-dt clock avoids wave-phase pop when canvas resumes from `never`.
   const timeRef = useRef(0);
-  const detail = tier === "low" ? 2 : tier === "medium" ? 3 : 5;
+  // blob renders at ~24px so even a small detail bump is essentially free
+  // and removes the visible facet edges that read as 'pixelated' on low tier.
+  const detail = tier === "low" ? 4 : tier === "medium" ? 4 : 5;
 
   useFrame((_state, rawDt) => {
     if (!meshRef.current) return;
@@ -266,7 +268,9 @@ export function ContactBlobView({ className }: { className?: string }) {
   useGlobalContactPointer(stressRef, hostRef, visible);
   const reduced = useReducedMotion();
   const tier = usePerformanceTier(reduced);
-  const dpr = tierDpr(tier, 1.25, 1, 0.85);
+  // bump DPR on every tier - the canvas is tiny, native+ resolution costs
+  // basically nothing and crisps up the silhouette.
+  const dpr = tierDpr(tier, 2, 1.75, 1.5);
   const [ready, setReady] = useState(false);
   useEffect(() => setReady(true), []);
   const frameloop = !ready
@@ -289,7 +293,8 @@ export function ContactBlobView({ className }: { className?: string }) {
         dpr={dpr}
         frameloop={frameloop}
         gl={{
-          antialias: tier === "high",
+          // tiny canvas - AA is essentially free and a huge legibility win.
+          antialias: true,
           alpha: true,
           powerPreference: "high-performance",
         }}

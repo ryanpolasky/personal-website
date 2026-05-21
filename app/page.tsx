@@ -15,20 +15,29 @@ export default function HomePage() {
     <main id="main" className="relative">
       <Cursor />
 
-      {/* 01. HERO */}
+      {/* 01. HERO - exactly 100svh tall with padded frame on all sides.
+          stage uses h-full so it fits the inner box (svh minus padding). */}
       <section
         id="hero"
-        className="relative flex min-h-[100svh] items-center px-4 py-6 sm:px-6 sm:py-8"
+        className="relative flex h-[100dvh] items-stretch pb-[max(0.75rem,env(safe-area-inset-bottom))] pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] pt-[max(0.75rem,env(safe-area-inset-top))] sm:min-h-[100svh] sm:items-center sm:px-6 sm:py-8"
         aria-label="intro"
       >
         <HeroStage>
           <HeroClusterView className="pointer-events-none absolute inset-0" />
           <div className="stage-edge" aria-hidden />
 
-          <div className="absolute inset-0 z-30 flex flex-col justify-between p-8 sm:p-12 md:p-16">
+          {/* mobile-only legibility tint: dark gradient weighted to the bottom
+              where the headline + body + ctas live. desktop has more breathing
+              room so the R's can speak for themselves. */}
+          <div
+            className="pointer-events-none absolute inset-0 z-20 bg-[linear-gradient(180deg,rgba(0,0,0,0)_0%,rgba(0,0,0,0.05)_60%,rgba(0,0,0,0.18)_100%)] sm:hidden"
+            aria-hidden
+          />
+
+          <div className="absolute inset-0 z-30 flex flex-col justify-between p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] sm:p-12 md:p-16">
             <div className="flex items-start justify-between">
               <p
-                className="text-[10.5px] uppercase tracking-[0.32em] text-white/55"
+                className="text-[10.5px] uppercase tracking-[0.32em] text-white/75 [text-shadow:0_1px_6px_rgba(0,0,0,0.7)] sm:text-white/55 sm:[text-shadow:none]"
                 style={{ fontFamily: "var(--font-mono)" }}
               >
                 00 - ryan polasky
@@ -43,16 +52,16 @@ export default function HomePage() {
 
             <div>
               <p
-                className="mb-5 text-[11px] uppercase tracking-[0.32em] text-white/55"
+                className="mb-5 text-[11px] uppercase tracking-[0.32em] text-white/80 [text-shadow:0_1px_6px_rgba(0,0,0,0.7)] sm:text-white/55 sm:[text-shadow:none]"
                 style={{ fontFamily: "var(--font-mono)" }}
               >
                 software engineer · backend + ai / llm tooling
               </p>
               <HeroHeadline />
-              <p className="mt-5 max-w-md text-[15px] leading-relaxed text-white/65 sm:text-[17px]">
+              <p className="mt-4 max-w-md text-[14.5px] leading-relaxed text-white/90 [text-shadow:0_1px_8px_rgba(0,0,0,0.6),0_1px_2px_rgba(0,0,0,0.5)] sm:mt-5 sm:text-[17px] sm:text-white/65 sm:[text-shadow:none]">
                 ut dallas cs grad (may &apos;26). two summers at apple. most
                 recently built{" "}
-                <em className="not-italic text-white/85">autopsy</em> - forensic
+                <em className="not-italic text-white">autopsy</em> - forensic
                 memory for ai coding agents.
               </p>
 
@@ -61,9 +70,10 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* scroll cue */}
+          {/* scroll cue - desktop only; mobile users already know to scroll
+              and the cue clutters the tight viewport. */}
           <div
-            className="pointer-events-none absolute bottom-5 left-1/2 z-30 flex -translate-x-1/2 flex-col items-center gap-2"
+            className="pointer-events-none absolute bottom-5 left-1/2 z-30 hidden -translate-x-1/2 flex-col items-center gap-2 sm:flex"
             aria-hidden
           >
             <span
@@ -83,13 +93,11 @@ export default function HomePage() {
       {/* 03. ABOUT + EXPERIENCE */}
       <AboutSection />
 
-      {/* 04. KALEIDOSCOPE (pb gives breath before the projects morph in) */}
-      <div className="pb-16 sm:pb-24">
-        <KaleidoscopeSection />
-      </div>
+      {/* 04. KALEIDOSCOPE - returns null on touch; breathing pb lives inside. */}
+      <KaleidoscopeSection />
 
       {/* 05. PROJECTS RAIL */}
-      <div className="pb-8 sm:pb-12">
+      <div className="sm:pb-12">
         <ProjectsRail />
       </div>
 

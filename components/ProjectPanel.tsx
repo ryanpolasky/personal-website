@@ -122,7 +122,7 @@ export function ProjectPanel({
   const titleColumn = (
     <div className="relative isolate max-w-5xl">
       <span
-        className="display pointer-events-none absolute -left-[0.08em] top-1/2 z-0 -translate-y-1/2 select-none text-[clamp(13rem,31vw,32rem)] leading-none tracking-tighter opacity-[0.115]"
+        className="display pointer-events-none absolute -left-[0.08em] top-1/2 z-0 -translate-y-1/2 select-none text-[clamp(7rem,31vw,32rem)] leading-none tracking-tighter opacity-[0.115] sm:text-[clamp(13rem,31vw,32rem)]"
         style={{
           color: tintColor,
           fontStyle: "italic",
@@ -169,17 +169,17 @@ export function ProjectPanel({
           id={`project-${project.id}-name`}
           className={`display relative z-10 max-w-[11ch] leading-[0.82] tracking-[-0.055em] text-[var(--color-text-invert)] ${
             hasIntroHero
-              ? "text-[clamp(3rem,7vw,8rem)]"
-              : "text-[clamp(3.4rem,9.8vw,11rem)]"
+              ? "text-[clamp(2.45rem,12vw,8rem)] sm:text-[clamp(3rem,7vw,8rem)]"
+              : "text-[clamp(2.8rem,13vw,11rem)] sm:text-[clamp(3.4rem,9.8vw,11rem)]"
           }`}
         >
           {project.name}
         </h3>
       )}
-      <p className="relative z-10 mt-6 max-w-[44ch] text-[clamp(1.15rem,1.65vw,2rem)] leading-tight text-[var(--color-text-invert-muted)]">
+      <p className="relative z-10 mt-4 max-w-[44ch] text-[clamp(1rem,4.6vw,2rem)] leading-tight text-[var(--color-text-invert-muted)] sm:mt-6 sm:text-[clamp(1.15rem,1.65vw,2rem)]">
         {project.tagline}
       </p>
-      <div className="relative z-10 mt-6 flex max-w-[42ch] flex-wrap gap-1.5">
+      <div className="relative z-10 mt-4 flex max-w-[42ch] flex-wrap gap-1.5 sm:mt-6">
         {project.stack.map((s) => (
           <span key={s} className="chip chip-invert">
             {s}
@@ -190,13 +190,13 @@ export function ProjectPanel({
   );
 
   const asideElement = (
-    <aside className="relative isolate flex max-h-[68svh] flex-col self-stretch overflow-hidden rounded-[2rem] border border-white/10 bg-[radial-gradient(circle_at_14%_0%,color-mix(in_oklab,var(--project-tint)_18%,transparent),transparent_34%),linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.045)_44%,rgba(255,255,255,0.075))] p-5 shadow-[0_24px_90px_-48px_rgba(0,0,0,0.9),inset_0_1px_0_rgba(255,255,255,0.12)] sm:p-7">
+    <aside className="relative isolate flex max-h-[40svh] flex-col self-stretch overflow-hidden rounded-[1.5rem] border border-white/10 bg-[radial-gradient(circle_at_14%_0%,color-mix(in_oklab,var(--project-tint)_18%,transparent),transparent_34%),linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.045)_44%,rgba(255,255,255,0.075))] p-4 shadow-[0_24px_90px_-48px_rgba(0,0,0,0.9),inset_0_1px_0_rgba(255,255,255,0.12)] sm:max-h-[68svh] sm:rounded-[2rem] sm:p-7">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[linear-gradient(to_right,transparent,var(--project-tint),transparent)] opacity-70" />
       <div className="min-h-0 flex-1 overflow-hidden">
-        <p className="text-[15px] leading-relaxed text-[var(--color-text-invert-muted)] sm:text-base">
+        <p className="text-[13px] leading-relaxed text-[var(--color-text-invert-muted)] sm:text-base">
           {project.body}
         </p>
-        <div className="mt-7 grid gap-5 border-t border-white/10 pt-6 sm:grid-cols-2">
+        <div className="mt-4 grid gap-3 border-t border-white/10 pt-4 sm:mt-7 sm:gap-5 sm:pt-6 sm:grid-cols-2">
           <div style={{ fontFamily: "var(--font-mono)" }}>
             <p className="text-[10.5px] uppercase tracking-[0.3em] text-[var(--color-text-invert-faint)]">
               role
@@ -215,7 +215,7 @@ export function ProjectPanel({
           </div>
         </div>
       </div>
-      <div className="mt-6 flex flex-wrap items-center justify-center gap-2.5">
+      <div className="mt-4 flex flex-wrap items-center justify-center gap-2 sm:mt-6 sm:gap-2.5">
         {project.href ? (
           <Link
             href={project.href}
@@ -299,8 +299,12 @@ export function ProjectPanel({
       <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_18%_22%,color-mix(in_oklab,var(--project-tint)_34%,transparent),transparent_28%),radial-gradient(circle_at_82%_68%,color-mix(in_oklab,var(--project-tint)_18%,transparent),transparent_32%),linear-gradient(135deg,rgba(255,255,255,0.08),transparent_42%,rgba(255,255,255,0.04))]" />
       <div className="pointer-events-none absolute inset-y-0 left-[100svw] -z-10 w-px bg-[linear-gradient(to_bottom,transparent,rgba(255,255,255,0.16),transparent)] opacity-70" />
       <div className="flex h-full">
-        {/* INTRO SPREAD */}
-        <section className="flex h-full w-[100svw] shrink-0 px-5 pb-24 pt-14 sm:px-8 sm:pb-28 sm:pt-20 md:px-12 lg:px-10 xl:px-14">
+        {/* INTRO SPREAD. snap-start lets mobile snap to each spread (no-op on
+            desktop where the rail is GSAP-jacked, not native-scrolled).
+            touch-action is intentionally NOT set here so the rail's pan-x
+            (set in ProjectsRail's coarse fallback) governs the gesture - that
+            lets vertical swipes bubble to the page. */}
+        <section className="flex h-full w-[100svw] shrink-0 snap-start snap-always px-4 pb-20 pt-12 sm:px-8 sm:pb-28 sm:pt-20 md:px-12 lg:px-10 xl:px-14">
           <div className="mx-auto grid h-full w-full max-w-[min(90svw,1900px)] grid-rows-[auto_1fr] gap-5 sm:gap-8">
             <div
               className="flex items-baseline justify-between gap-6 text-[var(--color-text-invert-faint)]"
@@ -318,12 +322,13 @@ export function ProjectPanel({
               </span>
             </div>
 
-            {/* 3-col (title | hero | aside) when hero present; else 2-col. */}
+            {/* mobile: vertical stack flow from top (no items-center crush).
+                desktop (lg+): 3-col title|hero|aside or 2-col title|aside. */}
             <div
               className={
                 hasIntroHero
-                  ? "grid min-h-0 items-center gap-6 lg:grid-cols-[minmax(0,1.55fr)_minmax(0,0.8fr)_minmax(290px,0.55fr)] lg:gap-7 xl:gap-10"
-                  : "grid min-h-0 items-center gap-8 lg:grid-cols-[minmax(0,1.18fr)_minmax(330px,0.62fr)] lg:gap-12 xl:gap-20"
+                  ? "grid items-start gap-4 sm:gap-6 lg:min-h-0 lg:items-center lg:grid-cols-[minmax(0,1.55fr)_minmax(0,0.8fr)_minmax(290px,0.55fr)] lg:gap-7 xl:gap-10"
+                  : "grid items-start gap-5 sm:gap-8 lg:min-h-0 lg:items-center lg:grid-cols-[minmax(0,1.18fr)_minmax(330px,0.62fr)] lg:gap-12 xl:gap-20"
               }
             >
               {titleColumn}
@@ -347,7 +352,7 @@ export function ProjectPanel({
           return (
             <section
               key={section.eyebrow}
-              className="flex h-full w-[100svw] shrink-0 px-5 pb-24 pt-14 sm:px-8 sm:pb-28 sm:pt-20 md:px-12 lg:px-10 xl:px-14"
+              className="flex h-full w-[100svw] shrink-0 snap-start snap-always px-4 pb-20 pt-12 sm:px-8 sm:pb-28 sm:pt-20 md:px-12 lg:px-10 xl:px-14"
             >
               <div className="mx-auto flex h-full w-full max-w-[min(90svw,1900px)] flex-col gap-4 sm:gap-6">
                 {isHero ? null : (

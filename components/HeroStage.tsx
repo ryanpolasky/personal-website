@@ -63,7 +63,7 @@ export function HeroStage({ children }: { children: ReactNode }) {
   return (
     <div
       ref={stageRef}
-      className="stage relative h-[88svh] min-h-[640px] w-full"
+      className="stage relative h-full w-full sm:h-[88svh] sm:min-h-[640px]"
       data-stage="dark"
       style={{ transformOrigin: "center", willChange: "transform, opacity" }}
       onClick={(e) => {

@@ -3,11 +3,25 @@
 import { useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
+import type { PerformanceTier } from "@/lib/performance";
 
 // fluid particle canvas - heavy three.js half of FluidParticleBand, dynamic-imported.
 
-const PARTICLE_COUNT = 1000;
-const SUBSTEPS = 6;
+// particle count + substep budget scale with perf tier. mobile/low gets
+// ~220 particles - enough to fill the bottom pile with depth without the
+// wallpaper-of-confetti effect at full desktop density.
+function tierParticleCount(tier: PerformanceTier): number {
+  if (tier === "high") return 1000;
+  if (tier === "medium") return 540;
+  return 220;
+}
+function tierSubsteps(tier: PerformanceTier): number {
+  if (tier === "high") return 6;
+  if (tier === "medium") return 5;
+  // 5 substeps minimum to prevent particle "boiling" and jittering.
+  // 3 was too low for the pressure solver to find equilibrium.
+  return 5;
+}
 const CELL_SIZE = 0.35;
 const GRAVITY = 20;
 const FRICTION = 0.995;
@@ -47,6 +61,11 @@ export interface PointerState {
   vy: number;
   radius: number;
   needsSync: boolean;
+  // tap-burst pulse (0..1). decays toward 0 each frame; while > 0 it adds
+  // to the cursor radius + strength so a tap creates an outward shove of
+  // nearby particles. used on touch where there is no hover/drag motion to
+  // organically push particles around.
+  pulse: number;
 }
 
 interface GridCell {
@@ -131,10 +150,12 @@ function ParticleField({
   pointerRef,
   particles,
   counts,
+  substeps,
 }: {
   pointerRef: React.MutableRefObject<PointerState>;
   particles: Particle[];
   counts: number[];
+  substeps: number;
 }) {
   const { gl } = useThree();
 
@@ -190,11 +211,12 @@ function ParticleField({
     cursorRadius: number,
     cursorStrength: number,
     cursorDrag: number,
+    cursorPulse: number,
     halfW: number,
     halfH: number,
   ) => {
-    const subDt = dt / SUBSTEPS;
-    for (let step = 0; step < SUBSTEPS; step++) {
+    const subDt = dt / substeps;
+    for (let step = 0; step < substeps; step++) {
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
         let vx = (p.x - p.oldX) * FRICTION;
@@ -388,6 +410,10 @@ function ParticleField({
       if (pointerActive > 0.01) {
         const r2 = cursorRadius * cursorRadius;
         const wakeMix = cursorDrag * pointerActive;
+        const blastActive = cursorPulse > 0.05;
+        // massively increase the radial kick on tap so it scatters the blocks
+        const blastForce = cursorPulse * 160.0;
+
         for (let i = 0; i < particles.length; i++) {
           const p = particles[i];
           const dx = p.x - cursorX;
@@ -417,8 +443,14 @@ function ParticleField({
           const newX = cursorX + nx * cursorRadius;
           const newY = cursorY + ny * cursorRadius;
           const k = 0.6;
-          const newVx = origVx * k + cursorVx * subDt * wakeMix;
-          const newVy = origVy * k + cursorVy * subDt * wakeMix;
+          let newVx = origVx * k + cursorVx * subDt * wakeMix;
+          let newVy = origVy * k + cursorVy * subDt * wakeMix;
+
+          if (blastActive) {
+            newVx += nx * blastForce * subDt;
+            newVy += ny * blastForce * subDt;
+          }
+
           p.x = newX;
           p.y = newY;
           p.oldX = newX - newVx;
@@ -464,6 +496,7 @@ function ParticleField({
       pointer.radius = 0;
       pointer.target = 0;
       pointer.active = 0;
+      pointer.pulse = 0;
       pointer.needsSync = true;
     }
 
@@ -477,6 +510,7 @@ function ParticleField({
       pointer.radius = 0;
     if (!Number.isFinite(pointer.active)) pointer.active = 0;
     if (!Number.isFinite(pointer.target)) pointer.target = 0;
+    if (!Number.isFinite(pointer.pulse) || pointer.pulse < 0) pointer.pulse = 0;
 
     const wasStuttered = deltaSec > 1 / 15;
 
@@ -537,10 +571,17 @@ function ParticleField({
     }
 
     const speed = Math.hypot(pointer.vx, pointer.vy);
-    const targetRadius = (0.45 + Math.min(speed * 0.02, 0.25)) * pointer.active;
+    // pulse decays exponentially toward 0; ~250ms half-life feels like a snap.
+    pointer.pulse = THREE.MathUtils.damp(pointer.pulse, 0, 5, dt);
+    const pulseBoost = pointer.pulse;
+    // double the pulse radius boost so it hits a larger area on tap
+    const targetRadius =
+      (0.45 + Math.min(speed * 0.02, 0.25)) * pointer.active +
+      pulseBoost * 2.8;
     pointer.radius = THREE.MathUtils.damp(pointer.radius, targetRadius, 6, dt);
-    const dynStrength = 80 + Math.min(speed * 4.0, 150);
-    const dynDrag = 1.0 + Math.min(speed * 0.1, 4.0);
+    const dynStrength =
+      80 + Math.min(speed * 4.0, 150) + pulseBoost * 400;
+    const dynDrag = 1.0 + Math.min(speed * 0.1, 4.0) + pulseBoost * 3;
 
     advancePhysics(
       dt,
@@ -552,6 +593,7 @@ function ParticleField({
       pointer.radius,
       dynStrength,
       dynDrag,
+      pulseBoost,
       halfW,
       halfH,
     );
@@ -596,14 +638,18 @@ function ParticleField({
 export default function FluidParticleCanvas({
   pointerRef,
   visible,
+  tier = "high",
 }: {
   pointerRef: React.MutableRefObject<PointerState>;
   visible: boolean;
+  tier?: PerformanceTier;
 }) {
+  const particleCount = tierParticleCount(tier);
+  const substeps = tierSubsteps(tier);
   const { particles, counts } = useMemo(() => {
     const arr: Particle[] = [];
     const counts = [0, 0, 0, 0];
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
+    for (let i = 0; i < particleCount; i++) {
       const roll = Math.random();
       const shape: Shape =
         roll < 0.5 ? 0 : roll < 0.78 ? 1 : roll < 0.92 ? 2 : 3;
@@ -622,15 +668,19 @@ export default function FluidParticleCanvas({
       });
     }
     return { particles: arr, counts };
-  }, []);
+  }, [particleCount]);
+
+  // dpr cap halves on mobile/low so we paint ~4x fewer fragments per frame.
+  const dpr: [number, number] =
+    tier === "high" ? [1, 1.5] : tier === "medium" ? [0.9, 1.25] : [0.75, 1];
 
   return (
     <Canvas
       orthographic
-      dpr={[1, 1.5]}
+      dpr={dpr}
       frameloop={visible ? "always" : "never"}
       gl={{
-        antialias: true,
+        antialias: tier !== "low",
         alpha: true,
         powerPreference: "high-performance",
       }}
@@ -647,6 +697,7 @@ export default function FluidParticleCanvas({
         pointerRef={pointerRef}
         particles={particles}
         counts={counts}
+        substeps={substeps}
       />
     </Canvas>
   );

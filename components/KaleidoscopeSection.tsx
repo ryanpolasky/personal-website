@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { useReducedMotion } from "@/lib/scroll";
 
@@ -22,6 +22,16 @@ export function KaleidoscopeSection() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const stageRef = useRef<HTMLDivElement | null>(null);
   const reduced = useReducedMotion();
+  // skip the heavy infinity-mirror scene on touch devices. mounting it on a
+  // phone gives a long blank load + low fps. we also lose the scroll-driven
+  // morph context which only reads well at desktop scale.
+  const [hideOnTouch, setHideOnTouch] = useState(false);
+  useEffect(() => {
+    const coarse =
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(pointer: coarse)").matches;
+    setHideOnTouch(coarse);
+  }, []);
 
   useLayoutEffect(() => {
     const section = sectionRef.current;
@@ -73,7 +83,10 @@ export function KaleidoscopeSection() {
     return () => cancelAnimationFrame(raf);
   }, [reduced]);
 
+  if (hideOnTouch) return null;
+
   return (
+    <div className="pb-16 sm:pb-24">
     <section
       ref={sectionRef}
       data-kaleidoscope-tunnel
@@ -111,5 +124,6 @@ export function KaleidoscopeSection() {
         />
       </div>
     </section>
+    </div>
   );
 }

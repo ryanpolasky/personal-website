@@ -85,7 +85,7 @@ const SHAPES: ShapeData[] = [
     rotation: [1.1, 0.35, 0.42],
     scale: 1.38,
     kind: "glyphR",
-    mat: "blackPlastic",
+    mat: "accentJelly",
     spinAxis: new THREE.Vector3(1, 0.5, 0.3).normalize(),
     spinSpeed: 0.09,
   },
@@ -94,7 +94,7 @@ const SHAPES: ShapeData[] = [
     rotation: [0.44, 0.12, 1.15],
     scale: 1.34,
     kind: "glyphR",
-    mat: "whitePlastic",
+    mat: "accentPlastic",
     spinAxis: new THREE.Vector3(0.2, 1, 0.6).normalize(),
     spinSpeed: -0.1,
   },
@@ -208,7 +208,7 @@ const SHAPES: ShapeData[] = [
   },
 ];
 const MEDIUM_SHAPES = SHAPES.slice(0, 13);
-const LOW_SHAPES = SHAPES.slice(0, 10);
+const LOW_SHAPES = SHAPES.slice(0, 8);
 
 function useMaterial(
   mat: MatKind,
@@ -639,10 +639,10 @@ function Cluster({
   const timeRef = useRef(0);
   const shapes =
     tier === "low" ? LOW_SHAPES : tier === "medium" ? MEDIUM_SHAPES : SHAPES;
-  const collisionPasses = tier === "high" ? 6 : tier === "medium" ? 3 : 0;
+  const collisionPasses = tier === "high" ? 6 : tier === "medium" ? 3 : 2;
 
   if (bodiesRef.current.length !== shapes.length) {
-    const sphereRadius = getRGeometry(tier).boundingSphere!.radius;
+    const sphereRadius = getRGeometry("high").boundingSphere!.radius;
     bodiesRef.current = shapes.map((shape) => ({
       position: new THREE.Vector3(...shape.position),
       velocity: new THREE.Vector3(),
@@ -861,9 +861,15 @@ function Cluster({
       4,
       step,
     );
+    // viewport-aware horizontal offset. wide desktop (aspect >= 1.3) parks
+    // the cluster to the right so hero copy gets the left half; portrait /
+    // narrow mobile centers the cluster (x=0) so it stays in frame and
+    // floats behind the stacked headline+body+ctas.
+    const aspect = state.size.width / Math.max(1, state.size.height);
+    const targetX = aspect >= 1.3 ? CLUSTER_OFFSET_X : 0;
     g.position.x = THREE.MathUtils.damp(
       g.position.x,
-      CLUSTER_OFFSET_X + Math.cos(t * 0.35) * 0.06 * idleBoost,
+      targetX + Math.cos(t * 0.35) * 0.06 * idleBoost,
       3,
       step,
     );
@@ -896,9 +902,24 @@ function HeroScene({ tier }: { tier: PerformanceTier }) {
   const pointerRef = useViewportPointer();
   return (
     <>
-      <PerspectiveCamera makeDefault position={[0, 0.08, 8.25]} fov={34} />
+      {/* low tier (mobile) pulls the camera back to 11.5z so the cluster
+          occupies a smaller fraction of the narrow viewport without touching
+          physics. scaling the group instead would silently break collisions
+          (bodies are computed in unscaled body space). */}
+      <PerspectiveCamera
+        makeDefault
+        position={[0, 0.08, tier === "low" ? 11.5 : 8.25]}
+        fov={34}
+      />
 
-      <fog attach="fog" args={["#0B0B0F", 7.5, 16]} />
+      <fog
+        attach="fog"
+        args={[
+          "#0B0B0F",
+          tier === "low" ? 10.75 : 7.5,
+          tier === "low" ? 19.25 : 16,
+        ]}
+      />
 
       {tier !== "low" && (
         <Environment
@@ -927,17 +948,19 @@ function HeroScene({ tier }: { tier: PerformanceTier }) {
           color="#FFFFFF"
         />
       )}
-      <directionalLight position={[5, 6, 4]} intensity={0.85} color="#FFFFFF" />
-      {tier !== "low" && (
-        <directionalLight
-          position={[-5, 3, 2]}
-          intensity={0.4}
-          color="#E7EBFF"
-        />
-      )}
+      <directionalLight
+        position={[5, 6, 4]}
+        intensity={tier === "low" ? 1.55 : 0.85}
+        color="#FFFFFF"
+      />
+      <directionalLight
+        position={[-5, 3, 2]}
+        intensity={tier === "low" ? 0.95 : 0.4}
+        color="#E7EBFF"
+      />
       <directionalLight
         position={[0, -3, -5]}
-        intensity={0.65}
+        intensity={tier === "low" ? 0.95 : 0.65}
         color={accent.warm}
       />
       {tier !== "low" && (
@@ -956,7 +979,7 @@ function HeroScene({ tier }: { tier: PerformanceTier }) {
           distance={8}
         />
       )}
-      <ambientLight intensity={tier === "low" ? 0.24 : 0.12} />
+      <ambientLight intensity={tier === "low" ? 0.6 : 0.12} />
 
       <Cluster pointerRef={pointerRef} tier={tier} />
     </>
@@ -991,7 +1014,7 @@ export function HeroClusterView({ className }: { className?: string }) {
         }}
         onCreated={({ gl }) => {
           gl.toneMapping = THREE.ACESFilmicToneMapping;
-          gl.toneMappingExposure = 1.08;
+          gl.toneMappingExposure = tier === "low" ? 1.25 : 1.08;
           gl.outputColorSpace = THREE.SRGBColorSpace;
         }}
         style={{ background: "transparent" }}

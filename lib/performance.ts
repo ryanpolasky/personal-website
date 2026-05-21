@@ -67,6 +67,18 @@ function detectTier(reducedMotion: boolean): PerformanceTier {
   if (override) return override;
   if (reducedMotion) return "low";
 
+  // coarse pointer = touch device. unconditionally low-tier, no matter what
+  // the cpu/gpu hints say. this catches real phones AND chrome dev tools
+  // mobile emulation (which exposes the laptop's hardware specs but flips
+  // pointer to coarse). the per-scene visuals already have coarse-only paths
+  // (kaleido off, ribbon css fallback, fewer R's) so forcing tier=low here
+  // also brings the particle count down to where it should be.
+  const coarse =
+    typeof window !== "undefined" &&
+    typeof window.matchMedia === "function" &&
+    window.matchMedia("(pointer: coarse)").matches;
+  if (coarse) return "low";
+
   const nav = navigator as NavigatorHints;
   const ua = navigator.userAgent.toLowerCase();
   const cores = navigator.hardwareConcurrency || 4;
@@ -87,6 +99,12 @@ function detectTier(reducedMotion: boolean): PerformanceTier {
   if (window.devicePixelRatio >= 2) score -= 1;
   if (ua.includes("windows") && cores <= 4) score -= 1;
   score += scoreRenderer(renderer);
+
+  // narrow viewport (small laptop screens, split windows) still gets nudged
+  // down even without coarse pointer.
+  const vw = window.innerWidth || 1024;
+  if (vw < 640) score -= 2;
+  else if (vw < 1024) score -= 1;
 
   return clampTier(score);
 }

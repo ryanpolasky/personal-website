@@ -34,8 +34,6 @@ export function HeroHeadline() {
           );
     io?.observe(headline);
 
-    // Range gives the actual rendered text bounds (offsetWidth on inline
-    // spans is unreliable for italic display fonts with overhanging glyphs).
     const range = document.createRange();
     const wrapperRect = () => wrapper.getBoundingClientRect();
 
@@ -43,9 +41,6 @@ export function HeroHeadline() {
       if (alive) {
         const dt = Math.min(0.05, lastNow ? (now - lastNow) / 1000 : 1 / 60);
         const vh = window.innerHeight || 1;
-        // 0 at page top (bar under "build"), 1 once scrolled a viewport down
-        // (bar extended through "stuff."). decoupled from the headline's own
-        // rect so initial paint always starts at exactly "build".
         const t = window.scrollY / vh;
         const target = t < 0 ? 0 : t > 1 ? 1 : t;
         const k = 1 - Math.exp(-dt * 9);
@@ -76,7 +71,10 @@ export function HeroHeadline() {
   return (
     <h1
       ref={headlineRef}
-      className="display relative max-w-[16ch] text-[clamp(2.8rem,9vw,8.5rem)] text-white leading-tight"
+      // mobile: dual-stop text-shadow (soft halo + tight contact shadow)
+      // halos the glyphs against the colorful R cluster behind them. cleared
+      // at sm+ where the desktop stage has more negative space to spare.
+      className="display relative max-w-[16ch] text-[clamp(3rem,13vw,8.5rem)] leading-tight text-white [text-shadow:0_2px_18px_rgba(0,0,0,0.55),0_1px_3px_rgba(0,0,0,0.85)] sm:text-[clamp(3.2rem,9vw,8.5rem)] sm:[text-shadow:none]"
     >
       i&apos;m ryan,
       <br />i{" "}

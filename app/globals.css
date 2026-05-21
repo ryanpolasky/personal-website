@@ -154,6 +154,24 @@ body::-webkit-scrollbar {
   z-index: 2;
 }
 
+/* mobile-only: hero stage gets a brighter baseline + softer vignette + softer
+   edge falloff. on a narrow tall viewport the original 0.55-opacity radial
+   vignette and 0.45-opacity inset top/bottom shadows pile on top of the
+   already near-black --color-stage and read as pitch-black around the R
+   cluster. scoped via #hero so the kaleidoscope and projects rail stages
+   keep their dramatic darkness. */
+@media (pointer: coarse) {
+  #hero .stage::before {
+    opacity: 0.22;
+  }
+  #hero .stage-edge {
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+      inset 0 24px 60px -30px rgba(0, 0, 0, 0.18),
+      inset 0 -24px 60px -30px rgba(0, 0, 0, 0.18);
+  }
+}
+
 /* section index lockup (big oversize numerals top-left of a section). */
 .section-index {
   font-family: var(--font-mono);
