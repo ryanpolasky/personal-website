@@ -135,7 +135,7 @@ function ParticleField({
   particles: Particle[];
   counts: number[];
 }) {
-  const { viewport, gl } = useThree();
+  const { gl } = useThree();
 
   const baseSize = 0.12;
   const geoms = useMemo(
@@ -435,11 +435,13 @@ function ParticleField({
     }
   };
 
-  useFrame((_state, deltaSec) => {
+  useFrame((state, deltaSec) => {
     const dt = Math.min(deltaSec, 1 / 30);
     const pointer = pointerRef.current;
-    const halfW = viewport.width / 2;
-    const halfH = viewport.height / 2;
+    // read viewport from live state - ResponsiveCamera mutates camera.zoom
+    // imperatively, so the closure-captured viewport from useThree() goes stale.
+    const halfW = state.viewport.width / 2;
+    const halfH = state.viewport.height / 2;
 
     if (
       !Number.isFinite(halfW) ||

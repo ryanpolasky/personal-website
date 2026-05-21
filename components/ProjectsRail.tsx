@@ -429,12 +429,19 @@ export function ProjectsRail() {
     let wheelBlocker: ((e: WheelEvent) => void) | null = null;
     let tailAbsorber: ((e: WheelEvent) => void) | null = null;
 
-    // input-type classifier. trackpads need the full lock + tail absorber to
-    // soak up inertia events; mouse wheels are discrete notches with no
-    // inertia and feel laggy if blocked. classify per-event so input type
-    // can flip mid-session (user switches from trackpad to plugged-in mouse).
+    // input-type classifier + gesture-boundary tracker.
     let lastInputIsMouseWheel = false;
+    let lastWheelAt = 0;
+    // flips true when a wheel event arrives after a >80ms gap; signals that
+    // a new physical gesture has begun (vs continued inertia tail).
+    let newGestureSinceArm = true;
+    const GESTURE_GAP_MS = 80;
     const wheelClassifier = (e: WheelEvent) => {
+      const now = performance.now();
+      if (lastWheelAt && now - lastWheelAt > GESTURE_GAP_MS) {
+        newGestureSinceArm = true;
+      }
+      lastWheelAt = now;
       lastInputIsMouseWheel =
         e.deltaMode === 1 || Math.abs(e.deltaY) >= 80;
     };
@@ -743,9 +750,10 @@ export function ProjectsRail() {
             const step = currentIdx + dir;
             const now = performance.now();
 
-            if (boundaryArmedDir === dir) {
-              // second crossing same direction = advance into next project.
+            if (boundaryArmedDir === dir && newGestureSinceArm) {
+              // armed + new physical gesture = advance into next project.
               boundaryArmedDir = 0;
+              newGestureSinceArm = false;
               cueHoldUntil = now + CUE_HOLD_MS;
               cueHoldDirection = dir;
               cueHoldName = projects[step]?.name;
@@ -756,9 +764,10 @@ export function ProjectsRail() {
               setActiveIdx(step);
               swipeTo(step, false, dir);
             } else {
-              // first crossing (or direction change) = wall lock; don't
-              // change currentIdx, user is still in the current project.
+              // first crossing, direction change, or continued inertia after
+              // a prior wall hit = wall lock; user must release + scroll again.
               boundaryArmedDir = dir;
+              newGestureSinceArm = false;
               cueHoldUntil = now + CUE_HOLD_MS;
               cueHoldDirection = dir;
               cueHoldName = projects[step]?.name;
