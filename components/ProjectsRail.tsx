@@ -107,7 +107,7 @@ export function ProjectsRail() {
 
   useLayoutEffect(() => {
     if (typeof window === "undefined") return;
-    if (!window.matchMedia("(min-width: 640px)").matches) return;
+    if (!window.matchMedia("(min-width: 1280px)").matches) return;
     const section = sectionRef.current;
     const stage = stageRef.current;
     const rail = railRef.current;
@@ -842,7 +842,7 @@ export function ProjectsRail() {
       <section
         ref={sectionRef}
         id="projects-desktop"
-        className="relative hidden w-full sm:block"
+        className="relative hidden w-full xl:block"
         aria-label="projects"
       >
         <div

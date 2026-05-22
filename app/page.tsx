@@ -97,7 +97,7 @@ export default function HomePage() {
       <KaleidoscopeSection />
 
       {/* 05. PROJECTS RAIL */}
-      <div className="sm:pb-12">
+      <div className="xl:pb-12">
         <ProjectsRail />
       </div>
 

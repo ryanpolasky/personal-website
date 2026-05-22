@@ -37,12 +37,12 @@ function firstMedia(project: (typeof projects)[number]) {
 export function MobileProjectsStack() {
   return (
     <section
-      className="relative overflow-hidden bg-[#050507] px-3 pb-5 pt-6 sm:hidden"
+      className="relative overflow-hidden bg-[#050507] px-3 pb-5 pt-6 sm:px-6 sm:pb-8 sm:pt-10 md:px-8 xl:hidden"
       aria-label="projects"
     >
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_4%,rgba(255,255,255,0.08),transparent_34%),linear-gradient(180deg,rgba(255,255,255,0.04),transparent_22%,rgba(255,255,255,0.03)_100%)]" />
 
-      <header className="relative z-10 mb-6 flex items-end justify-between gap-4 px-1">
+      <header className="relative z-10 mx-auto mb-6 flex max-w-[58rem] items-end justify-between gap-4 px-1 sm:mb-8">
         <div>
           <p
             className="flex items-center gap-2 text-[9.5px] uppercase tracking-[0.32em] text-white/45"
@@ -51,14 +51,14 @@ export function MobileProjectsStack() {
             <span className="h-px w-6 bg-white/30" />
             03 / projects
           </p>
-          <h2 className="display mt-2 text-[clamp(3rem,16vw,5.5rem)] leading-[0.82] tracking-[-0.06em] text-white">
+          <h2 className="display mt-2 text-[clamp(3rem,16vw,5.5rem)] leading-[0.82] tracking-[-0.06em] text-white sm:text-[clamp(4.5rem,11vw,7.5rem)]">
             selected
             <br />
             systems
           </h2>
         </div>
         <p
-          className="mb-1 text-right text-[9px] uppercase tracking-[0.26em] text-white/38"
+          className="mb-1 text-right text-[9px] uppercase tracking-[0.26em] text-white/38 sm:text-[10px]"
           style={MONO}
         >
           {String(projects.length).padStart(2, "0")}
@@ -67,7 +67,7 @@ export function MobileProjectsStack() {
         </p>
       </header>
 
-      <div className="relative z-10 flex flex-col gap-5">
+      <div className="relative z-10 mx-auto flex max-w-[58rem] flex-col gap-5 sm:gap-7">
         {projects.map((project, i) => {
           const tint = tintFor(project);
           const media = firstMedia(project);
@@ -82,7 +82,7 @@ export function MobileProjectsStack() {
           return (
             <article
               key={project.id}
-              className="relative isolate overflow-hidden rounded-[1.6rem] border border-white/10 bg-[linear-gradient(150deg,rgba(255,255,255,0.09),rgba(255,255,255,0.03)_44%,rgba(255,255,255,0.06))] pb-5 shadow-[0_30px_90px_-50px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(255,255,255,0.12)]"
+              className="relative isolate overflow-hidden rounded-[1.6rem] border border-white/10 bg-[linear-gradient(150deg,rgba(255,255,255,0.09),rgba(255,255,255,0.03)_44%,rgba(255,255,255,0.06))] pb-5 shadow-[0_30px_90px_-50px_rgba(0,0,0,0.95),inset_0_1px_0_rgba(255,255,255,0.12)] sm:rounded-[2rem] sm:pb-7"
               style={{ ["--project-tint" as string]: tint }}
             >
               {/* atmospheric tint wash */}
@@ -99,7 +99,7 @@ export function MobileProjectsStack() {
               />
 
               {/* huge index watermark */}
-              <div className="pointer-events-none absolute -right-6 top-2 -z-10 select-none text-[9rem] leading-none tracking-[-0.09em] opacity-[0.08]">
+              <div className="pointer-events-none absolute -right-6 top-2 -z-10 select-none text-[9rem] leading-none tracking-[-0.09em] opacity-[0.08] sm:-right-8 sm:text-[14rem]">
                 <span
                   className="display italic"
                   style={{
@@ -113,7 +113,7 @@ export function MobileProjectsStack() {
 
               {/* HEADER ROW: index + role */}
               <div
-                className="flex items-center justify-between gap-3 px-5 pt-5 text-[10px] uppercase tracking-[0.28em] text-white/55"
+                className="flex items-center justify-between gap-3 px-5 pt-5 text-[10px] uppercase tracking-[0.28em] text-white/55 sm:px-7 sm:pt-7 sm:text-[10.5px]"
                 style={MONO}
               >
                 <span className="flex items-center gap-2 text-white/80">
@@ -131,71 +131,73 @@ export function MobileProjectsStack() {
                 <span className="text-white/45">{project.role}</span>
               </div>
 
-              {/* MEDIA HERO (when available) — natural aspect, no cover crop */}
-              {media?.src ? (
-                <div className="relative mx-5 mt-4 overflow-hidden rounded-[1.05rem] border border-white/10 bg-black/40 shadow-[0_22px_60px_-38px_rgba(0,0,0,0.95)]">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={media.src}
-                    alt={media.alt ?? `${project.name} preview`}
-                    loading="lazy"
-                    decoding="async"
-                    className="block h-auto w-full"
-                  />
-                  <div
-                    className="pointer-events-none absolute inset-x-0 bottom-0 h-20"
-                    style={{
-                      background:
-                        "linear-gradient(180deg, transparent, rgba(0,0,0,0.55))",
-                    }}
-                  />
-                  <p
-                    className="absolute bottom-3 left-3 flex items-center gap-2 text-[9px] uppercase tracking-[0.28em] text-white/85"
-                    style={MONO}
-                  >
-                    <span
-                      className="h-1 w-1 rounded-full"
-                      style={{ background: tint }}
-                      aria-hidden
+              <div className="sm:grid sm:grid-cols-[minmax(0,1.16fr)_minmax(17rem,0.84fr)] sm:items-start sm:gap-6 sm:px-7 sm:pt-5">
+                {/* MEDIA HERO (when available) — natural aspect, no cover crop */}
+                {media?.src ? (
+                  <div className="relative mx-5 mt-4 overflow-hidden rounded-[1.05rem] border border-white/10 bg-black/40 shadow-[0_22px_60px_-38px_rgba(0,0,0,0.95)] sm:mx-0 sm:mt-0 sm:rounded-[1.25rem]">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={media.src}
+                      alt={media.alt ?? `${project.name} preview`}
+                      loading="lazy"
+                      decoding="async"
+                      className="block h-auto w-full"
                     />
-                    {media.label}
+                    <div
+                      className="pointer-events-none absolute inset-x-0 bottom-0 h-20"
+                      style={{
+                        background:
+                          "linear-gradient(180deg, transparent, rgba(0,0,0,0.55))",
+                      }}
+                    />
+                    <p
+                      className="absolute bottom-3 left-3 flex items-center gap-2 text-[9px] uppercase tracking-[0.28em] text-white/85"
+                      style={MONO}
+                    >
+                      <span
+                        className="h-1 w-1 rounded-full"
+                        style={{ background: tint }}
+                        aria-hidden
+                      />
+                      {media.label}
+                    </p>
+                  </div>
+                ) : null}
+
+                {/* TITLE BLOCK */}
+                <div className="mt-5 px-5 sm:mt-1 sm:px-0">
+                  {project.logoSrc ? (
+                    <Image
+                      src={project.logoSrc}
+                      alt={project.name}
+                      width={1014}
+                      height={313}
+                      unoptimized
+                      className="h-auto w-full max-w-[18rem] [image-rendering:pixelated] sm:max-w-[20rem]"
+                    />
+                  ) : (
+                    <h3 className="display max-w-[9ch] text-[clamp(2.85rem,13.5vw,4.8rem)] leading-[0.82] tracking-[-0.06em] text-white sm:text-[clamp(3.8rem,7vw,5.5rem)]">
+                      {project.name}
+                    </h3>
+                  )}
+                  <div
+                    className="mt-4 h-px w-12 opacity-80 sm:w-16"
+                    style={{ background: tint }}
+                    aria-hidden
+                  />
+                  <p className="mt-4 max-w-[34ch] text-[1.05rem] leading-[1.18] text-white/82 sm:text-[1.22rem] sm:leading-[1.12]">
+                    {project.tagline}
                   </p>
                 </div>
-              ) : null}
-
-              {/* TITLE BLOCK */}
-              <div className="mt-5 px-5">
-                {project.logoSrc ? (
-                  <Image
-                    src={project.logoSrc}
-                    alt={project.name}
-                    width={1014}
-                    height={313}
-                    unoptimized
-                    className="h-auto w-full max-w-[18rem] [image-rendering:pixelated]"
-                  />
-                ) : (
-                  <h3 className="display max-w-[9ch] text-[clamp(2.85rem,13.5vw,4.8rem)] leading-[0.82] tracking-[-0.06em] text-white">
-                    {project.name}
-                  </h3>
-                )}
-                <div
-                  className="mt-4 h-px w-12 opacity-80"
-                  style={{ background: tint }}
-                  aria-hidden
-                />
-                <p className="mt-4 max-w-[34ch] text-[1.05rem] leading-[1.18] text-white/82">
-                  {project.tagline}
-                </p>
               </div>
 
               {/* BRIEF + SECTION HIGHLIGHTS */}
-              <div className="mx-5 mt-5 rounded-[1.1rem] border border-white/10 bg-black/25 p-4 backdrop-blur-sm">
-                <p className="text-[13px] leading-[1.55] text-white/72">
+              <div className="mx-5 mt-5 rounded-[1.1rem] border border-white/10 bg-black/25 p-4 backdrop-blur-sm sm:mx-7 sm:mt-6 sm:grid sm:grid-cols-[minmax(0,1.1fr)_minmax(16rem,0.9fr)] sm:gap-5 sm:p-5">
+                <p className="text-[13px] leading-[1.55] text-white/72 sm:text-[14px] sm:leading-[1.65]">
                   {project.body}
                 </p>
                 {topSections.length > 0 ? (
-                  <div className="mt-4 grid gap-3 border-t border-white/10 pt-4">
+                  <div className="mt-4 grid gap-3 border-t border-white/10 pt-4 sm:mt-0 sm:border-l sm:border-t-0 sm:pl-5 sm:pt-0">
                     {topSections.map((section) => (
                       <div key={section.eyebrow}>
                         <p
@@ -204,7 +206,7 @@ export function MobileProjectsStack() {
                         >
                           {section.eyebrow}
                         </p>
-                        <p className="mt-1 text-[13px] leading-[1.3] text-white/85">
+                        <p className="mt-1 text-[13px] leading-[1.3] text-white/85 sm:text-[14px]">
                           {section.title}
                         </p>
                       </div>
@@ -214,7 +216,7 @@ export function MobileProjectsStack() {
               </div>
 
               {/* STACK */}
-              <div className="mt-5 px-5">
+              <div className="mt-5 px-5 sm:mt-6 sm:px-7">
                 <div className="flex flex-wrap gap-1.5">
                   {project.stack.map((item) => (
                     <span key={item} className="chip chip-invert">
@@ -225,13 +227,13 @@ export function MobileProjectsStack() {
               </div>
 
               {/* ACTIONS */}
-              <div className="mt-5 flex flex-wrap items-center gap-2 px-5">
+              <div className="mt-5 flex flex-wrap items-center gap-2 px-5 sm:mt-6 sm:px-7">
                 {primaryHref ? (
                   <Link
                     href={primaryHref}
                     target={hrefIsExternal ? "_blank" : undefined}
                     rel={hrefIsExternal ? "noreferrer noopener" : undefined}
-                    className="group relative inline-flex h-12 flex-1 min-w-[160px] items-center justify-between gap-2 overflow-hidden rounded-full border px-5 text-[11.5px] uppercase tracking-[0.24em] text-white transition-colors"
+                    className="group relative inline-flex h-12 flex-1 min-w-[160px] items-center justify-between gap-2 overflow-hidden rounded-full border px-5 text-[11.5px] uppercase tracking-[0.24em] text-white transition-colors sm:h-[3.25rem] sm:min-w-[220px]"
                     style={{
                       fontFamily: "var(--font-mono)",
                       borderColor:
@@ -245,7 +247,7 @@ export function MobileProjectsStack() {
                   </Link>
                 ) : (
                   <span
-                    className="inline-flex h-12 flex-1 min-w-[160px] items-center justify-between gap-2 rounded-full border border-dashed border-white/15 px-5 text-[11.5px] uppercase tracking-[0.24em] text-white/55"
+                    className="inline-flex h-12 flex-1 min-w-[160px] items-center justify-between gap-2 rounded-full border border-dashed border-white/15 px-5 text-[11.5px] uppercase tracking-[0.24em] text-white/55 sm:h-[3.25rem] sm:min-w-[220px]"
                     style={MONO}
                   >
                     <span>{project.hrefLabel ?? "internal"}</span>
@@ -259,7 +261,7 @@ export function MobileProjectsStack() {
                     target="_blank"
                     rel="noreferrer noopener"
                     aria-label={`${project.name} on github`}
-                    className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/15 bg-white/[0.06] text-white transition-colors active:bg-white/[0.14]"
+                    className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/15 bg-white/[0.06] text-white transition-colors active:bg-white/[0.14] sm:h-[3.25rem] sm:w-[3.25rem]"
                   >
                     <svg
                       viewBox="0 0 24 24"
@@ -279,7 +281,7 @@ export function MobileProjectsStack() {
                     target="_blank"
                     rel="noreferrer noopener"
                     aria-label={`${project.name} on devpost`}
-                    className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/15 bg-white/[0.06] text-white transition-colors active:bg-white/[0.14]"
+                    className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/15 bg-white/[0.06] text-white transition-colors active:bg-white/[0.14] sm:h-[3.25rem] sm:w-[3.25rem]"
                   >
                     <svg
                       viewBox="0 0 24 24"

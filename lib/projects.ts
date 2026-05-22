@@ -288,8 +288,69 @@ export const PROJECTS: Project[] = [
     enabled: true,
   },
   {
-    id: "nimby",
+    id: "rycord",
     index: "03.",
+    name: "rycord",
+    tagline: "a cache-first 3d record room built from my discogs collection.",
+    body: "in rycord, a kallax-style shelf sits in a cozy bedroom scene, populated by the actual albums in my record collection. each record pulls out of its slot, flips to the back jacket, and shows the tracklist + description in an info panel. APIs only get hit on first grab, then every reload reads from the cache on local disk.",
+    role: "solo",
+    stack: [
+      "Next.js",
+      "React Three Fiber",
+      "Three.js",
+      "Postprocessing",
+      "Discogs API",
+      "Sharp",
+      "Docker",
+    ],
+    href: "https://rycord.dev",
+    hrefLabel: "visit",
+    githubHref: "https://github.com/ryanpolasky/rycord",
+    width: "wide",
+    media: {
+      kind: "image",
+      items: [
+        {
+          label: "side angle",
+          src: "/assets/projects/rycord/ryc_main.webp",
+          alt: "rycord main scene view",
+          cover: true,
+        },
+      ],
+    },
+    sections: [
+      {
+        eyebrow: "the room",
+        title: "kallax shelf, cozy room, real covers.",
+        body: 'the centerpiece is a procedural 3D shelf filled with the actual albums i own. each record is interactive: pull it out of the slot, flip to the back jacket, see the tracklist and the description load into an info panel. a turntable holds whatever record is currently "active" at the center of the shelf. roomdressing fills the rest - plant, mug, book stack, wall art, a paper note from me on the floor.',
+        points: [
+          "Procedural Kallax grid, density-configurable via env",
+          "Per-record front + back jacket with real Discogs cover art",
+          "Centerpiece turntable holds the active selection",
+          "RGB wall strip controlled by an in-scene remote model",
+        ],
+        layout: "banner",
+        media: [
+          {
+            label: "the room",
+            src: "/assets/projects/rycord/ryc_side.webp",
+            alt: "rycord side scene view",
+          },
+          {
+            label: "pulled vinyl",
+            src: "/assets/projects/rycord/ryc_vinyl.webp",
+            alt: "rycord vinyl pulled out of the shelf showing back jacket",
+            cover: true,
+          },
+        ],
+      },
+    ],
+    tintHsl: { h: 280, s: 55, l: 58 },
+    enabled: true,
+  },
+  {
+    id: "nimby",
+    index: "04.",
     name: "NIMBY",
     tagline:
       "a 2D survivor roguelike about a druid fighting capital encroachment.",
@@ -358,67 +419,6 @@ export const PROJECTS: Project[] = [
       },
     ],
     tintHsl: { h: 132, s: 50, l: 50 },
-    enabled: true,
-  },
-  {
-    id: "rycord",
-    index: "04.",
-    name: "rycord",
-    tagline: "a cache-first 3d record room built from my discogs collection.",
-    body: "in rycord, a kallax-style shelf sits in a cozy bedroom scene, populated by the actual albums in my record collection. each record pulls out of its slot, flips to the back jacket, and shows the tracklist + description in an info panel. APIs only get hit on first grab, then every reload reads from the cache on local disk.",
-    role: "solo",
-    stack: [
-      "Next.js",
-      "React Three Fiber",
-      "Three.js",
-      "Postprocessing",
-      "Discogs API",
-      "Sharp",
-      "Docker",
-    ],
-    href: undefined,
-    hrefLabel: "open source",
-    githubHref: "https://github.com/ryanpolasky/rycord",
-    width: "wide",
-    media: {
-      kind: "image",
-      items: [
-        {
-          label: "side angle",
-          src: "/assets/projects/rycord/ryc_main.webp",
-          alt: "rycord main scene view",
-          cover: true,
-        },
-      ],
-    },
-    sections: [
-      {
-        eyebrow: "the room",
-        title: "kallax shelf, cozy room, real covers.",
-        body: 'the centerpiece is a procedural 3D shelf filled with the actual albums i own. each record is interactive: pull it out of the slot, flip to the back jacket, see the tracklist and the description load into an info panel. a turntable holds whatever record is currently "active" at the center of the shelf. roomdressing fills the rest - plant, mug, book stack, wall art, a paper note from me on the floor.',
-        points: [
-          "Procedural Kallax grid, density-configurable via env",
-          "Per-record front + back jacket with real Discogs cover art",
-          "Centerpiece turntable holds the active selection",
-          "RGB wall strip controlled by an in-scene remote model",
-        ],
-        layout: "banner",
-        media: [
-          {
-            label: "the room",
-            src: "/assets/projects/rycord/ryc_side.webp",
-            alt: "rycord side scene view",
-          },
-          {
-            label: "pulled vinyl",
-            src: "/assets/projects/rycord/ryc_vinyl.webp",
-            alt: "rycord vinyl pulled out of the shelf showing back jacket",
-            cover: true,
-          },
-        ],
-      },
-    ],
-    tintHsl: { h: 280, s: 55, l: 58 },
     enabled: true,
   },
   {
