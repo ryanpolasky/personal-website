@@ -19,7 +19,7 @@ export default function HomePage() {
           stage uses h-full so it fits the inner box (svh minus padding). */}
       <section
         id="hero"
-        className="relative flex h-[100dvh] items-stretch pb-[max(0.75rem,env(safe-area-inset-bottom))] pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] pt-[max(0.75rem,env(safe-area-inset-top))] sm:min-h-[100svh] sm:items-center sm:px-6 sm:py-8"
+        className="relative flex h-[100svh] items-stretch pb-[max(0.75rem,env(safe-area-inset-bottom))] pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] pt-[max(0.75rem,env(safe-area-inset-top))] sm:min-h-[100svh] sm:items-center sm:px-6 sm:py-8"
         aria-label="intro"
       >
         <HeroStage>

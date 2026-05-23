@@ -16,7 +16,8 @@ export function HeroStage({ children }: { children: ReactNode }) {
     if (!el) return;
     if (
       typeof window === "undefined" ||
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+      !window.matchMedia("(min-width: 640px)").matches
     ) {
       return;
     }
