@@ -459,7 +459,7 @@ export function Nav() {
               onClick={() => setMobileOpen(false)}
               className="transition-colors hover:text-[var(--color-text)]"
             >
-              resume.pdf ↗
+              resume.pdf →
             </a>
           </div>
         </div>

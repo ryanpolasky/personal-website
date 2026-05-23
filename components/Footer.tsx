@@ -71,7 +71,7 @@ export function Footer() {
             style={{ fontFamily: "var(--font-mono)" }}
           >
             <p className="text-[var(--color-text-muted)]">colophon</p>
-            <p>site v15.0 · feat/full-rebuild</p>
+            <p>site v15.0 · live build</p>
             <p>inter · fraunces · jetbrains mono</p>
             <p>next.js · react three fiber · gsap</p>
           </div>
@@ -134,7 +134,7 @@ export function Footer() {
               className="transition-colors hover:text-[var(--color-text)]"
               data-hoverable
             >
-              resume.pdf
+              resume.pdf →
             </a>
             <UtdWebringButtons className="mt-5 hidden justify-end sm:flex" />
             <p className="mt-4 text-[var(--color-text-faint)]">

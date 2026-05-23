@@ -73,7 +73,7 @@ export default function HomePage() {
           {/* scroll cue - desktop only; mobile users already know to scroll
               and the cue clutters the tight viewport. */}
           <div
-            className="pointer-events-none absolute bottom-5 left-1/2 z-30 hidden -translate-x-1/2 flex-col items-center gap-2 sm:flex"
+            className="pointer-events-none absolute bottom-5 left-1/2 z-30 hidden -translate-x-1/2 flex-col items-center gap-2 xl:flex"
             aria-hidden
           >
             <span
