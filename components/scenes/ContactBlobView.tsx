@@ -267,7 +267,7 @@ export function ContactBlobView({ className }: { className?: string }) {
   const { ref: visRef, visible } = useIsVisible<HTMLDivElement>("200px");
   useGlobalContactPointer(stressRef, hostRef, visible);
   const reduced = useReducedMotion();
-  const tier = usePerformanceTier(reduced);
+  const tier = usePerformanceTier(reduced, visible);
   // bump DPR on every tier - the canvas is tiny, native+ resolution costs
   // basically nothing and crisps up the silhouette.
   const dpr = tierDpr(tier, 2, 1.75, 1.5);

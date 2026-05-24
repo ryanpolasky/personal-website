@@ -989,7 +989,7 @@ function HeroScene({ tier }: { tier: PerformanceTier }) {
 export function HeroClusterView({ className }: { className?: string }) {
   const { ref, visible } = useIsVisible<HTMLDivElement>("1400px");
   const reduced = useReducedMotion();
-  const tier = usePerformanceTier(reduced);
+  const tier = usePerformanceTier(reduced, visible);
   const dpr = tierDpr(tier, 1.5, 1.1);
   const [ready, setReady] = useState(false);
   useEffect(() => setReady(true), []);

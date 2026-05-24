@@ -109,7 +109,10 @@ function detectTier(reducedMotion: boolean): PerformanceTier {
   return clampTier(score);
 }
 
-export function usePerformanceTier(reducedMotion = false): PerformanceTier {
+export function usePerformanceTier(
+  reducedMotion = false,
+  active = true,
+): PerformanceTier {
   const [tier, setTier] = useState<PerformanceTier>("low");
 
   useEffect(() => {
@@ -117,39 +120,110 @@ export function usePerformanceTier(reducedMotion = false): PerformanceTier {
   }, [reducedMotion]);
 
   useEffect(() => {
-    if (reducedMotion || queryOverride() || typeof document === "undefined")
+    if (
+      reducedMotion ||
+      !active ||
+      tier === "low" ||
+      queryOverride() ||
+      typeof document === "undefined" ||
+      typeof window === "undefined" ||
+      typeof window.matchMedia !== "function"
+    )
       return;
+
+    const desktop = window.matchMedia("(min-width: 1024px) and (pointer: fine)");
+    if (!desktop.matches) return;
 
     let cancelled = false;
     let raf = 0;
-    const timer = window.setTimeout(() => {
-      if (document.visibilityState === "hidden") return;
-      let frames = 0;
-      let start = 0;
-      const tick = (time: number) => {
-        if (cancelled) return;
-        if (start === 0) start = time;
-        frames += 1;
-        if (frames >= 90) {
-          const fps = (frames * 1000) / Math.max(1, time - start);
-          setTier((current) => {
-            if (fps < 34) return "low";
-            if (fps < 48) return downgradeTier(current);
-            return current;
-          });
+    let timer = 0;
+    const warmupMs = 5600;
+    const sampleMs = 5200;
+
+    const startSampling = () => {
+      timer = window.setTimeout(() => {
+        if (
+          cancelled ||
+          document.visibilityState === "hidden" ||
+          !desktop.matches
+        )
           return;
-        }
+
+        let frames = 0;
+        let start = 0;
+        let last = 0;
+        let slowFrames = 0;
+        let verySlowFrames = 0;
+
+        const tick = (time: number) => {
+          if (cancelled) return;
+
+          if (document.visibilityState === "hidden") {
+            frames = 0;
+            start = 0;
+            last = 0;
+            slowFrames = 0;
+            verySlowFrames = 0;
+            raf = window.requestAnimationFrame(tick);
+            return;
+          }
+
+          if (start === 0) {
+            start = time;
+            last = time;
+            raf = window.requestAnimationFrame(tick);
+            return;
+          }
+
+          const rawDelta = time - last;
+          last = time;
+          if (rawDelta > 120) {
+            frames = 0;
+            start = time;
+            slowFrames = 0;
+            verySlowFrames = 0;
+            raf = window.requestAnimationFrame(tick);
+            return;
+          }
+
+          frames += 1;
+          if (rawDelta > 25) slowFrames += 1;
+          if (rawDelta > 38) verySlowFrames += 1;
+
+          const elapsed = time - start;
+          if (elapsed >= sampleMs && frames >= 120) {
+            const fps = (frames * 1000) / Math.max(1, elapsed);
+            const slowRatio = slowFrames / Math.max(1, frames);
+            const verySlowRatio = verySlowFrames / Math.max(1, frames);
+
+            setTier((current) => {
+              if (current === "low") return current;
+              if (fps < 44 && slowRatio > 0.28) return downgradeTier(current);
+              if (fps < 52 && verySlowRatio > 0.16)
+                return downgradeTier(current);
+              return current;
+            });
+            return;
+          }
+          raf = window.requestAnimationFrame(tick);
+        };
         raf = window.requestAnimationFrame(tick);
-      };
-      raf = window.requestAnimationFrame(tick);
-    }, 2200);
+      }, warmupMs);
+    };
+
+    if (document.readyState === "complete") {
+      startSampling();
+    } else {
+      window.addEventListener("load", startSampling, { once: true });
+    }
 
     return () => {
       cancelled = true;
+      window.removeEventListener("load", startSampling);
       window.clearTimeout(timer);
       window.cancelAnimationFrame(raf);
     };
-  }, [reducedMotion]);
+  }, [active, reducedMotion, tier]);
 
   return tier;
 }

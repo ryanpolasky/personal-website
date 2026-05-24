@@ -311,7 +311,7 @@ export function RibbonView3D({
     useElementProgress<HTMLDivElement>();
   const { ref: visRef, visible } = useIsVisible<HTMLDivElement>("200px");
   const reduced = useReducedMotion();
-  const tier = usePerformanceTier(reduced);
+  const tier = usePerformanceTier(reduced, visible);
   const dpr = tierDpr(tier, 1.25, 1, 0.85);
   const progressRef = useRef(0);
   progressRef.current = externalProgress ?? internalProgress;

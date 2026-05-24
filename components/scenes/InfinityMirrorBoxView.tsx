@@ -878,7 +878,7 @@ function InfinityMirrorScene({
 export function InfinityMirrorBoxView({ className }: { className?: string }) {
   const { ref, visible } = useIsVisible<HTMLDivElement>("900px");
   const reduced = useReducedMotion();
-  const tier = usePerformanceTier(reduced);
+  const tier = usePerformanceTier(reduced, visible);
   const dpr = tierDpr(tier, 1.25, 1, 0.85);
   const [ready, setReady] = useState(false);
 

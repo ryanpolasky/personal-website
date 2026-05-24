@@ -18,8 +18,8 @@ const FluidParticleCanvas = dynamic(
 
 export function FluidParticleBand() {
   const reduced = useReducedMotion();
-  const tier = usePerformanceTier(reduced);
   const { ref: sectionRef, visible } = useIsVisible<HTMLElement>("1200px");
+  const tier = usePerformanceTier(reduced, visible);
   // once the canvas has been mounted, keep it mounted and just pause the
   // frameloop via the `visible` prop. avoids a boot-time mount/unmount/mount
   // race on mobile when refreshing onto #contact (IO fires false before the

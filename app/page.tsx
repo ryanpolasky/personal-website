@@ -5,7 +5,6 @@ import { HeroHeadline } from "@/components/HeroHeadline";
 import { HeroStage } from "@/components/HeroStage";
 import { MarqueeBand } from "@/components/MarqueeBand";
 import { AboutSection } from "@/components/AboutSection";
-import { KaleidoscopeSection } from "@/components/KaleidoscopeSection";
 import { ProjectsRail } from "@/components/ProjectsRail";
 import { FluidParticleBand } from "@/components/FluidParticleBand";
 import { Footer } from "@/components/Footer";
@@ -92,9 +91,6 @@ export default function HomePage() {
 
       {/* 03. ABOUT + EXPERIENCE */}
       <AboutSection />
-
-      {/* 04. KALEIDOSCOPE - returns null on touch; breathing pb lives inside. */}
-      <KaleidoscopeSection />
 
       {/* 05. PROJECTS RAIL */}
       <div className="xl:pb-12">
