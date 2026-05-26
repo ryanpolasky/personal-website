@@ -877,7 +877,7 @@ export function ProjectsRail() {
           aria-hidden
         >
           <div
-            className="ml-5 flex items-center gap-4 rounded-full border border-white/25 bg-black/15 px-4 py-3 text-white/90 shadow-[0_0_50px_rgba(255,255,255,0.12)] backdrop-blur-md sm:ml-9"
+            className="pointer-events-none ml-5 flex items-center gap-4 rounded-full border border-white/25 bg-black/15 px-4 py-3 text-white/90 shadow-[0_0_50px_rgba(255,255,255,0.12)] backdrop-blur-md sm:ml-9"
             style={{ fontFamily: "var(--font-mono)" }}
           >
             <span className="text-[18px] leading-none">←</span>
@@ -900,7 +900,7 @@ export function ProjectsRail() {
           aria-hidden
         >
           <div
-            className="mr-5 flex items-center gap-4 rounded-full border border-white/25 bg-black/15 px-4 py-3 text-white/90 shadow-[0_0_50px_rgba(255,255,255,0.12)] backdrop-blur-md sm:mr-9"
+            className="pointer-events-none mr-5 flex items-center gap-4 rounded-full border border-white/25 bg-black/15 px-4 py-3 text-white/90 shadow-[0_0_50px_rgba(255,255,255,0.12)] backdrop-blur-md sm:mr-9"
             style={{ fontFamily: "var(--font-mono)" }}
           >
             <span className="flex flex-col gap-1 text-right">

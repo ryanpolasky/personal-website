@@ -137,7 +137,16 @@ function ResponsiveCamera() {
   useLayoutEffect(() => {
     const ortho = camera as THREE.OrthographicCamera;
     if (!ortho.isOrthographicCamera) return;
-    const targetZoom = Math.max(110, Math.min(240, size.height / 6.5));
+    // height-based zoom is the original sizing logic (calibrated for 16:9).
+    // also derive a WIDTH-based equivalent that matches at exactly 16:9, so
+    // wider viewports take over with width-driven zoom and particles stay
+    // visually proportional instead of shrinking against the extra width.
+    const heightZoom = size.height / 6.5;
+    const widthZoom = size.width / (6.5 * (16 / 9));
+    const targetZoom = Math.max(
+      110,
+      Math.min(280, Math.max(heightZoom, widthZoom)),
+    );
     ortho.zoom = targetZoom;
     ortho.updateProjectionMatrix();
   }, [camera, size.width, size.height]);

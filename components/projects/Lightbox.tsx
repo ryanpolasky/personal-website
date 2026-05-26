@@ -48,16 +48,18 @@ export function Lightbox({ item, onClose }: LightboxProps) {
         <span aria-hidden>✕</span>
         <span>close</span>
       </button>
-      <div
-        className="relative flex max-h-full max-w-full items-center justify-center"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className="relative flex max-h-full max-w-full items-center justify-center">
         <Image
           src={item.src}
           alt={item.alt ?? item.label}
           width={2400}
           height={1500}
           unoptimized
+          // stopPropagation on the image itself (not the wrapper) so any click
+          // OUTSIDE the image - including in the gap between image and backdrop
+          // edge - bubbles up and closes. clicks on the image itself still
+          // preserved (allows right-click save, etc.).
+          onClick={(e) => e.stopPropagation()}
           className="max-h-[88vh] max-w-[94vw] rounded-2xl object-contain shadow-[0_40px_120px_-30px_rgba(0,0,0,0.9)]"
         />
         {item.label ? (

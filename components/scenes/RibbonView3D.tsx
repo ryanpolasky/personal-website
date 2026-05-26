@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { PerspectiveCamera, Environment } from "@react-three/drei";
 import * as THREE from "three";
 import { useAccent } from "@/components/AccentProvider";
@@ -261,6 +261,19 @@ function Ribbon({
   );
 }
 
+// anchor the perspective camera to a 16:9 frame: at that aspect use 42°
+// vertical fov (current look). on wider aspects, narrow the vertical fov
+// so horizontal coverage stays constant - keeps the ribbon's leftmost
+// world point (~x=-8.8) off-screen left on ultrawide displays.
+const REF_ASPECT = 16 / 9;
+const BASE_FOV_DEG = 42;
+function aspectAdjustedFov(aspect: number): number {
+  if (aspect <= REF_ASPECT) return BASE_FOV_DEG;
+  const baseHalf = (BASE_FOV_DEG * 0.5 * Math.PI) / 180;
+  const tanHHalf = Math.tan(baseHalf) * REF_ASPECT;
+  return (Math.atan(tanHHalf / aspect) * 2 * 180) / Math.PI;
+}
+
 function RibbonScene({
   progressRef,
   tier,
@@ -269,9 +282,11 @@ function RibbonScene({
   tier: PerformanceTier;
 }) {
   const accent = useAccent();
+  const { size } = useThree();
+  const fov = aspectAdjustedFov(size.width / Math.max(1, size.height));
   return (
     <>
-      <PerspectiveCamera makeDefault position={[0, 0, 9]} fov={42} />
+      <PerspectiveCamera makeDefault position={[0, 0, 9]} fov={fov} />
       {tier !== "low" && (
         <Environment
           preset="studio"
