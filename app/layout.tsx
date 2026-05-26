@@ -8,7 +8,7 @@ import "./globals.css";
 const SITE_URL = "https://ryanpolasky.com";
 const OG_IMAGE = `${SITE_URL}/assets/images/site-preview.png`;
 const OG_IMAGE_ALT =
-  "ryan.polasky / runtime — terminal-style status page for Ryan Polasky's personal site";
+  "ryan.polasky / runtime - terminal-style status page for Ryan Polasky's personal site";
 const SHORT_DESCRIPTION =
   "Junior Software Engineer specializing in backend systems, AI/LLM tooling, and developer productivity. UT Dallas '26. Open May 2026.";
 
@@ -142,7 +142,7 @@ const JSON_LD = {
       name: "Ryan Polasky",
       alternateName: "ryan.polasky / runtime",
       description:
-        "Personal site of Ryan Polasky — Junior Software Engineer specializing in backend systems, AI/LLM tooling, and developer productivity.",
+        "Personal site of Ryan Polasky - Junior Software Engineer specializing in backend systems, AI/LLM tooling, and developer productivity.",
       inLanguage: "en",
       publisher: { "@id": `${SITE_URL}/#person` },
       author: { "@id": `${SITE_URL}/#person` },
@@ -212,7 +212,7 @@ const JSON_LD = {
       alternateName: "readme-ryvamper",
       url: "https://ryme.md/",
       description:
-        "A browser-based generator for animated GitHub profile README banners. Pick a template, fill in your info, and export as SVG or GIF — entirely client-side.",
+        "A browser-based generator for animated GitHub profile README banners. Pick a template, fill in your info, and export as SVG or GIF - entirely client-side.",
       image: "https://ryme.md/og.webp",
       applicationCategory: "DeveloperApplication",
       applicationSubCategory: "Profile README Generator",
@@ -274,6 +274,28 @@ const JSON_LD = {
         availability: "https://schema.org/InStock",
       },
     },
+    {
+      "@type": "WebApplication",
+      "@id": "https://tryad.net/#app",
+      name: "tryad",
+      alternateName: "tryad - chord progression generator",
+      url: "https://tryad.net/",
+      description: "A music-theory-aware chord progression generator. Pick a key, scale, and mood - get progressions with secondary dominants, modal interchange, voice leading, piano + guitar visualizer, drums, and MIDI export. Runs entirely in the browser.",
+      image: "https://tryad.net/og.webp",
+      applicationCategory: "MultimediaApplication",
+      applicationSubCategory: "Chord Progression Generator",
+      operatingSystem: "Any",
+      inLanguage: "en",
+      creator: { "@id": "https://ryanpolasky.com/#person" },
+      author: { "@id": "https://ryanpolasky.com/#person" },
+      publisher: { "@id": "https://ryanpolasky.com/#person" },
+      offers: {
+        "@type": "Offer",
+        price: "0",
+        priceCurrency: "USD",
+        availability: "https://schema.org/InStock"
+      }
+    }
   ],
 };
 
