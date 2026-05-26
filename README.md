@@ -37,3 +37,7 @@ npm run typecheck
 ## history note
 
 _Note: The git history of this repository was squashed and rewritten during the V2 redesign to start fresh and remove old template/fork history. The original V1 site and its various iterations over the years are preserved as interactive snapshots in the `public/variants` directory._
+
+## credits
+
+- The oil-film ripple effect in the hero (`components/OilFilmRipple.tsx`) is a Canvas2D port of techniques from Pavel Dobryakov's [WebGL-Fluid-Simulation](https://github.com/PavelDoGreat/WebGL-Fluid-Simulation) (MIT). The original is a full GPU fluid sim with pressure projection; this site uses a lighter CPU version inspired by its splatting, advection, and vorticity-confinement approach.

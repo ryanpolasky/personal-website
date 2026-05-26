@@ -10,12 +10,10 @@ const TOKENS = [
   "DEVELOPER PRODUCTIVITY",
   "PYTHON",
   "TYPESCRIPT",
-  "GO",
-  "APPLE 2024 + 2025",
-  "UT DALLAS · MAY 2026",
-  "GODOT",
-  "REACT THREE FIBER",
-  "NORTH DAKOTA",
+  "REACT",
+  "SQL / NOSQL",
+  "DOCKER",
+  "KUBERNETES",
 ];
 
 const SEPARATOR = "·";
@@ -50,7 +48,7 @@ export function MarqueeBand() {
 
   return (
     <section
-      aria-label="positioning"
+      aria-label="skills"
       className="rule-top rule-bottom relative overflow-hidden bg-[var(--color-bg)] py-6 sm:py-8"
       data-marquee-dir="forward"
     >

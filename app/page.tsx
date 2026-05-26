@@ -8,6 +8,7 @@ import { AboutSection } from "@/components/AboutSection";
 import { ProjectsRail } from "@/components/ProjectsRail";
 import { FluidParticleBand } from "@/components/FluidParticleBand";
 import { Footer } from "@/components/Footer";
+import { OilFilmRipple } from "@/components/OilFilmRipple";
 
 export default function HomePage() {
   return (
@@ -23,6 +24,11 @@ export default function HomePage() {
       >
         <HeroStage>
           <HeroClusterView className="pointer-events-none absolute inset-0" />
+          {/* hero-scoped iridescent ripple. lives inside HeroStage so it
+              clips to the stage's rounded border + overflow-hidden and
+              follows the scroll-exit transform. intersection-gated, pauses
+              entirely when the hero is scrolled off-screen. */}
+          <OilFilmRipple />
           <div className="stage-edge" aria-hidden />
 
           {/* mobile-only legibility tint: dark gradient weighted to the bottom

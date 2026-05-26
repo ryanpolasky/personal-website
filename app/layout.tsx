@@ -3,7 +3,6 @@ import { inter, jetbrainsMono, fraunces } from "@/lib/fonts";
 import { AccentProvider } from "@/components/AccentProvider";
 import { SmoothScrollProvider } from "@/components/SmoothScrollProvider";
 import { Nav } from "@/components/Nav";
-import { OilFilmRipple } from "@/components/OilFilmRipple";
 import "./globals.css";
 
 const SITE_URL = "https://ryanpolasky.com";
@@ -310,7 +309,6 @@ export default function RootLayout({
             >
               skip to content
             </a>
-            <OilFilmRipple />
             <Nav />
             {children}
           </SmoothScrollProvider>
