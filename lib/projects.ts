@@ -492,7 +492,7 @@ export const PROJECTS: Project[] = [
     index: "07.",
     name: "RyMe.md",
     tagline: "browser-only generator for animated github readme banners.",
-    body: "static READMEs are tired and the existing stats-card generators all converge on the same look. RyMe.md is the workspace for designing animated profile banners across five template families, each rendered and exported entirely in-tab. SVG templates bake CSS @keyframes so banners animate without javascript and play in github's markdown renderer. zero server, zero signup - one file out, drop into your username/username repo, done.",
+    body: "static READMEs are tired and the existing stats-card generators all converge on the same look. RyMe.md is the workspace for designing animated profile banners across seven template families, each rendered and exported entirely in-tab. SVG templates bake CSS @keyframes so banners animate without javascript and play in github's markdown renderer. zero server, zero signup - one file out, drop into your username/username repo, done.",
     role: "solo",
     stack: [
       "Vite",
