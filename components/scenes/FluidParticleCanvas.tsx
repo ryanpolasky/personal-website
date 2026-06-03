@@ -91,18 +91,42 @@ function makeCircleGeom(radius: number): THREE.BufferGeometry {
 function makePlusGeom(w: number, t: number): THREE.BufferGeometry {
   const g = new THREE.BufferGeometry();
   const verts = new Float32Array([
-    -w / 2, -t / 2, 0,
-     w / 2, -t / 2, 0,
-     w / 2,  t / 2, 0,
-    -w / 2, -t / 2, 0,
-     w / 2,  t / 2, 0,
-    -w / 2,  t / 2, 0,
-    -t / 2, -w / 2, 0,
-     t / 2, -w / 2, 0,
-     t / 2,  w / 2, 0,
-    -t / 2, -w / 2, 0,
-     t / 2,  w / 2, 0,
-    -t / 2,  w / 2, 0,
+    -w / 2,
+    -t / 2,
+    0,
+    w / 2,
+    -t / 2,
+    0,
+    w / 2,
+    t / 2,
+    0,
+    -w / 2,
+    -t / 2,
+    0,
+    w / 2,
+    t / 2,
+    0,
+    -w / 2,
+    t / 2,
+    0,
+    -t / 2,
+    -w / 2,
+    0,
+    t / 2,
+    -w / 2,
+    0,
+    t / 2,
+    w / 2,
+    0,
+    -t / 2,
+    -w / 2,
+    0,
+    t / 2,
+    w / 2,
+    0,
+    -t / 2,
+    w / 2,
+    0,
   ]);
   g.setAttribute("position", new THREE.BufferAttribute(verts, 3));
   return g;
@@ -269,8 +293,16 @@ function ParticleField({
       pressures.fill(0);
       grid.forEach((cell) => {
         const { cx, cy, indices } = cell;
-        for (let dxc = -pressureNeighborRange; dxc <= pressureNeighborRange; dxc++) {
-          for (let dyc = -pressureNeighborRange; dyc <= pressureNeighborRange; dyc++) {
+        for (
+          let dxc = -pressureNeighborRange;
+          dxc <= pressureNeighborRange;
+          dxc++
+        ) {
+          for (
+            let dyc = -pressureNeighborRange;
+            dyc <= pressureNeighborRange;
+            dyc++
+          ) {
             const neighbors = grid.get(cellKey(cx + dxc, cy + dyc));
             if (!neighbors) continue;
             for (let ii = 0; ii < indices.length; ii++) {
@@ -301,8 +333,16 @@ function ParticleField({
       }
       grid.forEach((cell) => {
         const { cx, cy, indices } = cell;
-        for (let dxc = -pressureNeighborRange; dxc <= pressureNeighborRange; dxc++) {
-          for (let dyc = -pressureNeighborRange; dyc <= pressureNeighborRange; dyc++) {
+        for (
+          let dxc = -pressureNeighborRange;
+          dxc <= pressureNeighborRange;
+          dxc++
+        ) {
+          for (
+            let dyc = -pressureNeighborRange;
+            dyc <= pressureNeighborRange;
+            dyc++
+          ) {
             const neighbors = grid.get(cellKey(cx + dxc, cy + dyc));
             if (!neighbors) continue;
             for (let ii = 0; ii < indices.length; ii++) {
@@ -585,11 +625,9 @@ function ParticleField({
     const pulseBoost = pointer.pulse;
     // double the pulse radius boost so it hits a larger area on tap
     const targetRadius =
-      (0.45 + Math.min(speed * 0.02, 0.25)) * pointer.active +
-      pulseBoost * 2.8;
+      (0.45 + Math.min(speed * 0.02, 0.25)) * pointer.active + pulseBoost * 2.8;
     pointer.radius = THREE.MathUtils.damp(pointer.radius, targetRadius, 6, dt);
-    const dynStrength =
-      80 + Math.min(speed * 4.0, 150) + pulseBoost * 400;
+    const dynStrength = 80 + Math.min(speed * 4.0, 150) + pulseBoost * 400;
     const dynDrag = 1.0 + Math.min(speed * 0.1, 4.0) + pulseBoost * 3;
 
     advancePhysics(

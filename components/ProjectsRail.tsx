@@ -14,7 +14,6 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-
 const projects = getEnabledProjects();
 const N = projects.length;
 
@@ -448,8 +447,7 @@ export function ProjectsRail() {
         newGestureSinceArm = true;
       }
       lastWheelAt = now;
-      lastInputIsMouseWheel =
-        e.deltaMode === 1 || Math.abs(e.deltaY) >= 80;
+      lastInputIsMouseWheel = e.deltaMode === 1 || Math.abs(e.deltaY) >= 80;
     };
     window.addEventListener("wheel", wheelClassifier, { passive: true });
 
@@ -478,10 +476,7 @@ export function ProjectsRail() {
       releaseTailAbsorber();
     };
 
-    const lockScrollDuringSwipe = (
-      lockMs: number,
-      targetScrollY: number,
-    ) => {
+    const lockScrollDuringSwipe = (lockMs: number, targetScrollY: number) => {
       releaseWheelBlock();
 
       // mouse wheel: short blocker (just the transition), no inertia absorber.
@@ -587,7 +582,6 @@ export function ProjectsRail() {
     };
 
     const ctx = gsap.context(() => {
-
       const jumpToIdx = (rawTarget: number) => {
         const target = Math.max(0, Math.min(N - 1, rawTarget));
         const targetX = -panelStarts[target] * window.innerWidth;
@@ -675,17 +669,14 @@ export function ProjectsRail() {
       // wall lock: snap the rail to the current project's far edge and
       // absorb momentum. user must scroll again to actually cross.
       const lockAtWall = (idx: number, dir: 1 | -1) => {
-        const sectionTop =
-          section.getBoundingClientRect().top + window.scrollY;
+        const sectionTop = section.getBoundingClientRect().top + window.scrollY;
         const vh = window.innerHeight;
         const slotStartY = slotStarts[idx] * vh;
         const slotEndY = (slotStarts[idx] + slotBudgets[idx]) * vh;
         const targetSlotY = dir === 1 ? slotEndY - 1 : slotStartY + 1;
         const targetScrollY = sectionTop + targetSlotY;
         const railTargetVw =
-          dir === 1
-            ? -(panelStarts[idx] + slotPan[idx])
-            : -panelStarts[idx];
+          dir === 1 ? -(panelStarts[idx] + slotPan[idx]) : -panelStarts[idx];
 
         gsap.killTweensOf(rail);
         gsap.to(rail, {
@@ -701,8 +692,7 @@ export function ProjectsRail() {
 
       const landOnEntry = (idx: number, fromBelow: boolean) => {
         if (performance.now() < suppressEntryLandingsUntil) return;
-        const sectionTop =
-          section.getBoundingClientRect().top + window.scrollY;
+        const sectionTop = section.getBoundingClientRect().top + window.scrollY;
         const vh = window.innerHeight;
         const slotStartY = slotStarts[idx] * vh;
         const slotEndY = (slotStarts[idx] + slotBudgets[idx]) * vh;
@@ -859,140 +849,142 @@ export function ProjectsRail() {
               "inset(var(--rail-clip-top, 128px) var(--rail-clip-x, 112px) var(--rail-clip-bottom, 128px) var(--rail-clip-x, 112px) round var(--rail-radius, 28px))",
           }}
         >
-        <div
-          className="stage-edge"
-          aria-hidden
-          style={{
-            inset:
-              "var(--rail-clip-top, 128px) var(--rail-clip-x, 112px) var(--rail-clip-bottom, 128px) var(--rail-clip-x, 112px)",
-            borderRadius: "var(--rail-radius, 28px)",
-            opacity: "var(--rail-edge-opacity, 1)",
-          }}
-        />
-
-        <div
-          ref={prevCueRef}
-          className="pointer-events-none absolute inset-y-0 left-0 z-40 flex w-[min(30rem,42vw)] items-center opacity-0"
-          style={{ willChange: "transform, opacity, background" }}
-          aria-hidden
-        >
           <div
-            className="pointer-events-none ml-5 flex items-center gap-4 rounded-full border border-white/25 bg-black/15 px-4 py-3 text-white/90 shadow-[0_0_50px_rgba(255,255,255,0.12)] backdrop-blur-md sm:ml-9"
-            style={{ fontFamily: "var(--font-mono)" }}
-          >
-            <span className="text-[18px] leading-none">←</span>
-            <span className="flex flex-col gap-1">
-              <span className="text-[9px] uppercase tracking-[0.3em] text-white/55">
-                previous
-              </span>
-              <span
-                ref={prevCueNameRef}
-                className="text-[11px] uppercase tracking-[0.18em]"
-              />
-            </span>
-          </div>
-        </div>
+            className="stage-edge"
+            aria-hidden
+            style={{
+              inset:
+                "var(--rail-clip-top, 128px) var(--rail-clip-x, 112px) var(--rail-clip-bottom, 128px) var(--rail-clip-x, 112px)",
+              borderRadius: "var(--rail-radius, 28px)",
+              opacity: "var(--rail-edge-opacity, 1)",
+            }}
+          />
 
-        <div
-          ref={nextCueRef}
-          className="pointer-events-none absolute inset-y-0 right-0 z-40 flex w-[min(30rem,42vw)] items-center justify-end opacity-0"
-          style={{ willChange: "transform, opacity, background" }}
-          aria-hidden
-        >
           <div
-            className="pointer-events-none mr-5 flex items-center gap-4 rounded-full border border-white/25 bg-black/15 px-4 py-3 text-white/90 shadow-[0_0_50px_rgba(255,255,255,0.12)] backdrop-blur-md sm:mr-9"
-            style={{ fontFamily: "var(--font-mono)" }}
+            ref={prevCueRef}
+            className="pointer-events-none absolute inset-y-0 left-0 z-40 flex w-[min(30rem,42vw)] items-center opacity-0"
+            style={{ willChange: "transform, opacity, background" }}
+            aria-hidden
           >
-            <span className="flex flex-col gap-1 text-right">
-              <span className="text-[9px] uppercase tracking-[0.3em] text-white/55">
-                next
-              </span>
-              <span
-                ref={nextCueNameRef}
-                className="text-[11px] uppercase tracking-[0.18em]"
-              />
-            </span>
-            <span className="text-[18px] leading-none">→</span>
-          </div>
-        </div>
-
-        <button
-          type="button"
-          onClick={() => jumpToIdxRef.current(0)}
-          className="absolute left-4 top-4 z-30 cursor-pointer text-[10.5px] uppercase tracking-[0.32em] text-[var(--color-text-faint)] transition-colors hover:text-white/85 sm:left-8 sm:top-8"
-          style={{ fontFamily: "var(--font-mono)" }}
-          data-hoverable
-          aria-label="reset to first project"
-        >
-          03 - projects
-        </button>
-
-        <div ref={railRef} className="flex h-full will-change-transform">
-          {projects.map((p, i) => (
             <div
-              key={p.id}
-              className="h-full shrink-0 overflow-hidden"
-              style={{ width: `${slotWidths[i] * 100}svw` }}
+              className="pointer-events-none ml-5 flex items-center gap-4 rounded-full border border-white/25 bg-black/15 px-4 py-3 text-white/90 shadow-[0_0_50px_rgba(255,255,255,0.12)] backdrop-blur-md sm:ml-9"
+              style={{ fontFamily: "var(--font-mono)" }}
             >
-              <ProjectPanel
-                project={p}
-                tintColor={tints[i]}
-                index={i}
-                total={N}
-              />
-            </div>
-          ))}
-        </div>
-
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30 flex items-end justify-between gap-6 px-5 pb-7 sm:px-8 sm:pb-9 md:px-12 lg:px-20">
-          <div
-            className="pointer-events-auto flex flex-1 gap-1.5"
-            role="tablist"
-            aria-label="jump to project"
-          >
-            {projects.map((p, i) => (
-              <button
-                key={p.id}
-                type="button"
-                role="tab"
-                aria-selected={i === activeIdx}
-                aria-label={`go to project ${String(i + 1).padStart(2, "0")}: ${projectNames[i]}`}
-                onClick={() => jumpToIdxRef.current(i)}
-                className="group relative -my-3 flex flex-1 items-end py-3"
-                style={{ ["--bar-tint" as string]: tints[i] } as CSSProperties}
-                data-hoverable
-              >
-                <span
-                  className="pointer-events-none absolute bottom-full left-1/2 z-20 mb-2.5 flex -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full border bg-black/55 px-2.5 py-1 text-[9.5px] uppercase tracking-[0.22em] text-white/95 opacity-0 backdrop-blur-md transition-opacity duration-150 group-hover:opacity-100"
-                  style={{
-                    fontFamily: "var(--font-mono)",
-                    borderColor:
-                      "color-mix(in oklab, var(--bar-tint) 50%, rgba(255,255,255,0.2))",
-                  }}
-                >
-                  <span
-                    className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--bar-tint)]"
-                    aria-hidden
-                  />
-                  {projectNames[i]}
+              <span className="text-[18px] leading-none">←</span>
+              <span className="flex flex-col gap-1">
+                <span className="text-[9px] uppercase tracking-[0.3em] text-white/55">
+                  previous
                 </span>
                 <span
-                  className={`block h-px w-full transition-colors duration-200 ${
-                    i === activeIdx
-                      ? "bg-[var(--bar-tint)]"
-                      : "bg-white/18 group-hover:bg-[var(--bar-tint)]"
-                  }`}
+                  ref={prevCueNameRef}
+                  className="text-[11px] uppercase tracking-[0.18em]"
                 />
-              </button>
+              </span>
+            </div>
+          </div>
+
+          <div
+            ref={nextCueRef}
+            className="pointer-events-none absolute inset-y-0 right-0 z-40 flex w-[min(30rem,42vw)] items-center justify-end opacity-0"
+            style={{ willChange: "transform, opacity, background" }}
+            aria-hidden
+          >
+            <div
+              className="pointer-events-none mr-5 flex items-center gap-4 rounded-full border border-white/25 bg-black/15 px-4 py-3 text-white/90 shadow-[0_0_50px_rgba(255,255,255,0.12)] backdrop-blur-md sm:mr-9"
+              style={{ fontFamily: "var(--font-mono)" }}
+            >
+              <span className="flex flex-col gap-1 text-right">
+                <span className="text-[9px] uppercase tracking-[0.3em] text-white/55">
+                  next
+                </span>
+                <span
+                  ref={nextCueNameRef}
+                  className="text-[11px] uppercase tracking-[0.18em]"
+                />
+              </span>
+              <span className="text-[18px] leading-none">→</span>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => jumpToIdxRef.current(0)}
+            className="absolute left-4 top-4 z-30 cursor-pointer text-[10.5px] uppercase tracking-[0.32em] text-[var(--color-text-faint)] transition-colors hover:text-white/85 sm:left-8 sm:top-8"
+            style={{ fontFamily: "var(--font-mono)" }}
+            data-hoverable
+            aria-label="reset to first project"
+          >
+            03 - projects
+          </button>
+
+          <div ref={railRef} className="flex h-full will-change-transform">
+            {projects.map((p, i) => (
+              <div
+                key={p.id}
+                className="h-full shrink-0 overflow-hidden"
+                style={{ width: `${slotWidths[i] * 100}svw` }}
+              >
+                <ProjectPanel
+                  project={p}
+                  tintColor={tints[i]}
+                  index={i}
+                  total={N}
+                />
+              </div>
             ))}
           </div>
-          <p
-            className="pointer-events-auto hidden shrink-0 text-[10px] uppercase tracking-[0.28em] text-white/55 sm:block"
-            style={{ fontFamily: "var(--font-mono)" }}
-          >
-            scroll to translate
-          </p>
-        </div>
+
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30 flex items-end justify-between gap-6 px-5 pb-7 sm:px-8 sm:pb-9 md:px-12 lg:px-20">
+            <div
+              className="pointer-events-auto flex flex-1 gap-1.5"
+              role="tablist"
+              aria-label="jump to project"
+            >
+              {projects.map((p, i) => (
+                <button
+                  key={p.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={i === activeIdx}
+                  aria-label={`go to project ${String(i + 1).padStart(2, "0")}: ${projectNames[i]}`}
+                  onClick={() => jumpToIdxRef.current(i)}
+                  className="group relative -my-3 flex flex-1 items-end py-3"
+                  style={
+                    { ["--bar-tint" as string]: tints[i] } as CSSProperties
+                  }
+                  data-hoverable
+                >
+                  <span
+                    className="pointer-events-none absolute bottom-full left-1/2 z-20 mb-2.5 flex -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full border bg-black/55 px-2.5 py-1 text-[9.5px] uppercase tracking-[0.22em] text-white/95 opacity-0 backdrop-blur-md transition-opacity duration-150 group-hover:opacity-100"
+                    style={{
+                      fontFamily: "var(--font-mono)",
+                      borderColor:
+                        "color-mix(in oklab, var(--bar-tint) 50%, rgba(255,255,255,0.2))",
+                    }}
+                  >
+                    <span
+                      className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--bar-tint)]"
+                      aria-hidden
+                    />
+                    {projectNames[i]}
+                  </span>
+                  <span
+                    className={`block h-px w-full transition-colors duration-200 ${
+                      i === activeIdx
+                        ? "bg-[var(--bar-tint)]"
+                        : "bg-white/18 group-hover:bg-[var(--bar-tint)]"
+                    }`}
+                  />
+                </button>
+              ))}
+            </div>
+            <p
+              className="pointer-events-auto hidden shrink-0 text-[10px] uppercase tracking-[0.28em] text-white/55 sm:block"
+              style={{ fontFamily: "var(--font-mono)" }}
+            >
+              scroll to translate
+            </p>
+          </div>
         </div>
       </section>
     </div>

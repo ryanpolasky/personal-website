@@ -107,11 +107,7 @@ function hexToHsv(hex: string): [number, number, number] {
   return [hue, s, v];
 }
 
-function hsvToRgb(
-  hue: number,
-  s: number,
-  v: number,
-): [number, number, number] {
+function hsvToRgb(hue: number, s: number, v: number): [number, number, number] {
   const i = Math.floor(hue * 6);
   const f = hue * 6 - i;
   const p = v * (1 - s);
@@ -133,9 +129,7 @@ function hsvToRgb(
   }
 }
 
-function buildPalette(
-  accentHex: string,
-): Array<[number, number, number]> {
+function buildPalette(accentHex: string): Array<[number, number, number]> {
   const [baseHue] = hexToHsv(accentHex);
   return PALETTE_STOPS.map(([dh, s, v]) => {
     const hh = (((baseHue + dh) % 1) + 1) % 1;

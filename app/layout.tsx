@@ -14,8 +14,7 @@ const SHORT_DESCRIPTION =
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title:
-    "Ryan Polasky - Software Engineer · 2× Apple Intern · UT Dallas '26",
+  title: "Ryan Polasky - Software Engineer · 2× Apple Intern · UT Dallas '26",
   description:
     "Ryan Polasky - Junior Software Engineer. Backend systems, AI/LLM tooling, developer productivity. UT Dallas '26. 2× Apple intern. Open May 2026.",
   keywords: [
@@ -280,7 +279,8 @@ const JSON_LD = {
       name: "tryad",
       alternateName: "tryad - chord progression generator",
       url: "https://tryad.net/",
-      description: "A music-theory-aware chord progression generator. Pick a key, scale, and mood - get progressions with secondary dominants, modal interchange, voice leading, piano + guitar visualizer, drums, and MIDI export. Runs entirely in the browser.",
+      description:
+        "A music-theory-aware chord progression generator. Pick a key, scale, and mood - get progressions with secondary dominants, modal interchange, voice leading, piano + guitar visualizer, drums, and MIDI export. Runs entirely in the browser.",
       image: "https://tryad.net/og.webp",
       applicationCategory: "MultimediaApplication",
       applicationSubCategory: "Chord Progression Generator",
@@ -293,9 +293,34 @@ const JSON_LD = {
         "@type": "Offer",
         price: "0",
         priceCurrency: "USD",
-        availability: "https://schema.org/InStock"
-      }
-    }
+        availability: "https://schema.org/InStock",
+      },
+    },
+    {
+      "@type": "VideoGame",
+      "@id": "https://wikiryvals.com/#game",
+      name: "WikiRyvals",
+      alternateName: "WikiRyvals - ranked Wikiracing",
+      url: "https://wikiryvals.com/",
+      description:
+        "Ranked, competitive Wikiracing played as a Chrome extension on live Wikipedia. Race article to article using only links - fewest clicks wins. Play 1v1 or 2v2, climb a skill-based ladder with seasons, and find your Ryval.",
+      image: "https://wikiryvals.com/og.webp",
+      genre: ["Trivia", "Puzzle", "Competitive"],
+      playMode: ["SinglePlayer", "MultiPlayer"],
+      gamePlatform: ["Web Browser", "Google Chrome"],
+      applicationCategory: "GameApplication",
+      operatingSystem: "Chrome",
+      inLanguage: "en",
+      creator: { "@id": `${SITE_URL}/#person` },
+      author: { "@id": `${SITE_URL}/#person` },
+      publisher: { "@id": `${SITE_URL}/#person` },
+      offers: {
+        "@type": "Offer",
+        price: "0",
+        priceCurrency: "USD",
+        availability: "https://schema.org/InStock",
+      },
+    },
   ],
 };
 

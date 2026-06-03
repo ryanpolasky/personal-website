@@ -77,7 +77,10 @@ export function MobileProjectsStack() {
             : project.githubHref;
           const topSections = (project.sections ?? []).slice(0, 2);
           const primaryHref = project.href;
-          const primaryLabel = (project.hrefLabel ?? "visit").replace(/\s*→$/, "");
+          const primaryLabel = (project.hrefLabel ?? "visit").replace(
+            /\s*→$/,
+            "",
+          );
 
           return (
             <article
@@ -295,12 +298,10 @@ export function MobileProjectsStack() {
                   </Link>
                 ) : null}
               </div>
-
             </article>
           );
         })}
       </div>
-
     </section>
   );
 }

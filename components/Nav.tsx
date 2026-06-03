@@ -267,8 +267,7 @@ export function Nav() {
             lineHeight: 1,
             letterSpacing: "-0.02em",
             fontVariationSettings: '"opsz" 144, "SOFT" 80, "WONK" 1',
-            opacity:
-              phase === "closing" || phase === "closed" ? 1 : 0,
+            opacity: phase === "closing" || phase === "closed" ? 1 : 0,
             transition: `opacity ${SLIDE_MS - 80}ms ease ${phase === "closing" ? 120 : 0}ms`,
           }}
         >
@@ -404,10 +403,7 @@ export function Nav() {
             </span>
             available may 2026
           </span>
-          <nav
-            aria-label="mobile primary"
-            className="mt-2 flex flex-col gap-3"
-          >
+          <nav aria-label="mobile primary" className="mt-2 flex flex-col gap-3">
             {SECTIONS.map((s) => (
               <a
                 key={s.id}

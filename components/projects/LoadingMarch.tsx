@@ -106,7 +106,9 @@ export function LoadingMarch() {
   if (!spritesReady) {
     // empty strip placeholder. layout space is reserved so the parent
     // container's grid doesn't reflow when the forms appear.
-    return <div className="relative h-full w-full overflow-hidden" aria-hidden />;
+    return (
+      <div className="relative h-full w-full overflow-hidden" aria-hidden />
+    );
   }
   return (
     <div className="relative h-full w-full overflow-hidden">

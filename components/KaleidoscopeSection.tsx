@@ -87,43 +87,43 @@ export function KaleidoscopeSection() {
 
   return (
     <div className="pb-16 sm:pb-24">
-    <section
-      ref={sectionRef}
-      data-kaleidoscope-tunnel
-      data-snap
-      className="relative h-[720vh]"
-      aria-label="chamber"
-    >
-      <div
-        ref={stageRef}
-        data-kaleidoscope-stage
-        data-stage="dark"
-        className="stage sticky w-full"
-        style={{
-          // constant layout box; clip-path is the morph (gpu composite only).
-          top: 0,
-          height: "100svh",
-          borderRadius: "var(--ks-radius, 28px)",
-          clipPath:
-            "inset(var(--ks-clip-top, 128px) var(--ks-clip-x, 112px) var(--ks-clip-bottom, 128px) var(--ks-clip-x, 112px) round var(--ks-radius, 28px))",
-          WebkitClipPath:
-            "inset(var(--ks-clip-top, 128px) var(--ks-clip-x, 112px) var(--ks-clip-bottom, 128px) var(--ks-clip-x, 112px) round var(--ks-radius, 28px))",
-        }}
+      <section
+        ref={sectionRef}
+        data-kaleidoscope-tunnel
+        data-snap
+        className="relative h-[720vh]"
+        aria-label="chamber"
       >
-        <InfinityMirrorBoxView className="pointer-events-auto absolute inset-0" />
-        {/* edge tracks the clip-path so the rim hugs the visible card. */}
         <div
-          className="stage-edge"
-          aria-hidden
+          ref={stageRef}
+          data-kaleidoscope-stage
+          data-stage="dark"
+          className="stage sticky w-full"
           style={{
-            inset:
-              "var(--ks-clip-top, 128px) var(--ks-clip-x, 112px) var(--ks-clip-bottom, 128px) var(--ks-clip-x, 112px)",
+            // constant layout box; clip-path is the morph (gpu composite only).
+            top: 0,
+            height: "100svh",
             borderRadius: "var(--ks-radius, 28px)",
-            opacity: "var(--ks-edge-opacity, 1)",
+            clipPath:
+              "inset(var(--ks-clip-top, 128px) var(--ks-clip-x, 112px) var(--ks-clip-bottom, 128px) var(--ks-clip-x, 112px) round var(--ks-radius, 28px))",
+            WebkitClipPath:
+              "inset(var(--ks-clip-top, 128px) var(--ks-clip-x, 112px) var(--ks-clip-bottom, 128px) var(--ks-clip-x, 112px) round var(--ks-radius, 28px))",
           }}
-        />
-      </div>
-    </section>
+        >
+          <InfinityMirrorBoxView className="pointer-events-auto absolute inset-0" />
+          {/* edge tracks the clip-path so the rim hugs the visible card. */}
+          <div
+            className="stage-edge"
+            aria-hidden
+            style={{
+              inset:
+                "var(--ks-clip-top, 128px) var(--ks-clip-x, 112px) var(--ks-clip-bottom, 128px) var(--ks-clip-x, 112px)",
+              borderRadius: "var(--ks-radius, 28px)",
+              opacity: "var(--ks-edge-opacity, 1)",
+            }}
+          />
+        </div>
+      </section>
     </div>
   );
 }

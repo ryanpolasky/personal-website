@@ -131,7 +131,9 @@ export function usePerformanceTier(
     )
       return;
 
-    const desktop = window.matchMedia("(min-width: 1024px) and (pointer: fine)");
+    const desktop = window.matchMedia(
+      "(min-width: 1024px) and (pointer: fine)",
+    );
     if (!desktop.matches) return;
 
     let cancelled = false;

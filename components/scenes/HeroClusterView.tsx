@@ -673,10 +673,7 @@ function Cluster({
       const ray = raycasterRef.current;
       ray.setFromCamera(ndc, state.camera);
       const hit = hitRef.current;
-      const intersected = ray.ray.intersectPlane(
-        clusterPlaneRef.current,
-        hit,
-      );
+      const intersected = ray.ray.intersectPlane(clusterPlaneRef.current, hit);
       if (intersected) {
         g.worldToLocal(hit);
       } else {

@@ -97,7 +97,9 @@ async function main() {
   for (const { src, dst, srcSize } of tasks) {
     totalSrc += srcSize;
     if (DRY_RUN) {
-      console.log(`  would convert ${path.relative(process.cwd(), src)} (${fmt(srcSize)})`);
+      console.log(
+        `  would convert ${path.relative(process.cwd(), src)} (${fmt(srcSize)})`,
+      );
       continue;
     }
     try {

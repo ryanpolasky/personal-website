@@ -299,9 +299,9 @@ export function AboutSection() {
               camera & photos organizations.
             </p>
             <p className="text-base leading-relaxed text-[var(--color-text-muted)] sm:text-lg">
-              i enjoy backend, devops, and making llms actually do what you
-              want them to do. i also have a bad habit of rebuilding this
-              website. this is version eleven, but the older ones{" "}
+              i enjoy backend, devops, and making llms actually do what you want
+              them to do. i also have a bad habit of rebuilding this website.
+              this is version eleven, but the older ones{" "}
               <Link
                 href="/gallery"
                 className="text-[var(--color-text-muted)] underline decoration-[var(--color-line-strong)] underline-offset-4 transition-colors hover:text-[var(--color-text)] hover:decoration-[var(--color-text-faint)]"

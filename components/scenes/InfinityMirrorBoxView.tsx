@@ -37,9 +37,7 @@ function ignitionT(p: number): number {
   return smoothstep01(0.3, 0.5, p) * (1 - smoothstep01(0.5, 0.85, p));
 }
 function diveT(p: number): number {
-  return Math.sin(
-    THREE.MathUtils.clamp((p - 0.42) / 0.16, 0, 1) * Math.PI,
-  );
+  return Math.sin(THREE.MathUtils.clamp((p - 0.42) / 0.16, 0, 1) * Math.PI);
 }
 
 function makeSigilTexture(accent: {
@@ -377,11 +375,7 @@ function OrbitingParticles({ tier }: { tier: PerformanceTier }) {
     const c = new THREE.Color();
     for (let i = 0; i < count; i += 1) {
       const hex =
-        i % 3 === 0
-          ? accent.warm
-          : i % 3 === 1
-            ? accent.base
-            : accent.soft;
+        i % 3 === 0 ? accent.warm : i % 3 === 1 ? accent.base : accent.soft;
       c.set(hex);
       mesh.setColorAt(i, c);
     }
@@ -398,11 +392,7 @@ function OrbitingParticles({ tier }: { tier: PerformanceTier }) {
       const cfg = particles[i];
       const angle = cfg.a + t * cfg.speed;
       const r = cfg.baseR + Math.sin(t * 0.6 + i) * 0.04;
-      dummy.position.set(
-        Math.cos(angle) * r,
-        cfg.baseY,
-        Math.sin(angle) * r,
-      );
+      dummy.position.set(Math.cos(angle) * r, cfg.baseY, Math.sin(angle) * r);
       const s = cfg.s * (1 + Math.sin(t * 2.2 + i) * 0.18);
       dummy.scale.setScalar(s);
       dummy.updateMatrix();
@@ -643,8 +633,7 @@ function LightSigil({
       knot.rotation.x += step * 0.22;
       knot.rotation.y += step * 0.18;
       const mat = knot.material as THREE.MeshPhysicalMaterial;
-      mat.emissiveIntensity =
-        0.5 + p * 0.32 + pulse * 0.42 + ignition * 0.55;
+      mat.emissiveIntensity = 0.5 + p * 0.32 + pulse * 0.42 + ignition * 0.55;
       mat.emissive.copy(baseEmissive).lerp(warmEmissive, ignition);
       if (sigilTexture) {
         sigilTexture.offset.x = (sigilTexture.offset.x + step * 0.018) % 1;
@@ -659,8 +648,7 @@ function LightSigil({
         .lerp(warmLightColor, ignition * 0.6);
     }
     if (warmLightRef.current) {
-      warmLightRef.current.intensity =
-        1.15 + pulse * 1.25 + ignition * 0.9;
+      warmLightRef.current.intensity = 1.15 + pulse * 1.25 + ignition * 0.9;
     }
   });
 
