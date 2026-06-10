@@ -8,7 +8,7 @@ import "./globals.css";
 const SITE_URL = "https://ryanpolasky.com";
 const OG_IMAGE = `${SITE_URL}/assets/images/site-preview.png`;
 const OG_IMAGE_ALT =
-  "ryan.polasky / runtime - terminal-style status page for Ryan Polasky's personal site";
+  "Hero section for Ryan Polasky's personal site";
 const SHORT_DESCRIPTION =
   "Junior Software Engineer specializing in backend systems, AI/LLM tooling, and developer productivity. UT Dallas '26. Open May 2026.";
 
