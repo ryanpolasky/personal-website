@@ -29,7 +29,7 @@ npm run typecheck
 
 ## variant gallery
 
-- Discoverable from the landing footer ("explore 14 versions of this site →") or directly at `/gallery`.
+- Discoverable from the about section ("...older ones are stil around") or directly at `/gallery`.
 - Returning visitors are locked into their saved choice; the cog button re-opens the picker.
 - Force the picker open with `/gallery?gallery=1`.
 - Each variant is a static HTML file. Treat them as a museum, not a codebase; edit only when fixing absolute asset paths.
@@ -41,3 +41,9 @@ _Note: The git history of this repository was squashed and rewritten during the 
 ## credits
 
 - The oil-film ripple effect in the hero (`components/OilFilmRipple.tsx`) is a Canvas2D port of techniques from Pavel Dobryakov's [WebGL-Fluid-Simulation](https://github.com/PavelDoGreat/WebGL-Fluid-Simulation) (MIT). The original is a full GPU fluid sim with pressure projection; this site uses a lighter CPU version inspired by its splatting, advection, and vorticity-confinement approach.
+
+## attribution
+
+This site is open-source under the MIT license. Feel free to use it as inspiration, learn from it, fork it, remix it, or deploy your own version.
+
+That said, this site wasn't built as a generic portfolio template; it's my personal website and a project I've spent an unreasonable amount of time obsessing over. If you use it as a starting point, I'd appreciate attribution by keeping the GitHub fork relationship intact or linking back to the original repository somewhere in your project. Not required, just appreciated. :)
