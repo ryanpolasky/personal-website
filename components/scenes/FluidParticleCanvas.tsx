@@ -7,13 +7,14 @@ import type { PerformanceTier } from "@/lib/performance";
 
 // fluid particle canvas - heavy three.js half of FluidParticleBand, dynamic-imported.
 
-// particle count + substep budget scale with perf tier. mobile/low gets
-// ~220 particles - enough to fill the bottom pile with depth without the
-// wallpaper-of-confetti effect at full desktop density.
+// particle count + substep budget scale with perf tier. counts are tuned so
+// the settled pile fills a little under half the section height per device
+// class: mobile/low gets ~280 - enough to clear the sparse ~1/3 fill without
+// the wallpaper-of-confetti effect at full desktop density.
 function tierParticleCount(tier: PerformanceTier): number {
-  if (tier === "high") return 1000;
-  if (tier === "medium") return 540;
-  return 220;
+  if (tier === "high") return 900;
+  if (tier === "medium") return 620;
+  return 280;
 }
 function tierSubsteps(tier: PerformanceTier): number {
   if (tier === "high") return 6;

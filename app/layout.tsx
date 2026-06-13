@@ -3,6 +3,8 @@ import { inter, jetbrainsMono, fraunces } from "@/lib/fonts";
 import { AccentProvider } from "@/components/AccentProvider";
 import { SmoothScrollProvider } from "@/components/SmoothScrollProvider";
 import { Nav } from "@/components/Nav";
+import { Watermark } from "@/components/Watermark";
+import { stateToken, stateNodeId } from "@/lib/rollout";
 import "./globals.css";
 
 const SITE_URL = "https://ryanpolasky.com";
@@ -360,6 +362,25 @@ export default function RootLayout({
             {children}
           </SmoothScrollProvider>
         </AccentProvider>
+        <Watermark />
+        <span
+          id={stateNodeId()}
+          aria-hidden
+          suppressHydrationWarning
+          style={{
+            position: "absolute",
+            width: 1,
+            height: 1,
+            margin: -1,
+            padding: 0,
+            border: 0,
+            overflow: "hidden",
+            clip: "rect(0 0 0 0)",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {stateToken()}
+        </span>
       </body>
     </html>
   );

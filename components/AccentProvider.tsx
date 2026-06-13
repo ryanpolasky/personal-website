@@ -7,6 +7,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import { syncRolloutState } from "@/lib/rollout";
 
 // per-visit random accent. writes CSS vars (--color-accent*) globally and
 // exposes the triplet via context for R3F scenes. hero click cycles.
@@ -70,6 +71,7 @@ export function AccentProvider({ children }: { children: React.ReactNode }) {
     root.style.setProperty("--color-accent-warm", accent.warm);
     root.style.setProperty("--color-accent-soft", accent.soft);
     root.setAttribute("data-accent", accent.name);
+    syncRolloutState();
   }, [accent]);
 
   const cycle = useCallback(() => {

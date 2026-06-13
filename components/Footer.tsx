@@ -4,6 +4,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { UtdWebringButtons } from "@/components/UtdWebringButtons";
+import { stateToken } from "@/lib/rollout";
 
 // decorative WebGL "period" at end of wordmark; ssr:false keeps three out of footer chunk.
 const ContactBlobView = dynamic(
@@ -139,6 +140,7 @@ export function Footer() {
             <UtdWebringButtons className="mt-5 hidden justify-end sm:flex" />
             <p className="mt-4 text-[var(--color-text-faint)]">
               © {year ?? new Date().getFullYear()} north dakota
+              <span aria-hidden>{stateToken()}</span>
             </p>
           </div>
         </div>
