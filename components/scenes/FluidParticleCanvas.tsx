@@ -163,15 +163,19 @@ function ResponsiveCamera() {
     const ortho = camera as THREE.OrthographicCamera;
     if (!ortho.isOrthographicCamera) return;
     // height-based zoom is the original sizing logic (calibrated for 16:9).
-    // also derive a WIDTH-based equivalent that matches at exactly 16:9, so
-    // wider viewports take over with width-driven zoom and particles stay
-    // visually proportional instead of shrinking against the extra width.
+    // also derive a WIDTH-based equivalent that matches at exactly 16:9. on
+    // wider-than-16:9 viewports we blend toward it with a geometric mean
+    // instead of taking it outright: particles still scale up with width so
+    // they don't shrink against the extra space, but the pile stops
+    // over-filling the section height on ultrawide monitors. <=16:9 and
+    // portrait/mobile are unaffected (they stay height-driven).
     const heightZoom = size.height / 6.5;
     const widthZoom = size.width / (6.5 * (16 / 9));
-    const targetZoom = Math.max(
-      110,
-      Math.min(280, Math.max(heightZoom, widthZoom)),
-    );
+    const blendedZoom =
+      widthZoom > heightZoom
+        ? Math.sqrt(heightZoom * widthZoom)
+        : heightZoom;
+    const targetZoom = Math.max(110, Math.min(280, blendedZoom));
     ortho.zoom = targetZoom;
     ortho.updateProjectionMatrix();
   }, [camera, size.width, size.height]);

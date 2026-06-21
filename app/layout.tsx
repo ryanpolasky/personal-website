@@ -12,13 +12,13 @@ const OG_IMAGE = `${SITE_URL}/assets/images/site-preview.png`;
 const OG_IMAGE_ALT =
   "Hero section for Ryan Polasky's personal site";
 const SHORT_DESCRIPTION =
-  "Junior Software Engineer specializing in backend systems, AI/LLM tooling, and developer productivity. UT Dallas '26. Open May 2026.";
+  "Software Engineer on Apple's Camera & Photos team. Backend systems, AI/LLM tooling, and developer productivity. UT Dallas '26.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "Ryan Polasky - Software Engineer · 2× Apple Intern · UT Dallas '26",
+  title: "Ryan Polasky - Software Engineer",
   description:
-    "Ryan Polasky - Junior Software Engineer. Backend systems, AI/LLM tooling, developer productivity. UT Dallas '26. 2× Apple intern. Open May 2026.",
+    "Ryan Polasky - Software Engineer on Apple's Camera & Photos team. Backend systems, AI/LLM tooling, developer productivity. UT Dallas '26.",
   keywords: [
     "Ryan Polasky",
     "ryan polasky",
@@ -26,7 +26,8 @@ export const metadata: Metadata = {
     "backend developer",
     "AI engineer",
     "LLM tooling",
-    "Apple intern",
+    "Apple engineer",
+    "Camera and Photos",
     "UT Dallas",
     "computer science",
     "devops",
@@ -55,7 +56,7 @@ export const metadata: Metadata = {
     siteName: "Ryan Polasky",
     locale: "en_US",
     url: SITE_URL,
-    title: "Ryan Polasky - Software Engineer · 2× Apple Intern",
+    title: "Ryan Polasky - Software Engineer",
     description: SHORT_DESCRIPTION,
     firstName: "Ryan",
     lastName: "Polasky",
@@ -64,7 +65,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Ryan Polasky - Software Engineer · 2× Apple Intern",
+    title: "Ryan Polasky - Software Engineer",
     description: SHORT_DESCRIPTION,
     images: [{ url: OG_IMAGE, alt: OG_IMAGE_ALT }],
   },
@@ -106,7 +107,7 @@ const JSON_LD = {
       email: "mailto:ryanpolasky@hotmail.com",
       jobTitle: "Software Engineer",
       description:
-        "Junior Software Engineer specializing in backend systems, AI/LLM tooling, test automation, and developer productivity. UT Dallas '26 graduate and 2× Apple intern.",
+        "Software Engineer on Apple's Camera & Photos team, specializing in backend systems, AI/LLM tooling, test automation, and developer productivity. UT Dallas '26 graduate.",
       address: {
         "@type": "PostalAddress",
         addressRegion: "ND",
@@ -117,6 +118,12 @@ const JSON_LD = {
         name: "The University of Texas at Dallas",
         url: "https://www.utdallas.edu/",
         sameAs: "https://en.wikipedia.org/wiki/University_of_Texas_at_Dallas",
+      },
+      worksFor: {
+        "@type": "Organization",
+        name: "Apple Inc.",
+        url: "https://www.apple.com/",
+        sameAs: "https://en.wikipedia.org/wiki/Apple_Inc.",
       },
       knowsAbout: [
         "Software Engineering",
@@ -143,7 +150,7 @@ const JSON_LD = {
       name: "Ryan Polasky",
       alternateName: "ryan.polasky / runtime",
       description:
-        "Personal site of Ryan Polasky - Junior Software Engineer specializing in backend systems, AI/LLM tooling, and developer productivity.",
+        "Personal site of Ryan Polasky - Software Engineer on Apple's Camera & Photos team, specializing in backend systems, AI/LLM tooling, and developer productivity.",
       inLanguage: "en",
       publisher: { "@id": `${SITE_URL}/#person` },
       author: { "@id": `${SITE_URL}/#person` },

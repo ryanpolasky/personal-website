@@ -64,8 +64,8 @@ export default function HomePage() {
               </p>
               <HeroHeadline />
               <p className="mt-4 max-w-md text-[14.5px] leading-relaxed text-white/90 [text-shadow:0_1px_8px_rgba(0,0,0,0.6),0_1px_2px_rgba(0,0,0,0.5)] sm:mt-5 sm:text-[17px] sm:text-white/65 sm:[text-shadow:none]">
-                ut dallas cs grad (may &apos;26). two summers at apple. most
-                recently built{" "}
+                ut dallas cs grad, now a software engineer on apple&apos;s
+                camera & photos team. most recently built{" "}
                 <em className="not-italic text-white">autopsy</em> - forensic
                 memory for ai coding agents.
               </p>

@@ -5,6 +5,7 @@ import Lenis from "lenis";
 import Snap from "lenis/snap";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { resolveSectionScrollTarget } from "@/lib/scroll";
 
 // active Lenis instance; null on touch/reduced-motion (Lenis never mounted).
 const LenisContext = createContext<Lenis | null>(null);
@@ -49,12 +50,16 @@ export function SmoothScrollProvider({
         "",
         window.location.pathname + window.location.search + bootHash,
       );
-      const target = document.getElementById(bootHash.slice(1));
-      if (!target) return;
+      const resolved = resolveSectionScrollTarget(bootHash.slice(1));
+      if (!resolved) return;
       window.dispatchEvent(new CustomEvent("nav:teleport"));
       const l = lenisRef.current;
-      if (l) l.scrollTo(target, { immediate: true });
-      else target.scrollIntoView({ behavior: "auto" });
+      if (l)
+        l.scrollTo(resolved.element, {
+          immediate: true,
+          offset: resolved.offset,
+        });
+      else resolved.element.scrollIntoView({ behavior: "auto" });
     };
     const runBootTeleport = () => {
       teleportToBootHash();

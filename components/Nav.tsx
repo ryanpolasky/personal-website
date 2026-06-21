@@ -12,6 +12,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLenis } from "@/components/SmoothScrollProvider";
 import { UtdWebringButtons } from "@/components/UtdWebringButtons";
+import { resolveSectionScrollTarget } from "@/lib/scroll";
 
 // floating nav with active-section tracking and curtain-masked anchor teleports.
 
@@ -47,9 +48,11 @@ export function Nav() {
   // mobile drawer toggle; only relevant <sm. opens via top-left hamburger.
   const [mobileOpen, setMobileOpen] = useState(false);
   const transitionTimer = useRef<number | null>(null);
-  const pendingTarget = useRef<{ id: string; element: HTMLElement } | null>(
-    null,
-  );
+  const pendingTarget = useRef<{
+    id: string;
+    element: HTMLElement;
+    offset: number;
+  } | null>(null);
   const lenis = useLenis();
 
   // clear pending transition work on unmount.
@@ -110,13 +113,17 @@ export function Nav() {
 
   // shared wash trigger for nav anchors and the global 'nav:wash' event.
   const triggerWashTo = useCallback((id: string) => {
-    const target = document.getElementById(id);
-    if (!target) return;
+    const resolved = resolveSectionScrollTarget(id);
+    if (!resolved) return;
     if (transitionTimer.current != null) {
       window.clearTimeout(transitionTimer.current);
       transitionTimer.current = null;
     }
-    pendingTarget.current = { id, element: target };
+    pendingTarget.current = {
+      id,
+      element: resolved.element,
+      offset: resolved.offset,
+    };
     setDestLabel(destLabelFor(id));
     setPhase("closing");
   }, []);
@@ -156,7 +163,7 @@ export function Nav() {
       transitionTimer.current = null;
     }
 
-    pendingTarget.current = { id: "", element: document.body };
+    pendingTarget.current = { id: "", element: document.body, offset: 0 };
     setDestLabel("ryan");
     setPhase("closing");
   }, []);
@@ -179,7 +186,10 @@ export function Nav() {
 
         if (lenis) {
           if (pending.id) {
-            lenis.scrollTo(pending.element, { immediate: true });
+            lenis.scrollTo(pending.element, {
+              immediate: true,
+              offset: pending.offset,
+            });
           } else {
             lenis.scrollTo(0, { immediate: true });
           }
@@ -321,21 +331,6 @@ export function Nav() {
               )}
             </a>
           ))}
-          <span
-            className="mx-1 h-3 w-px bg-[var(--color-line-strong)]"
-            aria-hidden
-          />
-          <span
-            className="flex items-center gap-2 rounded-full bg-[var(--color-accent)]/8 px-3 py-1.5 text-[10px] uppercase tracking-[0.22em] text-[var(--color-text)]"
-            style={{ fontFamily: "var(--font-mono)" }}
-          >
-            <span className="relative inline-flex h-1.5 w-1.5">
-              <span className="absolute inset-0 animate-ping rounded-full bg-[var(--color-accent-warm)] opacity-60" />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]" />
-            </span>
-            <span className="hidden sm:inline">available may 2026</span>
-            <span className="sm:hidden">available</span>
-          </span>
         </div>
       </nav>
 
@@ -393,16 +388,6 @@ export function Nav() {
           >
             ryan polasky
           </Link>
-          <span
-            className="flex w-fit items-center gap-2 rounded-full bg-[var(--color-accent)]/10 px-3 py-1.5 text-[10px] uppercase tracking-[0.24em] text-[var(--color-text)]"
-            style={{ fontFamily: "var(--font-mono)" }}
-          >
-            <span className="relative inline-flex h-1.5 w-1.5">
-              <span className="absolute inset-0 animate-ping rounded-full bg-[var(--color-accent-warm)] opacity-60" />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]" />
-            </span>
-            available may 2026
-          </span>
           <nav aria-label="mobile primary" className="mt-2 flex flex-col gap-3">
             {SECTIONS.map((s) => (
               <a

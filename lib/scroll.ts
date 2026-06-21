@@ -186,3 +186,22 @@ export function useIsCoarsePointer(): boolean {
 
   return coarse;
 }
+
+// shared nav scroll target resolver. a section can expose a [data-nav-anchor]
+// content panel so anchor clicks (and boot-hash teleports) land on the panel
+// instead of the bare section top, which can sit behind tall decorative
+// padding. NAV_ANCHOR_GAP leaves a little air above the panel so it clears the
+// floating nav.
+export const NAV_ANCHOR_GAP = 32;
+
+export function resolveSectionScrollTarget(
+  id: string,
+): { element: HTMLElement; offset: number } | null {
+  if (typeof document === "undefined" || !id) return null;
+  const anchor = document.querySelector<HTMLElement>(
+    `[data-nav-anchor="${id}"]`,
+  );
+  if (anchor) return { element: anchor, offset: -NAV_ANCHOR_GAP };
+  const el = document.getElementById(id);
+  return el ? { element: el, offset: 0 } : null;
+}

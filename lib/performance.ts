@@ -30,6 +30,14 @@ function queryOverride(): PerformanceTier | null {
   return null;
 }
 
+// software / no-GPU rasterizers (SwiftShader, llvmpipe, WARP a.k.a. "Microsoft
+// Basic Render Driver") run WebGL on the CPU. scoreRenderer penalizes these
+// hard so detectTier drops them to the lowest tier up front.
+const SOFTWARE_RENDERER_RE =
+  /swiftshader|software|llvmpipe|basic render|microsoft basic|warp/;
+
+let cachedRenderer: string | null = null;
+
 function readRenderer(): string {
   try {
     const canvas = document.createElement("canvas");
@@ -47,10 +55,16 @@ function readRenderer(): string {
   }
 }
 
+// the GL probe returns the same string every call, so create the throwaway
+// context once and reuse it across detection passes.
+function getRenderer(): string {
+  if (cachedRenderer === null) cachedRenderer = readRenderer();
+  return cachedRenderer;
+}
+
 function scoreRenderer(renderer: string): number {
   if (!renderer) return 0;
-  if (/swiftshader|software|llvmpipe|basic render|warp/.test(renderer))
-    return -3;
+  if (SOFTWARE_RENDERER_RE.test(renderer)) return -3;
   if (
     /rtx|geforce|quadro|radeon rx|radeon pro|apple m[1-9]|apple gpu/.test(
       renderer,
@@ -83,7 +97,7 @@ function detectTier(reducedMotion: boolean): PerformanceTier {
   const ua = navigator.userAgent.toLowerCase();
   const cores = navigator.hardwareConcurrency || 4;
   const memory = nav.deviceMemory || 4;
-  const renderer = readRenderer();
+  const renderer = getRenderer();
 
   let score = 2;
 
@@ -141,6 +155,13 @@ export function usePerformanceTier(
     let timer = 0;
     const warmupMs = 5600;
     const sampleMs = 5200;
+    // why a slow box never used to get demoted: the old code reset the whole
+    // sample on any frame >120ms AND required >=120 frames to evaluate. a
+    // GPU-less PC throws constant >120ms frames (endless resets) and can't hit
+    // 120 frames in 5.2s anyway (that needs ~23fps), so the downgrade branch
+    // was literally unreachable for the machines it existed to catch. now slow
+    // frames are kept, and 48 frames over >=5.2s is enough to judge fps.
+    const minFrames = 48;
 
     const startSampling = () => {
       timer = window.setTimeout(() => {
@@ -156,6 +177,7 @@ export function usePerformanceTier(
         let last = 0;
         let slowFrames = 0;
         let verySlowFrames = 0;
+        let slowStreak = 0;
 
         const tick = (time: number) => {
           if (cancelled) return;
@@ -166,6 +188,7 @@ export function usePerformanceTier(
             last = 0;
             slowFrames = 0;
             verySlowFrames = 0;
+            slowStreak = 0;
             raf = window.requestAnimationFrame(tick);
             return;
           }
@@ -179,11 +202,25 @@ export function usePerformanceTier(
 
           const rawDelta = time - last;
           last = time;
+
+          // fast path to the floor: a run of sub-~8fps frames is a box that
+          // genuinely can't render the scene. counted before the stall-skip
+          // below so even huge frames feed it; a one-off hitch is a single
+          // spike that resets well before the streak threshold.
           if (rawDelta > 120) {
-            frames = 0;
-            start = time;
-            slowFrames = 0;
-            verySlowFrames = 0;
+            slowStreak += 1;
+            if (slowStreak >= 6) {
+              setTier("low");
+              return;
+            }
+          } else {
+            slowStreak = 0;
+          }
+
+          // drop a genuine multi-second stall (tab restore, alert) out of the
+          // averaged window so it can't skew the fps math.
+          if (rawDelta > 650) {
+            start += rawDelta;
             raf = window.requestAnimationFrame(tick);
             return;
           }
@@ -193,7 +230,7 @@ export function usePerformanceTier(
           if (rawDelta > 38) verySlowFrames += 1;
 
           const elapsed = time - start;
-          if (elapsed >= sampleMs && frames >= 120) {
+          if (elapsed >= sampleMs && frames >= minFrames) {
             const fps = (frames * 1000) / Math.max(1, elapsed);
             const slowRatio = slowFrames / Math.max(1, frames);
             const verySlowRatio = verySlowFrames / Math.max(1, frames);

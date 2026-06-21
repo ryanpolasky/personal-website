@@ -124,10 +124,19 @@ interface Role {
 const ROLES: Role[] = [
   {
     company: "Apple",
+    title: "Software Engineer",
+    type: "full-time",
+    location: "cupertino",
+    when: "jun 2026 → present",
+    body: "joined apple full-time as a software engineer on the camera & photos team, after two summers interning with the org during school.",
+    metric: { value: "now", label: "camera + photos" },
+  },
+  {
+    company: "Apple",
     title: "At-Home Advisor",
     type: "customer engineering",
     location: "remote",
-    when: "may 2023 → present",
+    when: "may 2023 → jun 2026",
     body: "worked remotely alongside school, sustaining a 6.87% escalation rate well below department average through independent research and advanced troubleshooting. 0.27 min average call wrap time, 15% above department-average csat, and 2× applecare excellence award recipient (2024, 2025).",
     metric: { value: "+15%", label: "csat vs dept avg" },
   },
@@ -265,7 +274,9 @@ export function AboutSection() {
             of the colorful ribbon backdrop (esp. on mobile where the ribbon is
             denser per-px). matches the experience card treatment below for
             consistency. */}
-        <div className="relative isolate overflow-hidden rounded-[1.75rem] border border-[rgba(14,13,11,0.08)] bg-[rgba(248,247,243,0.62)] px-5 py-8 shadow-[0_18px_60px_-30px_rgba(14,13,11,0.28),inset_0_1px_0_rgba(255,255,255,0.55)] backdrop-blur-[14px] backdrop-saturate-[1.15] before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:bg-[linear-gradient(135deg,rgba(255,255,255,0.55),rgba(255,255,255,0.05)_55%,rgba(255,255,255,0.22))] sm:px-8 sm:py-10 md:px-10 md:py-12">
+        <div
+          data-nav-anchor="about"
+          className="relative isolate overflow-hidden rounded-[1.75rem] border border-[rgba(14,13,11,0.08)] bg-[rgba(248,247,243,0.62)] px-5 py-8 shadow-[0_18px_60px_-30px_rgba(14,13,11,0.28),inset_0_1px_0_rgba(255,255,255,0.55)] backdrop-blur-[14px] backdrop-saturate-[1.15] before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:bg-[linear-gradient(135deg,rgba(255,255,255,0.55),rgba(255,255,255,0.05)_55%,rgba(255,255,255,0.22))] sm:px-8 sm:py-10 md:px-10 md:py-12">
           <p
             className="section-index"
             style={{ fontFamily: "var(--font-mono)" }}
@@ -293,10 +304,11 @@ export function AboutSection() {
 
           <div className="mt-12 grid max-w-5xl gap-10 sm:mt-20 sm:grid-cols-2">
             <p className="text-base leading-relaxed text-[var(--color-text-muted)] sm:text-lg">
-              i&apos;m a computer science graduate from ut dallas (&apos;26). i
-              spent my last two summers as a software engineering intern at
-              apple, building out ai tooling for the wireless tech (WTE) & the
-              camera & photos organizations.
+              i&apos;m a computer science graduate from ut dallas (&apos;26),
+              now a software engineer on apple&apos;s camera & photos team.
+              before going full-time i spent two summers there as an intern,
+              building ai tooling for the wireless tech (WTE) & camera & photos
+              orgs.
             </p>
             <p className="text-base leading-relaxed text-[var(--color-text-muted)] sm:text-lg">
               i enjoy backend, devops, and making llms actually do what you want

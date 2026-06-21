@@ -12,8 +12,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { VARIANTS } from "@/lib/variants";
 
-const STORAGE_KEY = "rp.choice.v1";
-
 type Mode = "boot" | "picking" | "locked";
 
 type State = {
@@ -44,24 +42,10 @@ function reducer(s: State, a: Action): State {
   }
 }
 
-function loadSavedKey(): string | null {
-  if (typeof window === "undefined") return null;
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw === "plaintext") {
-      // legacy migration: old key `plaintext` → `no-css`.
-      localStorage.setItem(STORAGE_KEY, "no-css");
-      return "no-css";
-    }
-    return raw;
-  } catch {
-    return null;
-  }
-}
-
-// variant gallery (React port of the original index.html picker). returning
-// visitors lock to their saved choice; first-time + ?gallery=1 open the
-// picker. variants live in iframes hydrated lazily (current ±1).
+// variant gallery (React port of the original index.html picker). always opens
+// the picker; the variants are old snapshots of the site, so returning visitors
+// are no longer auto-locked into a saved choice. variants live in iframes
+// hydrated lazily (current ±1).
 export function Gallery() {
   const router = useRouter();
   const search = useSearchParams();
@@ -151,34 +135,18 @@ export function Gallery() {
   );
 
   // ─── boot ───
+  // always open the picker. (returning visitors used to auto-lock straight into
+  // their last-picked variant; removed since the variants are stale snapshots,
+  // not the live site.)
   useEffect(() => {
-    const savedKey = loadSavedKey();
-    const savedIdx = savedKey
-      ? VARIANTS.findIndex((v) => v.key === savedKey)
-      : -1;
-    const initialIdx = savedIdx >= 0 ? savedIdx : 0;
-
-    hydrate(initialIdx);
-
-    if (savedIdx >= 0 && !forcePicker) {
-      // returning visitor - lock to choice
-      dispatch({ type: "lock", idx: savedIdx });
-      window.setTimeout(() => {
-        dispatch({ type: "boot" });
-        applyAccent(savedIdx);
-        notifyVariant(savedIdx, true);
-      }, 300);
-      return;
-    }
-
-    // first visit (or forced) - open picker
+    const initialIdx = 0;
     dispatch({ type: "enter-picker", idx: initialIdx });
     [initialIdx - 1, initialIdx, initialIdx + 1].forEach(hydrate);
     window.setTimeout(() => {
       dispatch({ type: "boot" });
       applyAccent(initialIdx);
     }, 300);
-  }, [forcePicker, hydrate, applyAccent, notifyVariant]);
+  }, [hydrate, applyAccent]);
 
   // Notify all variants of visibility changes (debounced via effect deps).
   useEffect(() => {
@@ -223,14 +191,9 @@ export function Gallery() {
 
   const pick = useCallback(
     (idx: number) => {
-      try {
-        localStorage.setItem(STORAGE_KEY, VARIANTS[idx].key);
-      } catch {
-        // ignore - private mode / storage disabled
-      }
       hydrate(idx);
       dispatch({ type: "lock", idx });
-      // Remove the ?gallery=1 param so reloads land in locked mode.
+      // clean the ?gallery=1 param out of the url after picking.
       if (forcePicker) {
         router.replace("/gallery");
       }
@@ -371,6 +334,16 @@ export function Gallery() {
 
           {/* footer */}
           <div className="pointer-events-auto absolute bottom-0 left-0 right-0 px-6 pb-6 sm:px-12 sm:pb-10">
+            <p
+              className="mb-4 max-w-[60ch] text-[11px] leading-relaxed text-[var(--color-text-faint)]"
+              style={{ fontFamily: "var(--font-mono)" }}
+            >
+              these are genuinely old versions of my site, meaning{" "}
+              <span className="font-semibold text-[var(--color-text-muted)]">
+                they are not up to date
+              </span>
+              .
+            </p>
             <div className="flex flex-wrap items-center justify-between gap-6">
               <div className="flex items-center gap-3">
                 <button
