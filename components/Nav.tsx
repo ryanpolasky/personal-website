@@ -10,6 +10,7 @@ import {
 } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { RESUME_PDF_HREF } from "@/lib/site";
 import { useLenis } from "@/components/SmoothScrollProvider";
 import { UtdWebringButtons } from "@/components/UtdWebringButtons";
 import { resolveSectionScrollTarget } from "@/lib/scroll";
@@ -434,7 +435,7 @@ export function Nav() {
               ryanpolasky@hotmail.com →
             </a>
             <a
-              href="/assets/Ryan_Polasky_Resume.pdf"
+              href={RESUME_PDF_HREF}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => setMobileOpen(false)}

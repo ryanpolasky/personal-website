@@ -56,8 +56,10 @@ export function KaleidoscopeSection() {
     }
 
     let raf = 0;
+    let running = false;
     let lastMorph = -1;
-    const tick = () => {
+    // one settle pass (no scheduling) so mount/enter isn't stuck at default.
+    const step = () => {
       const rect = section.getBoundingClientRect();
       const vh = window.innerHeight || 1;
       // entry: 0→1 as section.top travels vh→0. exit: 1→0 as section.bottom
@@ -77,10 +79,45 @@ export function KaleidoscopeSection() {
         stage.style.setProperty("--ks-radius", `${inv * 28}px`);
         stage.style.setProperty("--ks-edge-opacity", `${inv}`);
       }
+    };
+    const tick = () => {
+      step();
       raf = requestAnimationFrame(tick);
     };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
+    const startTick = () => {
+      if (running) return;
+      running = true;
+      raf = requestAnimationFrame(tick);
+    };
+    const stopTick = () => {
+      running = false;
+      if (raf) cancelAnimationFrame(raf);
+      raf = 0;
+    };
+    // settle once on mount so the clip-path is correct before the IO fires.
+    step();
+    // io-gate the rAF: 720vh section, off-screen most of the time. wide
+    // rootMargin keeps it warm a viewport early so the morph isn't stale.
+    const io =
+      typeof IntersectionObserver !== "undefined"
+        ? new IntersectionObserver(
+            ([e]) => {
+              if (e.isIntersecting) {
+                step();
+                startTick();
+              } else {
+                stopTick();
+              }
+            },
+            { rootMargin: "100% 0px" },
+          )
+        : null;
+    if (io) io.observe(section);
+    else startTick();
+    return () => {
+      io?.disconnect();
+      stopTick();
+    };
   }, [reduced]);
 
   if (hideOnTouch) return null;

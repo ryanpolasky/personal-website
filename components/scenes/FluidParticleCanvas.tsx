@@ -239,6 +239,15 @@ function ParticleField({
     };
   }, [gl]);
 
+  // dispose geoms + material on unmount (passed via args, so r3f won't).
+  useEffect(
+    () => () => {
+      geoms.forEach((g) => g.dispose());
+      material.dispose();
+    },
+    [geoms, material],
+  );
+
   const advancePhysics = (
     dt: number,
     cursorX: number,

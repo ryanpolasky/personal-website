@@ -64,7 +64,8 @@ const projectNames = projects.map((p) => p.name);
 
 const projectSpreadCount = projects.map((p) => {
   const sections = p.sections ?? [];
-  if (sections.length === 0) return 1;
+  // matches ProjectPanel: section-less + closingMedia still renders 2 spreads.
+  if (sections.length === 0) return p.closingMedia ? 2 : 1;
   const mediaSectionSpreads = sections.filter(
     (s) => (s.media?.length ?? 0) > 0,
   ).length;
@@ -213,6 +214,8 @@ export function ProjectsRail() {
 
     const morphTick = () => {
       const rect = section.getBoundingClientRect();
+      // read scrollY before the css-var writes below to avoid a layout flush.
+      const cy = window.scrollY;
       const vh = window.innerHeight || 1;
       const entry = Math.max(0, Math.min(1, (vh - rect.top) / vh));
       const exitProg = Math.max(0, Math.min(1, rect.bottom / vh));
@@ -231,7 +234,6 @@ export function ProjectsRail() {
       const dt = Math.min(0.05, (now - lastTickAt) / 1000);
       lastTickAt = now;
 
-      const cy = window.scrollY;
       if (cy !== lastScrollY) {
         const delta = cy - lastScrollY;
         if (now >= snapEndsAt) {

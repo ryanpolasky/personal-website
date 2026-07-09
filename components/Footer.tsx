@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { UtdWebringButtons } from "@/components/UtdWebringButtons";
 import { stateToken } from "@/lib/rollout";
+import { RESUME_PDF_HREF } from "@/lib/site";
 
 // decorative WebGL "period" at end of wordmark; ssr:false keeps three out of footer chunk.
 const ContactBlobView = dynamic(
@@ -129,7 +130,7 @@ export function Footer() {
               ryanpolasky@hotmail.com
             </a>
             <a
-              href="/assets/Ryan_Polasky_Resume.pdf"
+              href={RESUME_PDF_HREF}
               target="_blank"
               rel="noreferrer noopener"
               className="transition-colors hover:text-[var(--color-text)]"

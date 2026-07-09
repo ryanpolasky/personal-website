@@ -2,13 +2,8 @@
 
 import { useEffect } from "react";
 
-// Prints the build signature to the console on load.
-
-declare global {
-  interface Window {
-    __whois?: () => string;
-  }
-}
+// prints the build signature to the console. window.__whois() is owned by
+// lib/rollout.ts (syncRolloutState); this only prints the banner.
 
 const WHO = [82, 121, 97, 110, 32, 80, 111, 108, 97, 115, 107, 121];
 const NET = [
@@ -31,18 +26,6 @@ export function Watermark() {
         `%c${line}`,
         "color:#8A8F98;font:12px/1.7 ui-monospace,monospace",
       );
-
-      window.__whois = () => {
-        const el = document.getElementById("__sig");
-        const raw = el?.textContent ?? "";
-        let bits = "";
-        for (const ch of raw)
-          bits += ch === "\u200c" ? "1" : ch === "\u200b" ? "0" : "";
-        let out = "";
-        for (let i = 0; i + 16 <= bits.length; i += 16)
-          out += String.fromCharCode(parseInt(bits.slice(i, i + 16), 2));
-        return out || line;
-      };
     } catch {}
   }, []);
 

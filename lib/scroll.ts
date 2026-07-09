@@ -49,12 +49,15 @@ export function useElementProgress<T extends HTMLElement = HTMLElement>() {
     // "always tick" version was guarding against. on every IO crossing we
     // also do one synchronous read so a snap-jump that skips most of the
     // section can't leave progress stuck at a stale value.
+    // track intersection so tab-resume can decide whether to restart the loop.
+    let intersecting = false;
     const io =
       typeof IntersectionObserver === "undefined"
         ? null
         : new IntersectionObserver(
             ([entry]) => {
               readProgress();
+              intersecting = entry.isIntersecting;
               if (entry.isIntersecting) start();
               else stop();
             },
@@ -64,14 +67,13 @@ export function useElementProgress<T extends HTMLElement = HTMLElement>() {
     // also pause when the tab is hidden. backgrounded tabs still receive
     // rAF callbacks at ~1Hz, but setState in a hidden tab is wasted work.
     const onVisibility = () => {
-      if (document.visibilityState === "hidden") stop();
-      else if (io) {
-        // resume only if the element is still in the IO-active region.
-        // the next IO callback (if any) will (re)kick the loop.
-        readProgress();
-      } else {
-        start();
+      if (document.visibilityState === "hidden") {
+        stop();
+        return;
       }
+      // resume directly (IO won't re-fire if intersection didn't change).
+      readProgress();
+      if (!io || intersecting) start();
     };
 
     if (io) io.observe(el);

@@ -207,20 +207,20 @@ export function OilFilmRipple() {
     const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return;
 
-    // velocity field (vec2 per cell) + scratch for advection swap.
-    const vx = new Float32Array(GRID_SIZE);
-    const vy = new Float32Array(GRID_SIZE);
-    const vx2 = new Float32Array(GRID_SIZE);
-    const vy2 = new Float32Array(GRID_SIZE);
+    // velocity field + scratch. `let` so advectAll can ping-pong swap them.
+    let vx = new Float32Array(GRID_SIZE);
+    let vy = new Float32Array(GRID_SIZE);
+    let vx2 = new Float32Array(GRID_SIZE);
+    let vy2 = new Float32Array(GRID_SIZE);
     // PREMULTIPLIED color storage (see header comment).
-    const dR = new Float32Array(GRID_SIZE);
-    const dG = new Float32Array(GRID_SIZE);
-    const dB = new Float32Array(GRID_SIZE);
-    const dA = new Float32Array(GRID_SIZE);
-    const dR2 = new Float32Array(GRID_SIZE);
-    const dG2 = new Float32Array(GRID_SIZE);
-    const dB2 = new Float32Array(GRID_SIZE);
-    const dA2 = new Float32Array(GRID_SIZE);
+    let dR = new Float32Array(GRID_SIZE);
+    let dG = new Float32Array(GRID_SIZE);
+    let dB = new Float32Array(GRID_SIZE);
+    let dA = new Float32Array(GRID_SIZE);
+    let dR2 = new Float32Array(GRID_SIZE);
+    let dG2 = new Float32Array(GRID_SIZE);
+    let dB2 = new Float32Array(GRID_SIZE);
+    let dA2 = new Float32Array(GRID_SIZE);
     // helper fields for the navier-stokes step.
     const curl = new Float32Array(GRID_SIZE);
     const divergence = new Float32Array(GRID_SIZE);
@@ -325,7 +325,8 @@ export function OilFilmRipple() {
             (Math.abs(curl[idx + 1]) - Math.abs(curl[idx - 1])) * 0.5;
           const dwdy =
             (Math.abs(curl[idx + GRID_W]) - Math.abs(curl[idx - GRID_W])) * 0.5;
-          const len = Math.hypot(dwdx, dwdy) + 1e-5;
+          // sqrt beats Math.hypot here: bounded inputs, no overflow, hot loop.
+          const len = Math.sqrt(dwdx * dwdx + dwdy * dwdy) + 1e-5;
           const Nx = dwdx / len;
           const Ny = dwdy / len;
           // force perpendicular to gradient, magnitude proportional to curl
@@ -467,12 +468,25 @@ export function OilFilmRipple() {
             dyeDecay;
         }
       }
-      vx.set(vx2);
-      vy.set(vy2);
-      dR.set(dR2);
-      dG.set(dG2);
-      dB.set(dB2);
-      dA.set(dA2);
+      // swap primary<->scratch by reference instead of six full-array copies.
+      let tmp = vx;
+      vx = vx2;
+      vx2 = tmp;
+      tmp = vy;
+      vy = vy2;
+      vy2 = tmp;
+      tmp = dR;
+      dR = dR2;
+      dR2 = tmp;
+      tmp = dG;
+      dG = dG2;
+      dG2 = tmp;
+      tmp = dB;
+      dB = dB2;
+      dB2 = tmp;
+      tmp = dA;
+      dA = dA2;
+      dA2 = tmp;
     };
 
     const renderDye = () => {
@@ -595,6 +609,8 @@ export function OilFilmRipple() {
       divergence.fill(0);
       pressure.fill(0);
       pressure2.fill(0);
+      // clear the canvas too so a stale frame can't linger on return.
+      ctx.clearRect(0, 0, GRID_W, GRID_H);
       lastX = -1;
       lastY = -1;
     };
@@ -655,6 +671,8 @@ export function OilFilmRipple() {
       divergence.fill(0);
       pressure.fill(0);
       pressure2.fill(0);
+      // clear the canvas so scrolling back doesn't show a frozen last frame.
+      ctx.clearRect(0, 0, GRID_W, GRID_H);
       lastX = -1;
       lastY = -1;
       if (raf) {

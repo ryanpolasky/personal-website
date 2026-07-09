@@ -38,3 +38,6 @@ next-env.d.ts
 
 # reference / scratch
 reference/
+
+# claude
+CLAUDE.md

@@ -6,6 +6,7 @@ import { useIsVisible, useReducedMotion } from "@/lib/scroll";
 import { usePerformanceTier } from "@/lib/performance";
 import { MagneticButton } from "@/components/MagneticButton";
 import type { PointerState } from "@/components/scenes/FluidParticleCanvas";
+import { RESUME_PDF_HREF } from "@/lib/site";
 
 // fluid particle band (lusion-style contact). canvas is dynamic-imported;
 // this wrapper owns the section layout, SEO lockup, and pointer wiring.
@@ -228,7 +229,7 @@ export function FluidParticleBand() {
               spotify →
             </a>
             <a
-              href="/assets/Ryan_Polasky_Resume.pdf"
+              href={RESUME_PDF_HREF}
               target="_blank"
               rel="noreferrer noopener"
               className="rounded-full border border-white/40 bg-white/10 px-3.5 py-2 text-white/90 backdrop-blur-sm transition-colors hover:border-white hover:bg-white/20 hover:text-white sm:px-4"

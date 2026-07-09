@@ -35,6 +35,8 @@ export function SmoothScrollProvider({
     const bootHash = w.__bootHash;
     delete w.__bootHash;
     const bootTimers: number[] = [];
+    // boot 'load' listener, tracked so both cleanup paths can remove it.
+    let bootLoad: (() => void) | null = null;
     const bootStart = performance.now();
     const MIN_BOOT_MS = 900;
     const liftBootCurtain = () => {
@@ -72,8 +74,10 @@ export function SmoothScrollProvider({
       } else {
         const onLoad = () => {
           window.removeEventListener("load", onLoad);
+          bootLoad = null;
           lift();
         };
+        bootLoad = onLoad;
         window.addEventListener("load", onLoad);
       }
     };
@@ -88,6 +92,7 @@ export function SmoothScrollProvider({
       bootTimers.push(window.setTimeout(runBootTeleport, 50));
       return () => {
         bootTimers.forEach((id) => window.clearTimeout(id));
+        if (bootLoad) window.removeEventListener("load", bootLoad);
       };
     }
 
@@ -145,6 +150,7 @@ export function SmoothScrollProvider({
       window.removeEventListener("resize", refresh);
       window.clearTimeout(t);
       bootTimers.forEach((id) => window.clearTimeout(id));
+      if (bootLoad) window.removeEventListener("load", bootLoad);
       removeSnaps.forEach((off) => off());
       snap.destroy();
       lenis.off("scroll", onScroll);

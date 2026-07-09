@@ -1,7 +1,11 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { PerspectiveCamera, Environment } from "@react-three/drei";
+import {
+  PerspectiveCamera,
+  Environment,
+  MeshTransmissionMaterial,
+} from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { useAccent } from "@/components/AccentProvider";
@@ -15,6 +19,13 @@ import { useIsVisible, useReducedMotion } from "@/lib/scroll";
 const CLUSTER_OFFSET_X = 3;
 
 const CLUSTER_OFFSET_Z = -4;
+
+const GLASS_INDICES = new Set<number>([0, 1, 2]);
+const GLASS_THICKNESS = 0.35;
+const GLASS_IOR = 1.5;
+const GLASS_CHROMATIC_ABERRATION = 0.12;
+const GLASS_ANISOTROPIC_BLUR = 0.1;
+const GLASS_ATTENUATION_DISTANCE = 2.5;
 
 type ShapeKind = "glyphR";
 type MatKind =
@@ -206,6 +217,34 @@ const SHAPES: ShapeData[] = [
     spinAxis: new THREE.Vector3(0.8, 0.2, 1).normalize(),
     spinSpeed: 0.21,
   },
+  // extra fill for a busier cluster. high tier only (slices below drop these).
+  {
+    position: [1.95, 1.4, 0.55],
+    rotation: [0.3, -0.7, 0.5],
+    scale: 0.9,
+    kind: "glyphR",
+    mat: "accentPlastic",
+    spinAxis: new THREE.Vector3(0.6, 0.5, 1).normalize(),
+    spinSpeed: -0.16,
+  },
+  {
+    position: [-1.5, 1.55, 0.42],
+    rotation: [0.7, 0.4, -0.5],
+    scale: 0.85,
+    kind: "glyphR",
+    mat: "whitePlastic",
+    spinAxis: new THREE.Vector3(1, 0.6, 0.4).normalize(),
+    spinSpeed: 0.18,
+  },
+  {
+    position: [1.65, -1.6, -0.35],
+    rotation: [-0.4, 0.9, 0.3],
+    scale: 0.88,
+    kind: "glyphR",
+    mat: "blackPlastic",
+    spinAxis: new THREE.Vector3(0.5, 1, 0.3).normalize(),
+    spinSpeed: 0.2,
+  },
 ];
 const MEDIUM_SHAPES = SHAPES.slice(0, 13);
 const LOW_SHAPES = SHAPES.slice(0, 8);
@@ -215,7 +254,7 @@ function useMaterial(
   tier: PerformanceTier,
 ): THREE.MeshStandardMaterial {
   const accent = useAccent();
-  return useMemo(() => {
+  const material = useMemo(() => {
     const [palette, finish] = mat.replace(/([A-Z])/g, " $1").split(" ") as [
       "white" | "black" | "accent",
       "Matte" | "Jelly" | "Plastic",
@@ -339,6 +378,11 @@ function useMaterial(
       flatShading: false,
     });
   }, [mat, tier, accent.base, accent.warm, accent.soft]);
+
+  // dispose the outgoing material on accent/tier change or unmount (r3f won't,
+  // it's passed by prop not as a child).
+  useEffect(() => () => material.dispose(), [material]);
+  return material;
 }
 
 function makeRGeometry(tier: PerformanceTier): THREE.ExtrudeGeometry {
@@ -368,8 +412,8 @@ function makeRGeometry(tier: PerformanceTier): THREE.ExtrudeGeometry {
     bevelThickness: 0.085,
     bevelSize: 0.055,
     bevelOffset: 0,
-    bevelSegments: tier === "low" ? 2 : tier === "medium" ? 3 : 5,
-    curveSegments: tier === "low" ? 8 : tier === "medium" ? 12 : 18,
+    bevelSegments: tier === "low" ? 2 : tier === "medium" ? 4 : 7,
+    curveSegments: tier === "low" ? 10 : tier === "medium" ? 16 : 26,
     steps: 1,
   });
 
@@ -377,7 +421,7 @@ function makeRGeometry(tier: PerformanceTier): THREE.ExtrudeGeometry {
   geom.computeBoundingBox();
   const size = geom.boundingBox!.getSize(new THREE.Vector3());
   const maxDim = Math.max(size.x, size.y, size.z) || 1;
-  const norm = 1.55 / maxDim;
+  const norm = 1.75 / maxDim;
   geom.scale(norm, norm, norm);
   geom.computeBoundingBox();
   geom.computeBoundingSphere();
@@ -406,6 +450,32 @@ function GlyphRShape({
       castShadow={false}
       receiveShadow={false}
     />
+  );
+}
+
+// glass r via drei MeshTransmissionMaterial (default per-object mode). buffer
+// res and samples scale by tier so it runs on lower perf modes too.
+function GlassGlyphR({ tier }: { tier: PerformanceTier }) {
+  const accent = useAccent();
+  const geometry = getRGeometry(tier);
+  const samples = tier === "high" ? 9 : tier === "medium" ? 6 : 4;
+  const resolution = tier === "high" ? 256 : tier === "medium" ? 192 : 128;
+  return (
+    <mesh geometry={geometry} castShadow={false} receiveShadow={false}>
+      <MeshTransmissionMaterial
+        samples={samples}
+        resolution={resolution}
+        thickness={GLASS_THICKNESS}
+        roughness={0}
+        ior={GLASS_IOR}
+        chromaticAberration={GLASS_CHROMATIC_ABERRATION}
+        anisotropicBlur={GLASS_ANISOTROPIC_BLUR}
+        clearcoat={1}
+        clearcoatRoughness={0.1}
+        attenuationColor={accent.warm}
+        attenuationDistance={GLASS_ATTENUATION_DISTANCE}
+      />
+    </mesh>
   );
 }
 
@@ -525,11 +595,13 @@ function Shape({
   spinAxis,
   spinSpeed,
   tier,
+  glass,
 }: ShapeData & {
   index: number;
   bodiesRef: BodiesRef;
   pointerRef: PointerRef;
   tier: PerformanceTier;
+  glass?: boolean;
 }) {
   const groupRef = useRef<THREE.Group>(null);
   const material = useMaterial(mat, tier);
@@ -552,6 +624,7 @@ function Shape({
     };
   }
   const glowEnabled = tier !== "low";
+  const isGlass = !!glass;
 
   useFrame((_state, dt) => {
     const g = groupRef.current;
@@ -566,12 +639,15 @@ function Shape({
     const pointer = pointerRef.current;
     const pointerEnergy =
       pointer.active > 0.5 ? pointer.velocity + pointer.down * 0.35 : 0;
-    g.rotateOnAxis(spinAxis, spinSpeed * step * (1 + pointerEnergy * 1.8));
+    g.rotateOnAxis(
+      spinAxis,
+      spinSpeed * step * (isGlass ? 1.4 : 1) * (1 + pointerEnergy * 1.8),
+    );
 
     // proximity glow: ramp emissive when the pointer's world projection is
     // within ~1.4 units of this body. anchor (index 0) gets a more generous
     // radius so it leads when the cursor is anywhere near center.
-    if (glowEnabled && body && baseEmissiveRef.current) {
+    if (glowEnabled && !isGlass && body && baseEmissiveRef.current) {
       const base = baseEmissiveRef.current;
       const px = pointer.active > 0.5 ? pointer.smoothX * 3.4 : 0;
       const py = pointer.active > 0.5 ? pointer.smoothY * 2.5 : 0;
@@ -616,7 +692,11 @@ function Shape({
 
   return (
     <group ref={groupRef} position={position} rotation={rotation} scale={scale}>
-      <GlyphRShape material={material} tier={tier} />
+      {isGlass ? (
+        <GlassGlyphR tier={tier} />
+      ) : (
+        <GlyphRShape material={material} tier={tier} />
+      )}
     </group>
   );
 }
@@ -646,7 +726,9 @@ function Cluster({
     bodiesRef.current = shapes.map((shape) => ({
       position: new THREE.Vector3(...shape.position),
       velocity: new THREE.Vector3(),
-      radius: shape.scale * sphereRadius * 0.82,
+      // shrunk from the bounding sphere so the R's nestle, but not so small
+      // the letter shapes clip.
+      radius: shape.scale * sphereRadius * 1,
       mass: 1.2 + shape.scale * 2.6,
     }));
   }
@@ -807,7 +889,9 @@ function Cluster({
           ny /= dist;
           nz /= dist;
 
-          const overlap = (minDist - dist) * 1.08;
+          // firm-but-under-1 correction plus a little slop: resolves overlap
+          // without the old 1.08 factor's jitter.
+          const overlap = Math.max(0, minDist - dist - 0.012) * 0.85;
           const totalMass = a.mass + b.mass;
           const aShare = b.mass / totalMass;
           const bShare = a.mass / totalMass;
@@ -826,7 +910,7 @@ function Cluster({
 
           if (separatingVelocity >= 0) continue;
 
-          const restitution = 0.08;
+          const restitution = 0.05;
           const impulse =
             (-(1 + restitution) * separatingVelocity) /
             (1 / a.mass + 1 / b.mass);
@@ -844,17 +928,21 @@ function Cluster({
     timeRef.current += step;
     const t = timeRef.current;
     const idleBoost = pointer.active < 0.5 ? 1.4 : 1.0;
+    // planetary: steady full y rotation (~26s per turn) with a slight tilt.
     const targetRotX =
-      Math.sin(t * 0.32) * 0.065 * idleBoost + pointer.smoothY * 0.16;
-    const targetRotY = t * 0.08 * idleBoost + pointer.smoothX * 0.18;
-    const targetRotZ = pointer.smoothX * 0.055 + pointer.velocity * 0.025;
+      Math.sin(t * 0.18) * 0.08 * idleBoost + pointer.smoothY * 0.16;
+    const targetRotY = t * 0.24 * idleBoost + pointer.smoothX * 0.18;
+    const targetRotZ =
+      Math.sin(t * 0.1) * 0.03 * idleBoost +
+      pointer.smoothX * 0.055 +
+      pointer.velocity * 0.025;
 
     g.rotation.x = THREE.MathUtils.damp(g.rotation.x, targetRotX, 5, step);
     g.rotation.y = THREE.MathUtils.damp(g.rotation.y, targetRotY, 5, step);
     g.rotation.z = THREE.MathUtils.damp(g.rotation.z, targetRotZ, 5, step);
     g.position.y = THREE.MathUtils.damp(
       g.position.y,
-      Math.sin(t * 0.6) * 0.09 * idleBoost + pointer.smoothY * 0.06,
+      Math.sin(t * 0.5) * 0.04 * idleBoost + pointer.smoothY * 0.06,
       4,
       step,
     );
@@ -866,13 +954,13 @@ function Cluster({
     const targetX = aspect >= 1.3 ? CLUSTER_OFFSET_X : 0;
     g.position.x = THREE.MathUtils.damp(
       g.position.x,
-      targetX + Math.cos(t * 0.35) * 0.06 * idleBoost,
+      targetX + Math.cos(t * 0.3) * 0.03 * idleBoost,
       3,
       step,
     );
     g.position.z = THREE.MathUtils.damp(
       g.position.z,
-      CLUSTER_OFFSET_Z,
+      CLUSTER_OFFSET_Z + Math.sin(t * 0.18) * 0.07 * idleBoost,
       3,
       step,
     );
@@ -888,6 +976,7 @@ function Cluster({
           bodiesRef={bodiesRef}
           pointerRef={pointerRef}
           tier={tier}
+          glass={GLASS_INDICES.has(i)}
         />
       ))}
     </group>
