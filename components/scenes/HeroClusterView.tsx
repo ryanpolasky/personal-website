@@ -6,7 +6,7 @@ import {
   Environment,
   MeshTransmissionMaterial,
 } from "@react-three/drei";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { useAccent } from "@/components/AccentProvider";
 import {
@@ -16,7 +16,7 @@ import {
 } from "@/lib/performance";
 import { useIsVisible, useReducedMotion } from "@/lib/scroll";
 
-const CLUSTER_OFFSET_X = 3;
+const CLUSTER_OFFSET_X = 2.5;
 
 const CLUSTER_OFFSET_Z = -4;
 
@@ -59,7 +59,7 @@ interface PointerState {
   velocity: number;
   down: number;
   active: number;
-  pulse: number;
+  clicks: number;
 }
 
 interface BodyState {
@@ -453,8 +453,6 @@ function GlyphRShape({
   );
 }
 
-// glass r via drei MeshTransmissionMaterial (default per-object mode). buffer
-// res and samples scale by tier so it runs on lower perf modes too.
 function GlassGlyphR({ tier }: { tier: PerformanceTier }) {
   const accent = useAccent();
   const geometry = getRGeometry(tier);
@@ -490,7 +488,7 @@ function useViewportPointer() {
     velocity: 0,
     down: 0,
     active: 0,
-    pulse: 0,
+    clicks: 0,
   });
 
   useEffect(() => {
@@ -535,15 +533,13 @@ function useViewportPointer() {
     };
 
     const onPointerDown = (e: PointerEvent) => {
-      // snap raw cursor position to the click point so the explosion uses
-      // exactly where the click landed, not the previous smoothed position.
       const nextX = (e.clientX / window.innerWidth) * 2 - 1;
       const nextY = -((e.clientY / window.innerHeight) * 2 - 1);
       ref.current.x = THREE.MathUtils.clamp(nextX, -1, 1);
       ref.current.y = THREE.MathUtils.clamp(nextY, -1, 1);
       ref.current.active = 1;
       ref.current.down = 1;
-      ref.current.pulse = 1;
+      ref.current.clicks += 1;
     };
 
     const onPointerUp = () => {
@@ -608,6 +604,8 @@ function Shape({
   const accent = useAccent();
   // per-instance emissive cache so we lerp smoothly rather than snap.
   const glowRef = useRef(0);
+  const spinBoostRef = useRef(0);
+  const lastClickRef = useRef(0);
   // snapshot of the material's idle emissive identity - the proximity glow
   // ADDS to this instead of replacing it, so each finish keeps its unique
   // base emissive tone (jelly subsurface cream, matte pigment, plastic
@@ -637,11 +635,18 @@ function Shape({
       g.position.copy(body.position);
     }
     const pointer = pointerRef.current;
+    // each click gives every R a quick spin that decays back to its idle rate.
+    if (pointer.clicks !== lastClickRef.current) {
+      lastClickRef.current = pointer.clicks;
+      spinBoostRef.current = 1;
+    }
+    spinBoostRef.current = Math.max(0, spinBoostRef.current - step * 1.6);
     const pointerEnergy =
       pointer.active > 0.5 ? pointer.velocity + pointer.down * 0.35 : 0;
     g.rotateOnAxis(
       spinAxis,
-      spinSpeed * step * (isGlass ? 1.4 : 1) * (1 + pointerEnergy * 1.8),
+      spinSpeed * step * (isGlass ? 1.4 : 1) * (1 + pointerEnergy * 1.8) +
+        Math.sign(spinSpeed) * spinBoostRef.current * 16 * step,
     );
 
     // proximity glow: ramp emissive when the pointer's world projection is
@@ -710,27 +715,24 @@ function Cluster({
 }) {
   const groupRef = useRef<THREE.Group>(null);
   const bodiesRef = useRef<BodyState[]>([]);
-  const raycasterRef = useRef(new THREE.Raycaster());
-  const clusterPlaneRef = useRef(
-    new THREE.Plane(new THREE.Vector3(0, 0, 1), -CLUSTER_OFFSET_Z),
-  );
-  const ndcRef = useRef(new THREE.Vector2());
-  const hitRef = useRef(new THREE.Vector3());
   const timeRef = useRef(0);
+  const attractorRef = useRef(new THREE.Vector3(0, 0, 0.35));
+  const spinRef = useRef({ y: 0 });
   const shapes =
     tier === "low" ? LOW_SHAPES : tier === "medium" ? MEDIUM_SHAPES : SHAPES;
   const collisionPasses = tier === "high" ? 6 : tier === "medium" ? 3 : 2;
 
   if (bodiesRef.current.length !== shapes.length) {
     const sphereRadius = getRGeometry("high").boundingSphere!.radius;
-    bodiesRef.current = shapes.map((shape) => ({
-      position: new THREE.Vector3(...shape.position),
-      velocity: new THREE.Vector3(),
-      // shrunk from the bounding sphere so the R's nestle, but not so small
-      // the letter shapes clip.
-      radius: shape.scale * sphereRadius * 1,
-      mass: 1.2 + shape.scale * 2.6,
-    }));
+    bodiesRef.current = shapes.map((shape, i) => {
+      const base = 1.2 + shape.scale * 2.6;
+      return {
+        position: new THREE.Vector3(...shape.position),
+        velocity: new THREE.Vector3(),
+        radius: shape.scale * sphereRadius * 1,
+        mass: GLASS_INDICES.has(i) ? base * 2 : base,
+      };
+    });
   }
 
   useFrame((state, dt) => {
@@ -738,105 +740,36 @@ function Cluster({
     if (!g) return;
 
     const pointer = pointerRef.current;
-    const pointerActive = pointer.active > 0.5;
-    const pointerX = pointerActive ? pointer.smoothX * 3.55 : 0;
-    const pointerY = pointerActive ? pointer.smoothY * 2.75 : 0;
-    const pointerZ = pointerActive ? 0.35 + pointer.down * 0.6 : 0;
     g.updateMatrixWorld();
 
     const bodies = bodiesRef.current;
 
-    if (pointer.pulse > 0) {
-      const ndc = ndcRef.current;
-      // raw (un-smoothed) cursor coords so the epicenter is exactly where
-      // the click landed; smoothX/smoothY lag behind by ~150ms which reads
-      // as a sluggish explosion when the user clicks mid-cursor-move.
-      ndc.set(pointer.x, pointer.y);
-      const ray = raycasterRef.current;
-      ray.setFromCamera(ndc, state.camera);
-      const hit = hitRef.current;
-      const intersected = ray.ray.intersectPlane(clusterPlaneRef.current, hit);
-      if (intersected) {
-        g.worldToLocal(hit);
-      } else {
-        hit.set(0, 0, 0);
-      }
-      const epicenterX = hit.x;
-      const epicenterY = hit.y;
-      const epicenterZ = hit.z;
-      const strength = tier === "low" ? 11 : tier === "medium" ? 14 : 18;
-      for (let i = 0; i < bodies.length; i += 1) {
-        const body = bodies[i];
-        const dx = body.position.x - epicenterX;
-        const dy = body.position.y - epicenterY;
-        const dz = body.position.z - epicenterZ;
-        const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
-        const safeDist = Math.max(dist, 0.05);
-        const invDist = 1 / safeDist;
-        const falloff = Math.max(0.4, 1 - safeDist / 8);
-        const impulse = (strength * falloff) / body.mass;
-        body.velocity.x += dx * invDist * impulse;
-        body.velocity.y += dy * invDist * impulse;
-        body.velocity.z += dz * invDist * impulse * 0.85;
-      }
-      pointer.pulse = 0;
-    }
-
     const step = Math.min(dt, 1 / 30);
+    timeRef.current += step;
+    const t = timeRef.current;
     const damping = Math.exp(-3.55 * step);
-    const spring = tier === "low" ? 0.62 : 0.82;
-    const centerGravity = tier === "low" ? 6.6 : 8.8;
-    const orbitalPull = tier === "low" ? 0.07 : 0.11;
-    const pushForce = pointerActive
-      ? (tier === "low" ? 0.56 : 0.82) +
-        pointer.velocity * (tier === "low" ? 1.05 : 1.65) +
-        pointer.down * (tier === "low" ? 0.5 : 0.8)
-      : 0;
+
+    // attractor stays gently centered so the swarm keeps its place; the cursor
+    // spins the whole mass instead of dragging it off-center (see rotation).
+    const attractor = attractorRef.current;
+    const ax = Math.sin(t * 0.3) * 0.25;
+    const ay = Math.cos(t * 0.22) * 0.08;
+    const az = 0.35 + Math.sin(t * 0.18) * 0.35;
+    attractor.x = THREE.MathUtils.damp(attractor.x, ax, 6, step);
+    attractor.y = THREE.MathUtils.damp(attractor.y, ay, 6, step);
+    attractor.z = THREE.MathUtils.damp(attractor.z, az, 6, step);
+
+    const pull = tier === "low" ? 2.2 : tier === "medium" ? 2.8 : 3.2;
 
     for (let i = 0; i < bodies.length; i += 1) {
       const body = bodies[i];
       const shape = shapes[i];
 
-      const springScale = spring / body.mass;
-      body.velocity.x +=
-        (shape.position[0] - body.position.x) * springScale * step;
-      body.velocity.y +=
-        (shape.position[1] - body.position.y) * springScale * step;
-      body.velocity.z +=
-        (shape.position[2] - body.position.z) * springScale * step;
-
-      const cx = -body.position.x;
-      const cy = -body.position.y;
-      const cz = -body.position.z;
-      const centerDistSq = cx * cx + cy * cy + cz * cz + 0.55;
-      const centerInv = 1 / Math.sqrt(centerDistSq);
-      const gravity = centerGravity / (centerDistSq * body.mass);
-
-      body.velocity.x += cx * centerInv * gravity * step * 19;
-      body.velocity.y += cy * centerInv * gravity * step * 19;
-      body.velocity.z += cz * centerInv * gravity * step * 14;
-      body.velocity.x += (-body.position.y * orbitalPull * step) / body.mass;
-      body.velocity.y += (body.position.x * orbitalPull * step) / body.mass;
-
-      const dx = body.position.x - pointerX;
-      const dy = body.position.y - pointerY;
-      const dz = body.position.z - pointerZ;
-      const distSq = dx * dx + dy * dy + dz * dz + 0.18;
-      const invDist = 1 / Math.sqrt(distSq);
-      const push = pushForce / (distSq * body.mass);
-      const wake = pointerActive ? Math.max(0, 1 - Math.sqrt(distSq) / 3.2) : 0;
-
-      body.velocity.x += dx * invDist * push * step * 30;
-      body.velocity.y += dy * invDist * push * step * 30;
-      body.velocity.z += dz * invDist * push * step * 18;
-      body.velocity.x += (pointer.moveX * wake * step * 12) / body.mass;
-      body.velocity.y += (pointer.moveY * wake * step * 12) / body.mass;
-      body.velocity.z +=
-        ((Math.abs(pointer.moveX) + Math.abs(pointer.moveY)) *
-          wake *
-          step *
-          2.2) /
-        body.mass;
+      // spring toward the attractor. glass (heavier) lags, matte darts ahead.
+      const pullScale = (pull / body.mass) * step;
+      body.velocity.x += (attractor.x - body.position.x) * pullScale;
+      body.velocity.y += (attractor.y - body.position.y) * pullScale;
+      body.velocity.z += (attractor.z - body.position.z) * pullScale;
 
       body.velocity.multiplyScalar(damping);
       body.position.addScaledVector(body.velocity, step * 4.9);
@@ -925,45 +858,38 @@ function Cluster({
       }
     }
 
-    timeRef.current += step;
-    const t = timeRef.current;
-    const idleBoost = pointer.active < 0.5 ? 1.4 : 1.0;
-    // planetary: steady full y rotation (~26s per turn) with a slight tilt.
-    const targetRotX =
-      Math.sin(t * 0.18) * 0.08 * idleBoost + pointer.smoothY * 0.16;
-    const targetRotY = t * 0.24 * idleBoost + pointer.smoothX * 0.18;
-    const targetRotZ =
-      Math.sin(t * 0.1) * 0.03 * idleBoost +
-      pointer.smoothX * 0.055 +
-      pointer.velocity * 0.025;
+    let meanX = 0;
+    let meanY = 0;
+    for (let i = 0; i < bodies.length; i += 1) {
+      meanX += bodies[i].position.x;
+      meanY += bodies[i].position.y;
+    }
+    meanX = (meanX / bodies.length) * 0.12;
+    meanY = (meanY / bodies.length) * 0.12;
+    for (let i = 0; i < bodies.length; i += 1) {
+      bodies[i].position.x -= meanX;
+      bodies[i].position.y -= meanY;
+    }
 
-    g.rotation.x = THREE.MathUtils.damp(g.rotation.x, targetRotX, 5, step);
-    g.rotation.y = THREE.MathUtils.damp(g.rotation.y, targetRotY, 5, step);
-    g.rotation.z = THREE.MathUtils.damp(g.rotation.z, targetRotZ, 5, step);
+    const spin = spinRef.current;
+    spin.y = THREE.MathUtils.damp(spin.y, pointer.moveX * 0.9 + 0.06, 2, step);
+    g.rotation.y += spin.y * step;
+
+    const targetRotX = pointer.smoothY * 0.35 + Math.sin(t * 0.12) * 0.05;
+    const targetRotZ = pointer.smoothX * 0.05 + pointer.velocity * 0.02;
+    g.rotation.x = THREE.MathUtils.damp(g.rotation.x, targetRotX, 4, step);
+    g.rotation.z = THREE.MathUtils.damp(g.rotation.z, targetRotZ, 4, step);
+    const aspect = state.size.width / Math.max(1, state.size.height);
+    const yOffset = Math.max(0, 0.6 - aspect) * 10;
+    const targetX = aspect >= 1.3 ? CLUSTER_OFFSET_X : 0;
     g.position.y = THREE.MathUtils.damp(
       g.position.y,
-      Math.sin(t * 0.5) * 0.04 * idleBoost + pointer.smoothY * 0.06,
+      yOffset + Math.sin(t * 0.4) * 0.015,
       4,
       step,
     );
-    // viewport-aware horizontal offset. wide desktop (aspect >= 1.3) parks
-    // the cluster to the right so hero copy gets the left half; portrait /
-    // narrow mobile centers the cluster (x=0) so it stays in frame and
-    // floats behind the stacked headline+body+ctas.
-    const aspect = state.size.width / Math.max(1, state.size.height);
-    const targetX = aspect >= 1.3 ? CLUSTER_OFFSET_X : 0;
-    g.position.x = THREE.MathUtils.damp(
-      g.position.x,
-      targetX + Math.cos(t * 0.3) * 0.03 * idleBoost,
-      3,
-      step,
-    );
-    g.position.z = THREE.MathUtils.damp(
-      g.position.z,
-      CLUSTER_OFFSET_Z + Math.sin(t * 0.18) * 0.07 * idleBoost,
-      3,
-      step,
-    );
+    g.position.x = THREE.MathUtils.damp(g.position.x, targetX, 3, step);
+    g.position.z = THREE.MathUtils.damp(g.position.z, CLUSTER_OFFSET_Z, 3, step);
   });
 
   return (
@@ -986,33 +912,29 @@ function Cluster({
 function HeroScene({ tier }: { tier: PerformanceTier }) {
   const accent = useAccent();
   const pointerRef = useViewportPointer();
+  const { size } = useThree();
+  const aspect = size.width / Math.max(1, size.height);
+  const pull = aspect >= 1.3 ? 0 : (1.3 - Math.max(0.5, aspect)) * 4.5;
+  const camZ = (tier === "low" ? 11.5 : 8.25) + pull;
+  const fogNear = (tier === "low" ? 10.75 : 7.5) + pull;
+  const fogFar = (tier === "low" ? 19.25 : 16) + pull;
   return (
     <>
       {/* low tier (mobile) pulls the camera back to 11.5z so the cluster
           occupies a smaller fraction of the narrow viewport without touching
           physics. scaling the group instead would silently break collisions
           (bodies are computed in unscaled body space). */}
-      <PerspectiveCamera
-        makeDefault
-        position={[0, 0.08, tier === "low" ? 11.5 : 8.25]}
-        fov={34}
-      />
+      <PerspectiveCamera makeDefault position={[0, 0.08, camZ]} fov={34} />
 
-      <fog
-        attach="fog"
-        args={[
-          "#0B0B0F",
-          tier === "low" ? 10.75 : 7.5,
-          tier === "low" ? 19.25 : 16,
-        ]}
-      />
+      <fog attach="fog" args={["#0B0B0F", fogNear, fogFar]} />
 
-      {tier !== "low" && (
-        <Environment
-          preset="studio"
-          environmentIntensity={tier === "medium" ? 0.55 : 0.75}
-        />
-      )}
+      <Environment
+        preset="studio"
+        resolution={tier === "low" ? 64 : undefined}
+        environmentIntensity={
+          tier === "low" ? 0.6 : tier === "medium" ? 0.55 : 0.75
+        }
+      />
 
       {tier !== "low" && (
         <rectAreaLight

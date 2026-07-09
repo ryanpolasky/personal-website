@@ -77,7 +77,8 @@ export function HeroStage({ children }: { children: ReactNode }) {
         ) {
           return;
         }
-        cycle();
+        // delay so the recolor lands mid-spin instead of hitching its launch.
+        window.setTimeout(cycle, 180);
       }}
     >
       {children}
