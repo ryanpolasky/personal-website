@@ -51,7 +51,7 @@ export default function HomePage() {
                 className="hidden text-[10.5px] uppercase tracking-[0.32em] text-white/55 sm:block"
                 style={{ fontFamily: "var(--font-mono)" }}
               >
-                north dakota · cdt
+                cupertino, california · pdt
               </p>
             </div>
 

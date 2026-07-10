@@ -110,7 +110,8 @@ const JSON_LD = {
         "Software Engineer on Apple's Camera & Photos team, specializing in backend systems, AI/LLM tooling, test automation, and developer productivity. UT Dallas '26 graduate.",
       address: {
         "@type": "PostalAddress",
-        addressRegion: "ND",
+        addressLocality: "Cupertino",
+        addressRegion: "CA",
         addressCountry: "US",
       },
       alumniOf: {

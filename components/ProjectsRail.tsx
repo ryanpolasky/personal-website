@@ -805,7 +805,7 @@ export function ProjectsRail() {
     // nav curtain teleports briefly suppress landOnEntry so a scrollTo(0)
     // crossing the rail bottom-up doesn't trigger onEnterBack → last-project land.
     const onNavTeleport = () => {
-      suppressEntryLandingsUntil = performance.now() + 800;
+      suppressEntryLandingsUntil = performance.now() + 300;
     };
     window.addEventListener("nav:teleport", onNavTeleport);
 

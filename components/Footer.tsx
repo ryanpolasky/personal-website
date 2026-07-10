@@ -140,7 +140,7 @@ export function Footer() {
             </a>
             <UtdWebringButtons className="mt-5 hidden justify-end sm:flex" />
             <p className="mt-4 text-[var(--color-text-faint)]">
-              © {year ?? new Date().getFullYear()} north dakota
+              © {year ?? new Date().getFullYear()} cupertino, california
               <span aria-hidden>{stateToken()}</span>
             </p>
           </div>
