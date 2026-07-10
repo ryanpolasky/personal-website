@@ -357,21 +357,18 @@ export default function RootLayout({
               var h=location.hash;var L={about:'about',experience:'experience',projects:'projects',contact:'contact',hero:'ryan',main:'ryan'};var label='ryan';
               if(h&&h!=='#'){var key=h.slice(1).toLowerCase();label=L[key]||h.slice(1);window.__bootHash=h;history.replaceState(null,'',location.pathname+location.search);}
               var st=document.createElement('style');
-              st.textContent='@keyframes rp-spin{to{transform:rotate(360deg)}}@keyframes rp-spin2{to{transform:rotate(-360deg)}}@keyframes rp-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}';
+              st.textContent='@keyframes rp-dot{0%,70%,100%{opacity:0.25}35%{opacity:1}}';
               document.head.appendChild(st);
               var d=document.createElement('div');d.id='__boot-curtain';
               d.style.cssText='position:fixed;inset:0;background:'+a.b+';z-index:250;transform:translate3d(0,0,0);transition:transform 620ms cubic-bezier(0.83,0,0.17,1);will-change:transform;display:flex;align-items:center;justify-content:center;overflow:hidden';
-              var col=document.createElement('div');col.style.cssText='display:flex;flex-direction:column;align-items:center;gap:1.7rem';
-              var box=document.createElement('div');box.style.cssText='position:relative;width:150px;height:150px;display:flex;align-items:center;justify-content:center';
-              box.innerHTML='<svg width="150" height="150" viewBox="0 0 150 150" fill="none" style="position:absolute;inset:0;overflow:visible"><circle cx="75" cy="75" r="66" stroke="rgba(255,255,255,0.16)" stroke-width="1.5"/><circle cx="75" cy="75" r="66" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="80 335" style="transform-box:fill-box;transform-origin:center;animation:rp-spin 1s linear infinite"/><circle cx="75" cy="75" r="52" stroke="'+a.s+'" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="26 300" style="transform-box:fill-box;transform-origin:center;animation:rp-spin2 1.7s linear infinite"/></svg>';
-              var R=document.createElement('span');R.textContent='R';
-              R.style.cssText="font-family:var(--font-display),'Times New Roman',serif;font-style:italic;font-weight:400;font-size:4.6rem;line-height:1;color:#fff;font-variation-settings:'opsz' 144,'SOFT' 80,'WONK' 1;opacity:0;transition:opacity 460ms ease;animation:rp-pulse 2.6s ease-in-out infinite;padding-left:0.06em";
-              box.appendChild(R);
-              var cap=document.createElement('span');cap.textContent=label;
-              cap.style.cssText="font-family:var(--font-mono),ui-monospace,monospace;text-transform:uppercase;letter-spacing:0.44em;font-size:0.72rem;color:rgba(255,255,255,0.7);opacity:0;transition:opacity 420ms ease 200ms;padding-left:0.44em";
-              col.appendChild(box);col.appendChild(cap);d.appendChild(col);
+              var s=document.createElement('div');
+              s.style.cssText="font-family:var(--font-display),'Times New Roman',serif;font-style:italic;font-weight:400;font-size:clamp(3.5rem,12vw,10rem);line-height:1;letter-spacing:-0.02em;color:#fff;font-variation-settings:'opsz' 144,'SOFT' 80,'WONK' 1;opacity:0;transition:opacity 360ms ease 80ms;white-space:nowrap";
+              var w=document.createElement('span');w.textContent=label;s.appendChild(w);
+              var mkdot=function(delay){var dt=document.createElement('span');dt.textContent='.';dt.style.cssText='opacity:0.25;animation:rp-dot 1.3s ease-in-out '+delay+' infinite';return dt;};
+              s.appendChild(mkdot('0s'));s.appendChild(mkdot('0.18s'));s.appendChild(mkdot('0.36s'));
+              d.appendChild(s);
               (document.body||document.documentElement).appendChild(d);
-              requestAnimationFrame(function(){R.style.opacity='1';cap.style.opacity='1';});
+              requestAnimationFrame(function(){s.style.opacity='1';});
             }catch(e){}})();`,
           }}
         />
