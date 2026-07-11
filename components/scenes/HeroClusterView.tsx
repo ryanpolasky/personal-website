@@ -6,7 +6,7 @@ import {
   Environment,
   MeshTransmissionMaterial,
 } from "@react-three/drei";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { useAccent } from "@/components/AccentProvider";
 import {
@@ -880,6 +880,28 @@ function Cluster({
     g.rotation.x = THREE.MathUtils.damp(g.rotation.x, targetRotX, 4, step);
     g.rotation.z = THREE.MathUtils.damp(g.rotation.z, targetRotZ, 4, step);
     const aspect = state.size.width / Math.max(1, state.size.height);
+    const narrowPull = aspect >= 1.3 ? 0 : (1.3 - Math.max(0.5, aspect)) * 4.5;
+    state.camera.position.z = THREE.MathUtils.damp(
+      state.camera.position.z,
+      (tier === "low" ? 11.5 : 8.25) + narrowPull,
+      3,
+      step,
+    );
+    const fog = state.scene.fog as THREE.Fog | null;
+    if (fog) {
+      fog.near = THREE.MathUtils.damp(
+        fog.near,
+        (tier === "low" ? 10.75 : 7.5) + narrowPull,
+        3,
+        step,
+      );
+      fog.far = THREE.MathUtils.damp(
+        fog.far,
+        (tier === "low" ? 19.25 : 16) + narrowPull,
+        3,
+        step,
+      );
+    }
     const yOffset = Math.max(0, 0.6 - aspect) * 10;
     const targetX = aspect >= 1.3 ? CLUSTER_OFFSET_X : 0;
     g.position.y = THREE.MathUtils.damp(
@@ -909,24 +931,40 @@ function Cluster({
   );
 }
 
+function ReadySignal() {
+  const n = useRef(0);
+  const fired = useRef(false);
+  useFrame(() => {
+    if (fired.current) return;
+    n.current += 1;
+    if (n.current < 4) return;
+    fired.current = true;
+    (window as Window & { __heroReady?: boolean }).__heroReady = true;
+    window.dispatchEvent(new Event("hero:ready"));
+  });
+  return null;
+}
+
 function HeroScene({ tier }: { tier: PerformanceTier }) {
   const accent = useAccent();
   const pointerRef = useViewportPointer();
-  const { size } = useThree();
-  const aspect = size.width / Math.max(1, size.height);
-  const pull = aspect >= 1.3 ? 0 : (1.3 - Math.max(0.5, aspect)) * 4.5;
-  const camZ = (tier === "low" ? 11.5 : 8.25) + pull;
-  const fogNear = (tier === "low" ? 10.75 : 7.5) + pull;
-  const fogFar = (tier === "low" ? 19.25 : 16) + pull;
   return (
     <>
-      {/* low tier (mobile) pulls the camera back to 11.5z so the cluster
-          occupies a smaller fraction of the narrow viewport without touching
-          physics. scaling the group instead would silently break collisions
-          (bodies are computed in unscaled body space). */}
-      <PerspectiveCamera makeDefault position={[0, 0.08, camZ]} fov={34} />
+      <ReadySignal />
+      <PerspectiveCamera
+        makeDefault
+        position={[0, 0.08, tier === "low" ? 11.5 : 8.25]}
+        fov={34}
+      />
 
-      <fog attach="fog" args={["#0B0B0F", fogNear, fogFar]} />
+      <fog
+        attach="fog"
+        args={[
+          "#0B0B0F",
+          tier === "low" ? 10.75 : 7.5,
+          tier === "low" ? 19.25 : 16,
+        ]}
+      />
 
       <Environment
         preset="studio"
@@ -1015,6 +1053,7 @@ export function HeroClusterView({ className }: { className?: string }) {
         key={tier}
         dpr={dpr}
         frameloop={frameloop}
+        resize={{ scroll: false }}
         gl={{
           antialias: tier === "high",
           alpha: true,

@@ -37,6 +37,7 @@ export function SmoothScrollProvider({
     const bootTimers: number[] = [];
     // boot 'load' listener, tracked so both cleanup paths can remove it.
     let bootLoad: (() => void) | null = null;
+    let heroReadyHandler: (() => void) | null = null;
     const bootStart = performance.now();
     const MIN_BOOT_MS = 900;
     const liftBootCurtain = () => {
@@ -65,21 +66,55 @@ export function SmoothScrollProvider({
     };
     const runBootTeleport = () => {
       teleportToBootHash();
-      const elapsed = performance.now() - bootStart;
-      const remaining = Math.max(0, MIN_BOOT_MS - elapsed);
-      const lift = () =>
-        bootTimers.push(window.setTimeout(liftBootCurtain, remaining));
-      if (document.readyState === "complete") {
-        lift();
-      } else {
-        const onLoad = () => {
-          window.removeEventListener("load", onLoad);
-          bootLoad = null;
-          lift();
-        };
-        bootLoad = onLoad;
-        window.addEventListener("load", onLoad);
+      const gateOnHero =
+        (!bootHash || bootHash === "#") &&
+        !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (!gateOnHero) {
+        const lift = () =>
+          bootTimers.push(
+            window.setTimeout(
+              liftBootCurtain,
+              Math.max(0, MIN_BOOT_MS - (performance.now() - bootStart)),
+            ),
+          );
+        if (document.readyState === "complete") lift();
+        else {
+          const onLoad = () => {
+            window.removeEventListener("load", onLoad);
+            bootLoad = null;
+            lift();
+          };
+          bootLoad = onLoad;
+          window.addEventListener("load", onLoad);
+        }
+        return;
       }
+      const w2 = window as Window & { __heroReady?: boolean };
+      const MAX_BOOT_MS = 4000;
+      let done = false;
+      const finish = () => {
+        if (done) return;
+        done = true;
+        if (heroReadyHandler) {
+          window.removeEventListener("hero:ready", heroReadyHandler);
+          heroReadyHandler = null;
+        }
+        liftBootCurtain();
+      };
+      const tryLift = () => {
+        if (w2.__heroReady && performance.now() - bootStart >= MIN_BOOT_MS)
+          finish();
+      };
+      heroReadyHandler = tryLift;
+      window.addEventListener("hero:ready", heroReadyHandler);
+      bootTimers.push(
+        window.setTimeout(
+          tryLift,
+          Math.max(0, MIN_BOOT_MS - (performance.now() - bootStart)),
+        ),
+      );
+      bootTimers.push(window.setTimeout(finish, MAX_BOOT_MS));
+      if (w2.__heroReady) tryLift();
     };
 
     const isTouch = window.matchMedia("(pointer: coarse)").matches;
@@ -93,6 +128,8 @@ export function SmoothScrollProvider({
       return () => {
         bootTimers.forEach((id) => window.clearTimeout(id));
         if (bootLoad) window.removeEventListener("load", bootLoad);
+        if (heroReadyHandler)
+          window.removeEventListener("hero:ready", heroReadyHandler);
       };
     }
 
@@ -151,6 +188,8 @@ export function SmoothScrollProvider({
       window.clearTimeout(t);
       bootTimers.forEach((id) => window.clearTimeout(id));
       if (bootLoad) window.removeEventListener("load", bootLoad);
+      if (heroReadyHandler)
+        window.removeEventListener("hero:ready", heroReadyHandler);
       removeSnaps.forEach((off) => off());
       snap.destroy();
       lenis.off("scroll", onScroll);
