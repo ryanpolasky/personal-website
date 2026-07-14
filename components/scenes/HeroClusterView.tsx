@@ -10,6 +10,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { useAccent } from "@/components/AccentProvider";
 import {
+  isAppleGPU,
   tierDpr,
   usePerformanceTier,
   type PerformanceTier,
@@ -456,8 +457,10 @@ function GlyphRShape({
 function GlassGlyphR({ tier }: { tier: PerformanceTier }) {
   const accent = useAccent();
   const geometry = getRGeometry(tier);
-  const samples = tier === "high" ? 9 : tier === "medium" ? 6 : 4;
-  const resolution = tier === "high" ? 256 : tier === "medium" ? 192 : 128;
+  const apple = isAppleGPU();
+  const samples = tier === "high" ? (apple ? 6 : 9) : tier === "medium" ? 6 : 4;
+  const resolution =
+    tier === "high" ? (apple ? 192 : 256) : tier === "medium" ? 192 : 128;
   return (
     <mesh geometry={geometry} castShadow={false} receiveShadow={false}>
       <MeshTransmissionMaterial
@@ -947,6 +950,7 @@ function ReadySignal() {
 
 function HeroScene({ tier }: { tier: PerformanceTier }) {
   const accent = useAccent();
+  const apple = isAppleGPU();
   const pointerRef = useViewportPointer();
   return (
     <>
@@ -968,7 +972,7 @@ function HeroScene({ tier }: { tier: PerformanceTier }) {
 
       <Environment
         preset="studio"
-        resolution={tier === "low" ? 64 : undefined}
+        resolution={tier === "low" ? 64 : apple ? 128 : undefined}
         environmentIntensity={
           tier === "low" ? 0.6 : tier === "medium" ? 0.55 : 0.75
         }
@@ -984,7 +988,7 @@ function HeroScene({ tier }: { tier: PerformanceTier }) {
           color="#FFFFFF"
         />
       )}
-      {tier === "high" && (
+      {tier === "high" && !apple && (
         <rectAreaLight
           position={[4.3, 1.0, 2.6]}
           rotation={[-0.18, 0.68, 0.0]}
@@ -1017,7 +1021,7 @@ function HeroScene({ tier }: { tier: PerformanceTier }) {
           distance={9}
         />
       )}
-      {tier === "high" && (
+      {tier === "high" && !apple && (
         <pointLight
           position={[3, 2, -2]}
           intensity={1.0}
@@ -1036,7 +1040,8 @@ export function HeroClusterView({ className }: { className?: string }) {
   const { ref, visible } = useIsVisible<HTMLDivElement>("1400px");
   const reduced = useReducedMotion();
   const tier = usePerformanceTier(reduced, visible);
-  const dpr = tierDpr(tier, 1.5, 1.1);
+  const apple = isAppleGPU();
+  const dpr = tierDpr(tier, apple ? 1.25 : 1.5, 1.1);
   const [ready, setReady] = useState(false);
   useEffect(() => setReady(true), []);
   const frameloop = !ready
@@ -1055,7 +1060,7 @@ export function HeroClusterView({ className }: { className?: string }) {
         frameloop={frameloop}
         resize={{ scroll: false }}
         gl={{
-          antialias: tier === "high",
+          antialias: tier === "high" && !apple,
           alpha: true,
           powerPreference: "high-performance",
         }}

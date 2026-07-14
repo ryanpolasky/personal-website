@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { usePerformanceTier } from "@/lib/performance";
+import { isAppleGPU, usePerformanceTier } from "@/lib/performance";
 import { useAccent } from "@/components/AccentProvider";
 
 // CPU port of PavelDoGreat's WebGL fluid simulation. the full chowder:
@@ -45,6 +45,14 @@ type TierConfig = {
 const TIER_CONFIG: Record<"high" | "medium", TierConfig> = {
   high: { gridW: 360, gridH: 225, pressureIters: 20 },
   medium: { gridW: 256, gridH: 160, pressureIters: 12 },
+};
+
+// apple runs this CPU sim on the same thread that flushes the hero's webgl
+// commands; a lighter grid frees main-thread budget without changing the look.
+const APPLE_HIGH_CONFIG: TierConfig = {
+  gridW: 288,
+  gridH: 180,
+  pressureIters: 14,
 };
 
 // per-SECOND dissipation rates, applied during advection as
@@ -192,7 +200,12 @@ export function OilFilmRipple() {
   useEffect(() => {
     if (!enabled || typeof window === "undefined") return;
 
-    const cfg = TIER_CONFIG[tier === "high" ? "high" : "medium"];
+    const cfg =
+      tier === "high"
+        ? isAppleGPU()
+          ? APPLE_HIGH_CONFIG
+          : TIER_CONFIG.high
+        : TIER_CONFIG.medium;
     const GRID_W = cfg.gridW;
     const GRID_H = cfg.gridH;
     const GRID_SIZE = GRID_W * GRID_H;

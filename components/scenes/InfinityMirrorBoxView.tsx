@@ -13,6 +13,7 @@ import { BlendFunction } from "postprocessing";
 import * as THREE from "three";
 import { useAccent } from "@/components/AccentProvider";
 import {
+  isAppleGPU,
   tierDpr,
   usePerformanceTier,
   type PerformanceTier,
@@ -201,7 +202,7 @@ function MirrorWall({
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ref={matRef as any}
         blur={tier === "high" ? [120, 40] : [56, 22]}
-        resolution={tier === "high" ? 160 : 88}
+        resolution={tier === "high" ? (isAppleGPU() ? 128 : 160) : 88}
         mixBlur={0.92}
         mixStrength={tier === "high" ? 4.6 : 2.6}
         mirror={0.96}
@@ -244,7 +245,7 @@ function MirrorRoom({
   }, []);
   const activeWalls =
     tier === "high"
-      ? walls.slice(0, 5)
+      ? walls.slice(0, isAppleGPU() ? 4 : 5)
       : tier === "medium"
         ? walls.slice(0, 4)
         : walls;
@@ -804,7 +805,7 @@ function FogAnimator({
 function MirrorPost({ tier }: { tier: PerformanceTier }) {
   if (tier === "low") return null;
   const chroma =
-    tier === "high" ? (
+    tier === "high" && !isAppleGPU() ? (
       <ChromaticAberration
         blendFunction={BlendFunction.NORMAL}
         offset={new THREE.Vector2(0.00055, 0.00055)}
@@ -867,7 +868,8 @@ export function InfinityMirrorBoxView({ className }: { className?: string }) {
   const { ref, visible } = useIsVisible<HTMLDivElement>("900px");
   const reduced = useReducedMotion();
   const tier = usePerformanceTier(reduced, visible);
-  const dpr = tierDpr(tier, 1.25, 1, 0.85);
+  const apple = isAppleGPU();
+  const dpr = tierDpr(tier, apple ? 1.1 : 1.25, 1, 0.85);
   const [ready, setReady] = useState(false);
 
   useEffect(() => setReady(true), []);
@@ -887,7 +889,7 @@ export function InfinityMirrorBoxView({ className }: { className?: string }) {
         dpr={dpr}
         frameloop={frameloop}
         gl={{
-          antialias: tier === "high",
+          antialias: tier === "high" && !apple,
           alpha: true,
           powerPreference: "high-performance",
         }}

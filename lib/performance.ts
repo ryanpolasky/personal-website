@@ -62,6 +62,14 @@ function getRenderer(): string {
   return cachedRenderer;
 }
 
+// apple silicon (TBDR, unified memory) is disproportionately slow at MSAA
+// resolves, refraction/reflector FBOs, and high-dpr fill vs a discrete GPU.
+// scenes gate a lighter high-tier config on this; non-apple stays identical.
+export function isAppleGPU(): boolean {
+  if (typeof window === "undefined") return false;
+  return getRenderer().includes("apple");
+}
+
 function scoreRenderer(renderer: string): number {
   if (!renderer) return 0;
   if (SOFTWARE_RENDERER_RE.test(renderer)) return -3;

@@ -6,6 +6,7 @@ import { PerspectiveCamera, Environment } from "@react-three/drei";
 import * as THREE from "three";
 import { useAccent } from "@/components/AccentProvider";
 import {
+  isAppleGPU,
   tierDpr,
   usePerformanceTier,
   type PerformanceTier,
@@ -327,6 +328,7 @@ export function RibbonView3D({
   const { ref: visRef, visible } = useIsVisible<HTMLDivElement>("200px");
   const reduced = useReducedMotion();
   const tier = usePerformanceTier(reduced, visible);
+  const apple = isAppleGPU();
   const dpr = tierDpr(tier, 1.25, 1, 0.85);
   const progressRef = useRef(0);
   progressRef.current = externalProgress ?? internalProgress;
@@ -353,7 +355,7 @@ export function RibbonView3D({
         dpr={dpr}
         frameloop={frameloop}
         gl={{
-          antialias: tier === "high",
+          antialias: tier === "high" && !apple,
           alpha: true,
           powerPreference: "high-performance",
         }}
