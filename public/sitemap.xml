@@ -1,38 +1,121 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Hand-maintained. Last synced 2026-07-27.
+
+  Keep in sync with:
+    - enabled entries in lib/projects.ts  ->  /work/<id>/            (currently 7)
+    - VARIANTS in lib/variants.ts         ->  /variants/<key>.html   (currently 10)
+
+  trailingSlash is true in next.config, so app routes need the trailing slash.
+  The variants are literal .html files, so they do not.
+
+  No <lastmod> on purpose: this file is updated by hand and rarely, so a
+  hardcoded date would go stale and Google would learn to ignore it.
+-->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- home -->
   <url>
     <loc>https://ryanpolasky.com/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
+
+  <!-- project write-ups: the real indexable long-form content -->
   <url>
-    <loc>https://ryanpolasky.com/variants/original.html</loc>
-    <changefreq>weekly</changefreq>
+    <loc>https://ryanpolasky.com/work/autopsy/</loc>
+    <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://ryanpolasky.com/variants/apple.html</loc>
-    <changefreq>weekly</changefreq>
+    <loc>https://ryanpolasky.com/work/utd-roommates/</loc>
+    <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ryanpolasky.com/work/rycord/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ryanpolasky.com/work/nimby/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ryanpolasky.com/work/apple-triage/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ryanpolasky.com/work/apple-nlsql/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ryanpolasky.com/work/readme-ryvamper/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- variant gallery picker -->
+  <url>
+    <loc>https://ryanpolasky.com/gallery/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- historical design variants: frozen, and deliberately lower priority so
+       they don't compete with the real content above -->
+  <url>
+    <loc>https://ryanpolasky.com/variants/original.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
   </url>
   <url>
     <loc>https://ryanpolasky.com/variants/observability.html</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://ryanpolasky.com/variants/forensic.html</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://ryanpolasky.com/variants/lofi.html</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
   </url>
   <url>
     <loc>https://ryanpolasky.com/variants/geocities.html</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
   </url>
+  <url>
+    <loc>https://ryanpolasky.com/variants/risograph.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://ryanpolasky.com/variants/grimoire.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://ryanpolasky.com/variants/acid.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://ryanpolasky.com/variants/no-css.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://ryanpolasky.com/variants/gamebro.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://ryanpolasky.com/variants/liminal.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://ryanpolasky.com/variants/wikipedia.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
 </urlset>

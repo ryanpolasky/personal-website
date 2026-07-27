@@ -3,7 +3,10 @@
  * Walk `public/assets` and produce a `.webp` sibling for every PNG/JPG over
  * a size threshold. Skips files we explicitly want to keep as-is:
  *   - site-preview.png (OG image; max crawler compat)
- *   - my-avatar.png    (only referenced by legacy variants)
+ *   - my-avatar.png    (the 10 frozen variants reference the .png; a hand-made
+ *                       my-avatar.webp already exists for the live site's JSON-LD.
+ *                       sharp's png re-encode is lossy on this file's alpha, so
+ *                       don't let the script touch it)
  *   - anything under public/variants (those HTML files reference originals)
  *   - already-converted images that have an up-to-date .webp sibling
  *
@@ -26,7 +29,7 @@ const MIN_BYTES = 50 * 1024; // skip tiny icons/sprites where webp gains are noi
 // files we keep as the original format on purpose.
 const SKIP_BASENAMES = new Set([
   "site-preview.png", // OG image, max crawler compatibility
-  "my-avatar.png", // referenced by legacy /variants only
+  "my-avatar.png", // frozen variants use the .png; my-avatar.webp is hand-made
 ]);
 
 const WEBP_QUALITY = 82;

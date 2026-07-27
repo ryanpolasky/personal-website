@@ -103,7 +103,7 @@ const JSON_LD = {
       familyName: "Polasky",
       alternateName: "ryan.polasky",
       url: `${SITE_URL}/`,
-      image: `${SITE_URL}/assets/images/my-avatar.png`,
+      image: `${SITE_URL}/assets/images/my-avatar.webp`,
       email: "mailto:ryanpolasky@hotmail.com",
       jobTitle: "Software Engineer",
       description:
@@ -165,7 +165,7 @@ const JSON_LD = {
       isPartOf: { "@id": `${SITE_URL}/#website` },
       about: { "@id": `${SITE_URL}/#person` },
       mainEntity: { "@id": `${SITE_URL}/#person` },
-      primaryImageOfPage: `${SITE_URL}/assets/images/my-avatar.png`,
+      primaryImageOfPage: `${SITE_URL}/assets/images/my-avatar.webp`,
     },
     {
       "@type": "VideoGame",
