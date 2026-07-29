@@ -569,7 +569,33 @@ function LightSigil({
   const warmLightRef = useRef<THREE.PointLight>(null);
   const timeRef = useRef(0);
   const accent = useAccent();
-  const sigilTexture = useMemo(() => makeSigilTexture(accent), [accent]);
+  // rebuilding this 512px canvas is ~8M px of gradient fills plus a per-pixel
+  // grain pass. the hero click toy cycles the accent while this scene is far
+  // offscreen, so defer to idle instead of stalling the click.
+  const [sigilAccent, setSigilAccent] = useState(accent);
+  useEffect(() => {
+    if (sigilAccent === accent) return;
+    type IdleWindow = Window & {
+      requestIdleCallback?: (
+        cb: () => void,
+        opts?: { timeout: number },
+      ) => number;
+      cancelIdleCallback?: (handle: number) => void;
+    };
+    const w = window as IdleWindow;
+    if (!w.requestIdleCallback) {
+      const t = window.setTimeout(() => setSigilAccent(accent), 200);
+      return () => window.clearTimeout(t);
+    }
+    const id = w.requestIdleCallback(() => setSigilAccent(accent), {
+      timeout: 1500,
+    });
+    return () => w.cancelIdleCallback?.(id);
+  }, [accent, sigilAccent]);
+  const sigilTexture = useMemo(
+    () => makeSigilTexture(sigilAccent),
+    [sigilAccent],
+  );
 
   const baseEmissive = useMemo(
     () => new THREE.Color(accent.soft),

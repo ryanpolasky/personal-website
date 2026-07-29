@@ -250,16 +250,57 @@ const SHAPES: ShapeData[] = [
 const MEDIUM_SHAPES = SHAPES.slice(0, 13);
 const LOW_SHAPES = SHAPES.slice(0, 8);
 
+type Palette = "white" | "black" | "accent";
+type Finish = "Matte" | "Jelly" | "Plastic";
+
+function parseMat(mat: MatKind): [Palette, Finish] {
+  return mat.replace(/([A-Z])/g, " $1").split(" ") as [Palette, Finish];
+}
+
+const ACCENT_SURFACE_MIX: Record<Finish, number> = {
+  Matte: 0.2,
+  Jelly: 0.45,
+  Plastic: 0,
+};
+
+const tintScratch = new THREE.Color();
+
+// only the accent palette tracks the live accent, so recolor in place instead
+// of rebuilding. disposing a material destroys its compiled program, and
+// windows/angle stalls for hundreds of ms re-translating these shaders.
+function applyAccentTint(
+  material: THREE.MeshStandardMaterial,
+  palette: Palette,
+  finish: Finish,
+  tier: PerformanceTier,
+  accent: { base: string; warm: string; soft: string },
+) {
+  if (palette !== "accent") return;
+  material.color.set(accent.base);
+  const mix = ACCENT_SURFACE_MIX[finish];
+  if (mix > 0) material.color.lerp(tintScratch.set(accent.soft), mix);
+  material.emissive.set(
+    tier !== "low" && finish === "Jelly" ? accent.warm : accent.base,
+  );
+  const physical = material as THREE.MeshPhysicalMaterial;
+  if (tier !== "low" && finish !== "Plastic" && physical.sheenColor) {
+    physical.sheenColor.set(accent.warm);
+  }
+}
+
 function useMaterial(
   mat: MatKind,
   tier: PerformanceTier,
 ): THREE.MeshStandardMaterial {
-  const accent = useAccent();
+  const liveAccent = useAccent();
+  const accentRef = useRef(liveAccent);
+  accentRef.current = liveAccent;
+  const [palette, finish] = useMemo(() => parseMat(mat), [mat]);
+
   const material = useMemo(() => {
-    const [palette, finish] = mat.replace(/([A-Z])/g, " $1").split(" ") as [
-      "white" | "black" | "accent",
-      "Matte" | "Jelly" | "Plastic",
-    ];
+    // seeded from the accent at build time; applyAccentTint owns it after that.
+    const accent = accentRef.current;
+    const [palette, finish] = parseMat(mat);
 
     const colorMap: Record<typeof palette, Record<typeof finish, string>> = {
       white: {
@@ -378,9 +419,14 @@ function useMaterial(
       emissiveIntensity: palette === "accent" ? 0.1 : 0,
       flatShading: false,
     });
-  }, [mat, tier, accent.base, accent.warm, accent.soft]);
+  }, [mat, tier]);
 
-  // dispose the outgoing material on accent/tier change or unmount (r3f won't,
+  // recolor the live material rather than letting the accent rebuild it.
+  useEffect(() => {
+    applyAccentTint(material, palette, finish, tier, liveAccent);
+  }, [material, palette, finish, tier, liveAccent]);
+
+  // dispose the outgoing material on tier change or unmount (r3f won't,
   // it's passed by prop not as a child).
   useEffect(() => () => material.dispose(), [material]);
   return material;

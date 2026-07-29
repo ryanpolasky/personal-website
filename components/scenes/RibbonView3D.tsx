@@ -100,7 +100,12 @@ function Ribbon({
   );
 
   // shared material across tube + caps so iridescence reads as one surface.
+  // built once per tier; the accent recolors it in place below rather than
+  // rebuilding, which would destroy the compiled iridescence shader.
+  const accentRef = useRef(accent);
+  accentRef.current = accent;
   const material = useMemo<THREE.Material>(() => {
+    const accent = accentRef.current;
     if (tier === "low") {
       return new THREE.MeshStandardMaterial({
         color: new THREE.Color(accent.base),
@@ -122,7 +127,14 @@ function Ribbon({
       sheen: tier === "medium" ? 0.25 : 0.6,
       sheenColor: new THREE.Color(accent.warm),
     });
-  }, [tier, accent.base, accent.warm]);
+  }, [tier]);
+
+  useEffect(() => {
+    const m = material as THREE.MeshPhysicalMaterial;
+    m.color.set(accent.base);
+    if (tier === "low") m.emissive.set(accent.base);
+    else if (m.sheenColor) m.sheenColor.set(accent.warm);
+  }, [material, tier, accent.base, accent.warm]);
 
   useEffect(() => {
     return () => {
