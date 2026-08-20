@@ -59,7 +59,7 @@ const APPLE_HIGH_CONFIG: TierConfig = {
 // `result /= 1 + dissipation * dt_sec`. matches the reference so velocity
 // bleeds slower than dye (currents persist, dye fades).
 const VEL_DISSIPATION = 0.2;
-const DYE_DISSIPATION = 1.4;
+const DYE_DISSIPATION = 1.0;
 // pressure carry-over scalar. existing pressure is multiplied by this each
 // frame before solving - serves as a warm start for jacobi while still
 // letting old pressure decay when no new divergence appears.
@@ -67,8 +67,8 @@ const PRESSURE_DISSIPATION = 0.8;
 
 const VEL_SPLAT_RADIUS = 45;
 const VEL_SPLAT_FORCE = 0.85;
-const DYE_SPLAT_RADIUS = 34;
-const DYE_SPLAT_INTENSITY = 0.4;
+const DYE_SPLAT_RADIUS = 39;
+const DYE_SPLAT_INTENSITY = 0.5;
 const VEL_FALLOFF_K = 0.0075;
 const DYE_FALLOFF_K = 0.0095;
 const DYE_MAX = 1.0;
@@ -586,7 +586,7 @@ export function OilFilmRipple() {
       // settle at a dim cap, fast flicks at a bright cap. velocity is NOT
       // scaled - the fluid should still swirl on slow movement, just dimly.
       const speed = (dist / dt) * 1000;
-      const dyeCap = DYE_MAX * clamp(speed / 1100, 0.03, 0.8);
+      const dyeCap = DYE_MAX * clamp(speed / 900, 0.035, 1);
       const hue = (now * 0.00012) % 1;
       const [r, g, b] = sampleColor(paletteRef.current, hue);
 
@@ -735,9 +735,9 @@ export function OilFilmRipple() {
         width: "100%",
         height: "100%",
         // toned-down overlay opacity. screen-blend at full opacity blew the
-        // page out; ~45% keeps the iridescence present without competing
+        // page out; ~55% keeps the iridescence present without competing
         // with content.
-        opacity: 0.45,
+        opacity: 0.55,
         mixBlendMode: "screen",
         // pumped saturation + tiny contrast bump to keep the accent-anchored
         // hues feeling iridescent (not muddy) after blur and screen blend.
