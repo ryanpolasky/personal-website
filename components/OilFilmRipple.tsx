@@ -43,8 +43,8 @@ type TierConfig = {
 // that change with tier; everything else (splat sizes, dissipation rates,
 // vorticity strength) is shared so the look stays consistent.
 const TIER_CONFIG: Record<"high" | "medium", TierConfig> = {
-  high: { gridW: 360, gridH: 225, pressureIters: 20 },
-  medium: { gridW: 256, gridH: 160, pressureIters: 12 },
+  high: { gridW: 360, gridH: 225, pressureIters: 10 },
+  medium: { gridW: 256, gridH: 160, pressureIters: 8 },
 };
 
 // apple runs this CPU sim on the same thread that flushes the hero's webgl
@@ -52,7 +52,7 @@ const TIER_CONFIG: Record<"high" | "medium", TierConfig> = {
 const APPLE_HIGH_CONFIG: TierConfig = {
   gridW: 288,
   gridH: 180,
-  pressureIters: 14,
+  pressureIters: 10,
 };
 
 // per-SECOND dissipation rates, applied during advection as
@@ -74,7 +74,8 @@ const DYE_FALLOFF_K = 0.0095;
 const DYE_MAX = 1.0;
 const VORTICITY_STRENGTH = 0.18;
 const MAX_INJECT_VEL = 4.0;
-const DT_CAP = 1.5;
+const SIMULATION_FRAME_MS = 1000 / 30;
+const DT_CAP = 2.0;
 
 // thin-film palette is BUILT FROM THE CURRENT ACCENT at runtime. we rotate
 // hue around accent.base in HSV space and emit 6 high-saturation stops
@@ -256,6 +257,9 @@ export function OilFilmRipple() {
     let lastX = -1;
     let lastY = -1;
     let lastMoveMs = 0;
+    let pendingX = -1;
+    let pendingY = -1;
+    let pendingMoveMs = 0;
     // tracks whether the canvas is currently observed as in-viewport.
     // when false the pointer listener is detached and the sim is idle.
     let pointerAttached = false;
@@ -535,61 +539,22 @@ export function OilFilmRipple() {
       raf = window.requestAnimationFrame(loop);
     };
 
-    const onMove = (e: PointerEvent) => {
-      if (e.pointerType === "touch") return;
-      if (document.visibilityState === "hidden") return;
-      // canvas-local rect: ripple lives inside the hero section, so we
-      // translate viewport coords -> hero-local coords and drop anything
-      // outside the hero bounds (cursor moved over a different section).
-      const rect = canvas.getBoundingClientRect();
-      if (rect.width === 0 || rect.height === 0) return;
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      if (x < 0 || y < 0 || x > rect.width || y > rect.height) {
-        // outside hero - reset connect-from anchor so re-entry doesn't
-        // streak a splat from the last in-bounds position.
-        lastX = -1;
-        lastY = -1;
-        return;
-      }
-      // keep cellW/cellH in sync with the live CSS size (cheap; one
-      // layout query per pointer event, browser-cached within a frame).
-      cellW = rect.width / GRID_W;
-      cellH = rect.height / GRID_H;
-      const now = performance.now();
-      if (lastX < 0) {
-        lastX = x;
-        lastY = y;
-        lastMoveMs = now;
-        return;
-      }
-      const dx = x - lastX;
-      const dy = y - lastY;
+    const injectPendingPointer = () => {
+      if (pendingX < 0 || lastX < 0) return;
+      const dx = pendingX - lastX;
+      const dy = pendingY - lastY;
       const dist = Math.hypot(dx, dy);
-      // tiny epsilon only - just enough to skip jitter / zero-motion events.
-      // the speed-scaled cap below already handles brightness, so we don't
-      // need a coarse threshold here (which was causing pulse cadence on
-      // sub-pixel drags).
       if (dist < 0.05) return;
-      // do NOT clamp dt upward - that was undersampling speed on high-Hz
-      // pointers (240Hz trackpads give dt ~4ms; clamping to 8ms halved the
-      // computed speed). MAX_INJECT_VEL still caps runaway flicks.
-      const dt = Math.max(1, now - lastMoveMs);
-      // pointer velocity -> cells per simulation frame, clamped so a hard
-      // flick doesn't blow the sim up.
+      const dt = Math.max(1, pendingMoveMs - lastMoveMs);
       let cellsPerFrameX = ((dx / dt) * (1000 / 60)) / cellW;
       let cellsPerFrameY = ((dy / dt) * (1000 / 60)) / cellH;
       cellsPerFrameX = clamp(cellsPerFrameX, -MAX_INJECT_VEL, MAX_INJECT_VEL);
       cellsPerFrameY = clamp(cellsPerFrameY, -MAX_INJECT_VEL, MAX_INJECT_VEL);
 
-      // speed maps to the dye CEILING (not per-splat alpha). slow drags
-      // settle at a dim cap, fast flicks at a bright cap. velocity is NOT
-      // scaled - the fluid should still swirl on slow movement, just dimly.
       const speed = (dist / dt) * 1000;
       const dyeCap = DYE_MAX * clamp(speed / 1100, 0.03, 0.8);
-      const hue = (now * 0.00012) % 1;
+      const hue = (pendingMoveMs * 0.00012) % 1;
       const [r, g, b] = sampleColor(paletteRef.current, hue);
-
       const steps = Math.min(18, Math.max(1, Math.ceil(dist / 18)));
       for (let i = 1; i <= steps; i++) {
         const t = i / steps;
@@ -604,9 +569,37 @@ export function OilFilmRipple() {
           dyeCap,
         );
       }
-      lastX = x;
-      lastY = y;
-      lastMoveMs = now;
+      lastX = pendingX;
+      lastY = pendingY;
+      lastMoveMs = pendingMoveMs;
+    };
+
+    const onMove = (e: PointerEvent) => {
+      if (e.pointerType === "touch") return;
+      if (document.visibilityState === "hidden") return;
+      const rect = canvas.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return;
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      if (x < 0 || y < 0 || x > rect.width || y > rect.height) {
+        lastX = -1;
+        lastY = -1;
+        pendingX = -1;
+        pendingY = -1;
+        return;
+      }
+      cellW = rect.width / GRID_W;
+      cellH = rect.height / GRID_H;
+      const now = performance.now();
+      pendingX = x;
+      pendingY = y;
+      pendingMoveMs = now;
+      if (lastX < 0) {
+        lastX = x;
+        lastY = y;
+        lastMoveMs = now;
+        return;
+      }
       ensureRunning(now);
     };
 
@@ -626,13 +619,24 @@ export function OilFilmRipple() {
       ctx.clearRect(0, 0, GRID_W, GRID_H);
       lastX = -1;
       lastY = -1;
+      pendingX = -1;
+      pendingY = -1;
     };
 
     const loop = (now: number) => {
-      const dtMs = Math.min(48, now - lastFrameMs);
+      const elapsedMs = now - lastFrameMs;
+      if (elapsedMs < SIMULATION_FRAME_MS) {
+        raf = window.requestAnimationFrame(loop);
+        return;
+      }
+      const dtMs = Math.min(48, elapsedMs);
       lastFrameMs = now;
       const dt = Math.min(DT_CAP, dtMs / 16.67);
       const dtSec = dtMs / 1000;
+
+      // Coalesce high-frequency pointer events into one interpolated injection
+      // per simulation step instead of running splat loops at mouse polling rate.
+      injectPendingPointer();
 
       // full incompressible-flow step: vorticity -> divergence -> pressure
       // solve -> gradient subtract -> advect.
@@ -688,6 +692,8 @@ export function OilFilmRipple() {
       ctx.clearRect(0, 0, GRID_W, GRID_H);
       lastX = -1;
       lastY = -1;
+      pendingX = -1;
+      pendingY = -1;
       if (raf) {
         window.cancelAnimationFrame(raf);
         raf = 0;
