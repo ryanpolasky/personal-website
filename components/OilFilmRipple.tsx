@@ -46,7 +46,7 @@ export function OilFilmRipple() {
     );
   }, []);
 
-  const tier = usePerformanceTier(reducedMotion, true);
+  const tier = usePerformanceTier(reducedMotion, false);
   const enabled = finePointer && !reducedMotion && tier !== "low";
 
   // palette updates go through a ref so accent changes don't rebuild the sim.
