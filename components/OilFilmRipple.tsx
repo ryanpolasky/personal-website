@@ -82,11 +82,25 @@ export function OilFilmRipple() {
         ? canvas.getContext("bitmaprenderer")
         : null;
 
+    let pendingBitmap: ImageBitmap | null = null;
+    let paintRaf = 0;
+
     if (bitmapCtx) {
+      // paint the latest frame on the page's rAF so presentation stays
+      // vsync-aligned regardless of the worker's frame cadence.
+      const paint = () => {
+        paintRaf = 0;
+        if (pendingBitmap) {
+          bitmapCtx.transferFromImageBitmap(pendingBitmap);
+          pendingBitmap = null;
+        }
+      };
       worker = new Worker(new URL("./oil-film/fluid.worker.ts", import.meta.url));
       worker.onmessage = (e: MessageEvent<WorkerOutMessage>) => {
         if (e.data.type === "frame") {
-          bitmapCtx.transferFromImageBitmap(e.data.bitmap);
+          pendingBitmap?.close();
+          pendingBitmap = e.data.bitmap;
+          if (!paintRaf) paintRaf = requestAnimationFrame(paint);
         }
       };
       post({ type: "init", config: cfg, palette: paletteRef.current });
@@ -169,6 +183,8 @@ export function OilFilmRipple() {
       window.removeEventListener("pointermove", onMove);
       document.removeEventListener("visibilitychange", onVisibility);
       pushPaletteRef.current = null;
+      if (paintRaf) cancelAnimationFrame(paintRaf);
+      pendingBitmap?.close();
       worker?.terminate();
       sim?.destroy();
     };
