@@ -38,7 +38,16 @@ export function UtdWebringButtons({
         className={centerButton}
         strength={10}
       >
-        <img src={WEBRING_ICON} alt="" className="h-4 w-4 opacity-85" />
+        {/* lazy: react 19 otherwise hoists a <link rel=preload> for every
+            ssr'd eager <img> into <head>, and this one is a third-party
+            origin in the footer competing with hero-critical bytes. */}
+        <img
+          src={WEBRING_ICON}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          className="h-4 w-4 opacity-85"
+        />
       </MagneticButton>
       <MagneticButton
         href={`${WEBRING_BASE}?nav=next`}

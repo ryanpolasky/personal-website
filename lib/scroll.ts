@@ -5,15 +5,24 @@ import { useEffect, useRef, useState } from "react";
 // shared scroll utilities used by multiple sections. all client-only because
 // they touch window/dom. progress values are clamped 0..1.
 
-// returns a ref + a progress number for how far an element has traveled through
-// the viewport. 0 = element top at vh, 1 = element bottom at 0.
-export function useElementProgress<T extends HTMLElement = HTMLElement>() {
+// progress values are exposed as refs, not state: consumers are r3f frame
+// loops and raf-driven svg, which read the latest value each frame anyway.
+// the previous setState-per-frame version re-rendered the whole consuming
+// subtree (AboutSection's cards, glass panel, the Canvas element) at 60fps
+// for as long as the section was on screen.
+
+// returns a ref + a progress ref for how far an element has traveled through
+// the viewport. 0 = element top at vh, 1 = element bottom at 0. pass
+// `enabled=false` when a parent supplies progress so no loop runs here.
+export function useElementProgress<T extends HTMLElement = HTMLElement>(
+  enabled = true,
+) {
   const ref = useRef<T | null>(null);
-  const [progress, setProgress] = useState(0);
+  const progressRef = useRef(0);
 
   useEffect(() => {
     const el = ref.current;
-    if (!el) return;
+    if (!el || !enabled) return;
     let raf = 0;
     let running = false;
 
@@ -22,8 +31,7 @@ export function useElementProgress<T extends HTMLElement = HTMLElement>() {
       const vh = window.innerHeight || 1;
       const total = rect.height + vh;
       const traveled = vh - rect.top;
-      const p = Math.max(0, Math.min(1, traveled / total));
-      setProgress((prev) => (Math.abs(prev - p) > 0.001 ? p : prev));
+      progressRef.current = Math.max(0, Math.min(1, traveled / total));
     };
 
     const tick = () => {
@@ -85,52 +93,68 @@ export function useElementProgress<T extends HTMLElement = HTMLElement>() {
       io?.disconnect();
       document.removeEventListener("visibilitychange", onVisibility);
     };
-  }, []);
+  }, [enabled]);
 
-  return { ref, progress };
+  return { ref, progressRef };
 }
 
 // progress through a section where the section is taller than the viewport,
 // e.g. a sticky/pinned section. 0 when entering, 1 when fully traveled.
 export function useSectionTravel<T extends HTMLElement = HTMLElement>() {
   const ref = useRef<T | null>(null);
-  const [progress, setProgress] = useState(0);
+  const progressRef = useRef(0);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
     let raf = 0;
-    const activeRef = { current: true };
+    let running = false;
+
+    const read = () => {
+      const rect = el.getBoundingClientRect();
+      const vh = window.innerHeight || 1;
+      const travel = rect.height - vh;
+      if (travel > 1) {
+        progressRef.current = Math.max(0, Math.min(1, -rect.top / travel));
+      }
+    };
+    const tick = () => {
+      read();
+      raf = requestAnimationFrame(tick);
+    };
+    const start = () => {
+      if (running) return;
+      running = true;
+      raf = requestAnimationFrame(tick);
+    };
+    const stop = () => {
+      running = false;
+      if (raf) cancelAnimationFrame(raf);
+      raf = 0;
+    };
+
+    // the loop only runs while the section is near the viewport (previously
+    // it kept scheduling frames for the whole session and just skipped work).
     const io =
       typeof IntersectionObserver === "undefined"
         ? null
         : new IntersectionObserver(
             ([entry]) => {
-              activeRef.current = entry.isIntersecting;
+              read();
+              if (entry.isIntersecting) start();
+              else stop();
             },
             { rootMargin: "240px" },
           );
-    io?.observe(el);
-    const tick = () => {
-      if (activeRef.current) {
-        const rect = el.getBoundingClientRect();
-        const vh = window.innerHeight || 1;
-        const travel = rect.height - vh;
-        if (travel > 1) {
-          const p = Math.max(0, Math.min(1, -rect.top / travel));
-          setProgress((prev) => (Math.abs(prev - p) > 0.001 ? p : prev));
-        }
-      }
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
+    if (io) io.observe(el);
+    else start();
     return () => {
+      stop();
       io?.disconnect();
-      cancelAnimationFrame(raf);
     };
   }, []);
 
-  return { ref, progress };
+  return { ref, progressRef };
 }
 
 // is the element currently overlapping the viewport? cheap visibility gate for

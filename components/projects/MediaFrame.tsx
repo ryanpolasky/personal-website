@@ -3,7 +3,7 @@
 // shared media primitive for every layout that displays a screenshot.
 
 import Image from "next/image";
-import { useEffect, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import type { ProjectMediaItem } from "@/lib/projects";
 import { LoadingMarch } from "./LoadingMarch";
 
@@ -33,31 +33,84 @@ function SpriteAnimation({
   fps,
 }: SpriteAnimationProps) {
   const totalFrames = Math.max(1, columns * rows);
-  const [frame, setFrame] = useState(0);
+  const ref = useRef<HTMLDivElement | null>(null);
+  // css background-image isn't lazy: every sheet in the rail (~1.1 MB for
+  // nimby alone) downloaded at page load. gate the url on proximity instead.
+  const [near, setNear] = useState(false);
+
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    const el = ref.current;
+    if (!el || typeof IntersectionObserver === "undefined") {
+      setNear(true);
+      return;
+    }
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setNear(true);
+          io.disconnect();
+        }
+      },
+      { rootMargin: "600px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  // step frames by writing background-position straight to the element:
+  // a setState per frame re-rendered this subtree `fps` times a second per
+  // sprite. also parked while the sheet is off-screen.
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || !near || typeof window === "undefined") return;
     if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
     const ms = Math.max(16, Math.round(1000 / Math.max(1, fps)));
-    const id = window.setInterval(() => {
-      setFrame((f) => (f + 1) % totalFrames);
-    }, ms);
-    return () => window.clearInterval(id);
-  }, [totalFrames, fps]);
-  // bg-position % is relative to (image - container) extra space, so
-  // frame K maps to (K / (N-1)) * 100%. clamp N-1 to 1 for single-axis.
-  const col = frame % columns;
-  const row = Math.floor(frame / columns);
-  const xPct = (col / Math.max(1, columns - 1)) * 100;
-  const yPct = (row / Math.max(1, rows - 1)) * 100;
+    let frame = 0;
+    let id = 0;
+    // bg-position % is relative to (image - container) extra space, so
+    // frame K maps to (K / (N-1)) * 100%. clamp N-1 to 1 for single-axis.
+    const paint = () => {
+      const col = frame % columns;
+      const row = Math.floor(frame / columns);
+      const xPct = (col / Math.max(1, columns - 1)) * 100;
+      const yPct = (row / Math.max(1, rows - 1)) * 100;
+      el.style.backgroundPosition = `${xPct}% ${yPct}%`;
+    };
+    const start = () => {
+      if (id) return;
+      id = window.setInterval(() => {
+        frame = (frame + 1) % totalFrames;
+        paint();
+      }, ms);
+    };
+    const stop = () => {
+      window.clearInterval(id);
+      id = 0;
+    };
+    const io =
+      typeof IntersectionObserver === "undefined"
+        ? null
+        : new IntersectionObserver(([entry]) =>
+            entry.isIntersecting ? start() : stop(),
+          );
+    if (io) io.observe(el);
+    else start();
+    return () => {
+      stop();
+      io?.disconnect();
+    };
+  }, [near, totalFrames, columns, rows, fps]);
+
   const style: CSSProperties = {
-    backgroundImage: `url(${src})`,
+    backgroundImage: near ? `url(${src})` : undefined,
     backgroundSize: `${columns * 100}% ${rows * 100}%`,
-    backgroundPosition: `${xPct}% ${yPct}%`,
+    backgroundPosition: "0% 0%",
     backgroundRepeat: "no-repeat",
     imageRendering: "pixelated",
   };
   return (
     <div
+      ref={ref}
       role="img"
       aria-label={alt}
       className="absolute inset-0 h-full w-full transition-transform duration-700 ease-out group-hover:scale-[1.015]"

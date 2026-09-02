@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useMotionValue, useSpring } from "framer-motion";
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
 
 type Props = React.PropsWithChildren<{
   href?: string;
@@ -24,6 +24,9 @@ type Props = React.PropsWithChildren<{
  * A button (or anchor) whose contents subtly track the cursor when hovered.
  * Used for primary CTAs to give the page the "studio site" feel without
  * being obnoxious. Set `strength` lower for a tighter effect.
+ *
+ * Driven by gsap (already on the page for scroll) rather than framer-motion,
+ * which was ~37 KB gzipped in the initial bundle for these springs alone.
  */
 export function MagneticButton({
   children,
@@ -35,75 +38,97 @@ export function MagneticButton({
   strength = 18,
 }: Props) {
   const ref = useRef<HTMLElement | null>(null);
-  const mx = useMotionValue(0);
-  const my = useMotionValue(0);
-  const x = useSpring(mx, { stiffness: 180, damping: 14, mass: 0.4 });
-  const y = useSpring(my, { stiffness: 180, damping: 14, mass: 0.4 });
+  const innerRef = useRef<HTMLSpanElement | null>(null);
+  const tweens = useRef<{
+    x: gsap.QuickToFunc;
+    y: gsap.QuickToFunc;
+    scale: gsap.QuickToFunc;
+  } | null>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    const inner = innerRef.current;
+    if (!el || !inner) return;
+    // magnetic follow: a springy back.out stands in for the old
+    // stiffness 180 / damping 14 spring (slightly underdamped).
+    const follow = { duration: 0.45, ease: "back.out(1.4)" };
+    // pressure feedback: near-critically damped, so plain ease-out.
+    const press = { duration: 0.3, ease: "power2.out" };
+    tweens.current = {
+      x: gsap.quickTo(inner, "x", follow),
+      y: gsap.quickTo(inner, "y", follow),
+      scale: gsap.quickTo(el, "scale", press),
+    };
+    return () => {
+      gsap.killTweensOf([inner, el]);
+      tweens.current = null;
+    };
+  }, []);
 
   const onMove = (e: React.PointerEvent) => {
     const el = ref.current;
-    if (!el) return;
+    const t = tweens.current;
+    if (!el || !t) return;
     const rect = el.getBoundingClientRect();
     const relX = e.clientX - (rect.left + rect.width / 2);
     const relY = e.clientY - (rect.top + rect.height / 2);
-    mx.set((relX / rect.width) * strength);
-    my.set((relY / rect.height) * strength);
+    t.x((relX / rect.width) * strength);
+    t.y((relY / rect.height) * strength);
   };
-
-  const onLeave = () => {
-    mx.set(0);
-    my.set(0);
-  };
-
-  const inner = (
-    <motion.span style={{ x, y }} className="inline-flex">
-      {children}
-    </motion.span>
-  );
 
   // pressure-sensitive feedback: tiny scale-up on hover, scale-down on press.
-  // a spring (not a tween) so the impulse is sympathetic to the magnetic
-  // translate underneath and doesn't read as a snappy css :hover.
-  const tactile = {
-    whileHover: { scale: 1.03 },
-    whileTap: { scale: 0.97 },
-    transition: {
-      type: "spring" as const,
-      stiffness: 360,
-      damping: 22,
-      mass: 0.4,
-    },
+  const onEnter = () => tweens.current?.scale(1.03);
+  const onLeave = () => {
+    const t = tweens.current;
+    if (!t) return;
+    t.x(0);
+    t.y(0);
+    t.scale(1);
+  };
+  const onDown = () => tweens.current?.scale(0.97);
+  const onUp = () => tweens.current?.scale(1.03);
+
+  const inner = (
+    <span ref={innerRef} className="inline-flex will-change-transform">
+      {children}
+    </span>
+  );
+
+  const handlers = {
+    onPointerMove: onMove,
+    onPointerEnter: onEnter,
+    onPointerLeave: onLeave,
+    onPointerDown: onDown,
+    onPointerUp: onUp,
+    onPointerCancel: onLeave,
   };
 
   if (href) {
     return (
-      <motion.a
+      <a
         ref={ref as React.Ref<HTMLAnchorElement>}
         href={href}
         target={target}
         rel={rel}
         onClick={onClick}
-        onPointerMove={onMove}
-        onPointerLeave={onLeave}
         className={className}
         data-hoverable
-        {...tactile}
+        {...handlers}
       >
         {inner}
-      </motion.a>
+      </a>
     );
   }
   return (
-    <motion.button
+    <button
       ref={ref as React.Ref<HTMLButtonElement>}
-      onPointerMove={onMove}
-      onPointerLeave={onLeave}
+      type="button"
       onClick={onClick}
       className={className}
       data-hoverable
-      {...tactile}
+      {...handlers}
     >
       {inner}
-    </motion.button>
+    </button>
   );
 }

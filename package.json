@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && node scripts/inject-font-preloads.mjs",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit"

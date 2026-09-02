@@ -1,10 +1,18 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   PerspectiveCamera,
   Environment,
   MeshTransmissionMaterial,
+  useFBO,
 } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
@@ -375,6 +383,10 @@ function useMaterial(
     }
 
     if (finish === "Jelly") {
+      // no `transmission` here on purpose: any material with transmission > 0
+      // makes three render an extra full-resolution transmission pass (plus
+      // mipmaps) of the whole scene every frame. at 0.15 behind clearcoat +
+      // sheen it was barely visible and cost a whole scene render.
       return new THREE.MeshPhysicalMaterial({
         color: colorMap[palette].Jelly,
         roughness: tier === "medium" ? 0.46 : 0.35,
@@ -382,8 +394,6 @@ function useMaterial(
         clearcoat: tier === "medium" ? 0.65 : 1.0,
         clearcoatRoughness: tier === "medium" ? 0.58 : 0.45,
         ior: 1.5,
-        transmission: tier === "medium" ? 0 : 0.15,
-        thickness: tier === "medium" ? 0 : 2.0,
         sheen: tier === "medium" ? 0.35 : 0.7,
         sheenRoughness: tier === "medium" ? 0.62 : 0.5,
         sheenColor:
@@ -501,18 +511,74 @@ function GlyphRShape({
   );
 }
 
+// glass R's live on this layer so the shared transmission pass can exclude
+// them with a single camera-layer toggle instead of swapping materials.
+const GLASS_LAYER = 1;
+
+const TransmissionBufferContext = createContext<THREE.Texture | null>(null);
+
+// one scene render feeds every glass R. drei's MeshTransmissionMaterial
+// renders the whole scene into its own fbo per instance unless it's handed
+// a `buffer`, so three glass R's meant three extra scene passes per frame.
+function SharedTransmissionBuffer({
+  tier,
+  children,
+}: {
+  tier: PerformanceTier;
+  children: React.ReactNode;
+}) {
+  const apple = isAppleGPU();
+  const resolution =
+    tier === "high" ? (apple ? 192 : 256) : tier === "medium" ? 192 : 128;
+  const fbo = useFBO(resolution, resolution);
+  const camera = useThree((state) => state.camera);
+
+  useEffect(() => {
+    camera.layers.enable(GLASS_LAYER);
+    return () => camera.layers.disable(GLASS_LAYER);
+  }, [camera]);
+
+  // registered after Cluster/Shape frame callbacks (mounted later in the
+  // tree) so the buffer reflects this frame's positions, then r3f's own
+  // render samples it.
+  useFrame(({ gl, scene, camera: cam }) => {
+    const oldTone = gl.toneMapping;
+    // no tone mapping here: the main pass tone-maps the refracted result.
+    gl.toneMapping = THREE.NoToneMapping;
+    cam.layers.disable(GLASS_LAYER);
+    gl.setRenderTarget(fbo);
+    gl.render(scene, cam);
+    gl.setRenderTarget(null);
+    cam.layers.enable(GLASS_LAYER);
+    gl.toneMapping = oldTone;
+  });
+
+  return (
+    <TransmissionBufferContext.Provider value={fbo.texture}>
+      {children}
+    </TransmissionBufferContext.Provider>
+  );
+}
+
 function GlassGlyphR({ tier }: { tier: PerformanceTier }) {
   const accent = useAccent();
   const geometry = getRGeometry(tier);
   const apple = isAppleGPU();
+  const buffer = useContext(TransmissionBufferContext);
   const samples = tier === "high" ? (apple ? 6 : 9) : tier === "medium" ? 6 : 4;
-  const resolution =
-    tier === "high" ? (apple ? 192 : 256) : tier === "medium" ? 192 : 128;
   return (
-    <mesh geometry={geometry} castShadow={false} receiveShadow={false}>
+    <mesh
+      geometry={geometry}
+      layers={GLASS_LAYER}
+      castShadow={false}
+      receiveShadow={false}
+    >
       <MeshTransmissionMaterial
         samples={samples}
-        resolution={resolution}
+        // the material still allocates its own fbos even when handed a
+        // buffer; keep them tiny since they're never rendered into.
+        resolution={16}
+        buffer={buffer ?? undefined}
         thickness={GLASS_THICKNESS}
         roughness={0}
         ior={GLASS_IOR}
@@ -1090,7 +1156,9 @@ function HeroScene({ tier }: { tier: PerformanceTier }) {
       )}
       <ambientLight intensity={tier === "low" ? 0.6 : 0.12} />
 
-      <Cluster pointerRef={pointerRef} tier={tier} />
+      <SharedTransmissionBuffer tier={tier}>
+        <Cluster pointerRef={pointerRef} tier={tier} />
+      </SharedTransmissionBuffer>
     </>
   );
 }

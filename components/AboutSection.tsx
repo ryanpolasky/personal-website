@@ -18,21 +18,18 @@ const RibbonView3D = dynamic(
 // css-only ribbon for touch devices. svg path with an accent gradient stroke
 // that draws in as the section scrolls (stroke-dashoffset on pathLength=100)
 // and drifts + scales for parallax. mirrors the 3D ribbon's grow-from-top
-// behavior without the webgl cost. crucially: an internal raf loop reads a
+// behavior without the webgl cost. crucially: an internal raf loop reads the
 // live progress ref and writes the path's style attrs directly, bypassing
 // react reconciliation per frame so updates track scroll 1:1 without the lag
 // a css transition would introduce.
 function RibbonFallback({
   className,
-  progress,
+  progressRef,
 }: {
   className?: string;
-  progress: number;
+  progressRef: React.MutableRefObject<number>;
 }) {
   const pathRef = useRef<SVGPathElement>(null);
-  const progressRef = useRef(progress);
-  // keep the ref synced every render; raf reads from it without rerendering.
-  progressRef.current = progress;
 
   useEffect(() => {
     let raf = 0;
@@ -51,10 +48,10 @@ function RibbonFallback({
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, []);
+  }, [progressRef]);
 
   // ssr / first paint values (matches what raf will write on its first tick).
-  const initialP = Math.max(0, Math.min(1, progress));
+  const initialP = Math.max(0, Math.min(1, progressRef.current));
   const initialOffset = 100 - (12 + initialP * 88);
 
   return (
@@ -233,7 +230,7 @@ const SKILL_GROUPS: { label: string; items: string[] }[] = [
 ];
 
 export function AboutSection() {
-  const { ref, progress } = useSectionTravel<HTMLElement>();
+  const { ref, progressRef } = useSectionTravel<HTMLElement>();
   // touch devices get the static svg ribbon instead of the r3f one; both
   // share the same sticky backdrop slot so layout doesn't shift.
   const [coarse, setCoarse] = useState(false);
@@ -256,12 +253,12 @@ export function AboutSection() {
         <div className="absolute inset-0 -my-16 sm:-my-32">
           {coarse ? (
             <RibbonFallback
-              progress={progress}
+              progressRef={progressRef}
               className="absolute inset-0 h-full w-full"
             />
           ) : (
             <RibbonView3D
-              progress={progress}
+              progressRef={progressRef}
               className="absolute inset-0 h-full w-full"
             />
           )}

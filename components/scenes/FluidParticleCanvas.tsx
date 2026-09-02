@@ -69,14 +69,31 @@ export interface PointerState {
   pulse: number;
 }
 
-interface GridCell {
-  cx: number;
-  cy: number;
-  indices: number[];
+// spatial hash: fixed bucket table + per-particle linked lists, all typed
+// arrays allocated once. the previous Map<string, cell> grid built a
+// `${cx},${cy}` string for every insert and every neighbor lookup - on the
+// order of 100k string allocations + hashes per frame at 900 particles x 6
+// substeps x 3 passes, all on the main thread.
+const HASH_SIZE = 4096;
+const HASH_MASK = HASH_SIZE - 1;
+function hashCell(cx: number, cy: number): number {
+  return ((cx * 73856093) ^ (cy * 19349663)) & HASH_MASK;
 }
 
-function cellKey(cx: number, cy: number) {
-  return `${cx},${cy}`;
+interface SpatialHash {
+  head: Int32Array; // bucket -> first particle index, -1 if empty
+  next: Int32Array; // particle -> next particle in the same bucket
+  cellX: Int32Array; // particle -> its cell coords (collision check)
+  cellY: Int32Array;
+}
+
+function makeSpatialHash(count: number): SpatialHash {
+  return {
+    head: new Int32Array(HASH_SIZE),
+    next: new Int32Array(count),
+    cellX: new Int32Array(count),
+    cellY: new Int32Array(count),
+  };
 }
 
 /* ----- shape geometries (unit-sized, scaled per-instance) ----- */
@@ -225,10 +242,10 @@ function ParticleField({
   const tempQuat = useMemo(() => new THREE.Quaternion(), []);
   const tempEuler = useMemo(() => new THREE.Euler(), []);
   const tempScale = useMemo(() => new THREE.Vector3(), []);
-  const gridRef = useRef<Map<string, GridCell>>(new Map());
   // scratch arrays follow the particle set: a tier change swaps `particles`
   // in place now (the canvas no longer remounts), so these must resize with
   // it and the settled-pile init must run again for the new set.
+  const hashRef = useRef<SpatialHash>(makeSpatialHash(0));
   const densityRef = useRef(new Float32Array(0));
   const pressureRef = useRef(new Float32Array(0));
   const initRef = useRef(false);
@@ -236,6 +253,7 @@ function ParticleField({
   if (initFor.current !== particles) {
     initFor.current = particles;
     initRef.current = false;
+    hashRef.current = makeSpatialHash(particles.length);
     densityRef.current = new Float32Array(particles.length);
     pressureRef.current = new Float32Array(particles.length);
   }
@@ -291,21 +309,25 @@ function ParticleField({
         p.rot += (p.x - p.oldX) * 2.0;
       }
 
-      const grid = gridRef.current;
-      grid.clear();
-      for (let i = 0; i < particles.length; i++) {
+      // rebuild the spatial hash for this substep. no allocation: buckets are
+      // reset with fill(-1) and particles are threaded onto linked lists.
+      const { head, next, cellX, cellY } = hashRef.current;
+      const n = particles.length;
+      head.fill(-1);
+      for (let i = 0; i < n; i++) {
         const p = particles[i];
         const cx = Math.floor(p.x / CELL_SIZE);
         const cy = Math.floor(p.y / CELL_SIZE);
-        const key = cellKey(cx, cy);
-        let cell = grid.get(key);
-        if (!cell) {
-          cell = { cx, cy, indices: [] };
-          grid.set(key, cell);
-        }
-        cell.indices.push(i);
+        cellX[i] = cx;
+        cellY[i] = cy;
+        const h = hashCell(cx, cy);
+        next[i] = head[h];
+        head[h] = i;
       }
 
+      // each pass visits every unordered pair (i < j) whose cells are within
+      // `range` of each other exactly once: walk i's neighborhood, take j > i,
+      // and reject bucket collisions by checking j's real cell coords.
       const densities = densityRef.current;
       const pressures = pressureRef.current;
       const pressureNeighborRange = Math.max(
@@ -315,155 +337,130 @@ function ParticleField({
       const pressureRadius2 = PRESSURE_RADIUS * PRESSURE_RADIUS;
       densities.fill(1);
       pressures.fill(0);
-      grid.forEach((cell) => {
-        const { cx, cy, indices } = cell;
-        for (
-          let dxc = -pressureNeighborRange;
-          dxc <= pressureNeighborRange;
-          dxc++
-        ) {
-          for (
-            let dyc = -pressureNeighborRange;
-            dyc <= pressureNeighborRange;
-            dyc++
-          ) {
-            const neighbors = grid.get(cellKey(cx + dxc, cy + dyc));
-            if (!neighbors) continue;
-            for (let ii = 0; ii < indices.length; ii++) {
-              const i = indices[ii];
-              for (let jj = 0; jj < neighbors.indices.length; jj++) {
-                const j = neighbors.indices[jj];
-                if (j <= i) continue;
-                const a = particles[i];
-                const b = particles[j];
-                const dxv = b.x - a.x;
-                const dyv = b.y - a.y;
-                const d2 = dxv * dxv + dyv * dyv;
-                if (d2 < pressureRadius2) {
-                  const d = Math.max(Math.sqrt(d2), 0.0001);
-                  const w = 1 - d / PRESSURE_RADIUS;
-                  const density = w * w;
-                  densities[i] += density;
-                  densities[j] += density;
-                }
+      for (let i = 0; i < n; i++) {
+        const a = particles[i];
+        const cx = cellX[i];
+        const cy = cellY[i];
+        for (let dxc = -pressureNeighborRange; dxc <= pressureNeighborRange; dxc++) {
+          const ncx = cx + dxc;
+          for (let dyc = -pressureNeighborRange; dyc <= pressureNeighborRange; dyc++) {
+            const ncy = cy + dyc;
+            for (let j = head[hashCell(ncx, ncy)]; j !== -1; j = next[j]) {
+              if (j <= i || cellX[j] !== ncx || cellY[j] !== ncy) continue;
+              const b = particles[j];
+              const dxv = b.x - a.x;
+              const dyv = b.y - a.y;
+              const d2 = dxv * dxv + dyv * dyv;
+              if (d2 < pressureRadius2) {
+                const d = Math.max(Math.sqrt(d2), 0.0001);
+                const w = 1 - d / PRESSURE_RADIUS;
+                const density = w * w;
+                densities[i] += density;
+                densities[j] += density;
               }
             }
           }
         }
-      });
-      for (let i = 0; i < particles.length; i++) {
+      }
+      for (let i = 0; i < n; i++) {
         pressures[i] =
           Math.max(0, densities[i] - REST_DENSITY) * PRESSURE_STRENGTH;
       }
-      grid.forEach((cell) => {
-        const { cx, cy, indices } = cell;
-        for (
-          let dxc = -pressureNeighborRange;
-          dxc <= pressureNeighborRange;
-          dxc++
-        ) {
-          for (
-            let dyc = -pressureNeighborRange;
-            dyc <= pressureNeighborRange;
-            dyc++
-          ) {
-            const neighbors = grid.get(cellKey(cx + dxc, cy + dyc));
-            if (!neighbors) continue;
-            for (let ii = 0; ii < indices.length; ii++) {
-              const i = indices[ii];
-              for (let jj = 0; jj < neighbors.indices.length; jj++) {
-                const j = neighbors.indices[jj];
-                if (j <= i) continue;
-                const pressure = pressures[i] + pressures[j];
-                if (pressure <= 0) continue;
-                const a = particles[i];
-                const b = particles[j];
-                const dxv = b.x - a.x;
-                const dyv = b.y - a.y;
-                const d2 = dxv * dxv + dyv * dyv;
-                if (d2 < pressureRadius2) {
-                  let d = Math.sqrt(d2);
-                  let nx, ny;
-                  if (d < 0.0001) {
-                    const ang = Math.random() * Math.PI * 2;
-                    nx = Math.cos(ang);
-                    ny = Math.sin(ang);
-                    d = 0.0001;
-                  } else {
-                    nx = dxv / d;
-                    ny = dyv / d;
-                  }
-                  const w = 1 - d / PRESSURE_RADIUS;
-                  const push = Math.min(pressure * w * w, MAX_PRESSURE_PUSH);
-                  const corrX = nx * push;
-                  const corrY = ny * push;
-                  a.x -= corrX;
-                  a.y -= corrY;
-                  b.x += corrX;
-                  b.y += corrY;
-                  const bounce = 0.1;
-                  a.oldX -= corrX * (1 - bounce);
-                  a.oldY -= corrY * (1 - bounce);
-                  b.oldX += corrX * (1 - bounce);
-                  b.oldY += corrY * (1 - bounce);
+      for (let i = 0; i < n; i++) {
+        const a = particles[i];
+        const cx = cellX[i];
+        const cy = cellY[i];
+        for (let dxc = -pressureNeighborRange; dxc <= pressureNeighborRange; dxc++) {
+          const ncx = cx + dxc;
+          for (let dyc = -pressureNeighborRange; dyc <= pressureNeighborRange; dyc++) {
+            const ncy = cy + dyc;
+            for (let j = head[hashCell(ncx, ncy)]; j !== -1; j = next[j]) {
+              if (j <= i || cellX[j] !== ncx || cellY[j] !== ncy) continue;
+              const pressure = pressures[i] + pressures[j];
+              if (pressure <= 0) continue;
+              const b = particles[j];
+              const dxv = b.x - a.x;
+              const dyv = b.y - a.y;
+              const d2 = dxv * dxv + dyv * dyv;
+              if (d2 < pressureRadius2) {
+                let d = Math.sqrt(d2);
+                let nx, ny;
+                if (d < 0.0001) {
+                  const ang = Math.random() * Math.PI * 2;
+                  nx = Math.cos(ang);
+                  ny = Math.sin(ang);
+                  d = 0.0001;
+                } else {
+                  nx = dxv / d;
+                  ny = dyv / d;
                 }
+                const w = 1 - d / PRESSURE_RADIUS;
+                const push = Math.min(pressure * w * w, MAX_PRESSURE_PUSH);
+                const corrX = nx * push;
+                const corrY = ny * push;
+                a.x -= corrX;
+                a.y -= corrY;
+                b.x += corrX;
+                b.y += corrY;
+                const bounce = 0.1;
+                a.oldX -= corrX * (1 - bounce);
+                a.oldY -= corrY * (1 - bounce);
+                b.oldX += corrX * (1 - bounce);
+                b.oldY += corrY * (1 - bounce);
               }
             }
           }
         }
-      });
+      }
 
       const neighborRange = Math.max(
         1,
         Math.ceil((0.1 + SEPARATION_PADDING) / CELL_SIZE),
       );
-      grid.forEach((cell) => {
-        const { cx, cy, indices } = cell;
+      for (let i = 0; i < n; i++) {
+        const a = particles[i];
+        const cx = cellX[i];
+        const cy = cellY[i];
         for (let dxc = -neighborRange; dxc <= neighborRange; dxc++) {
+          const ncx = cx + dxc;
           for (let dyc = -neighborRange; dyc <= neighborRange; dyc++) {
-            const neighbors = grid.get(cellKey(cx + dxc, cy + dyc));
-            if (!neighbors) continue;
-            for (let ii = 0; ii < indices.length; ii++) {
-              const i = indices[ii];
-              for (let jj = 0; jj < neighbors.indices.length; jj++) {
-                const j = neighbors.indices[jj];
-                if (j <= i) continue;
-                const a = particles[i];
-                const b = particles[j];
-                const dxv = b.x - a.x;
-                const dyv = b.y - a.y;
-                const minD = a.r + b.r + SEPARATION_PADDING;
-                const d2 = dxv * dxv + dyv * dyv;
-                if (d2 < minD * minD) {
-                  let d = Math.sqrt(d2);
-                  let nx, ny;
-                  if (d < 0.0001) {
-                    const ang = Math.random() * Math.PI * 2;
-                    nx = Math.cos(ang);
-                    ny = Math.sin(ang);
-                    d = 0.0001;
-                  } else {
-                    nx = dxv / d;
-                    ny = dyv / d;
-                  }
-                  const overlap = (minD - d) * 0.5;
-                  const corrX = nx * overlap;
-                  const corrY = ny * overlap;
-                  a.x -= corrX;
-                  a.y -= corrY;
-                  b.x += corrX;
-                  b.y += corrY;
-                  const bounce = 0.1;
-                  a.oldX -= corrX * (1 - bounce);
-                  a.oldY -= corrY * (1 - bounce);
-                  b.oldX += corrX * (1 - bounce);
-                  b.oldY += corrY * (1 - bounce);
+            const ncy = cy + dyc;
+            for (let j = head[hashCell(ncx, ncy)]; j !== -1; j = next[j]) {
+              if (j <= i || cellX[j] !== ncx || cellY[j] !== ncy) continue;
+              const b = particles[j];
+              const dxv = b.x - a.x;
+              const dyv = b.y - a.y;
+              const minD = a.r + b.r + SEPARATION_PADDING;
+              const d2 = dxv * dxv + dyv * dyv;
+              if (d2 < minD * minD) {
+                let d = Math.sqrt(d2);
+                let nx, ny;
+                if (d < 0.0001) {
+                  const ang = Math.random() * Math.PI * 2;
+                  nx = Math.cos(ang);
+                  ny = Math.sin(ang);
+                  d = 0.0001;
+                } else {
+                  nx = dxv / d;
+                  ny = dyv / d;
                 }
+                const overlap = (minD - d) * 0.5;
+                const corrX = nx * overlap;
+                const corrY = ny * overlap;
+                a.x -= corrX;
+                a.y -= corrY;
+                b.x += corrX;
+                b.y += corrY;
+                const bounce = 0.1;
+                a.oldX -= corrX * (1 - bounce);
+                a.oldY -= corrY * (1 - bounce);
+                b.oldX += corrX * (1 - bounce);
+                b.oldY += corrY * (1 - bounce);
               }
             }
           }
         }
-      });
+      }
 
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];

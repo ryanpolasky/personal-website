@@ -58,7 +58,11 @@ export function Cursor() {
       const k = 1 - Math.exp(-dt * 11);
       hoverProgress += (hoverTarget - hoverProgress) * k;
 
-      const ringSize = RING_IDLE + (RING_HOVER - RING_IDLE) * hoverProgress;
+      // ring is a fixed RING_HOVER box scaled down; writing width/height per
+      // frame forced layout + paint on every pointer move, scale is
+      // compositor-only.
+      const ringScale =
+        (RING_IDLE + (RING_HOVER - RING_IDLE) * hoverProgress) / RING_HOVER;
       const ringOpacity =
         OPACITY_IDLE + (OPACITY_HOVER - OPACITY_IDLE) * hoverProgress;
 
@@ -67,9 +71,7 @@ export function Cursor() {
       }
       if (ringRef.current) {
         const r = ringRef.current;
-        r.style.transform = `translate3d(${ringX}px, ${ringY}px, 0) translate(-50%, -50%)`;
-        r.style.width = `${ringSize}px`;
-        r.style.height = `${ringSize}px`;
+        r.style.transform = `translate3d(${ringX}px, ${ringY}px, 0) translate(-50%, -50%) scale(${ringScale.toFixed(4)})`;
         r.style.opacity = ringOpacity.toFixed(3);
       }
 
@@ -147,8 +149,14 @@ export function Cursor() {
         aria-hidden
         data-hover="false"
         data-stage="light"
-        className="pointer-events-none fixed left-0 top-0 z-[9999] rounded-full border border-[var(--color-line-strong)] transition-[border-color] duration-200 ease-out data-[stage=dark]:border-[var(--color-line-invert-strong)]"
-        style={{ width: "32px", height: "32px", opacity: 0.6 }}
+        className="pointer-events-none fixed left-0 top-0 z-[9999] rounded-full border border-[var(--color-line-strong)] transition-[border-color] duration-200 ease-out data-[stage=dark]:border-[var(--color-line-invert-strong)] will-change-transform"
+        style={{
+          width: "48px",
+          height: "48px",
+          opacity: 0.6,
+          // idle = 32/48; the raf loop drives scale from here.
+          transform: "translate(-50%, -50%) scale(0.6667)",
+        }}
       />
     </>
   );
