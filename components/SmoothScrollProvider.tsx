@@ -176,15 +176,23 @@ export function SmoothScrollProvider({
       ScrollTrigger.refresh();
       snap.resize();
     };
+    // ScrollTrigger.refresh forces a full layout pass; a window drag fires
+    // resize dozens of times a second, so coalesce to the trailing edge.
+    let resizeTimer = 0;
+    const onResize = () => {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(refresh, 150);
+    };
     window.addEventListener("load", refresh);
-    window.addEventListener("resize", refresh);
+    window.addEventListener("resize", onResize);
     const t = window.setTimeout(refresh, 500);
 
     bootTimers.push(window.setTimeout(runBootTeleport, 50));
 
     return () => {
       window.removeEventListener("load", refresh);
-      window.removeEventListener("resize", refresh);
+      window.removeEventListener("resize", onResize);
+      window.clearTimeout(resizeTimer);
       window.clearTimeout(t);
       bootTimers.forEach((id) => window.clearTimeout(id));
       if (bootLoad) window.removeEventListener("load", bootLoad);

@@ -15,6 +15,7 @@ import {
   type PerformanceTier,
 } from "@/lib/performance";
 import { useIsVisible, useReducedMotion } from "@/lib/scroll";
+import { HDRI_STUDIO_HREF } from "@/lib/site";
 
 // contact blob: glossy distorting icosphere reacting to window-level pointer.
 
@@ -226,7 +227,7 @@ function ContactScene({
       <PerspectiveCamera makeDefault position={[0, 0, 5.5]} fov={34} />
       {tier !== "low" && (
         <Environment
-          preset="studio"
+          files={HDRI_STUDIO_HREF}
           environmentIntensity={tier === "medium" ? 0.6 : 1.0}
         />
       )}
@@ -288,8 +289,9 @@ export function ContactBlobView({ className }: { className?: string }) {
 
   return (
     <div ref={setRef} className={className} style={{ touchAction: "none" }}>
+      {/* no `key={tier}`: tier changes re-tune the live scene rather than
+          recreating the webgl context. */}
       <Canvas
-        key={tier}
         dpr={dpr}
         frameloop={frameloop}
         gl={{

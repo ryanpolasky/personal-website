@@ -16,6 +16,7 @@ import {
   useIsVisible,
   useReducedMotion,
 } from "@/lib/scroll";
+import { HDRI_STUDIO_HREF } from "@/lib/site";
 
 // 3d ribbon: catmull-rom tube morphed by sin(t) + scroll progress.
 
@@ -27,6 +28,143 @@ const Y_BOTTOM = -11.2;
 const Y_RANGE = Y_TOP - Y_BOTTOM;
 const HEAD_WORLD_Y_AT_START = 2.0;
 const HEAD_WORLD_Y_AT_END = -2.0;
+
+// one tube geometry, rewritten in place. the previous version built a fresh
+// THREE.TubeGeometry (new position/normal/uv/index buffers + gpu upload) up
+// to 48x a second and disposed the old one, which was constant gc churn and
+// a buffer re-allocation every rebuild. vertex math and frenet frames mirror
+// three's TubeGeometry / Curve.computeFrenetFrames exactly, but every array
+// and Vector3 here is allocated once and reused.
+class ReusableTube {
+  readonly geometry: THREE.BufferGeometry;
+  private readonly position: THREE.BufferAttribute;
+  private readonly normal: THREE.BufferAttribute;
+  private readonly tangents: THREE.Vector3[];
+  private readonly normals: THREE.Vector3[];
+  private readonly binormals: THREE.Vector3[];
+  private readonly P = new THREE.Vector3();
+  private readonly n = new THREE.Vector3();
+  private readonly vec = new THREE.Vector3();
+  private readonly mat = new THREE.Matrix4();
+
+  constructor(
+    private readonly segAlong: number,
+    private readonly segAround: number,
+  ) {
+    const rows = segAlong + 1;
+    const ring = segAround + 1;
+    const vertexCount = rows * ring;
+    this.position = new THREE.BufferAttribute(
+      new Float32Array(vertexCount * 3),
+      3,
+    );
+    this.normal = new THREE.BufferAttribute(
+      new Float32Array(vertexCount * 3),
+      3,
+    );
+    this.position.setUsage(THREE.DynamicDrawUsage);
+    this.normal.setUsage(THREE.DynamicDrawUsage);
+    const uvs = new Float32Array(vertexCount * 2);
+    for (let i = 0; i <= segAlong; i++) {
+      for (let j = 0; j <= segAround; j++) {
+        const o = (i * ring + j) * 2;
+        uvs[o] = i / segAlong;
+        uvs[o + 1] = j / segAround;
+      }
+    }
+    const index: number[] = [];
+    for (let j = 1; j <= segAlong; j++) {
+      for (let i = 1; i <= segAround; i++) {
+        const a = ring * (j - 1) + (i - 1);
+        const b = ring * j + (i - 1);
+        const c = ring * j + i;
+        const d = ring * (j - 1) + i;
+        index.push(a, b, d, b, c, d);
+      }
+    }
+    this.geometry = new THREE.BufferGeometry();
+    this.geometry.setAttribute("position", this.position);
+    this.geometry.setAttribute("normal", this.normal);
+    this.geometry.setAttribute("uv", new THREE.BufferAttribute(uvs, 2));
+    this.geometry.setIndex(index);
+    this.tangents = Array.from({ length: rows }, () => new THREE.Vector3());
+    this.normals = Array.from({ length: rows }, () => new THREE.Vector3());
+    this.binormals = Array.from({ length: rows }, () => new THREE.Vector3());
+  }
+
+  // Curve.computeFrenetFrames (open curve) into the preallocated arrays.
+  private frames(curve: THREE.Curve<THREE.Vector3>) {
+    const { segAlong, tangents, normals, binormals, vec, mat, n } = this;
+    for (let i = 0; i <= segAlong; i++) {
+      curve.getTangentAt(i / segAlong, tangents[i]);
+    }
+    const t0 = tangents[0];
+    let min = Number.MAX_VALUE;
+    const tx = Math.abs(t0.x);
+    const ty = Math.abs(t0.y);
+    const tz = Math.abs(t0.z);
+    if (tx <= min) {
+      min = tx;
+      n.set(1, 0, 0);
+    }
+    if (ty <= min) {
+      min = ty;
+      n.set(0, 1, 0);
+    }
+    if (tz <= min) n.set(0, 0, 1);
+    vec.crossVectors(t0, n).normalize();
+    normals[0].crossVectors(t0, vec);
+    binormals[0].crossVectors(t0, normals[0]);
+    for (let i = 1; i <= segAlong; i++) {
+      normals[i].copy(normals[i - 1]);
+      vec.crossVectors(tangents[i - 1], tangents[i]);
+      if (vec.length() > Number.EPSILON) {
+        vec.normalize();
+        const theta = Math.acos(
+          THREE.MathUtils.clamp(tangents[i - 1].dot(tangents[i]), -1, 1),
+        );
+        normals[i].applyMatrix4(mat.makeRotationAxis(vec, theta));
+      }
+      binormals[i].crossVectors(tangents[i], normals[i]);
+    }
+  }
+
+  update(curve: THREE.Curve<THREE.Vector3>, radius: number) {
+    this.frames(curve);
+    const { segAlong, segAround, P, n } = this;
+    const pos = this.position.array as Float32Array;
+    const nor = this.normal.array as Float32Array;
+    let o = 0;
+    for (let i = 0; i <= segAlong; i++) {
+      curve.getPointAt(i / segAlong, P);
+      const N = this.normals[i];
+      const B = this.binormals[i];
+      for (let j = 0; j <= segAround; j++) {
+        const v = (j / segAround) * Math.PI * 2;
+        const sin = Math.sin(v);
+        const cos = -Math.cos(v);
+        n.set(
+          cos * N.x + sin * B.x,
+          cos * N.y + sin * B.y,
+          cos * N.z + sin * B.z,
+        ).normalize();
+        nor[o] = n.x;
+        nor[o + 1] = n.y;
+        nor[o + 2] = n.z;
+        pos[o] = P.x + radius * n.x;
+        pos[o + 1] = P.y + radius * n.y;
+        pos[o + 2] = P.z + radius * n.z;
+        o += 3;
+      }
+    }
+    this.position.needsUpdate = true;
+    this.normal.needsUpdate = true;
+  }
+
+  dispose() {
+    this.geometry.dispose();
+  }
+}
 
 function Ribbon({
   progressRef,
@@ -49,8 +187,6 @@ function Ribbon({
   const rebuildFps = tier === "low" ? 12 : tier === "medium" ? 36 : 48;
   // clamped-dt accumulator survives paused frameloops without phase jump.
   const timeRef = useRef(0);
-  // only OUR generated geometries live here; `initial` is owned by the useMemo.
-  const generatedRef = useRef<THREE.TubeGeometry | null>(null);
 
   // base control points form a descending path with z-depth variation.
   const baseCtrl = useMemo(
@@ -75,29 +211,24 @@ function Ribbon({
     [],
   );
 
-  const initial = useMemo(() => {
-    const curve = new THREE.CatmullRomCurve3(
-      baseCtrl,
-      false,
-      "centripetal",
-      0.5,
-    );
-    const geometry = new THREE.TubeGeometry(
-      curve,
-      segAlong,
-      0.34,
-      segAround,
-      false,
-    );
-    geometry.setDrawRange(0, segAround * 6);
-    return geometry;
-  }, [baseCtrl, segAlong, segAround]);
-
-  // scratch buffer reused each frame to avoid allocation.
+  // scratch control points, mutated in place each rebuild. the curve is built
+  // once over this same array; `updateArcLengths()` refreshes its cache.
   const scratch = useMemo(
-    () => baseCtrl.map(() => new THREE.Vector3()),
+    () => baseCtrl.map((v) => v.clone()),
     [baseCtrl],
   );
+  const curve = useMemo(
+    () => new THREE.CatmullRomCurve3(scratch, false, "centripetal", 0.5),
+    [scratch],
+  );
+
+  const tube = useMemo(() => {
+    const t = new ReusableTube(segAlong, segAround);
+    t.update(curve, 0.34);
+    t.geometry.setDrawRange(0, segAround * 6);
+    return t;
+  }, [curve, segAlong, segAround]);
+  useEffect(() => () => tube.dispose(), [tube]);
 
   // shared material across tube + caps so iridescence reads as one surface.
   // built once per tier; the accent recolors it in place below rather than
@@ -142,13 +273,6 @@ function Ribbon({
     };
   }, [material]);
 
-  useEffect(() => {
-    return () => {
-      generatedRef.current?.dispose();
-      generatedRef.current = null;
-    };
-  }, []);
-
   useFrame((_state, dt) => {
     const g = groupRef.current;
     const m = meshRef.current;
@@ -169,31 +293,15 @@ function Ribbon({
         const dz = Math.cos(phase * 0.92) * (0.42 + p * 0.72);
         scratch[i].set(v.x + dx, v.y + dy, v.z + dz);
       }
-      const curve = new THREE.CatmullRomCurve3(
-        scratch,
-        false,
-        "centripetal",
-        0.5,
-      );
+      // control points moved under the curve; refresh its arc-length table so
+      // getPointAt/getTangentAt sample evenly along the new path.
+      curve.updateArcLengths();
       const tubeRadius = 0.31 + p * 0.08;
-      const next = new THREE.TubeGeometry(
-        curve,
-        segAlong,
-        tubeRadius,
-        segAround,
-        false,
-      );
+      tube.update(curve, tubeRadius);
 
       // grow tube top→bottom by trimming index buffer to leading segments.
       const visibleSegments = Math.max(1, Math.floor(p * segAlong));
-      const indexCount = visibleSegments * segAround * 6;
-      next.setDrawRange(0, indexCount);
-
-      if (generatedRef.current) {
-        generatedRef.current.dispose();
-      }
-      generatedRef.current = next;
-      m.geometry = next;
+      tube.geometry.setDrawRange(0, visibleSegments * segAround * 6);
       lastGeometryAt.current = t;
 
       // caps ride curve endpoints, scaled just under tubeRadius for clean tuck.
@@ -229,12 +337,14 @@ function Ribbon({
 
   return (
     <group ref={groupRef} position={[0, HEAD_WORLD_Y_AT_START - Y_TOP, 0]}>
+      {/* frustumCulled off: the vertex buffer is rewritten in place, so the
+          bounding sphere computed on first draw would go stale. the tube is
+          always on screen while this canvas has a frameloop anyway. */}
       <mesh
         ref={meshRef}
-        geometry={initial}
+        geometry={tube.geometry}
         material={material}
-        castShadow={tier === "high"}
-        receiveShadow={tier === "high"}
+        frustumCulled={false}
       />
       {/* left cap: radius set per-frame via mesh.scale to match tube radius. */}
       <mesh
@@ -242,8 +352,6 @@ function Ribbon({
         material={material}
         position={[baseCtrl[0].x, baseCtrl[0].y, baseCtrl[0].z]}
         scale={0.34 * 0.96}
-        castShadow={tier === "high"}
-        receiveShadow={tier === "high"}
       >
         <sphereGeometry
           args={[
@@ -259,8 +367,6 @@ function Ribbon({
         material={material}
         position={[baseCtrl[0].x, baseCtrl[0].y, baseCtrl[0].z]}
         scale={0.34 * 0.96}
-        castShadow={tier === "high"}
-        receiveShadow={tier === "high"}
       >
         <sphereGeometry
           args={[
@@ -302,7 +408,7 @@ function RibbonScene({
       <PerspectiveCamera makeDefault position={[0, 0, 9]} fov={fov} />
       {tier !== "low" && (
         <Environment
-          preset="studio"
+          files={HDRI_STUDIO_HREF}
           environmentIntensity={tier === "medium" ? 0.55 : 0.9}
         />
       )}
@@ -329,21 +435,22 @@ function RibbonScene({
 
 export function RibbonView3D({
   className,
-  progress: externalProgress,
+  progressRef: externalProgressRef,
 }: {
   className?: string;
-  // optional externally-measured progress (0-1) for sticky containers.
-  progress?: number;
+  // optional externally-measured progress ref (0-1) for sticky containers.
+  // a ref, not a number: the frame loop reads it directly, so scroll never
+  // re-renders this component or the <Canvas> under it.
+  progressRef?: React.MutableRefObject<number>;
 }) {
-  const { ref: progRef, progress: internalProgress } =
-    useElementProgress<HTMLDivElement>();
+  const { ref: progRef, progressRef: internalProgressRef } =
+    useElementProgress<HTMLDivElement>(!externalProgressRef);
   const { ref: visRef, visible } = useIsVisible<HTMLDivElement>("200px");
   const reduced = useReducedMotion();
   const tier = usePerformanceTier(reduced, visible);
   const apple = isAppleGPU();
   const dpr = tierDpr(tier, 1.25, 1, 0.85);
-  const progressRef = useRef(0);
-  progressRef.current = externalProgress ?? internalProgress;
+  const progressRef = externalProgressRef ?? internalProgressRef;
 
   const [ready, setReady] = useState(false);
   useEffect(() => setReady(true), []);
@@ -362,8 +469,9 @@ export function RibbonView3D({
 
   return (
     <div ref={setRef} className={className}>
+      {/* no `key={tier}`: tier changes re-tune the live scene (geometry
+          density, material, lights) rather than recreating the webgl context. */}
       <Canvas
-        key={tier}
         dpr={dpr}
         frameloop={frameloop}
         gl={{

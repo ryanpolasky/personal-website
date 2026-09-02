@@ -151,7 +151,9 @@ export function ProjectPanel({
             alt={project.name}
             width={1014}
             height={313}
-            priority
+            // no `priority`: it emitted a <link rel=preload> at the top of
+            // <head> for an image several viewports below the fold. the rail
+            // is in the render tree at load, so it still fetches early enough.
             // unoptimized + pixelated rendering keeps pixel-art crisp.
             // -mb-4 trims the PNG's transparent bottom padding.
             unoptimized

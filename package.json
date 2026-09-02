@@ -4,8 +4,10 @@
   "description": "Ryan Polasky's personal website. Next.js + react-three-fiber.",
   "private": true,
   "scripts": {
+    "predev": "node scripts/build-media.mjs",
     "dev": "next dev",
-    "build": "next build",
+    "prebuild": "node scripts/build-media.mjs",
+    "build": "next build && node scripts/inject-font-preloads.mjs",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit"

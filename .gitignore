@@ -11,6 +11,9 @@ coverage/
 .next/
 out/
 
+# derived media (scripts/build-media.mjs, runs on predev/prebuild)
+*.lqip.webp
+
 # production
 build/
 
