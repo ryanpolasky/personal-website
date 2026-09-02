@@ -16,6 +16,43 @@ function tierParticleCount(tier: PerformanceTier): number {
   if (tier === "medium") return 620;
   return 280;
 }
+
+// tablets are coarse-pointer so they share the phone's 280, but their lockup
+// (headline + cta + link pills) is far bigger than a phone's, and on a
+// portrait ipad the settled pile ran straight into it. for tablet-class
+// touch viewports, budget from the visible world area instead so the pile
+// tops out around TABLET_PILE_FILL of the section height. phones and desktop
+// keep the per-tier counts above.
+const TABLET_MIN_SIDE_PX = 600; // phones are narrower than this in css px.
+const TABLET_PILE_FILL = 0.26; // fraction of section height the pile may reach.
+const PARTICLE_FOOTPRINT = 0.038; // ~world sq units per settled particle.
+const TABLET_MIN_PARTICLES = 120;
+
+// mirrors ResponsiveCamera's zoom so the estimate matches what's drawn.
+function worldSize(width: number, height: number): [number, number] {
+  const heightZoom = height / 6.5;
+  const widthZoom = width / (6.5 * (16 / 9));
+  const blended =
+    widthZoom > heightZoom ? Math.sqrt(heightZoom * widthZoom) : heightZoom;
+  const zoom = Math.max(110, Math.min(280, blended));
+  return [width / zoom, height / zoom];
+}
+
+function particleBudget(tier: PerformanceTier): number {
+  const cap = tierParticleCount(tier);
+  if (typeof window === "undefined") return cap;
+  const coarse =
+    typeof window.matchMedia === "function" &&
+    window.matchMedia("(pointer: coarse)").matches;
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  if (!coarse || Math.min(w, h) < TABLET_MIN_SIDE_PX) return cap;
+  const [worldW, worldH] = worldSize(w, h);
+  const budget = Math.round(
+    (worldW * worldH * TABLET_PILE_FILL) / PARTICLE_FOOTPRINT,
+  );
+  return Math.max(TABLET_MIN_PARTICLES, Math.min(cap, budget));
+}
 function tierSubsteps(tier: PerformanceTier): number {
   if (tier === "high") return 6;
   if (tier === "medium") return 5;
@@ -712,7 +749,9 @@ export default function FluidParticleCanvas({
   visible: boolean;
   tier?: PerformanceTier;
 }) {
-  const particleCount = tierParticleCount(tier);
+  // sized once per tier at mount (this component is ssr:false, so window is
+  // available). an orientation flip mid-visit keeps the count; acceptable.
+  const particleCount = useMemo(() => particleBudget(tier), [tier]);
   const substeps = tierSubsteps(tier);
   const { particles, counts } = useMemo(() => {
     const arr: Particle[] = [];

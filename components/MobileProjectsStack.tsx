@@ -3,6 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { getEnabledProjects } from "@/lib/projects";
+import mediaDimensions from "@/lib/mediaDimensions.json";
+
+const MEDIA_DIMENSIONS: Record<string, { w: number; h: number } | undefined> =
+  mediaDimensions;
 
 const projects = getEnabledProjects();
 const MONO = { fontFamily: "var(--font-mono)" } as const;
@@ -138,10 +142,15 @@ export function MobileProjectsStack() {
                 {/* MEDIA HERO (when available) — natural aspect, no cover crop */}
                 {media?.src ? (
                   <div className="relative mx-5 mt-4 overflow-hidden rounded-[1.05rem] border border-white/10 bg-black/40 shadow-[0_22px_60px_-38px_rgba(0,0,0,0.95)] sm:mx-0 sm:mt-0 sm:rounded-[1.25rem]">
+                    {/* intrinsic width/height (from lib/mediaDimensions.json)
+                        let the browser reserve the aspect ratio before the
+                        image lands, so cards don't reflow as they load. */}
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={media.src}
                       alt={media.alt ?? `${project.name} preview`}
+                      width={MEDIA_DIMENSIONS[media.src]?.w}
+                      height={MEDIA_DIMENSIONS[media.src]?.h}
                       loading="lazy"
                       decoding="async"
                       className="block h-auto w-full"

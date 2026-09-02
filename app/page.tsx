@@ -1,6 +1,6 @@
 import { preload } from "react-dom";
 import { Cursor } from "@/components/Cursor";
-import { HeroClusterView } from "@/components/scenes/HeroClusterView";
+import { HeroClusterLazy } from "@/components/HeroClusterLazy";
 import { HeroCtas } from "@/components/HeroCtas";
 import { HeroHeadline } from "@/components/HeroHeadline";
 import { HeroStage } from "@/components/HeroStage";
@@ -31,7 +31,7 @@ export default function HomePage() {
         aria-label="intro"
       >
         <HeroStage>
-          <HeroClusterView className="pointer-events-none absolute inset-0" />
+          <HeroClusterLazy className="pointer-events-none absolute inset-0" />
           <OilFilmRippleUnlock />
           <div className="stage-edge" aria-hidden />
 

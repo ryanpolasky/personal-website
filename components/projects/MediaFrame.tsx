@@ -7,6 +7,11 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import type { ProjectMediaItem } from "@/lib/projects";
 import { LoadingMarch } from "./LoadingMarch";
 
+// `<name>.lqip.webp` sibling emitted by scripts/build-media.mjs.
+function lqipSrc(src: string): string {
+  return src.replace(/\.(png|webp|jpe?g)$/i, ".lqip.webp");
+}
+
 export interface MediaFrameProps {
   item?: ProjectMediaItem;
   className: string;
@@ -190,13 +195,18 @@ export function MediaFrame({
       </div>
     ) : (
       <>
-        <Image
-          src={item.src}
+        {/* blurred backdrop: a 32px lqip sibling (scripts/build-media.mjs)
+            upscaled by the browser. replaces a second full-size render of
+            the screenshot under filter: blur(24px), which was an offscreen
+            surface + multi-pass blur per card, re-rasterized on every hover. */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={lqipSrc(item.src)}
           alt=""
-          fill
-          sizes={sizes}
           aria-hidden="true"
-          className="scale-110 object-cover opacity-35 blur-xl saturate-125 transition-transform duration-700 ease-out group-hover:scale-[1.14]"
+          loading="lazy"
+          decoding="async"
+          className="absolute inset-0 h-full w-full scale-110 object-cover opacity-35 saturate-125 transition-transform duration-700 ease-out group-hover:scale-[1.14]"
         />
         <div className="absolute inset-2.5 sm:inset-3.5">
           <Image

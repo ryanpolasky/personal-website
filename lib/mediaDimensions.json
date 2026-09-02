@@ -1,0 +1,102 @@
+{
+  "/assets/projects/autopsy/aut_details.png": {
+    "w": 2940,
+    "h": 1504
+  },
+  "/assets/projects/autopsy/aut_footer.png": {
+    "w": 2940,
+    "h": 1504
+  },
+  "/assets/projects/autopsy/aut_hero.webp": {
+    "w": 1504,
+    "h": 1504
+  },
+  "/assets/projects/autopsy/aut_process.png": {
+    "w": 2940,
+    "h": 1504
+  },
+  "/assets/projects/autopsy/aut_tool1.png": {
+    "w": 2940,
+    "h": 1504
+  },
+  "/assets/projects/autopsy/aut_tool2.png": {
+    "w": 2940,
+    "h": 1504
+  },
+  "/assets/projects/meteormate/mm_auth.webp": {
+    "w": 3840,
+    "h": 2160
+  },
+  "/assets/projects/meteormate/mm_carousel.webp": {
+    "w": 5760,
+    "h": 3240
+  },
+  "/assets/projects/meteormate/mm_features.webp": {
+    "w": 2531,
+    "h": 1478
+  },
+  "/assets/projects/meteormate/mm_hero.webp": {
+    "w": 5754,
+    "h": 3360
+  },
+  "/assets/projects/meteormate/mm_interests.webp": {
+    "w": 3841,
+    "h": 2160
+  },
+  "/assets/projects/meteormate/mm_lifestyle.webp": {
+    "w": 3900,
+    "h": 2160
+  },
+  "/assets/projects/meteormate/mm_offcampus.webp": {
+    "w": 3838,
+    "h": 2160
+  },
+  "/assets/projects/meteormate/mm_oncampus.webp": {
+    "w": 3838,
+    "h": 2160
+  },
+  "/assets/projects/nimby/nim_bear_walk.webp": {
+    "w": 1600,
+    "h": 1486
+  },
+  "/assets/projects/nimby/nim_ceo_idle.webp": {
+    "w": 1572,
+    "h": 1920
+  },
+  "/assets/projects/nimby/nim_druid_walk.webp": {
+    "w": 1225,
+    "h": 1600
+  },
+  "/assets/projects/nimby/nim_fox_walk.webp": {
+    "w": 1600,
+    "h": 1335
+  },
+  "/assets/projects/nimby/nim_frog_walk.webp": {
+    "w": 1600,
+    "h": 1534
+  },
+  "/assets/projects/nimby/nim_game.png": {
+    "w": 2684,
+    "h": 1504
+  },
+  "/assets/projects/nimby/nim_hero.webp": {
+    "w": 2688,
+    "h": 1508
+  },
+  "/assets/projects/nimby/nim_logo.png": {
+    "w": 1014,
+    "h": 313
+  },
+  "/assets/projects/rycord/ryc_main.webp": {
+    "w": 2940,
+    "h": 1504
+  },
+  "/assets/projects/rycord/ryc_side.webp": {
+    "w": 2940,
+    "h": 1504
+  },
+  "/assets/projects/rycord/ryc_vinyl.webp": {
+    "w": 2940,
+    "h": 1504
+  }
+}
