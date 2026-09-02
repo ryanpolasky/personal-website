@@ -16,6 +16,7 @@ import {
   useIsVisible,
   useReducedMotion,
 } from "@/lib/scroll";
+import { HDRI_STUDIO_HREF } from "@/lib/site";
 
 // 3d ribbon: catmull-rom tube morphed by sin(t) + scroll progress.
 
@@ -302,7 +303,7 @@ function RibbonScene({
       <PerspectiveCamera makeDefault position={[0, 0, 9]} fov={fov} />
       {tier !== "low" && (
         <Environment
-          preset="studio"
+          files={HDRI_STUDIO_HREF}
           environmentIntensity={tier === "medium" ? 0.55 : 0.9}
         />
       )}
@@ -362,8 +363,9 @@ export function RibbonView3D({
 
   return (
     <div ref={setRef} className={className}>
+      {/* no `key={tier}`: tier changes re-tune the live scene (geometry
+          density, material, lights) rather than recreating the webgl context. */}
       <Canvas
-        key={tier}
         dpr={dpr}
         frameloop={frameloop}
         gl={{

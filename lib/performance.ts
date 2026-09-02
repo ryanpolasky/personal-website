@@ -104,7 +104,7 @@ function detectTier(reducedMotion: boolean): PerformanceTier {
   const nav = navigator as NavigatorHints;
   const ua = navigator.userAgent.toLowerCase();
   const cores = navigator.hardwareConcurrency || 4;
-  const memory = nav.deviceMemory || 4;
+  const memory = nav.deviceMemory;
   const renderer = getRenderer();
 
   let score = 2;
@@ -114,9 +114,14 @@ function detectTier(reducedMotion: boolean): PerformanceTier {
   else if (cores <= 4) score -= 1;
   else if (cores >= 8) score += 1;
 
-  if (memory <= 2) score -= 2;
-  else if (memory <= 4) score -= 1;
-  else if (memory >= 8) score += 1;
+  // deviceMemory is chrome-only. unknown is neutral: the old `|| 4` default
+  // scored it as a 4gb box, which put m-series macs on medium in safari but
+  // high in chrome for the same hardware.
+  if (memory !== undefined) {
+    if (memory <= 2) score -= 2;
+    else if (memory <= 4) score -= 1;
+    else if (memory >= 8) score += 1;
+  }
 
   if (window.devicePixelRatio >= 2) score -= 1;
   if (ua.includes("windows") && cores <= 4) score -= 1;
@@ -131,12 +136,25 @@ function detectTier(reducedMotion: boolean): PerformanceTier {
   return clampTier(score);
 }
 
+// ssr / no-window default. the client detects synchronously in the state
+// initializer below, so the first client render already carries the real
+// tier and the canvas it mounts is created once, at the right quality. the
+// old "start low, detect in an effect" flow built every scene twice: a
+// low-tier webgl context + shaders + geometry, immediately torn down and
+// rebuilt at the detected tier.
+const DEFAULT_TIER: PerformanceTier = "high";
+
 export function usePerformanceTier(
   reducedMotion = false,
   active = true,
 ): PerformanceTier {
-  const [tier, setTier] = useState<PerformanceTier>("low");
+  const [tier, setTier] = useState<PerformanceTier>(() =>
+    typeof window === "undefined" ? DEFAULT_TIER : detectTier(reducedMotion),
+  );
 
+  // re-detect when reduced-motion resolves/flips after mount (useReducedMotion
+  // reads matchMedia in an effect). on mount this is a no-op: same value as
+  // the initializer, so react bails out without a re-render.
   useEffect(() => {
     setTier(detectTier(reducedMotion));
   }, [reducedMotion]);

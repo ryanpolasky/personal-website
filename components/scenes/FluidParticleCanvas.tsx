@@ -226,9 +226,19 @@ function ParticleField({
   const tempEuler = useMemo(() => new THREE.Euler(), []);
   const tempScale = useMemo(() => new THREE.Vector3(), []);
   const gridRef = useRef<Map<string, GridCell>>(new Map());
-  const densityRef = useRef(new Float32Array(particles.length));
-  const pressureRef = useRef(new Float32Array(particles.length));
+  // scratch arrays follow the particle set: a tier change swaps `particles`
+  // in place now (the canvas no longer remounts), so these must resize with
+  // it and the settled-pile init must run again for the new set.
+  const densityRef = useRef(new Float32Array(0));
+  const pressureRef = useRef(new Float32Array(0));
   const initRef = useRef(false);
+  const initFor = useRef<Particle[] | null>(null);
+  if (initFor.current !== particles) {
+    initFor.current = particles;
+    initRef.current = false;
+    densityRef.current = new Float32Array(particles.length);
+    pressureRef.current = new Float32Array(particles.length);
+  }
 
   useEffect(() => {
     const canvas = gl.domElement;

@@ -3,3 +3,6 @@
 
 /assets/music/audio/*.wav
   Content-Type: audio/wav
+
+/hdri/*
+  Cache-Control: public, max-age=31536000, immutable

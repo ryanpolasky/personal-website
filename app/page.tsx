@@ -1,3 +1,4 @@
+import { preload } from "react-dom";
 import { Cursor } from "@/components/Cursor";
 import { HeroClusterView } from "@/components/scenes/HeroClusterView";
 import { HeroCtas } from "@/components/HeroCtas";
@@ -9,8 +10,15 @@ import { ProjectsRail } from "@/components/ProjectsRail";
 import { FluidParticleBand } from "@/components/FluidParticleBand";
 import { Footer } from "@/components/Footer";
 import { OilFilmRippleUnlock } from "@/components/OilFilmRippleUnlock";
+import { HDRI_STUDIO_HREF } from "@/lib/site";
 
 export default function HomePage() {
+  // the hero can't render until the env map lands, so start that fetch with
+  // the html instead of after js parse -> hydrate -> canvas mount -> suspend.
+  // as=fetch + anonymous matches three's FileLoader (cors, same-origin creds)
+  // so the browser can actually reuse the preloaded response.
+  preload(HDRI_STUDIO_HREF, { as: "fetch", crossOrigin: "anonymous" });
+
   return (
     <main id="main" className="relative">
       <Cursor />

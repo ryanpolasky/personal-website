@@ -6,7 +6,7 @@ import {
   Environment,
   MeshTransmissionMaterial,
 } from "@react-three/drei";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { useAccent } from "@/components/AccentProvider";
 import {
@@ -16,6 +16,7 @@ import {
   type PerformanceTier,
 } from "@/lib/performance";
 import { useIsVisible, useReducedMotion } from "@/lib/scroll";
+import { HDRI_STUDIO_HREF } from "@/lib/site";
 
 const CLUSTER_OFFSET_X = 2.5;
 
@@ -658,14 +659,17 @@ function Shape({
   // snapshot of the material's idle emissive identity - the proximity glow
   // ADDS to this instead of replacing it, so each finish keeps its unique
   // base emissive tone (jelly subsurface cream, matte pigment, plastic
-  // accent wash) even when no pointer is near.
+  // accent wash) even when no pointer is near. re-snapshotted whenever the
+  // tier rebuilds the material, since the canvas no longer remounts on tier.
   const baseEmissiveRef = useRef<{
+    material: THREE.MeshStandardMaterial;
     color: THREE.Color;
     intensity: number;
   } | null>(null);
   const scratchColor = useRef(new THREE.Color()).current;
-  if (baseEmissiveRef.current === null) {
+  if (baseEmissiveRef.current?.material !== material) {
     baseEmissiveRef.current = {
+      material,
       color: material.emissive.clone(),
       intensity: material.emissiveIntensity,
     };
@@ -773,7 +777,11 @@ function Cluster({
 
   if (bodiesRef.current.length !== shapes.length) {
     const sphereRadius = getRGeometry("high").boundingSphere!.radius;
+    const existing = bodiesRef.current;
+    // keep bodies that survive a tier change so the cluster doesn't snap
+    // back to spawn positions; only the added/removed tail changes.
     bodiesRef.current = shapes.map((shape, i) => {
+      if (existing[i]) return existing[i];
       const base = 1.2 + shape.scale * 2.6;
       return {
         position: new THREE.Vector3(...shape.position),
@@ -998,6 +1006,11 @@ function HeroScene({ tier }: { tier: PerformanceTier }) {
   const accent = useAccent();
   const apple = isAppleGPU();
   const pointerRef = useViewportPointer();
+  // exposure tracks the tier on the live renderer (onCreated only runs once).
+  const gl = useThree((state) => state.gl);
+  useEffect(() => {
+    gl.toneMappingExposure = tier === "low" ? 1.25 : 1.08;
+  }, [gl, tier]);
   return (
     <>
       <ReadySignal />
@@ -1017,7 +1030,7 @@ function HeroScene({ tier }: { tier: PerformanceTier }) {
       />
 
       <Environment
-        preset="studio"
+        files={HDRI_STUDIO_HREF}
         resolution={tier === "low" ? 64 : apple ? 128 : undefined}
         environmentIntensity={
           tier === "low" ? 0.6 : tier === "medium" ? 0.55 : 0.75
@@ -1100,8 +1113,11 @@ export function HeroClusterView({ className }: { className?: string }) {
 
   return (
     <div ref={ref} className={className}>
+      {/* no `key={tier}`: a tier change (runtime fps downgrade, reduced-motion
+          flip) re-tunes the live scene instead of destroying the webgl context
+          and recompiling every shader. `gl` options are creation-only, so
+          antialias is fixed at the initially detected tier by design. */}
       <Canvas
-        key={tier}
         dpr={dpr}
         frameloop={frameloop}
         resize={{ scroll: false }}
@@ -1112,7 +1128,6 @@ export function HeroClusterView({ className }: { className?: string }) {
         }}
         onCreated={({ gl }) => {
           gl.toneMapping = THREE.ACESFilmicToneMapping;
-          gl.toneMappingExposure = tier === "low" ? 1.25 : 1.08;
           gl.outputColorSpace = THREE.SRGBColorSpace;
         }}
         style={{ background: "transparent" }}

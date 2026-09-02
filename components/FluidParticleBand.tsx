@@ -249,7 +249,6 @@ export function FluidParticleBand() {
             late as possible without visibly popping in. */}
         {shouldMountCanvas && (
           <FluidParticleCanvas
-            key={tier}
             pointerRef={pointerRef}
             visible={visible}
             tier={tier}
