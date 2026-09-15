@@ -350,6 +350,7 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){try{
+              if(/^\\/ascii(?:\\/|$)/.test(location.pathname)){return;}
               var A=[{n:'cobalt',b:'#2D2BC8',w:'#4A48E4',s:'#C5C4F2'},{n:'ember',b:'#FF5A36',w:'#FF7A56',s:'#FCD0BE'},{n:'plasma',b:'#D6189E',w:'#F23BB7',s:'#F8C5E5'},{n:'iris',b:'#7A2DEE',w:'#9054F6',s:'#DCC9FA'},{n:'monstera',b:'#0FA968',w:'#23C781',s:'#BBE9D2'},{n:'pollen',b:'#E0A60E',w:'#F2BD33',s:'#F4E2A6'},{n:'lagoon',b:'#1E7A8E',w:'#2C9AB0',s:'#B6D9E1'}];
               var i=Math.floor(Math.random()*A.length);var a=A[i];window.__bootAccentIndex=i;
               var r=document.documentElement;

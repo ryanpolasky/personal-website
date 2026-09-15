@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Hand-maintained. Last synced 2026-07-27.
+  Hand-maintained. Last synced 2026-09-15.
 
   Keep in sync with:
     - enabled entries in lib/projects.ts  ->  /work/<id>/            (currently 7)
@@ -61,6 +61,13 @@
   <!-- variant gallery picker -->
   <url>
     <loc>https://ryanpolasky.com/gallery/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- fullscreen ASCII scene gallery -->
+  <url>
+    <loc>https://ryanpolasky.com/ascii/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
