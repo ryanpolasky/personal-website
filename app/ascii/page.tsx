@@ -2,24 +2,24 @@ import type { Metadata, Viewport } from "next";
 import { AsciiGallery } from "@/components/ascii/AsciiGallery";
 
 export const metadata: Metadata = {
-  title: "ASCII Rooms · Ryan Polasky",
+  title: "ASCII Atlas · Ryan Polasky",
   description:
-    "A tiny gallery of full-screen ASCII places. First room: snow outside, fire inside, cat asleep.",
+    "A gallery of full-screen ASCII landscapes, cityscapes, nature, and living patterns.",
   alternates: {
     canonical: "https://ryanpolasky.com/ascii/",
   },
   openGraph: {
     type: "website",
     url: "https://ryanpolasky.com/ascii/",
-    title: "ASCII Rooms",
+    title: "ASCII Atlas",
     description:
-      "Full-screen ASCII places for disappearing into for a little while.",
+      "Full-screen ASCII landscapes, cityscapes, nature, and living patterns.",
   },
   twitter: {
     card: "summary",
-    title: "ASCII Rooms",
+    title: "ASCII Atlas",
     description:
-      "Full-screen ASCII places for disappearing into for a little while.",
+      "Full-screen ASCII landscapes, cityscapes, nature, and living patterns.",
   },
 };
 

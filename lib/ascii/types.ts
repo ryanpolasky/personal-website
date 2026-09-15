@@ -1,28 +1,13 @@
-export type AsciiTone =
-  | "ink"
-  | "shadow"
-  | "wood"
-  | "warm"
-  | "ember"
-  | "fire"
-  | "moon"
-  | "snow"
-  | "leaf"
-  | "fabric";
-
-export interface AsciiPalette {
-  background: string;
-  glow: string;
-  tones: Record<AsciiTone, string>;
-}
+export type AsciiMotion = "water" | "rain" | "fireflies" | "pulse";
 
 export interface AsciiScene {
   id: string;
+  category: "landscape" | "cityscape" | "nature" | "pattern";
   title: string;
   subtitle: string;
   description: string;
-  frames: string[];
-  frameDuration: number;
-  palette: AsciiPalette;
-  toneAt: (row: number, column: number, character: string) => AsciiTone;
+  source: string;
+  motion: AsciiMotion;
+  background: string;
+  glow: string;
 }

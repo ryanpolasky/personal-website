@@ -3,56 +3,265 @@
 import {
   useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
   type CSSProperties,
 } from "react";
 import { ASCII_SCENES } from "@/lib/ascii/scenes";
-import type { AsciiScene, AsciiTone } from "@/lib/ascii/types";
+import type { AsciiScene } from "@/lib/ascii/types";
 import styles from "./AsciiGallery.module.css";
 
 const HIDE_CONTROLS_AFTER = 2800;
+const FRAME_INTERVAL = 1000 / 15;
+const ASCII_RAMP = "....,,,,::::;;;;iiii1111ttttffffLLLLCCCCGGGG00008888@@@@";
 
-function sceneDimensions(scene: AsciiScene) {
-  const lines = scene.frames[0].split("\n");
-  return {
-    columns: Math.max(...lines.map((line) => line.length)),
-    rows: lines.length,
-  };
+function noise(column: number, row: number): number {
+  const value = Math.sin(column * 12.9898 + row * 78.233) * 43758.5453;
+  return value - Math.floor(value);
 }
 
-function toneRuns(
-  scene: AsciiScene,
-  line: string,
-  row: number,
-): Array<{ text: string; tone: AsciiTone }> {
-  const runs: Array<{ text: string; tone: AsciiTone }> = [];
+function AsciiCanvas({
+  scene,
+  paused,
+}: {
+  scene: AsciiScene;
+  paused: boolean;
+}) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  Array.from(line).forEach((character, column) => {
-    const tone = scene.toneAt(row, column, character);
-    const previous = runs.at(-1);
-    if (previous?.tone === tone) previous.text += character;
-    else runs.push({ text: character, tone });
-  });
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
-  return runs;
+    const context = canvas.getContext("2d", { alpha: false });
+    const sampler = document.createElement("canvas");
+    const sampleContext = sampler.getContext("2d", {
+      alpha: false,
+      willReadFrequently: true,
+    });
+    if (!context || !sampleContext) return;
+
+    const image = new Image();
+    let animationFrame = 0;
+    let lastFrame = 0;
+    let sampledPixels: Uint8ClampedArray | null = null;
+    let columns = 0;
+    let rows = 0;
+    let cellWidth = 0;
+    let cellHeight = 0;
+    let fontSize = 0;
+    let fontFamily = "ui-monospace, monospace";
+    let renderedWidth = 0;
+    let renderedHeight = 0;
+
+    const sampleImage = () => {
+      const rect = canvas.getBoundingClientRect();
+      const width = Math.max(1, Math.round(rect.width));
+      const height = Math.max(1, Math.round(rect.height));
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+
+      fontSize = Math.max(7, Math.min(12, width / 118));
+      fontFamily = window.getComputedStyle(canvas).fontFamily;
+      cellWidth = fontSize * 0.59;
+      cellHeight = fontSize * 0.94;
+      columns = Math.ceil(width / cellWidth);
+      rows = Math.ceil(height / cellHeight);
+      renderedWidth = width;
+      renderedHeight = height;
+
+      canvas.width = Math.round(width * pixelRatio);
+      canvas.height = Math.round(height * pixelRatio);
+      context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+
+      sampler.width = columns;
+      sampler.height = rows;
+
+      const imageAspect = image.naturalWidth / image.naturalHeight;
+      const viewportAspect = width / height;
+      let sourceX = 0;
+      let sourceY = 0;
+      let sourceWidth = image.naturalWidth;
+      let sourceHeight = image.naturalHeight;
+
+      if (imageAspect > viewportAspect) {
+        sourceWidth = image.naturalHeight * viewportAspect;
+        sourceX = (image.naturalWidth - sourceWidth) / 2;
+      } else {
+        sourceHeight = image.naturalWidth / viewportAspect;
+        sourceY = (image.naturalHeight - sourceHeight) / 2;
+      }
+
+      sampleContext.drawImage(
+        image,
+        sourceX,
+        sourceY,
+        sourceWidth,
+        sourceHeight,
+        0,
+        0,
+        columns,
+        rows,
+      );
+      sampledPixels = sampleContext.getImageData(
+        0,
+        0,
+        columns,
+        rows,
+      ).data;
+    };
+
+    const draw = (time: number) => {
+      const rect = canvas.getBoundingClientRect();
+      if (
+        image.complete &&
+        image.naturalWidth > 0 &&
+        (sampledPixels === null ||
+          Math.round(rect.width) !== renderedWidth ||
+          Math.round(rect.height) !== renderedHeight)
+      ) {
+        sampleImage();
+      }
+
+      if (sampledPixels && (paused || time - lastFrame >= FRAME_INTERVAL)) {
+        lastFrame = time;
+        const phase = time / 1000;
+        context.fillStyle = scene.background;
+        context.fillRect(0, 0, renderedWidth, renderedHeight);
+        context.font = `500 ${fontSize}px ${fontFamily}`;
+        context.textBaseline = "top";
+
+        for (let row = 0; row < rows; row += 1) {
+          for (let column = 0; column < columns; column += 1) {
+            const offset = (row * columns + column) * 4;
+            let red = sampledPixels[offset];
+            let green = sampledPixels[offset + 1];
+            let blue = sampledPixels[offset + 2];
+            let luminance =
+              (red * 0.2126 + green * 0.7152 + blue * 0.0722) / 255;
+            const random = noise(column, row);
+
+            if (scene.motion === "water" && row > rows * 0.61) {
+              luminance *=
+                0.88 +
+                Math.sin(column * 0.29 + row * 0.7 + phase * 2.1) * 0.16;
+            } else if (
+              scene.motion === "fireflies" &&
+              random > 0.992 &&
+              row < rows * 0.8
+            ) {
+              const flicker = Math.max(
+                0,
+                Math.sin(phase * 2.4 + random * 40),
+              );
+              luminance = Math.max(luminance, 0.65 + flicker * 0.35);
+              red = 239;
+              green = 224;
+              blue = 108;
+            } else if (scene.motion === "pulse") {
+              luminance *=
+                0.88 +
+                Math.sin(
+                  Math.hypot(
+                    column - columns / 2,
+                    row - rows / 2,
+                  ) *
+                    0.18 -
+                    phase * 2.2,
+                ) *
+                  0.18;
+            }
+
+            const mappedLuminance = Math.pow(
+              Math.max(0.015, luminance),
+              0.56,
+            );
+            let character =
+              ASCII_RAMP[
+                Math.min(
+                  ASCII_RAMP.length - 1,
+                  Math.max(
+                    0,
+                    Math.floor(
+                      mappedLuminance * (ASCII_RAMP.length - 1),
+                    ),
+                  ),
+                )
+              ];
+
+            if (
+              scene.motion === "rain" &&
+              (column * 7 + row * 13 + Math.floor(phase * 22)) % 97 === 0
+            ) {
+              character = row % 3 === 0 ? "│" : "╎";
+              red = Math.max(red, 92);
+              green = Math.max(green, 185);
+              blue = 255;
+              luminance = Math.max(luminance, 0.72);
+            }
+
+            const colorLift = 1.1 + mappedLuminance * 0.34;
+            context.fillStyle = `rgb(${Math.min(
+              255,
+              (red + 9) * colorLift,
+            )} ${Math.min(255, (green + 12) * colorLift)} ${Math.min(
+              255,
+              (blue + 18) * colorLift,
+            )})`;
+            context.globalAlpha = Math.min(
+              1,
+              0.26 + mappedLuminance * 0.82,
+            );
+            context.fillText(
+              character,
+              column * cellWidth,
+              row * cellHeight,
+            );
+          }
+        }
+        context.globalAlpha = 1;
+      }
+
+      if (!paused) animationFrame = window.requestAnimationFrame(draw);
+    };
+
+    image.addEventListener("load", () => {
+      sampleImage();
+      draw(performance.now());
+    });
+    image.src = scene.source;
+
+    const observer = new ResizeObserver(() => {
+      sampledPixels = null;
+      if (image.complete && image.naturalWidth > 0) draw(performance.now());
+    });
+    observer.observe(canvas);
+
+    if (!paused) animationFrame = window.requestAnimationFrame(draw);
+
+    return () => {
+      observer.disconnect();
+      window.cancelAnimationFrame(animationFrame);
+    };
+  }, [paused, scene]);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className={styles.canvas}
+      role="img"
+      aria-label={scene.description}
+    />
+  );
 }
 
 export function AsciiGallery() {
   const galleryRef = useRef<HTMLElement>(null);
-  const sceneRef = useRef<HTMLDivElement>(null);
-  const measureRef = useRef<HTMLSpanElement>(null);
   const hideTimer = useRef<number | null>(null);
   const [sceneIndex, setSceneIndex] = useState(0);
-  const [frameIndex, setFrameIndex] = useState(0);
-  const [fontSize, setFontSize] = useState(12);
   const [paused, setPaused] = useState(false);
   const [chromeVisible, setChromeVisible] = useState(true);
 
   const scene = ASCII_SCENES[sceneIndex];
-  const dimensions = useMemo(() => sceneDimensions(scene), [scene]);
-  const lines = scene.frames[frameIndex % scene.frames.length].split("\n");
 
   const revealChrome = useCallback(() => {
     setChromeVisible(true);
@@ -63,12 +272,15 @@ export function AsciiGallery() {
     );
   }, []);
 
+  const selectScene = useCallback((index: number) => {
+    setSceneIndex(index);
+  }, []);
+
   const moveScene = useCallback((direction: number) => {
-    setSceneIndex((current) => {
-      const next = (current + direction + ASCII_SCENES.length) % ASCII_SCENES.length;
-      return next;
-    });
-    setFrameIndex(0);
+    setSceneIndex(
+      (current) =>
+        (current + direction + ASCII_SCENES.length) % ASCII_SCENES.length,
+    );
   }, []);
 
   const toggleFullscreen = useCallback(async () => {
@@ -80,13 +292,10 @@ export function AsciiGallery() {
   }, []);
 
   useEffect(() => {
-    if (paused || scene.frames.length < 2) return;
-    const interval = window.setInterval(
-      () => setFrameIndex((current) => current + 1),
-      scene.frameDuration,
-    );
-    return () => window.clearInterval(interval);
-  }, [paused, scene]);
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setPaused(true);
+    }
+  }, []);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -105,27 +314,6 @@ export function AsciiGallery() {
   }, [moveScene, revealChrome, toggleFullscreen]);
 
   useEffect(() => {
-    const fit = () => {
-      const container = sceneRef.current;
-      const measure = measureRef.current;
-      if (!container || !measure) return;
-      const box = container.getBoundingClientRect();
-      const measuredCharacter = measure.getBoundingClientRect().width / 10 / 100;
-      const next = Math.min(
-        box.width / dimensions.columns / measuredCharacter,
-        box.height / dimensions.rows,
-      );
-      setFontSize(Math.max(4, next * 0.965));
-    };
-
-    const observer = new ResizeObserver(fit);
-    if (sceneRef.current) observer.observe(sceneRef.current);
-    void document.fonts.ready.then(fit);
-    fit();
-    return () => observer.disconnect();
-  }, [dimensions]);
-
-  useEffect(() => {
     revealChrome();
     return () => {
       if (hideTimer.current !== null) window.clearTimeout(hideTimer.current);
@@ -133,9 +321,8 @@ export function AsciiGallery() {
   }, [revealChrome]);
 
   const paletteStyle = {
-    "--ascii-bg": scene.palette.background,
-    "--ascii-glow": scene.palette.glow,
-    "--ascii-size": `${fontSize}px`,
+    "--ascii-bg": scene.background,
+    "--ascii-glow": scene.glow,
   } as CSSProperties;
 
   return (
@@ -146,41 +333,9 @@ export function AsciiGallery() {
       onPointerMove={revealChrome}
       onPointerDown={revealChrome}
     >
-      <div ref={sceneRef} className={styles.scene}>
-        <pre className={styles.art} aria-hidden="true">
-          {lines.map((line, row) => (
-            <span className={styles.line} key={`${scene.id}-${row}`}>
-              {toneRuns(scene, line, row).map((run, index) => (
-                <span
-                  key={`${row}-${index}`}
-                  className={`${styles.tone} ${
-                    run.tone === "fire"
-                      ? styles.toneFire
-                      : run.tone === "ember"
-                        ? styles.toneEmber
-                      : run.tone === "snow"
-                        ? styles.toneSnow
-                        : ""
-                  }`}
-                  style={
-                    {
-                      "--tone": scene.palette.tones[run.tone],
-                      animationDelay: `${((row * 17 + index * 31) % 1100) * -1}ms`,
-                    } as CSSProperties
-                  }
-                >
-                  {run.text}
-                </span>
-              ))}
-            </span>
-          ))}
-        </pre>
-        <span ref={measureRef} className={styles.measure}>
-          MMMMMMMMMM
-        </span>
+      <div key={scene.id} className={styles.scene}>
+        <AsciiCanvas scene={scene} paused={paused} />
       </div>
-
-      <p className="sr-only">{scene.description}</p>
 
       <div
         className={`${styles.chrome} ${
@@ -188,17 +343,32 @@ export function AsciiGallery() {
         }`}
       >
         <header className={styles.identity}>
-          <p className={styles.eyebrow}>ascii rooms · no. {sceneIndex + 1}</p>
+          <p className={styles.eyebrow}>ascii atlas · {scene.category}</p>
           <h1 className={styles.title}>{scene.title}</h1>
           <p className={styles.eyebrow}>{scene.subtitle}</p>
         </header>
 
         <p className={styles.counter}>
-          {String(sceneIndex + 1).padStart(2, "0")} /{" "}
+          no. {String(sceneIndex + 1).padStart(2, "0")} /{" "}
           {String(ASCII_SCENES.length).padStart(2, "0")}
         </p>
 
         <p className={styles.hint}>← → scenes · space pause · f fullscreen</p>
+
+        <nav className={styles.sceneRail} aria-label="Choose a scene">
+          {ASCII_SCENES.map((item, index) => (
+            <button
+              key={item.id}
+              className={`${styles.sceneDot} ${
+                index === sceneIndex ? styles.sceneDotActive : ""
+              }`}
+              type="button"
+              aria-label={`View ${item.title}, ${item.category}`}
+              aria-current={index === sceneIndex ? "true" : undefined}
+              onClick={() => selectScene(index)}
+            />
+          ))}
+        </nav>
 
         <nav className={styles.controls} aria-label="scene controls">
           <button
@@ -206,7 +376,6 @@ export function AsciiGallery() {
             type="button"
             aria-label="Previous scene"
             onClick={() => moveScene(-1)}
-            disabled={ASCII_SCENES.length < 2}
           >
             ←
           </button>
@@ -231,7 +400,6 @@ export function AsciiGallery() {
             type="button"
             aria-label="Next scene"
             onClick={() => moveScene(1)}
-            disabled={ASCII_SCENES.length < 2}
           >
             →
           </button>
