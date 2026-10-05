@@ -134,8 +134,8 @@ export function SmoothScrollProvider({
     }
 
     const instance = new Lenis({
-      duration: 0.72,
-      lerp: 0.16,
+      // no duration: it overrides lerp, restarting a tween on every wheel notch.
+      lerp: 0.14,
       smoothWheel: true,
       wheelMultiplier: 1.02,
       touchMultiplier: 1.0,

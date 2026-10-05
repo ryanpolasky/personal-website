@@ -144,11 +144,23 @@ export function ProjectsRail() {
 
     const restPx = () => Math.round(window.innerHeight * 0.18);
 
+    // cached so the per-frame tick never forces a layout read.
+    let cachedSectionTop = 0;
+    let cachedSectionH = 0;
+    let lastInv = -1;
+    const measureSection = () => {
+      cachedSectionTop = section.getBoundingClientRect().top + window.scrollY;
+      cachedSectionH = section.offsetHeight;
+      lastInv = -1;
+    };
+
     const setSectionHeight = () => {
       section.style.height = `${window.innerHeight + getTravel() + restPx()}px`;
+      measureSection();
     };
     setSectionHeight();
     window.addEventListener("resize", setSectionHeight);
+    ScrollTrigger.addEventListener("refresh", measureSection);
 
     const ro = new ResizeObserver(() => {
       setSectionHeight();
@@ -156,7 +168,6 @@ export function ProjectsRail() {
     });
     ro.observe(rail);
 
-    let raf = 0;
     let tickRunning = false;
     let nearViewport = true;
     let lastScrollY = window.scrollY;
@@ -213,22 +224,26 @@ export function ProjectsRail() {
       window.innerWidth >= 1024 ? 128 : window.innerWidth >= 640 ? 80 : 36;
 
     const morphTick = () => {
-      const rect = section.getBoundingClientRect();
-      // read scrollY before the css-var writes below to avoid a layout flush.
       const cy = window.scrollY;
       const vh = window.innerHeight || 1;
-      const entry = Math.max(0, Math.min(1, (vh - rect.top) / vh));
-      const exitProg = Math.max(0, Math.min(1, rect.bottom / vh));
+      const top = cachedSectionTop - cy;
+      const bottom = top + cachedSectionH;
+      const entry = Math.max(0, Math.min(1, (vh - top) / vh));
+      const exitProg = Math.max(0, Math.min(1, bottom / vh));
       const morph = Math.min(entry, exitProg);
       const inv = 1 - morph;
-      const ix = insetX();
-      const it = insetTop();
-      const ib = insetBottom();
-      stage.style.setProperty("--rail-clip-x", `${inv * ix}px`);
-      stage.style.setProperty("--rail-clip-top", `${inv * it}px`);
-      stage.style.setProperty("--rail-clip-bottom", `${inv * ib}px`);
-      stage.style.setProperty("--rail-radius", `${inv * 28}px`);
-      stage.style.setProperty("--rail-edge-opacity", `${inv}`);
+      // clip vars repaints the whole stage; skip once the morph has settled.
+      if (Math.abs(inv - lastInv) > 0.0005) {
+        lastInv = inv;
+        const ix = insetX();
+        const it = insetTop();
+        const ib = insetBottom();
+        stage.style.setProperty("--rail-clip-x", `${inv * ix}px`);
+        stage.style.setProperty("--rail-clip-top", `${inv * it}px`);
+        stage.style.setProperty("--rail-clip-bottom", `${inv * ib}px`);
+        stage.style.setProperty("--rail-radius", `${inv * 28}px`);
+        stage.style.setProperty("--rail-edge-opacity", `${inv}`);
+      }
 
       const now = performance.now();
       const dt = Math.min(0.05, (now - lastTickAt) / 1000);
@@ -249,7 +264,7 @@ export function ProjectsRail() {
           ? 1
           : Math.max(0, 1 - (sinceActivity - ACTIVE_HOLD_MS) / FADE_MS);
 
-      const inRail = rect.top <= 0 && rect.bottom > vh;
+      const inRail = top <= 0 && bottom > vh;
 
       let targetForward = 0;
       let targetBackward = 0;
@@ -269,7 +284,7 @@ export function ProjectsRail() {
         framePrevColor = cueHoldColor;
       } else if (inRail && activityFactor > 0) {
         const travelPx = Math.max(1, totalBudget * vh);
-        const rawProgress = clamp01(-rect.top / travelPx);
+        const rawProgress = clamp01(-top / travelPx);
         const budgetProgress = rawProgress * totalBudget;
         const dwellVh = slotPan[currentIdx] > 0 ? SLOT_DWELL_VH : 0;
         const panBudget = slotBudgets[currentIdx] - 2 * dwellVh;
@@ -328,7 +343,7 @@ export function ProjectsRail() {
         now - lastSnapAt > SNAP_GUARD_MS &&
         now - lastActivityAt >= SNAP_IDLE_MS
       ) {
-        const sectionTopAbs = rect.top + cy;
+        const sectionTopAbs = cachedSectionTop;
         const slotStartScroll = sectionTopAbs + slotStarts[currentIdx] * vh;
         const slotEndScroll =
           sectionTopAbs +
@@ -394,24 +409,25 @@ export function ProjectsRail() {
         displayBackwardColor,
       );
 
-      raf = nearViewport ? requestAnimationFrame(morphTick) : 0;
-      if (!nearViewport) tickRunning = false;
+      if (!nearViewport) stopTick();
     };
     const startTick = () => {
       if (tickRunning) return;
       tickRunning = true;
       lastTickAt = performance.now();
       lastScrollY = window.scrollY;
-      raf = requestAnimationFrame(morphTick);
+      // defer so morphTick lands after the provider's lenis.raf in ticker order.
+      requestAnimationFrame(() => {
+        if (tickRunning) gsap.ticker.add(morphTick);
+      });
     };
     const stopTick = () => {
       tickRunning = false;
-      if (raf) cancelAnimationFrame(raf);
-      raf = 0;
+      gsap.ticker.remove(morphTick);
     };
     // sync run on mount so CSS vars settle if section already overlaps viewport.
     morphTick();
-    // io-gated rAF: pause when section is far off-screen. wide rootMargin keeps
+    // io-gated tick: pause when section is far off-screen. wide rootMargin keeps
     // the loop warm a viewport above/below so entry/exit are never stale.
     const tickIO =
       typeof IntersectionObserver === "undefined"
@@ -614,9 +630,8 @@ export function ProjectsRail() {
           duration: jumpDuration,
           ease: "power3.inOut",
         });
-        const sectionTop = section.getBoundingClientRect().top + window.scrollY;
         const targetScrollY =
-          sectionTop + slotStarts[target] * window.innerHeight;
+          cachedSectionTop + slotStarts[target] * window.innerHeight;
         const lenisNow = lenisRef.current;
         if (lenisNow) {
           lenisNow.start();
@@ -653,8 +668,7 @@ export function ProjectsRail() {
             duration: TRANSITION_S,
             ease: "power3.inOut",
           });
-          const sectionTop =
-            section.getBoundingClientRect().top + window.scrollY;
+          const sectionTop = cachedSectionTop;
           const vh = window.innerHeight;
           const slotStartY = slotStarts[idx] * vh;
           const slotEndY = (slotStarts[idx] + slotBudgets[idx]) * vh;
@@ -671,7 +685,7 @@ export function ProjectsRail() {
       // wall lock: snap the rail to the current project's far edge and
       // absorb momentum. user must scroll again to actually cross.
       const lockAtWall = (idx: number, dir: 1 | -1) => {
-        const sectionTop = section.getBoundingClientRect().top + window.scrollY;
+        const sectionTop = cachedSectionTop;
         const vh = window.innerHeight;
         const slotStartY = slotStarts[idx] * vh;
         const slotEndY = (slotStarts[idx] + slotBudgets[idx]) * vh;
@@ -694,7 +708,7 @@ export function ProjectsRail() {
 
       const landOnEntry = (idx: number, fromBelow: boolean) => {
         if (performance.now() < suppressEntryLandingsUntil) return;
-        const sectionTop = section.getBoundingClientRect().top + window.scrollY;
+        const sectionTop = cachedSectionTop;
         const vh = window.innerHeight;
         const slotStartY = slotStarts[idx] * vh;
         const slotEndY = (slotStarts[idx] + slotBudgets[idx]) * vh;
@@ -731,9 +745,9 @@ export function ProjectsRail() {
         onUpdate: (self) => {
           if (performance.now() < lockedUntil) return;
 
-          const rect = section.getBoundingClientRect();
           const vh = window.innerHeight;
-          if (rect.top > 0 || rect.bottom <= vh) return;
+          const top = cachedSectionTop - window.scrollY;
+          if (top > 0 || top + cachedSectionH <= vh) return;
 
           const budgetProgress = self.progress * totalBudget;
           let requested = N - 1;
@@ -785,13 +799,11 @@ export function ProjectsRail() {
       if (initialHash === "#projects") {
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
-            const sectionTop =
-              section.getBoundingClientRect().top + window.scrollY;
             const lenisNow = lenisRef.current;
             if (lenisNow) {
-              lenisNow.scrollTo(sectionTop, { immediate: true });
+              lenisNow.scrollTo(cachedSectionTop, { immediate: true });
             } else {
-              window.scrollTo({ top: sectionTop, behavior: "auto" });
+              window.scrollTo({ top: cachedSectionTop, behavior: "auto" });
             }
           });
         });
@@ -813,6 +825,7 @@ export function ProjectsRail() {
       stopTick();
       tickIO?.disconnect();
       window.removeEventListener("resize", setSectionHeight);
+      ScrollTrigger.removeEventListener("refresh", measureSection);
       window.removeEventListener("projects:reset", onProjectsReset);
       window.removeEventListener("nav:teleport", onNavTeleport);
       window.removeEventListener("wheel", wheelClassifier);
