@@ -1,6 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { Project } from "@/lib/projects";
+import mediaDimensions from "@/lib/mediaDimensions.json";
+
+const MEDIA_DIMENSIONS: Record<string, { w: number; h: number } | undefined> =
+  mediaDimensions;
 
 // expanded project view shared by /work/[id] and the rail-modal. children
 // (not the root) hold padding/grid so the root stays a stable morph target.
@@ -30,6 +34,7 @@ export function projectTint(project: Project): string {
 
 export function ProjectFullView({ project, tintColor }: ProjectFullViewProps) {
   const mediaItems = project.media.items?.slice(0, 2) ?? [];
+  const landscapeIntro = project.introLayout === "landscape";
 
   return (
     <article
@@ -69,7 +74,11 @@ export function ProjectFullView({ project, tintColor }: ProjectFullViewProps) {
         <header className="flex flex-col gap-5">
           <h1
             id={`project-${project.id}-name`}
-            className="display text-[clamp(3rem,7vw,8rem)] leading-[0.95] text-[var(--color-text-invert)]"
+            className={`display leading-[0.95] text-[var(--color-text-invert)] ${
+              landscapeIntro
+                ? "text-[clamp(2rem,7vw,8rem)]"
+                : "text-[clamp(3rem,7vw,8rem)]"
+            }`}
           >
             {project.name}
           </h1>
@@ -78,13 +87,27 @@ export function ProjectFullView({ project, tintColor }: ProjectFullViewProps) {
           </p>
         </header>
 
+        {landscapeIntro && mediaItems[0]?.src ? (
+          <figure className="overflow-hidden rounded-3xl border border-white/10 bg-black/20">
+            <Image
+              src={mediaItems[0].src}
+              alt={mediaItems[0].alt ?? mediaItems[0].label}
+              width={MEDIA_DIMENSIONS[mediaItems[0].src]?.w ?? 1440}
+              height={MEDIA_DIMENSIONS[mediaItems[0].src]?.h ?? 900}
+              sizes="(min-width: 1280px) 1152px, 90vw"
+              priority
+              className="h-auto w-full"
+            />
+          </figure>
+        ) : null}
+
         {/* body grid: long-form copy + stack/meta column */}
         <div className="grid gap-12 sm:grid-cols-[1.5fr_1fr] sm:items-start sm:gap-16">
           <div className="space-y-6">
             <p className="text-[15px] leading-relaxed text-[var(--color-text-invert-muted)] sm:text-base">
               {project.body}
             </p>
-            {mediaItems.length > 0 ? (
+            {!landscapeIntro && mediaItems.length > 0 ? (
               <div className="grid gap-4 sm:grid-cols-2">
                 {mediaItems.map((item) => (
                   <div
@@ -189,6 +212,49 @@ export function ProjectFullView({ project, tintColor }: ProjectFullViewProps) {
             )}
           </aside>
         </div>
+        {landscapeIntro
+          ? project.sections?.map((section) => (
+              <section
+                key={section.eyebrow}
+                className="space-y-6 border-t border-white/10 pt-8"
+              >
+                <p
+                  className="text-[11px] uppercase tracking-[0.28em] text-[var(--color-text-invert-faint)]"
+                  style={{ fontFamily: "var(--font-mono)" }}
+                >
+                  {section.eyebrow}
+                </p>
+                <h2 className="display text-[clamp(2rem,4vw,3.5rem)] leading-tight text-[var(--color-text-invert)]">
+                  {section.title}
+                </h2>
+                <p className="max-w-[65ch] text-base leading-relaxed text-[var(--color-text-invert-muted)]">
+                  {section.body}
+                </p>
+                <div className="grid items-start gap-6 sm:grid-cols-2">
+                  {section.media?.map((item) => item.src ? (
+                    <figure key={item.label} className="space-y-3">
+                      <div className="flex justify-center overflow-hidden rounded-2xl border border-white/10 bg-black/20">
+                        <Image
+                          src={item.src}
+                          alt={item.alt ?? item.label}
+                          width={MEDIA_DIMENSIONS[item.src]?.w ?? 1440}
+                          height={MEDIA_DIMENSIONS[item.src]?.h ?? 900}
+                          sizes="(min-width: 1280px) 560px, (min-width: 640px) 45vw, 90vw"
+                          className="h-auto max-h-[36rem] w-auto max-w-full object-contain"
+                        />
+                      </div>
+                      <figcaption
+                        className="text-[10px] uppercase tracking-[0.24em] text-[var(--color-text-invert-faint)]"
+                        style={{ fontFamily: "var(--font-mono)" }}
+                      >
+                        {item.label}
+                      </figcaption>
+                    </figure>
+                  ) : null)}
+                </div>
+              </section>
+            ))
+          : null}
       </div>
     </article>
   );

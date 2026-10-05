@@ -50,6 +50,7 @@ export interface Project {
   githubHref?: string | ProjectGithubRepo[];
   devpostHref?: string;
   logoSrc?: string;
+  introLayout?: "landscape";
   width: ProjectWidth;
   media: {
     kind: ProjectMediaKind;
@@ -555,14 +556,15 @@ export const PROJECTS: Project[] = [
     id: "marralhinha",
     index: "08.",
     name: "Marralhinha",
-    tagline: "the marble board game from terceira, açores, online.",
-    body: "marralhinha is a traditional marble racing game from terceira, açores that my family's been playing for years, so i built the online version to get a game going no matter where anyone is. real-time rooms with invite codes, bot opponents, classic + blitz modes, free-for-all or 2v2 teams, daily rewards, 80+ cosmetics, leaderboards, and it plays right inside discord.",
-    role: "solo",
-    stack: ["React", "Node.js", "Socket.IO", "Discord SDK"],
+    tagline: "same game. different tables.",
+    body: "my family has been playing marralhinha, a marble game from terceira, açores, for a couple of years. i built an online version so friends could pull up a chair from anywhere. a personal side project, from the 3d board to the multiplayer server.",
+    role: "solo · personal project",
+    stack: ["React", "Three.js", "Node.js", "Socket.IO", "Discord SDK"],
     href: "https://marralhinha.app",
-    hrefLabel: "visit →",
+    hrefLabel: "play a round →",
     githubHref: "https://github.com/ryanpolasky/Marralhinha",
     width: "xl",
+    introLayout: "landscape",
     media: {
       kind: "image",
       items: [
@@ -570,43 +572,53 @@ export const PROJECTS: Project[] = [
           label: "the board",
           src: "/assets/projects/marralhinha/mar_game.webp",
           alt: "Marralhinha board mid-game with four players",
-          cover: true,
         },
       ],
     },
     sections: [
       {
-        eyebrow: "the game",
-        title: "ludo's portuguese cousin, on the internet.",
-        body: "race five marbles around the board and into your home column. captures send rivals back to their dish, sixes roll again, and a mid-board shortcut rewards the bold. rooms spin up in seconds with a shareable code or invite link, and empty seats fill with named bots so nobody waits on a full table.",
+        eyebrow: "the table",
+        title: "a familiar table, from anywhere.",
+        body: "a wooden board, glass marbles, and a shortcut worth arguing over. the board is rendered in three.js; a node + socket.io server owns the game state. bots fill empty seats and take over when someone drops, so a disconnect doesn't end the evening.",
         points: [
-          "Real-time rooms with shareable codes + invite links",
-          "Classic and Blitz modes, free-for-all or teams 2v2",
-          "Named bot opponents, spectate seats, turn timers",
-          "In-room chat and game log",
+          "2–4 players, room codes, and invite links",
+          "Classic, Blitz, and 2v2 teams",
+          "Bot takeover + reconnect grace period",
         ],
+        layout: "mosaic",
         media: [
           {
-            label: "the lobby",
-            src: "/assets/projects/marralhinha/mar_lobby.webp",
-            alt: "Marralhinha room lobby with bots and mode selection",
+            label: "a seat at the table",
+            src: "/assets/projects/marralhinha/mar_mobile.webp",
+            alt: "Marralhinha game on a phone, with the board and roll controls",
+          },
+          {
+            label: "make yourself at home",
+            src: "/assets/projects/marralhinha/mar_home.webp",
+            alt: "Marralhinha home screen with room creation and quick play",
           },
         ],
       },
       {
-        eyebrow: "the meta",
-        title: "cosmetics, streaks, and discord.",
-        body: "there's a whole meta game wrapped around the table: a shop with 80+ cosmetics from marble skins to board themes, daily login rewards, and leaderboards. sign in with discord to keep your collection across devices, or play it as a discord activity without leaving the call.",
+        eyebrow: "between rounds",
+        title: "your marbles. your table.",
+        body: "games earn marbucks for cosmetic marbles, boards, dice, and nameplates. guest accounts get you straight into a round; linking discord keeps your collection across devices. the same game runs as a discord activity, with everyone in the voice channel landing at one table.",
         points: [
-          "80+ cosmetics across marbles, boards, and dice",
-          "Daily rewards + global leaderboards",
-          "Discord sign-in + playable as a discord activity",
+          "Daily rewards, match history, and leaderboards",
+          "Cosmetic progression, no gameplay advantage",
+          "Browser + Discord Activity",
         ],
+        layout: "specimen",
         media: [
           {
-            label: "the landing",
-            src: "/assets/projects/marralhinha/mar_landing.webp",
-            alt: "Marralhinha landing page over the 3D board",
+            label: "the collection",
+            src: "/assets/projects/marralhinha/mar_locker.webp",
+            alt: "Marralhinha locker with a Galaxy marble preview and cosmetic collection",
+          },
+          {
+            label: "one more round",
+            src: "/assets/projects/marralhinha/mar_win.webp",
+            alt: "Marralhinha victory screen with match rewards",
           },
         ],
       },

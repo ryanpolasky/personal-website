@@ -132,12 +132,14 @@ export function ProjectPanel({
       >
         {project.index}
       </span>
-      <p
-        className="relative z-10 mb-5 text-[10.5px] uppercase tracking-[0.32em] text-[var(--color-text-invert-faint)]"
-        style={{ fontFamily: "var(--font-mono)" }}
-      >
-        selected system
-      </p>
+      {project.introLayout !== "landscape" ? (
+        <p
+          className="relative z-10 mb-5 text-[10.5px] uppercase tracking-[0.32em] text-[var(--color-text-invert-faint)]"
+          style={{ fontFamily: "var(--font-mono)" }}
+        >
+          selected system
+        </p>
+      ) : null}
       {project.logoSrc ? (
         // logotype variant. sr-only project name keeps a11y / hash anchors
         // intact. animate-subtle-float adds the in-game idle bob.
@@ -170,9 +172,11 @@ export function ProjectPanel({
         <h3
           id={`project-${project.id}-name`}
           className={`display relative z-10 max-w-[11ch] leading-[0.82] tracking-[-0.055em] text-[var(--color-text-invert)] ${
-            hasIntroHero
-              ? "text-[clamp(2.45rem,12vw,8rem)] sm:text-[clamp(3rem,7vw,8rem)]"
-              : "text-[clamp(2.8rem,13vw,11rem)] sm:text-[clamp(3.4rem,9.8vw,11rem)]"
+            project.introLayout === "landscape"
+              ? "text-[clamp(2.45rem,9vw,5rem)] lg:text-[clamp(3rem,5vw,6rem)]"
+              : hasIntroHero
+                ? "text-[clamp(2.45rem,12vw,8rem)] sm:text-[clamp(3rem,7vw,8rem)]"
+                : "text-[clamp(2.8rem,13vw,11rem)] sm:text-[clamp(3.4rem,9.8vw,11rem)]"
           }`}
         >
           {project.name}
@@ -192,30 +196,40 @@ export function ProjectPanel({
   );
 
   const asideElement = (
-    <aside className="relative isolate flex max-h-[40svh] flex-col self-stretch overflow-hidden rounded-[1.5rem] border border-white/10 bg-[radial-gradient(circle_at_14%_0%,color-mix(in_oklab,var(--project-tint)_18%,transparent),transparent_34%),linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.045)_44%,rgba(255,255,255,0.075))] p-4 shadow-[0_24px_90px_-48px_rgba(0,0,0,0.9),inset_0_1px_0_rgba(255,255,255,0.12)] sm:max-h-[68svh] sm:rounded-[2rem] sm:p-7">
+    <aside
+      className={`relative isolate flex max-h-[40svh] flex-col self-stretch overflow-hidden rounded-[1.5rem] border border-white/10 bg-[radial-gradient(circle_at_14%_0%,color-mix(in_oklab,var(--project-tint)_18%,transparent),transparent_34%),linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.045)_44%,rgba(255,255,255,0.075))] p-4 shadow-[0_24px_90px_-48px_rgba(0,0,0,0.9),inset_0_1px_0_rgba(255,255,255,0.12)] sm:max-h-[68svh] sm:rounded-[2rem] ${
+        project.introLayout === "landscape" ? "sm:p-5" : "sm:p-7"
+      }`}
+    >
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[linear-gradient(to_right,transparent,var(--project-tint),transparent)] opacity-70" />
       <div className="min-h-0 flex-1 overflow-hidden">
-        <p className="text-[13px] leading-relaxed text-[var(--color-text-invert-muted)] sm:text-base">
+        <p
+          className={`text-[13px] leading-relaxed text-[var(--color-text-invert-muted)] ${
+            project.introLayout === "landscape" ? "sm:text-sm" : "sm:text-base"
+          }`}
+        >
           {project.body}
         </p>
-        <div className="mt-4 grid gap-3 border-t border-white/10 pt-4 sm:mt-7 sm:gap-5 sm:pt-6 sm:grid-cols-2">
-          <div style={{ fontFamily: "var(--font-mono)" }}>
-            <p className="text-[10.5px] uppercase tracking-[0.3em] text-[var(--color-text-invert-faint)]">
-              role
-            </p>
-            <p className="mt-2 text-[13px] text-[var(--color-text-invert)]">
-              {project.role}
-            </p>
+        {project.introLayout !== "landscape" ? (
+          <div className="mt-4 grid gap-3 border-t border-white/10 pt-4 sm:mt-7 sm:gap-5 sm:pt-6 sm:grid-cols-2">
+            <div style={{ fontFamily: "var(--font-mono)" }}>
+              <p className="text-[10.5px] uppercase tracking-[0.3em] text-[var(--color-text-invert-faint)]">
+                role
+              </p>
+              <p className="mt-2 text-[13px] text-[var(--color-text-invert)]">
+                {project.role}
+              </p>
+            </div>
+            <div style={{ fontFamily: "var(--font-mono)" }}>
+              <p className="text-[10.5px] uppercase tracking-[0.3em] text-[var(--color-text-invert-faint)]">
+                access
+              </p>
+              <p className="mt-2 text-[13px] text-[var(--color-text-invert-muted)]">
+                {accessLabel}
+              </p>
+            </div>
           </div>
-          <div style={{ fontFamily: "var(--font-mono)" }}>
-            <p className="text-[10.5px] uppercase tracking-[0.3em] text-[var(--color-text-invert-faint)]">
-              access
-            </p>
-            <p className="mt-2 text-[13px] text-[var(--color-text-invert-muted)]">
-              {accessLabel}
-            </p>
-          </div>
-        </div>
+        ) : null}
       </div>
       <div className="mt-4 flex flex-wrap items-center justify-center gap-2 sm:mt-6 sm:gap-2.5">
         {project.href ? (
@@ -326,17 +340,29 @@ export function ProjectPanel({
 
             {/* mobile: vertical stack flow from top (no items-center crush).
                 desktop (lg+): 3-col title|hero|aside or 2-col title|aside. */}
-            <div
-              className={
-                hasIntroHero
-                  ? "grid items-start gap-4 sm:gap-6 lg:min-h-0 lg:items-center lg:grid-cols-[minmax(0,1.55fr)_minmax(0,0.8fr)_minmax(290px,0.55fr)] lg:gap-7 xl:gap-10"
-                  : "grid items-start gap-5 sm:gap-8 lg:min-h-0 lg:items-center lg:grid-cols-[minmax(0,1.18fr)_minmax(330px,0.62fr)] lg:gap-12 xl:gap-20"
-              }
-            >
-              {titleColumn}
-              {heroElement}
-              {asideElement}
-            </div>
+            {project.introLayout === "landscape" && hasIntroHero ? (
+              <div className="grid min-h-0 items-center gap-8 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.35fr)] xl:gap-12">
+                <div className="flex min-h-0 flex-col gap-4 xl:gap-6">
+                  {titleColumn}
+                  {asideElement}
+                </div>
+                <div className="aspect-[8/5] w-full max-h-[68svh]">
+                  {heroElement}
+                </div>
+              </div>
+            ) : (
+              <div
+                className={
+                  hasIntroHero
+                    ? "grid items-start gap-4 sm:gap-6 lg:min-h-0 lg:items-center lg:grid-cols-[minmax(0,1.55fr)_minmax(0,0.8fr)_minmax(290px,0.55fr)] lg:gap-7 xl:gap-10"
+                    : "grid items-start gap-5 sm:gap-8 lg:min-h-0 lg:items-center lg:grid-cols-[minmax(0,1.18fr)_minmax(330px,0.62fr)] lg:gap-12 xl:gap-20"
+                }
+              >
+                {titleColumn}
+                {heroElement}
+                {asideElement}
+              </div>
+            )}
           </div>
         </section>
 
