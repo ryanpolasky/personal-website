@@ -107,7 +107,6 @@ export const PROJECTS: Project[] = [
           {
             label: "the classic board · rendered from game source",
             src: "/assets/projects/marralhinha/mar_board.webp",
-            animatedSrc: "/assets/projects/marralhinha/mar_board_loop.mp4",
             alt: "Marralhinha's wooden board and marble sets, rendered using the game's actual Three.js components",
           },
         ],
