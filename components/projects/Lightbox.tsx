@@ -3,9 +3,9 @@
 // fullscreen lightbox. portal'd to body so it escapes the rail transform.
 // dismisses on ESC, backdrop click, or close button.
 
-import Image from "next/image";
 import { useEffect } from "react";
 import type { ProjectMediaItem } from "@/lib/projects";
+import { ProjectImage } from "./ProjectImage";
 
 export interface LightboxProps {
   item: ProjectMediaItem;
@@ -49,9 +49,8 @@ export function Lightbox({ item, onClose }: LightboxProps) {
         <span>close</span>
       </button>
       <div className="relative flex max-h-full max-w-full items-center justify-center">
-        <Image
-          src={item.src}
-          alt={item.alt ?? item.label}
+        <ProjectImage
+          item={item}
           width={2400}
           height={1500}
           unoptimized

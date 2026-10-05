@@ -188,7 +188,13 @@ export function MobileProjectsStack() {
                       className="h-auto w-full max-w-[18rem] [image-rendering:pixelated] sm:max-w-[20rem]"
                     />
                   ) : (
-                    <h3 className="display max-w-[9ch] text-[clamp(2.85rem,13.5vw,4.8rem)] leading-[0.82] tracking-[-0.06em] text-white sm:text-[clamp(3.8rem,7vw,5.5rem)]">
+                    <h3
+                      className={`display max-w-[9ch] leading-[0.82] tracking-[-0.06em] text-white ${
+                        project.introLayout === "landscape"
+                          ? "text-[clamp(2rem,9vw,4.5rem)] sm:text-[clamp(2rem,4.5vw,4.5rem)]"
+                          : "text-[clamp(2.85rem,13.5vw,4.8rem)] sm:text-[clamp(3.8rem,7vw,5.5rem)]"
+                      }`}
+                    >
                       {project.name}
                     </h3>
                   )}

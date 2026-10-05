@@ -2,10 +2,10 @@
 
 // shared media primitive for every layout that displays a screenshot.
 
-import Image from "next/image";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import type { ProjectMediaItem } from "@/lib/projects";
 import { LoadingMarch } from "./LoadingMarch";
+import { ProjectImage } from "./ProjectImage";
 
 // `<name>.lqip.webp` sibling emitted by scripts/build-media.mjs.
 function lqipSrc(src: string): string {
@@ -173,9 +173,8 @@ export function MediaFrame({
         fps={item.sprite.fps}
       />
     ) : effectiveFit === "cover" ? (
-      <Image
-        src={item.src}
-        alt={item.alt ?? label}
+      <ProjectImage
+        item={item}
         fill
         sizes={sizes}
         className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.025]"
@@ -185,9 +184,8 @@ export function MediaFrame({
       // decode. preserves the inset padding so the svg sits inside the
       // card chrome the same way bitmap screenshots do.
       <div className="absolute inset-2.5 sm:inset-3.5">
-        <Image
-          src={item.src}
-          alt={item.alt ?? label}
+        <ProjectImage
+          item={item}
           fill
           sizes={sizes}
           className="object-contain drop-shadow-[0_18px_32px_rgba(0,0,0,0.28)] transition-transform duration-700 ease-out group-hover:scale-[1.015]"
@@ -209,9 +207,8 @@ export function MediaFrame({
           className="absolute inset-0 h-full w-full scale-110 object-cover opacity-35 saturate-125 transition-transform duration-700 ease-out group-hover:scale-[1.14]"
         />
         <div className="absolute inset-2.5 sm:inset-3.5">
-          <Image
-            src={item.src}
-            alt={item.alt ?? label}
+          <ProjectImage
+            item={item}
             fill
             sizes={sizes}
             className="object-contain drop-shadow-[0_18px_32px_rgba(0,0,0,0.28)] transition-transform duration-700 ease-out group-hover:scale-[1.015]"
