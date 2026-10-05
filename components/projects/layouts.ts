@@ -10,6 +10,7 @@ import { SpecimenLayout } from "./SpecimenLayout";
 import { HeroFullBleedLayout } from "./HeroFullBleedLayout";
 import { FormShowcaseLayout } from "./FormShowcaseLayout";
 import { BannerGalleryLayout } from "./BannerGalleryLayout";
+import { EditorialLayout } from "./EditorialLayout";
 import type { SectionLayoutComponent } from "./types";
 
 export const MEDIA_LAYOUTS = [
@@ -25,4 +26,5 @@ export const LAYOUT_MAP = {
   hero: HeroFullBleedLayout,
   forms: FormShowcaseLayout, // expects 4 media items
   gallery: BannerGalleryLayout, // 2x3 grid, up to 6 items
+  editorial: EditorialLayout,
 } as const satisfies Record<string, SectionLayoutComponent>;

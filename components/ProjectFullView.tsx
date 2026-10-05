@@ -230,7 +230,7 @@ export function ProjectFullView({ project, tintColor }: ProjectFullViewProps) {
                 <p className="max-w-[65ch] text-base leading-relaxed text-[var(--color-text-invert-muted)]">
                   {section.body}
                 </p>
-                <div className="grid items-start gap-6 sm:grid-cols-2">
+                <div className={`grid items-start gap-6 ${(section.media?.length ?? 0) > 1 ? "sm:grid-cols-2" : ""}`}>
                   {section.media?.map((item) => item.src ? (
                     <figure key={item.label} className="space-y-3">
                       <div className="flex justify-center overflow-hidden rounded-2xl border border-white/10 bg-black/20">
@@ -239,8 +239,12 @@ export function ProjectFullView({ project, tintColor }: ProjectFullViewProps) {
                           alt={item.alt ?? item.label}
                           width={MEDIA_DIMENSIONS[item.src]?.w ?? 1440}
                           height={MEDIA_DIMENSIONS[item.src]?.h ?? 900}
-                          sizes="(min-width: 1280px) 560px, (min-width: 640px) 45vw, 90vw"
-                          className="h-auto max-h-[36rem] w-auto max-w-full object-contain"
+                          sizes={section.media?.length === 1
+                            ? "(min-width: 1280px) 1152px, 90vw"
+                            : "(min-width: 1280px) 560px, (min-width: 640px) 45vw, 90vw"}
+                          className={section.media?.length === 1
+                            ? "h-auto w-full"
+                            : "h-auto max-h-[36rem] w-auto max-w-full object-contain"}
                         />
                       </div>
                       <figcaption

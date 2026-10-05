@@ -21,7 +21,8 @@ export type SectionLayout =
   | "specimen"
   | "hero"
   | "forms"
-  | "gallery";
+  | "gallery"
+  | "editorial";
 
 export interface ProjectSection {
   eyebrow: string;
@@ -579,46 +580,26 @@ export const PROJECTS: Project[] = [
       {
         eyebrow: "the table",
         title: "a familiar table, from anywhere.",
-        body: "a wooden board, glass marbles, and a shortcut worth arguing over. the board is rendered in three.js; a node + socket.io server owns the game state. bots fill empty seats and take over when someone drops, so a disconnect doesn't end the evening.",
-        points: [
-          "2–4 players, room codes, and invite links",
-          "Classic, Blitz, and 2v2 teams",
-          "Bot takeover + reconnect grace period",
-        ],
-        layout: "mosaic",
+        body: "a wooden board, glass marbles, and a shortcut worth arguing over. three.js brings the table to life; a node + socket.io server keeps everyone in sync. share a room code, play with friends, or let bots fill the empty seats.",
+        layout: "editorial",
         media: [
           {
-            label: "a seat at the table",
-            src: "/assets/projects/marralhinha/mar_mobile.webp",
-            alt: "Marralhinha game on a phone, with the board and roll controls",
-          },
-          {
-            label: "make yourself at home",
-            src: "/assets/projects/marralhinha/mar_home.webp",
-            alt: "Marralhinha home screen with room creation and quick play",
+            label: "the classic board · rendered from game source",
+            src: "/assets/projects/marralhinha/mar_board.webp",
+            alt: "Angled view of Marralhinha's wooden board and four marble sets, rendered using the game's actual Three.js components",
           },
         ],
       },
       {
         eyebrow: "between rounds",
         title: "your marbles. your table.",
-        body: "games earn marbucks for cosmetic marbles, boards, dice, and nameplates. guest accounts get you straight into a round; linking discord keeps your collection across devices. the same game runs as a discord activity, with everyone in the voice channel landing at one table.",
-        points: [
-          "Daily rewards, match history, and leaderboards",
-          "Cosmetic progression, no gameplay advantage",
-          "Browser + Discord Activity",
-        ],
-        layout: "specimen",
+        body: "glass, gold leaf, tiny galaxies. games earn marbucks for marbles, boards, and dice that make the table yours, without changing the odds. play in the browser or bring the same game into a discord voice channel.",
+        layout: "editorial",
         media: [
           {
-            label: "the collection",
-            src: "/assets/projects/marralhinha/mar_locker.webp",
-            alt: "Marralhinha locker with a Galaxy marble preview and cosmetic collection",
-          },
-          {
-            label: "one more round",
-            src: "/assets/projects/marralhinha/mar_win.webp",
-            alt: "Marralhinha victory screen with match rewards",
+            label: "a few favorites · actual in-game materials",
+            src: "/assets/projects/marralhinha/mar_collection.webp",
+            alt: "Six actual Marralhinha marble skins: Cat's Eye, Galaxy, Gold Leaf, Magma, Frostbite, and Aurora",
           },
         ],
       },
