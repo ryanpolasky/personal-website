@@ -1,7 +1,7 @@
 import Link from "next/link";
-import Image from "next/image";
 import type { Project } from "@/lib/projects";
 import mediaDimensions from "@/lib/mediaDimensions.json";
+import { ProjectImage } from "./projects/ProjectImage";
 
 const MEDIA_DIMENSIONS: Record<string, { w: number; h: number } | undefined> =
   mediaDimensions;
@@ -89,9 +89,8 @@ export function ProjectFullView({ project, tintColor }: ProjectFullViewProps) {
 
         {landscapeIntro && mediaItems[0]?.src ? (
           <figure className="overflow-hidden rounded-3xl border border-white/10 bg-black/20">
-            <Image
-              src={mediaItems[0].src}
-              alt={mediaItems[0].alt ?? mediaItems[0].label}
+            <ProjectImage
+              item={mediaItems[0]}
               width={MEDIA_DIMENSIONS[mediaItems[0].src]?.w ?? 1440}
               height={MEDIA_DIMENSIONS[mediaItems[0].src]?.h ?? 900}
               sizes="(min-width: 1280px) 1152px, 90vw"
@@ -118,9 +117,8 @@ export function ProjectFullView({ project, tintColor }: ProjectFullViewProps) {
                     }}
                   >
                     {item.src ? (
-                      <Image
-                        src={item.src}
-                        alt={item.alt ?? item.label}
+                      <ProjectImage
+                        item={item}
                         fill
                         sizes="(min-width: 640px) 360px, 100vw"
                         className="h-full w-full object-cover"
@@ -234,9 +232,8 @@ export function ProjectFullView({ project, tintColor }: ProjectFullViewProps) {
                   {section.media?.map((item) => item.src ? (
                     <figure key={item.label} className="space-y-3">
                       <div className="flex justify-center overflow-hidden rounded-2xl border border-white/10 bg-black/20">
-                        <Image
-                          src={item.src}
-                          alt={item.alt ?? item.label}
+                        <ProjectImage
+                          item={item}
                           width={MEDIA_DIMENSIONS[item.src]?.w ?? 1440}
                           height={MEDIA_DIMENSIONS[item.src]?.h ?? 900}
                           sizes={section.media?.length === 1

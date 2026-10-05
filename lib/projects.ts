@@ -5,6 +5,8 @@ export type ProjectMediaKind = "image" | "video" | "scene" | "none";
 export interface ProjectMediaItem {
   label: string;
   src?: string;
+  animatedSrc?: string;
+  animatedMobileSrc?: string;
   alt?: string;
   cover?: boolean;
   sprite?: {
@@ -586,7 +588,8 @@ export const PROJECTS: Project[] = [
           {
             label: "the classic board · rendered from game source",
             src: "/assets/projects/marralhinha/mar_board.webp",
-            alt: "Angled view of Marralhinha's wooden board and four marble sets, rendered using the game's actual Three.js components",
+            animatedSrc: "/assets/projects/marralhinha/mar_board_loop.webp",
+            alt: "Marralhinha's wooden board and marble sets, rendered using the game's actual Three.js components",
           },
         ],
       },
@@ -597,9 +600,12 @@ export const PROJECTS: Project[] = [
         layout: "editorial",
         media: [
           {
-            label: "a few favorites · actual in-game materials",
+            label: "the marble cabinet · actual in-game materials",
             src: "/assets/projects/marralhinha/mar_collection.webp",
-            alt: "Six actual Marralhinha marble skins: Cat's Eye, Galaxy, Gold Leaf, Magma, Frostbite, and Aurora",
+            animatedSrc: "/assets/projects/marralhinha/mar_collection_loop.webp",
+            animatedMobileSrc:
+              "/assets/projects/marralhinha/mar_collection_loop_mobile.webp",
+            alt: "A showcase of actual Marralhinha marble skins across the game's rarity tiers",
           },
         ],
       },
