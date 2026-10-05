@@ -75,8 +75,66 @@ export const WIDTH_VW: Record<ProjectWidth, number> = {
 
 export const PROJECTS: Project[] = [
   {
-    id: "autopsy",
+    id: "marralhinha",
     index: "01.",
+    name: "Marralhinha",
+    tagline: "same game. different tables.",
+    body: "my family has been playing marralhinha, a marble game from terceira, açores, for a couple of years. i built an online version so friends could pull up a chair from anywhere. a personal side project, from the 3d board to the multiplayer server.",
+    role: "solo · personal project",
+    stack: ["React", "Three.js", "Node.js", "Socket.IO", "Discord SDK"],
+    href: "https://marralhinha.app",
+    hrefLabel: "play a round →",
+    githubHref: "https://github.com/ryanpolasky/Marralhinha",
+    width: "xl",
+    introLayout: "landscape",
+    media: {
+      kind: "image",
+      items: [
+        {
+          label: "the board",
+          src: "/assets/projects/marralhinha/mar_game.webp",
+          alt: "Marralhinha board mid-game with four players",
+        },
+      ],
+    },
+    sections: [
+      {
+        eyebrow: "the table",
+        title: "a familiar table, from anywhere.",
+        body: "a wooden board, glass marbles, and a shortcut worth arguing over. three.js brings the table to life; a node + socket.io server keeps everyone in sync. share a room code, play with friends, or let bots fill the empty seats.",
+        layout: "editorial",
+        media: [
+          {
+            label: "the classic board · rendered from game source",
+            src: "/assets/projects/marralhinha/mar_board.webp",
+            animatedSrc: "/assets/projects/marralhinha/mar_board_loop.webp",
+            alt: "Marralhinha's wooden board and marble sets, rendered using the game's actual Three.js components",
+          },
+        ],
+      },
+      {
+        eyebrow: "between rounds",
+        title: "your marbles. your table.",
+        body: "glass, gold leaf, tiny galaxies. games earn marbucks for marbles, boards, and dice that make the table yours, without changing the odds. play in the browser or bring the same game into a discord voice channel.",
+        layout: "editorial",
+        media: [
+          {
+            label: "the marble cabinet · actual in-game materials",
+            src: "/assets/projects/marralhinha/mar_collection.webp",
+            animatedSrc: "/assets/projects/marralhinha/mar_collection_loop.webp",
+            animatedMobileSrc:
+              "/assets/projects/marralhinha/mar_collection_loop_mobile.webp",
+            alt: "A showcase of actual Marralhinha marble skins across the game's rarity tiers",
+          },
+        ],
+      },
+    ],
+    tintHsl: { h: 162, s: 55, l: 42 },
+    enabled: true,
+  },
+  {
+    id: "autopsy",
+    index: "02.",
     name: "Autopsy",
     tagline: "a black box recorder for ai coding agents.",
     body: "coding agents repeat the same mistakes every run. autopsy records every tool call, autopsies the rejected runs into a failure knowledge graph, and injects warnings straight into the next session's system prompt so the agent stops relearning lessons it already paid for. shipped at la hacks 2026 as a team of four.",
@@ -182,7 +240,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "utd-roommates",
-    index: "02.",
+    index: "03.",
     name: "MeteorMate",
     tagline: "ai-driven roommate matching for utd students.",
     body: "lead for an acm utd platform that matches students on habits, lifestyle, and preferences, not just location or price. owned roadmap/task breakdown, shaped the next/react frontend + python/fastapi backend architecture across postgres + firebase, and drove deployment reliability fixes for local and vercel-style environments.",
@@ -293,7 +351,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "rycord",
-    index: "03.",
+    index: "04.",
     name: "rycord",
     tagline: "a cache-first 3d record room built from my discogs collection.",
     body: "in rycord, a kallax-style shelf sits in a cozy bedroom scene, populated by the actual albums in my record collection. each record pulls out of its slot, flips to the back jacket, and shows the tracklist + description in an info panel. APIs only get hit on first grab, then every reload reads from the cache on local disk.",
@@ -354,7 +412,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "nimby",
-    index: "04.",
+    index: "05.",
     name: "NIMBY",
     tagline:
       "a 2D survivor roguelike about a druid fighting capital encroachment.",
@@ -427,7 +485,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "apple-triage",
-    index: "05.",
+    index: "06.",
     name: "LLM Test Triage",
     tagline:
       "end-to-end triage pipeline for 1000+ camera tests: parse, group, classify, file.",
@@ -478,7 +536,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "apple-nlsql",
-    index: "06.",
+    index: "07.",
     name: "NL → SQL / NoSQL",
     tagline: "natural-language query interface for internal data stores.",
     body: "engineers ask in plain english; the planner generates schema-aware queries against postgres and nosql backends. also migrated the surrounding service from java 11 → jdk 21 and designed its aws/gcp ci/cd workflow. 2024 cupertino internship on the developer tools team.",
@@ -493,7 +551,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "readme-ryvamper",
-    index: "07.",
+    index: "08.",
     name: "RyMe.md",
     tagline: "browser-only generator for animated github readme banners.",
     body: "static READMEs are tired and the existing stats-card generators all converge on the same look. RyMe.md is the workspace for designing animated profile banners across seven template families, each rendered and exported entirely in-tab. SVG templates bake CSS @keyframes so banners animate without javascript and play in github's markdown renderer. zero server, zero signup - one file out, drop into your username/username repo, done.",
@@ -553,64 +611,6 @@ export const PROJECTS: Project[] = [
       },
     ],
     tintHsl: { h: 330, s: 70, l: 60 },
-    enabled: true,
-  },
-  {
-    id: "marralhinha",
-    index: "08.",
-    name: "Marralhinha",
-    tagline: "same game. different tables.",
-    body: "my family has been playing marralhinha, a marble game from terceira, açores, for a couple of years. i built an online version so friends could pull up a chair from anywhere. a personal side project, from the 3d board to the multiplayer server.",
-    role: "solo · personal project",
-    stack: ["React", "Three.js", "Node.js", "Socket.IO", "Discord SDK"],
-    href: "https://marralhinha.app",
-    hrefLabel: "play a round →",
-    githubHref: "https://github.com/ryanpolasky/Marralhinha",
-    width: "xl",
-    introLayout: "landscape",
-    media: {
-      kind: "image",
-      items: [
-        {
-          label: "the board",
-          src: "/assets/projects/marralhinha/mar_game.webp",
-          alt: "Marralhinha board mid-game with four players",
-        },
-      ],
-    },
-    sections: [
-      {
-        eyebrow: "the table",
-        title: "a familiar table, from anywhere.",
-        body: "a wooden board, glass marbles, and a shortcut worth arguing over. three.js brings the table to life; a node + socket.io server keeps everyone in sync. share a room code, play with friends, or let bots fill the empty seats.",
-        layout: "editorial",
-        media: [
-          {
-            label: "the classic board · rendered from game source",
-            src: "/assets/projects/marralhinha/mar_board.webp",
-            animatedSrc: "/assets/projects/marralhinha/mar_board_loop.webp",
-            alt: "Marralhinha's wooden board and marble sets, rendered using the game's actual Three.js components",
-          },
-        ],
-      },
-      {
-        eyebrow: "between rounds",
-        title: "your marbles. your table.",
-        body: "glass, gold leaf, tiny galaxies. games earn marbucks for marbles, boards, and dice that make the table yours, without changing the odds. play in the browser or bring the same game into a discord voice channel.",
-        layout: "editorial",
-        media: [
-          {
-            label: "the marble cabinet · actual in-game materials",
-            src: "/assets/projects/marralhinha/mar_collection.webp",
-            animatedSrc: "/assets/projects/marralhinha/mar_collection_loop.webp",
-            animatedMobileSrc:
-              "/assets/projects/marralhinha/mar_collection_loop_mobile.webp",
-            alt: "A showcase of actual Marralhinha marble skins across the game's rarity tiers",
-          },
-        ],
-      },
-    ],
-    tintHsl: { h: 162, s: 55, l: 42 },
     enabled: true,
   },
   // gallery / "15 versions" project temporarily commented out while we
