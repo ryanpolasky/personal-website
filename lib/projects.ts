@@ -107,7 +107,6 @@ export const PROJECTS: Project[] = [
           {
             label: "the classic board · rendered from game source",
             src: "/assets/projects/marralhinha/mar_board.webp",
-            animatedSrc: "/assets/projects/marralhinha/mar_board_loop.webp",
             alt: "Marralhinha's wooden board and marble sets, rendered using the game's actual Three.js components",
           },
         ],
@@ -121,9 +120,9 @@ export const PROJECTS: Project[] = [
           {
             label: "the marble cabinet · actual in-game materials",
             src: "/assets/projects/marralhinha/mar_collection.webp",
-            animatedSrc: "/assets/projects/marralhinha/mar_collection_loop.webp",
+            animatedSrc: "/assets/projects/marralhinha/mar_collection_loop.mp4",
             animatedMobileSrc:
-              "/assets/projects/marralhinha/mar_collection_loop_mobile.webp",
+              "/assets/projects/marralhinha/mar_collection_loop_mobile.mp4",
             alt: "A showcase of actual Marralhinha marble skins across the game's rarity tiers",
           },
         ],
