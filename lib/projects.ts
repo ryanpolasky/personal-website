@@ -551,6 +551,69 @@ export const PROJECTS: Project[] = [
     tintHsl: { h: 330, s: 70, l: 60 },
     enabled: true,
   },
+  {
+    id: "marralhinha",
+    index: "08.",
+    name: "Marralhinha",
+    tagline: "the marble board game from terceira, açores, online.",
+    body: "marralhinha is a traditional marble racing game from terceira, açores that my family's been playing for years, so i built the online version to get a game going no matter where anyone is. real-time rooms with invite codes, bot opponents, classic + blitz modes, free-for-all or 2v2 teams, daily rewards, 80+ cosmetics, leaderboards, and it plays right inside discord.",
+    role: "solo",
+    stack: ["React", "Node.js", "Socket.IO", "Discord SDK"],
+    href: "https://marralhinha.app",
+    hrefLabel: "visit →",
+    githubHref: "https://github.com/ryanpolasky/Marralhinha",
+    width: "xl",
+    media: {
+      kind: "image",
+      items: [
+        {
+          label: "the board",
+          src: "/assets/projects/marralhinha/mar_game.webp",
+          alt: "Marralhinha board mid-game with four players",
+          cover: true,
+        },
+      ],
+    },
+    sections: [
+      {
+        eyebrow: "the game",
+        title: "ludo's portuguese cousin, on the internet.",
+        body: "race five marbles around the board and into your home column. captures send rivals back to their dish, sixes roll again, and a mid-board shortcut rewards the bold. rooms spin up in seconds with a shareable code or invite link, and empty seats fill with named bots so nobody waits on a full table.",
+        points: [
+          "Real-time rooms with shareable codes + invite links",
+          "Classic and Blitz modes, free-for-all or teams 2v2",
+          "Named bot opponents, spectate seats, turn timers",
+          "In-room chat and game log",
+        ],
+        media: [
+          {
+            label: "the lobby",
+            src: "/assets/projects/marralhinha/mar_lobby.webp",
+            alt: "Marralhinha room lobby with bots and mode selection",
+          },
+        ],
+      },
+      {
+        eyebrow: "the meta",
+        title: "cosmetics, streaks, and discord.",
+        body: "there's a whole meta game wrapped around the table: a shop with 80+ cosmetics from marble skins to board themes, daily login rewards, and leaderboards. sign in with discord to keep your collection across devices, or play it as a discord activity without leaving the call.",
+        points: [
+          "80+ cosmetics across marbles, boards, and dice",
+          "Daily rewards + global leaderboards",
+          "Discord sign-in + playable as a discord activity",
+        ],
+        media: [
+          {
+            label: "the landing",
+            src: "/assets/projects/marralhinha/mar_landing.webp",
+            alt: "Marralhinha landing page over the 3D board",
+          },
+        ],
+      },
+    ],
+    tintHsl: { h: 162, s: 55, l: 42 },
+    enabled: true,
+  },
   // gallery / "15 versions" project temporarily commented out while we
   // trim the variant set down. when ready to re-add, uncomment and
   // bump index to whatever slot is appropriate for the new order.
