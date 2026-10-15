@@ -385,10 +385,9 @@ const JSON_LD = {
       "@type": "WebSite",
       "@id": "https://apps.ryanpolasky.com/#website",
       name: "RyApps",
-      alternateName: "RyApps - RyHome & RyMessage for Windows",
+      alternateName: "RyApps - At home on Windows",
       url: "https://apps.ryanpolasky.com/",
-      description:
-        "Free, open-source Windows desktop apps by Ryan Polasky: RyHome for Matter smart home control and RyMessage for iMessage and SMS through a Mac.",
+      description: "Free, open-source Windows apps by Ryan Polasky.",
       image: "https://apps.ryanpolasky.com/og.png",
       inLanguage: "en",
       creator: { "@id": `${SITE_URL}/#person` },
