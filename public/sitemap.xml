@@ -3,7 +3,7 @@
   Hand-maintained. Last synced 2026-07-27.
 
   Keep in sync with:
-    - enabled entries in lib/projects.ts  ->  /work/<id>/            (currently 7)
+    - enabled entries in lib/projects.ts  ->  /work/<id>/            (currently 8)
     - VARIANTS in lib/variants.ts         ->  /variants/<key>.html   (currently 10)
 
   trailingSlash is true in next.config, so app routes need the trailing slash.
@@ -22,6 +22,11 @@
   </url>
 
   <!-- project write-ups: the real indexable long-form content -->
+  <url>
+    <loc>https://ryanpolasky.com/work/marralhinha/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
   <url>
     <loc>https://ryanpolasky.com/work/autopsy/</loc>
     <changefreq>monthly</changefreq>
