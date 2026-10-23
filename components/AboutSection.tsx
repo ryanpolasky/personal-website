@@ -118,15 +118,15 @@ interface Role {
   metric: { value: string; label: string };
 }
 
-const ROLES: Role[] = [
+export const ROLES: Role[] = [
   {
     company: "Apple",
     title: "Software Engineer",
     type: "full-time",
     location: "cupertino",
     when: "jun 2026 → present",
-    body: "joined apple full-time as a software engineer on the camera & photos team, after two summers interning with the org during school.",
-    metric: { value: "now", label: "camera + photos" },
+    body: "joined apple full-time as a software engineer on the camera & edits team, after two summers interning with the org during school.",
+    metric: { value: "now", label: "camera + edits" },
   },
   {
     company: "Apple",
@@ -176,7 +176,7 @@ const ROLES: Role[] = [
 ];
 
 // skill categories, mirrors the original.html skill matrix.
-const SKILL_GROUPS: { label: string; items: string[] }[] = [
+export const SKILL_GROUPS: { label: string; items: string[] }[] = [
   {
     label: "languages",
     items: [
@@ -302,9 +302,9 @@ export function AboutSection() {
           <div className="mt-12 grid max-w-5xl gap-10 sm:mt-20 sm:grid-cols-2">
             <p className="text-base leading-relaxed text-[var(--color-text-muted)] sm:text-lg">
               i&apos;m a computer science graduate from ut dallas (&apos;26),
-              now a software engineer on apple&apos;s camera & photos team.
+              now a software engineer on apple&apos;s camera & edits team.
               before going full-time i spent two summers there as an intern,
-              building ai tooling for the wireless tech (WTE) & camera & photos
+              building ai tooling for the wireless tech (WTE) & camera & edits
               orgs.
             </p>
             <p className="text-base leading-relaxed text-[var(--color-text-muted)] sm:text-lg">

@@ -141,12 +141,14 @@ export function Cursor() {
       <div
         ref={dotRef}
         aria-hidden
+        data-club-cursor
         data-stage="light"
         className="pointer-events-none fixed left-0 top-0 z-[10000] h-1.5 w-1.5 rounded-full data-[stage=light]:bg-[var(--color-accent)] data-[stage=light]:mix-blend-difference data-[stage=dark]:bg-white"
       />
       <div
         ref={ringRef}
         aria-hidden
+        data-club-cursor
         data-hover="false"
         data-stage="light"
         className="pointer-events-none fixed left-0 top-0 z-[9999] rounded-full border border-[var(--color-line-strong)] transition-[border-color] duration-200 ease-out data-[stage=dark]:border-[var(--color-line-invert-strong)] will-change-transform"

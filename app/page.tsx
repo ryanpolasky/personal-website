@@ -10,6 +10,8 @@ import { ProjectsRail } from "@/components/ProjectsRail";
 import { FluidParticleBand } from "@/components/FluidParticleBand";
 import { Footer } from "@/components/Footer";
 import { OilFilmRippleUnlock } from "@/components/OilFilmRippleUnlock";
+import { ClubUnlock } from "@/components/club/ClubUnlock";
+import { ClubTapTrigger } from "@/components/club/ClubTapTrigger";
 import { HDRI_STUDIO_HREF } from "@/lib/site";
 
 export default function HomePage() {
@@ -33,6 +35,7 @@ export default function HomePage() {
         <HeroStage>
           <HeroClusterLazy className="pointer-events-none absolute inset-0" />
           <OilFilmRippleUnlock />
+          <ClubUnlock />
           <div className="stage-edge" aria-hidden />
 
           {/* mobile-only legibility tint: dark gradient weighted to the bottom
@@ -45,12 +48,7 @@ export default function HomePage() {
 
           <div className="absolute inset-0 z-30 flex flex-col justify-between p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] sm:p-12 md:p-16">
             <div className="flex items-start justify-between">
-              <p
-                className="text-[10.5px] uppercase tracking-[0.32em] text-white/75 [text-shadow:0_1px_6px_rgba(0,0,0,0.7)] sm:text-white/55 sm:[text-shadow:none]"
-                style={{ fontFamily: "var(--font-mono)" }}
-              >
-                00 - ryan polasky
-              </p>
+              <ClubTapTrigger>00 - ryan polasky</ClubTapTrigger>
               <p
                 className="hidden text-[10.5px] uppercase tracking-[0.32em] text-white/55 sm:block"
                 style={{ fontFamily: "var(--font-mono)" }}
@@ -69,7 +67,7 @@ export default function HomePage() {
               <HeroHeadline />
               <p className="mt-4 max-w-md text-[14.5px] leading-relaxed text-white/90 [text-shadow:0_1px_8px_rgba(0,0,0,0.6),0_1px_2px_rgba(0,0,0,0.5)] sm:mt-5 sm:text-[17px] sm:text-white/65 sm:[text-shadow:none]">
                 ut dallas cs grad, now a software engineer on apple&apos;s
-                camera & photos team. most recently built{" "}
+                camera & edits team. most recently built{" "}
                 <em className="not-italic text-white">marralhinha</em> - a
                 traditional marble game, rebuilt for the browser.
               </p>

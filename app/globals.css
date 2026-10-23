@@ -59,6 +59,10 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+body.club-open [data-club-cursor] {
+  display: none !important;
+}
+
 /* hide the native browser scrollbar everywhere. Lenis is driving smooth
    scroll already, so the chunky native scrollbar (especially the wide
    Windows/Edge one) is pure visual noise that also forces a layout

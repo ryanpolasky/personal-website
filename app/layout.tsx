@@ -12,13 +12,13 @@ const OG_IMAGE = `${SITE_URL}/assets/images/site-preview.png`;
 const OG_IMAGE_ALT =
   "Hero section for Ryan Polasky's personal site";
 const SHORT_DESCRIPTION =
-  "Software Engineer on Apple's Camera & Photos team. Backend systems, AI/LLM tooling, and developer productivity. UT Dallas '26.";
+  "Software Engineer on Apple's Camera & Edits team. Backend systems, AI/LLM tooling, and developer productivity. UT Dallas '26.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: "Ryan Polasky - Software Engineer",
   description:
-    "Ryan Polasky - Software Engineer on Apple's Camera & Photos team. Backend systems, AI/LLM tooling, developer productivity. UT Dallas '26.",
+    "Ryan Polasky - Software Engineer on Apple's Camera & Edits team. Backend systems, AI/LLM tooling, developer productivity. UT Dallas '26.",
   keywords: [
     "Ryan Polasky",
     "ryan polasky",
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     "AI engineer",
     "LLM tooling",
     "Apple engineer",
-    "Camera and Photos",
+    "Camera and Edits",
     "UT Dallas",
     "computer science",
     "devops",
@@ -107,7 +107,7 @@ const JSON_LD = {
       email: "mailto:ryanpolasky@hotmail.com",
       jobTitle: "Software Engineer",
       description:
-        "Software Engineer on Apple's Camera & Photos team, specializing in backend systems, AI/LLM tooling, test automation, and developer productivity. UT Dallas '26 graduate.",
+        "Software Engineer on Apple's Camera & Edits team, specializing in backend systems, AI/LLM tooling, test automation, and developer productivity. UT Dallas '26 graduate.",
       address: {
         "@type": "PostalAddress",
         addressLocality: "Cupertino",
@@ -151,7 +151,7 @@ const JSON_LD = {
       name: "Ryan Polasky",
       alternateName: "ryan.polasky / runtime",
       description:
-        "Personal site of Ryan Polasky - Software Engineer on Apple's Camera & Photos team, specializing in backend systems, AI/LLM tooling, and developer productivity.",
+        "Personal site of Ryan Polasky - Software Engineer on Apple's Camera & Edits team, specializing in backend systems, AI/LLM tooling, and developer productivity.",
       inLanguage: "en",
       publisher: { "@id": `${SITE_URL}/#person` },
       author: { "@id": `${SITE_URL}/#person` },
