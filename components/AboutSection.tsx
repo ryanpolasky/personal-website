@@ -125,8 +125,8 @@ const ROLES: Role[] = [
     type: "full-time",
     location: "cupertino",
     when: "jun 2026 → present",
-    body: "joined apple full-time as a software engineer on the camera & photos team, after two summers interning with the org during school.",
-    metric: { value: "now", label: "camera + photos" },
+    body: "joined apple full-time as a software engineer on the camera & edits team, after two summers interning with the org during school.",
+    metric: { value: "now", label: "camera + edits" },
   },
   {
     company: "Apple",
@@ -152,7 +152,7 @@ const ROLES: Role[] = [
     type: "intern",
     location: "cupertino",
     when: "may–aug 2025",
-    body: "built automated parsing for thousands of on-device camera and photos tests, integrated llms into the failure-triage pipeline, and shipped a unified bug-report generator that attached relevant failure artifacts.",
+    body: "built automated parsing for thousands of on-device camera and edits tests, integrated llms into the failure-triage pipeline, and shipped a unified bug-report generator that attached relevant failure artifacts.",
     metric: { value: "4,800%", label: "manual triage reduction" },
   },
   {
@@ -302,9 +302,9 @@ export function AboutSection() {
           <div className="mt-12 grid max-w-5xl gap-10 sm:mt-20 sm:grid-cols-2">
             <p className="text-base leading-relaxed text-[var(--color-text-muted)] sm:text-lg">
               i&apos;m a computer science graduate from ut dallas (&apos;26),
-              now a software engineer on apple&apos;s camera & photos team.
+              now a software engineer on apple&apos;s camera & edits team.
               before going full-time i spent two summers there as an intern,
-              building ai tooling for the wireless tech (WTE) & camera & photos
+              building ai tooling for the wireless tech (WTE) & camera & edits
               orgs.
             </p>
             <p className="text-base leading-relaxed text-[var(--color-text-muted)] sm:text-lg">
