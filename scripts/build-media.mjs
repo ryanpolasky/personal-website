@@ -33,6 +33,7 @@ const LQIP_QUALITY = 60;
 
 const RASTER = /\.(png|webp|jpe?g)$/i;
 const isLqip = (name) => /\.lqip\.webp$/i.test(name);
+const isResponsive = (name) => /\.(640|1280|1920)w\.webp$/i.test(name);
 
 async function* walk(dir) {
   for (const entry of await fs.readdir(dir, { withFileTypes: true })) {
@@ -60,9 +61,15 @@ let skipped = 0;
 
 for await (const file of walk(ROOT)) {
   const name = path.basename(file);
-  if (!RASTER.test(name) || isLqip(name)) continue;
+  if (!RASTER.test(name) || isLqip(name) || isResponsive(name)) continue;
 
   const meta = await sharp(file).metadata();
+  for (const width of [640, 1280, 1920]) {
+    if (width >= meta.width) continue;
+    const output = file.replace(RASTER, `.${width}w.webp`);
+    if (!FORCE && (await mtime(output)) >= (await mtime(file))) continue;
+    await sharp(file).resize({ width }).webp({ quality: 86 }).toFile(output);
+  }
   const publicSrc = "/" + path.relative(path.resolve("public"), file).split(path.sep).join("/");
   dims[publicSrc] = { w: meta.width, h: meta.height };
 

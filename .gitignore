@@ -13,6 +13,9 @@ out/
 
 # derived media (scripts/build-media.mjs, runs on predev/prebuild)
 *.lqip.webp
+*.640w.webp
+*.1280w.webp
+*.1920w.webp
 
 # production
 build/

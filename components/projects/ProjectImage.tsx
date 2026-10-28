@@ -3,6 +3,7 @@
 import Image, { type ImageProps } from "next/image";
 import { useEffect, useRef, useState } from "react";
 import type { ProjectMediaItem } from "@/lib/projects";
+import { ProjectStill } from "./ProjectStill";
 
 type ProjectImageProps = Omit<ImageProps, "src" | "alt"> & {
   item: ProjectMediaItem;
@@ -87,7 +88,7 @@ export function ProjectImage({ item, ...props }: ProjectImageProps) {
   }
 
   return (
-    <Image
+    <ProjectStill
       {...props}
       src={item.src}
       alt={item.alt ?? item.label}
