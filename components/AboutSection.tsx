@@ -281,14 +281,12 @@ export function AboutSection() {
             01 - about
           </p>
 
-          <h2 className="display mt-6 w-full text-[clamp(3rem,11.5vw,16rem)] leading-[0.85] tracking-tight text-[var(--color-text)]">
+          <h2 data-reveal className="studio-heading mt-6 w-full text-[clamp(3rem,10.5vw,12rem)] leading-[0.95] text-[var(--color-text)]">
             small,
             <br />
             <span
               style={{
-                fontFamily: "var(--font-display)",
-                fontStyle: "italic",
-                fontVariationSettings: '"opsz" 144, "SOFT" 80, "WONK" 1',
+                fontFamily: "var(--font-sans)",
               }}
               className="text-[var(--color-accent)] pr-[0.1em]"
             >
@@ -299,7 +297,7 @@ export function AboutSection() {
             on purpose.
           </h2>
 
-          <div className="mt-12 grid max-w-5xl gap-10 sm:mt-20 sm:grid-cols-2">
+          <div data-reveal className="mt-12 grid max-w-5xl gap-10 sm:mt-20 sm:grid-cols-2">
             <p className="text-base leading-relaxed text-[var(--color-text-muted)] sm:text-lg">
               i&apos;m a computer science graduate from ut dallas (&apos;26),
               now a software engineer on apple&apos;s camera & edits team.
@@ -354,13 +352,11 @@ export function AboutSection() {
           02 - experience
         </p>
 
-        <h3 className="display mt-6 max-w-[14ch] text-[clamp(2.4rem,7vw,6rem)] leading-[0.9] tracking-tight text-[var(--color-text)]">
+        <h3 data-reveal className="studio-heading mt-6 max-w-[14ch] text-[clamp(2.4rem,7vw,6rem)] leading-[0.98] text-[var(--color-text)]">
           places i&apos;ve{" "}
           <span
             style={{
-              fontFamily: "var(--font-display)",
-              fontStyle: "italic",
-              fontVariationSettings: '"opsz" 144, "SOFT" 80, "WONK" 1',
+              fontFamily: "var(--font-sans)",
             }}
             className="text-[var(--color-accent)] pr-[0.1em]"
           >
@@ -373,6 +369,7 @@ export function AboutSection() {
           {ROLES.map((role, i) => (
             <article
               key={`${role.company}-${role.title}`}
+              data-reveal
               className="relative isolate grid items-start gap-8 overflow-hidden rounded-[1.75rem] border border-[rgba(14,13,11,0.08)] bg-[rgba(248,247,243,0.62)] px-5 py-8 shadow-[0_18px_60px_-30px_rgba(14,13,11,0.28),inset_0_1px_0_rgba(255,255,255,0.55)] backdrop-blur-[14px] backdrop-saturate-[1.15] before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:bg-[linear-gradient(135deg,rgba(255,255,255,0.55),rgba(255,255,255,0.05)_55%,rgba(255,255,255,0.22))] sm:grid-cols-[1fr_220px] sm:gap-12 sm:px-8 sm:py-10 md:px-10 md:py-12 [&+article]:mt-4 sm:[&+article]:mt-5"
             >
               <div>
@@ -382,13 +379,11 @@ export function AboutSection() {
                 >
                   0{i + 1}.
                 </p>
-                <h4 className="display mt-3 text-[clamp(1.8rem,4vw,3.4rem)] leading-[0.95] tracking-tight text-[var(--color-text)]">
+                <h4 className="studio-heading mt-3 text-[clamp(1.8rem,4vw,3.4rem)] leading-[1.05] text-[var(--color-text)]">
                   {role.company}{" "}
                   <span
                     style={{
-                      fontFamily: "var(--font-display)",
-                      fontStyle: "italic",
-                      fontVariationSettings: '"opsz" 144, "SOFT" 80, "WONK" 1',
+                      fontFamily: "var(--font-sans)",
                     }}
                     className="text-[var(--color-accent)]"
                   >
@@ -406,7 +401,7 @@ export function AboutSection() {
                 </p>
               </div>
               <div className="sm:text-right">
-                <p className="display text-[clamp(2.2rem,4.5vw,3.6rem)] leading-none tracking-tight text-[var(--color-accent)]">
+                <p className="studio-heading text-[clamp(2.2rem,4.5vw,3.6rem)] leading-none text-[var(--color-accent)]">
                   {role.metric.value}
                 </p>
                 <p

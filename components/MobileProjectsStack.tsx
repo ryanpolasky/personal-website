@@ -55,7 +55,7 @@ export function MobileProjectsStack() {
             <span className="h-px w-6 bg-white/30" />
             03 / projects
           </p>
-          <h2 className="display mt-2 text-[clamp(3rem,16vw,5.5rem)] leading-[0.82] tracking-[-0.06em] text-white sm:text-[clamp(4.5rem,11vw,7.5rem)]">
+          <h2 data-reveal className="studio-heading mt-2 text-[clamp(3rem,14vw,5.5rem)] leading-[0.95] text-white sm:text-[clamp(4.5rem,11vw,7.5rem)]">
             selected
             <br />
             systems
@@ -189,7 +189,7 @@ export function MobileProjectsStack() {
                     />
                   ) : (
                     <h3
-                      className={`display max-w-[9ch] leading-[0.82] tracking-[-0.06em] text-white ${
+                      className={`studio-heading max-w-[9ch] leading-[0.98] text-white ${
                         project.introLayout === "landscape"
                           ? "text-[clamp(2rem,9vw,4.5rem)] sm:text-[clamp(2rem,4.5vw,4.5rem)]"
                           : "text-[clamp(2.85rem,13.5vw,4.8rem)] sm:text-[clamp(3.8rem,7vw,5.5rem)]"

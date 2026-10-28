@@ -49,6 +49,7 @@ export function MagneticButton({
     const el = ref.current;
     const inner = innerRef.current;
     if (!el || !inner) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce), (hover: none)").matches) return;
     // magnetic follow: a springy back.out stands in for the old
     // stiffness 180 / damping 14 spring (slightly underdamped).
     const follow = { duration: 0.45, ease: "back.out(1.4)" };
@@ -89,7 +90,7 @@ export function MagneticButton({
   const onUp = () => tweens.current?.scale(1.03);
 
   const inner = (
-    <span ref={innerRef} className="inline-flex will-change-transform">
+    <span ref={innerRef} className="inline-flex items-center gap-3 will-change-transform">
       {children}
     </span>
   );

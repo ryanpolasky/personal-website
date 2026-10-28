@@ -98,6 +98,363 @@ body::-webkit-scrollbar {
     "WONK" 1;
 }
 
+.studio-heading {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  letter-spacing: -0.065em;
+  line-height: 0.98;
+}
+
+.hero-frame {
+  position: relative;
+  display: flex;
+  height: 100svh;
+  min-height: 680px;
+  padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+}
+
+.hero-stage {
+  border-radius: 20px;
+}
+
+.hero-content {
+  padding: 28px 24px;
+}
+
+.hero-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+[data-nav-anchor] {
+  scroll-margin-top: 32px;
+}
+
+.hero-index {
+  font-size: 13px;
+  letter-spacing: -0.02em;
+  color: white;
+}
+
+.hero-location {
+  display: none;
+}
+
+.hero-kicker {
+  margin-bottom: 22px;
+  max-width: 27ch;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #c6c6cf;
+}
+
+.hero-headline {
+  font-size: clamp(2.9rem, 13.4vw, 8rem);
+  line-height: 1.04;
+  color: white;
+  letter-spacing: -0.075em;
+}
+
+.studio-line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.16em;
+  margin-bottom: -0.16em;
+}
+
+.hero-enter-line {
+  display: block;
+  transform-origin: left bottom;
+}
+
+.hero-underline-wrap {
+  position: relative;
+  display: inline-block;
+  isolation: isolate;
+}
+
+.hero-underline {
+  position: absolute;
+  z-index: -1;
+  left: 0;
+  bottom: 0.065em;
+  width: 100%;
+  height: 0.105em;
+  background: var(--color-accent);
+  transform: scaleX(0.5);
+  transform-origin: left;
+}
+
+.hero-description {
+  margin-top: 24px;
+  max-width: 420px;
+  font-size: 14px;
+  line-height: 1.65;
+  color: #d0d0d7;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 22px;
+  margin-top: 26px;
+}
+
+.studio-button {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  letter-spacing: -0.02em;
+  transition: background-color 200ms, color 200ms;
+}
+
+.studio-button-primary {
+  padding: 16px 24px;
+  background: white;
+  color: var(--color-stage);
+  border-radius: 6px;
+}
+
+.studio-button-primary:hover {
+  background: var(--color-accent-soft);
+}
+
+.studio-button-text {
+  color: white;
+}
+
+.studio-button-text:hover {
+  color: var(--color-accent-soft);
+}
+
+.studio-arrow {
+  display: inline-block;
+  transition: transform 250ms;
+}
+
+.studio-button:hover .studio-arrow {
+  transform: translate(2px, -2px);
+}
+
+.hero-scroll-cue {
+  display: none;
+}
+
+.studio-nav {
+  display: none;
+}
+
+.footer-wordmark {
+  font-size: clamp(2.8rem, 15.5vw, 15rem);
+}
+
+@media (min-width: 640px) {
+  .hero-frame {
+    padding: 16px;
+    min-height: 760px;
+  }
+
+  .hero-content {
+    padding: 48px;
+  }
+
+  .hero-meta {
+    margin-top: 64px;
+  }
+
+  .hero-index, .hero-location {
+    font-size: 12px;
+    color: #a9a9b3;
+  }
+
+  .hero-location {
+    display: block;
+  }
+
+  .hero-kicker {
+    max-width: none;
+    font-size: 14px;
+  }
+
+  .hero-headline {
+    font-size: clamp(4rem, 8.5vw, 8rem);
+  }
+
+  .hero-description {
+    font-size: 16px;
+    color: #b9b9c3;
+  }
+
+  .hero-actions {
+    gap: 28px;
+    margin-top: 30px;
+  }
+
+  .studio-button {
+    font-size: 14px;
+  }
+
+  .studio-button-primary {
+    padding: 18px 28px;
+  }
+
+  .studio-nav {
+    position: fixed;
+    z-index: 80;
+    inset: 0 0 auto;
+    display: block;
+    padding: 32px 64px;
+    color: white;
+    border-bottom: 1px solid transparent;
+    transition: padding 350ms, background-color 350ms, color 350ms, border-color 350ms;
+  }
+
+  .studio-nav.is-scrolled {
+    padding-top: 14px;
+    padding-bottom: 14px;
+    color: var(--color-text);
+    background: var(--color-bg);
+    border-color: var(--color-line);
+  }
+
+  .studio-nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .studio-wordmark {
+    flex-shrink: 0;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.065em;
+  }
+
+  .studio-wordmark-dot {
+    color: var(--color-accent);
+  }
+
+  .studio-nav-links {
+    display: flex;
+    align-items: center;
+    gap: clamp(18px, 2.5vw, 40px);
+  }
+
+  .studio-nav-link {
+    position: relative;
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    gap: 16px;
+    font-size: 13px;
+    letter-spacing: -0.02em;
+  }
+
+  .studio-nav-link::after {
+    content: "";
+    position: absolute;
+    bottom: 8px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 250ms;
+  }
+
+  .studio-nav-link:hover::after, .studio-nav-link[aria-current]::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  .studio-nav-contact {
+    border: 1px solid currentColor;
+    border-radius: 6px;
+    padding: 0 18px;
+  }
+
+  .studio-nav-contact::after {
+    display: none;
+  }
+
+
+}
+
+@media (min-width: 1024px) {
+  .hero-scroll-cue {
+    pointer-events: none;
+    position: absolute;
+    bottom: 48px;
+    right: 48px;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    font-size: 12px;
+    color: #b9b9c3;
+  }
+
+  .hero-scroll-arrow {
+    color: white;
+    font-size: 32px;
+    animation: studio-scroll 2.5s ease-in-out infinite;
+  }
+
+
+}
+
+@media (max-width: 639px) {
+  .hero-headline {
+    text-shadow: 0 2px 18px #0006;
+  }
+
+  .hero-description {
+    text-shadow: 0 1px 6px #0008;
+  }
+
+  .hero-actions > .studio-button-primary {
+    flex-basis: 100%;
+  }
+
+  .hero-actions > .contents {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+
+}
+
+@keyframes studio-scroll {
+  0%, 100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(7px);
+  }
+
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-scroll-arrow {
+    animation: none;
+  }
+
+  .studio-nav, .studio-nav-link::after, .studio-arrow, .studio-button {
+    transition: none;
+  }
+
+
+}
+
 /* ui sans (for hero, marquee tokens). inter, tighter. */
 .sans-tight {
   font-family: var(--font-sans);

@@ -171,7 +171,7 @@ export function ProjectPanel({
         // was given. 2-col projects get the full dramatic typography.
         <h3
           id={`project-${project.id}-name`}
-          className={`display relative z-10 max-w-[11ch] leading-[0.82] tracking-[-0.055em] text-[var(--color-text-invert)] ${
+          className={`studio-heading relative z-10 max-w-[11ch] leading-[0.98] text-[var(--color-text-invert)] ${
             project.introLayout === "landscape"
               ? "text-[clamp(2.45rem,9vw,5rem)] lg:text-[clamp(3rem,5vw,6rem)]"
               : hasIntroHero

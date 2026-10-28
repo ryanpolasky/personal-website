@@ -26,18 +26,11 @@ export function Footer() {
     <footer className="relative px-4 pb-10 sm:px-6">
       <div className="mx-auto max-w-[1400px]">
         <h2
-          className="display mt-4 select-none text-[clamp(3.5rem,18vw,18rem)] leading-[0.85] tracking-[-0.045em] text-[var(--color-text)] sm:mt-6"
+          className="studio-heading footer-wordmark mt-8 select-none text-[var(--color-text)] sm:mt-12"
+          data-reveal
           aria-label="ryan polasky."
         >
-          <span
-            style={{
-              fontFamily: "var(--font-display)",
-              fontStyle: "italic",
-              fontVariationSettings: '"opsz" 144, "SOFT" 50',
-            }}
-          >
-            ryan
-          </span>{" "}
+          <span>ryan</span>{" "}
           {/* the blob lives INSIDE the "polasky" span as an absolutely-
               positioned sibling so it contributes zero width to line layout.
               previously it was an inline-block with width = max(1.5rem,
@@ -47,10 +40,7 @@ export function Footer() {
               at left: 100% of "polasky" plants it just past the y, never
               consumes inline budget, and naturally follows wherever the
               text breaks if the line ever does wrap. */}
-          <span
-            className="relative inline-block"
-            style={{ fontFamily: "var(--font-display)", fontWeight: 600 }}
-          >
+          <span className="relative inline-block">
             polasky
             <span
               className="absolute"

@@ -175,23 +175,18 @@ export function FluidParticleBand() {
           >
             04 - contact
           </p>
-          <h2 className="display max-w-[12ch] text-center text-[clamp(2.8rem,14vw,9rem)] leading-[0.92] text-white sm:max-w-[14ch] sm:text-[clamp(3rem,10vw,9rem)]">
+          <h2 data-reveal className="studio-heading max-w-[12ch] text-center text-[clamp(2.8rem,13vw,9rem)] leading-[0.98] text-white sm:max-w-[14ch] sm:text-[clamp(3rem,10vw,9rem)]">
             let&apos;s build
             <br />
-            <span
-              style={{
-                fontStyle: "italic",
-                fontVariationSettings: '"opsz" 144, "SOFT" 80, "WONK" 1',
-              }}
-            >
+            <span>
               small things.
             </span>
           </h2>
           <MagneticButton
             href="mailto:ryanpolasky@hotmail.com"
-            className="inline-flex min-h-12 items-center gap-2 rounded-full bg-white px-7 py-3.5 text-[14px] tracking-tight text-[var(--color-accent)] transition-colors hover:bg-[var(--color-accent-soft)] sm:mt-2 sm:py-4"
+            className="studio-button studio-button-primary sm:mt-2"
           >
-            let&apos;s talk →
+            let&apos;s talk <span className="studio-arrow" aria-hidden>↗</span>
           </MagneticButton>
           {/* outlined glass pills - the bare-text version got chewed up by
               particles flowing behind it. each pill has its own border +

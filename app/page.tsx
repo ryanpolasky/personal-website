@@ -4,6 +4,7 @@ import { HeroClusterLazy } from "@/components/HeroClusterLazy";
 import { HeroCtas } from "@/components/HeroCtas";
 import { HeroHeadline } from "@/components/HeroHeadline";
 import { HeroStage } from "@/components/HeroStage";
+import { StudioReveals } from "@/components/StudioReveals";
 import { MarqueeBand } from "@/components/MarqueeBand";
 import { AboutSection } from "@/components/AboutSection";
 import { ProjectsRail } from "@/components/ProjectsRail";
@@ -22,12 +23,11 @@ export default function HomePage() {
   return (
     <main id="main" className="relative">
       <Cursor />
+      <StudioReveals />
 
-      {/* 01. HERO - exactly 100svh tall with padded frame on all sides.
-          stage uses h-full so it fits the inner box (svh minus padding). */}
       <section
         id="hero"
-        className="relative flex h-[100svh] items-stretch pb-[max(0.75rem,env(safe-area-inset-bottom))] pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] pt-[max(0.75rem,env(safe-area-inset-top))] sm:min-h-[100svh] sm:items-center sm:px-6 sm:py-8"
+        className="hero-frame"
         aria-label="intro"
       >
         <HeroStage>
@@ -43,55 +43,39 @@ export default function HomePage() {
             aria-hidden
           />
 
-          <div className="absolute inset-0 z-30 flex flex-col justify-between p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] sm:p-12 md:p-16">
-            <div className="flex items-start justify-between">
-              <p
-                className="text-[10.5px] uppercase tracking-[0.32em] text-white/75 [text-shadow:0_1px_6px_rgba(0,0,0,0.7)] sm:text-white/55 sm:[text-shadow:none]"
-                style={{ fontFamily: "var(--font-mono)" }}
-              >
+          <div className="hero-content absolute inset-0 z-30 flex flex-col justify-between">
+            <div className="hero-meta" data-hero-enter>
+              <p className="hero-index">
                 00 - ryan polasky
               </p>
-              <p
-                className="hidden text-[10.5px] uppercase tracking-[0.32em] text-white/55 sm:block"
-                style={{ fontFamily: "var(--font-mono)" }}
-              >
+              <p className="hero-location">
                 cupertino, california · pdt
               </p>
             </div>
 
             <div>
-              <p
-                className="mb-5 text-[11px] uppercase tracking-[0.32em] text-white/80 [text-shadow:0_1px_6px_rgba(0,0,0,0.7)] sm:text-white/55 sm:[text-shadow:none]"
-                style={{ fontFamily: "var(--font-mono)" }}
-              >
+              <p className="hero-kicker" data-hero-enter>
                 software engineer · backend + ai / llm tooling
               </p>
               <HeroHeadline />
-              <p className="mt-4 max-w-md text-[14.5px] leading-relaxed text-white/90 [text-shadow:0_1px_8px_rgba(0,0,0,0.6),0_1px_2px_rgba(0,0,0,0.5)] sm:mt-5 sm:text-[17px] sm:text-white/65 sm:[text-shadow:none]">
+              <p className="hero-description" data-hero-enter>
                 ut dallas cs grad, now a software engineer on apple&apos;s
                 camera & edits team. most recently built{" "}
                 <em className="not-italic text-white">marralhinha</em> - a
                 traditional marble game, rebuilt for the browser.
               </p>
 
-              {/* extracted client component so this page stays server-rendered. */}
               <HeroCtas />
             </div>
           </div>
 
-          {/* scroll cue - desktop only; mobile users already know to scroll
-              and the cue clutters the tight viewport. */}
           <div
-            className="pointer-events-none absolute bottom-5 left-1/2 z-30 hidden -translate-x-1/2 flex-col items-center gap-2 xl:flex"
+            className="hero-scroll-cue"
+            data-hero-enter
             aria-hidden
           >
-            <span
-              className="text-[9.5px] uppercase tracking-[0.4em] text-white/45"
-              style={{ fontFamily: "var(--font-mono)" }}
-            >
-              scroll
-            </span>
-            <span className="h-7 w-px bg-gradient-to-b from-white/0 via-white/45 to-white/0" />
+            <span>scroll to explore</span>
+            <span className="hero-scroll-arrow">↓</span>
           </div>
         </HeroStage>
       </section>

@@ -15,7 +15,7 @@ import { useLenis } from "@/components/SmoothScrollProvider";
 import { UtdWebringButtons } from "@/components/UtdWebringButtons";
 import { resolveSectionScrollTarget } from "@/lib/scroll";
 
-// floating nav with active-section tracking and curtain-masked anchor teleports.
+// Section navigation with curtain-masked anchor teleports.
 
 const SLIDE_MS = 400;
 const DWELL_MS = 140;
@@ -46,8 +46,9 @@ export function Nav() {
   const [active, setActive] = useState<string>("");
   const [phase, setPhase] = useState<NavPhase>("idle");
   const [destLabel, setDestLabel] = useState("ryan");
-  // mobile drawer toggle; only relevant <sm. opens via top-left hamburger.
   const [mobileOpen, setMobileOpen] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
   const transitionTimer = useRef<number | null>(null);
   const pendingTarget = useRef<{
     id: string;
@@ -55,6 +56,51 @@ export function Nav() {
     offset: number;
   } | null>(null);
   const lenis = useLenis();
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const main = document.getElementById("main");
+    const previousInert = main?.inert ?? false;
+    const previousOverflow = document.body.style.overflow;
+    const menuButton = menuButtonRef.current;
+    const wasStopped = lenis?.isStopped;
+    if (main) main.inert = true;
+    document.body.style.overflow = "hidden";
+    lenis?.stop();
+    menuRef.current?.querySelector<HTMLAnchorElement>("a")?.focus();
+    const close = () => setMobileOpen(false);
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") close();
+      if (event.key !== "Tab") return;
+      const controls = [
+        menuButton,
+        ...Array.from(menuRef.current?.querySelectorAll<HTMLElement>("a, button") ?? []),
+      ].filter((element): element is HTMLElement => element !== null);
+      const first = controls[0];
+      const last = controls[controls.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last?.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first?.focus();
+      }
+    };
+    const desktop = window.matchMedia("(min-width: 640px)");
+    const onResize = () => {
+      if (desktop.matches) close();
+    };
+    window.addEventListener("keydown", onKey);
+    desktop.addEventListener("change", onResize);
+    return () => {
+      if (main) main.inert = previousInert;
+      document.body.style.overflow = previousOverflow;
+      if (!wasStopped) lenis?.start();
+      window.removeEventListener("keydown", onKey);
+      desktop.removeEventListener("change", onResize);
+      menuButton?.focus({ preventScroll: true });
+    };
+  }, [mobileOpen, lenis]);
 
   // clear pending transition work on unmount.
   useEffect(() => {
@@ -269,15 +315,10 @@ export function Nav() {
         onTransitionEnd={handleCurtainTransitionEnd}
       >
         <span
-          className="display select-none text-white"
+          className="studio-heading select-none text-white"
           style={{
-            fontFamily: "var(--font-display)",
-            fontStyle: "italic",
-            fontWeight: 400,
             fontSize: "clamp(3.5rem, 12vw, 10rem)",
             lineHeight: 1,
-            letterSpacing: "-0.02em",
-            fontVariationSettings: '"opsz" 144, "SOFT" 80, "WONK" 1',
             opacity: phase === "closing" || phase === "closed" ? 1 : 0,
             transition: `opacity ${SLIDE_MS - 80}ms ease ${phase === "closing" ? 120 : 0}ms`,
           }}
@@ -287,59 +328,44 @@ export function Nav() {
       </div>
       <nav
         aria-label="primary"
-        className={`fixed left-1/2 z-[80] hidden -translate-x-1/2 transition-all duration-500 ease-out sm:block ${
-          scrolled ? "top-3" : "top-5"
-        }`}
+        className={`studio-nav ${scrolled ? "is-scrolled" : ""}`}
       >
-        <div
-          className={`flex items-center gap-1 rounded-full border border-[var(--color-line)] bg-[color-mix(in_oklab,var(--color-bg)_82%,transparent)] px-2 py-1 backdrop-blur-md shadow-[0_8px_30px_-12px_rgba(0,0,0,0.18)] transition-all duration-500 ${
-            scrolled ? "scale-[0.96]" : "scale-100"
-          }`}
-        >
+        <div className="studio-nav-inner">
           <Link
             href="/"
             onClick={handleHomeClick}
             onClickCapture={handleHomeClick}
-            className="px-3 py-1.5 text-[12px] tracking-tight text-[var(--color-text)] hover:text-[var(--color-accent)] transition-colors"
+            className="studio-wordmark"
             data-hoverable
           >
-            <span className="font-medium">ryan polasky</span>
+            ryan polasky<span className="studio-wordmark-dot">.</span>
           </Link>
-          <span
-            className="mx-1 h-3 w-px bg-[var(--color-line-strong)]"
-            aria-hidden
-          />
-          {SECTIONS.map((s) => (
-            <a
-              key={s.id}
-              href={`#${s.id}`}
-              onClick={(e) => handleNavClick(e, s.id)}
-              onClickCapture={(e) => handleNavClick(e, s.id)}
-              className={`relative px-3 py-1.5 text-[11px] uppercase tracking-[0.18em] transition-colors ${
-                active === s.id
-                  ? "text-[var(--color-text)]"
-                  : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
-              }`}
-              style={{ fontFamily: "var(--font-mono)" }}
-              data-hoverable
-            >
-              {s.label}
-              {active === s.id && (
-                <span
-                  className="absolute inset-x-3 -bottom-0.5 h-px bg-[var(--color-accent)]"
-                  aria-hidden
-                />
-              )}
-            </a>
-          ))}
+          <div className="studio-nav-links">
+            {SECTIONS.map((s) => (
+              <a
+                key={s.id}
+                href={`#${s.id}`}
+                onClick={(e) => handleNavClick(e, s.id)}
+                onClickCapture={(e) => handleNavClick(e, s.id)}
+                className={`studio-nav-link ${s.id === "contact" ? "studio-nav-contact" : ""}`}
+                aria-current={active === s.id ? "location" : undefined}
+                data-hoverable
+              >
+                {s.id === "contact" ? "let’s talk" : s.label}
+                {s.id === "contact" && <span aria-hidden>↗</span>}
+              </a>
+            ))}
+          </div>
         </div>
       </nav>
 
       <button
+        ref={menuButtonRef}
         type="button"
         onClick={() => setMobileOpen((v) => !v)}
         aria-label={mobileOpen ? "close menu" : "open menu"}
         aria-expanded={mobileOpen}
+        aria-controls="mobile-menu"
         className="fixed right-[max(1rem,env(safe-area-inset-right))] top-[max(1rem,env(safe-area-inset-top))] z-[190] flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-black/45 text-white backdrop-blur-md shadow-[0_8px_30px_-12px_rgba(0,0,0,0.35)] transition-transform duration-300 active:scale-95 sm:hidden"
       >
         <span className="relative block h-3.5 w-5">
@@ -362,7 +388,10 @@ export function Nav() {
       </button>
 
       <div
+        ref={menuRef}
+        id="mobile-menu"
         aria-hidden={!mobileOpen}
+        inert={!mobileOpen}
         className={`fixed inset-0 z-[180] sm:hidden ${
           mobileOpen ? "pointer-events-auto" : "pointer-events-none"
         }`}
@@ -384,7 +413,7 @@ export function Nav() {
               setMobileOpen(false);
               handleHomeClick(e);
             }}
-            className="display text-3xl leading-none tracking-tight text-[var(--color-text)]"
+            className="studio-heading text-3xl leading-none tracking-tight text-[var(--color-text)]"
             data-hoverable
           >
             ryan polasky
@@ -398,7 +427,7 @@ export function Nav() {
                   setMobileOpen(false);
                   handleNavClick(e, s.id);
                 }}
-                className="display flex min-h-12 items-baseline gap-3 text-[2.25rem] leading-none tracking-tight text-[var(--color-text)] transition-colors hover:text-[var(--color-accent)]"
+                className="studio-heading flex min-h-12 items-baseline gap-3 text-[2.25rem] leading-none tracking-tight text-[var(--color-text)] transition-colors hover:text-[var(--color-accent)]"
                 data-hoverable
               >
                 <span

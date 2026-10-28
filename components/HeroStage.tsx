@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, type ReactNode } from "react";
+import { gsap } from "gsap";
 import { useAccentCycle } from "@/components/AccentProvider";
 
 // hero stage wrapper: bg-click cycles the accent palette (excludes real
@@ -10,6 +11,43 @@ import { useAccentCycle } from "@/components/AccentProvider";
 export function HeroStage({ children }: { children: ReactNode }) {
   const cycle = useAccentCycle();
   const stageRef = useRef<HTMLDivElement | null>(null);
+
+  useLayoutEffect(() => {
+    const el = stageRef.current;
+    if (!el) return;
+    const media = gsap.matchMedia();
+    media.add("(prefers-reduced-motion: no-preference)", () => {
+      const lines = el.querySelectorAll(".hero-enter-line");
+      const details = el.querySelectorAll("[data-hero-enter]");
+      const timeline = gsap.timeline({ paused: true });
+      timeline
+        .fromTo(lines, { yPercent: 115, rotate: 3 }, {
+          yPercent: 0,
+          rotate: 0,
+          duration: 1.05,
+          stagger: 0.12,
+          ease: "power4.out",
+          clearProps: "transform",
+        })
+        .fromTo(details, { opacity: 0, y: 16 }, {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          stagger: 0.07,
+          ease: "power3.out",
+          clearProps: "transform,opacity",
+        }, 0.25);
+      const play = () => timeline.play();
+      const curtain = document.getElementById("__boot-curtain");
+      if (curtain && curtain.dataset.ready !== "true") {
+        window.addEventListener("site:ready", play, { once: true });
+      } else {
+        play();
+      }
+      return () => window.removeEventListener("site:ready", play);
+    });
+    return () => media.revert();
+  }, []);
 
   useEffect(() => {
     const el = stageRef.current;
@@ -64,7 +102,7 @@ export function HeroStage({ children }: { children: ReactNode }) {
   return (
     <div
       ref={stageRef}
-      className="stage relative h-full w-full sm:h-[88svh] sm:min-h-[640px]"
+      className="stage hero-stage relative h-full w-full"
       data-stage="dark"
       style={{ transformOrigin: "center", willChange: "transform, opacity" }}
       onClick={(e) => {

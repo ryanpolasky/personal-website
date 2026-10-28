@@ -44,6 +44,8 @@ export function SmoothScrollProvider({
       const curtain = document.getElementById("__boot-curtain");
       if (!curtain) return;
       curtain.style.transform = "translate3d(0, -100%, 0)";
+      curtain.dataset.ready = "true";
+      window.dispatchEvent(new Event("site:ready"));
       bootTimers.push(window.setTimeout(() => curtain.remove(), 700));
     };
     const teleportToBootHash = () => {

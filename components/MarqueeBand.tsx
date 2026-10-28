@@ -23,15 +23,7 @@ export function MarqueeBand() {
   const row = TOKENS.flatMap((t, i) => [
     <span
       key={`t-${i}`}
-      className="display whitespace-nowrap px-[0.42em] text-[var(--color-text)]"
-      style={{
-        fontStyle: i % 3 === 0 ? "italic" : "normal",
-        fontVariationSettings:
-          i % 3 === 0
-            ? '"opsz" 144, "SOFT" 80, "WONK" 1'
-            : '"opsz" 144, "SOFT" 30',
-        fontWeight: i % 3 === 0 ? 400 : 600,
-      }}
+      className="studio-heading whitespace-nowrap px-[0.42em] text-[var(--color-text)]"
     >
       {t}
     </span>,

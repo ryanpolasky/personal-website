@@ -477,7 +477,7 @@ export default function RootLayout({
               var d=document.createElement('div');d.id='__boot-curtain';
               d.style.cssText='position:fixed;inset:0;background:'+a.b+';z-index:250;transform:translate3d(0,0,0);transition:transform 620ms cubic-bezier(0.83,0,0.17,1);will-change:transform;display:flex;align-items:center;justify-content:center;overflow:hidden';
               var s=document.createElement('div');
-              s.style.cssText="font-family:var(--font-display),'Times New Roman',serif;font-style:italic;font-weight:400;font-size:clamp(3.5rem,12vw,10rem);line-height:1;letter-spacing:-0.02em;color:#fff;font-variation-settings:'opsz' 144,'SOFT' 80,'WONK' 1;opacity:0;transition:opacity 360ms ease 80ms;white-space:nowrap";
+              s.style.cssText="font-family:var(--font-sans),Arial,sans-serif;font-weight:500;font-size:clamp(3.5rem,12vw,10rem);line-height:1;letter-spacing:-0.065em;color:#fff;opacity:0;transition:opacity 360ms ease 80ms;white-space:nowrap";
               var w=document.createElement('span');w.textContent=label;s.appendChild(w);
               var mkdot=function(delay){var dt=document.createElement('span');dt.textContent='.';dt.style.cssText='opacity:0.25;animation:rp-dot 1.3s ease-in-out '+delay+' infinite';return dt;};
               s.appendChild(mkdot('0s'));s.appendChild(mkdot('0.18s'));s.appendChild(mkdot('0.36s'));
