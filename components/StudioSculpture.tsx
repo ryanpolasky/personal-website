@@ -26,7 +26,7 @@ export function StudioSculpture() {
   const showLive = useCallback(() => setReady(true), []);
   const showPoster = useCallback(() => { setFailed(true); setReady(false); }, []);
   useEffect(() => {
-    const media = window.matchMedia("(prefers-reduced-motion: reduce), (pointer: coarse)");
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
     const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
     const sync = () => {
       const eligible = !media.matches && !connection?.saveData;
@@ -41,6 +41,7 @@ export function StudioSculpture() {
     <div className={`studio-sculpture ${ready && enabled && !failed ? "is-live" : ""}`}>
       <Image src="/assets/hero-sculpture.webp" alt="" fill sizes="(max-width: 639px) 100vw, 55vw" priority className="sculpture-poster" style={{ filter: `hue-rotate(${hue[accent.name] ?? 0}deg)` }} />
       {enabled && !failed ? <SculptureBoundary onError={showPoster}><View onReady={showLive} onError={showPoster} /></SculptureBoundary> : null}
+      {ready && enabled && !failed ? <div className="sculpture-interaction"><span>drag the R’s</span><button onClick={() => window.dispatchEvent(new Event("sculpture:shuffle"))}>shuffle ↻</button></div> : null}
     </div>
   );
 }

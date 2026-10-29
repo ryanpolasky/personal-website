@@ -26,6 +26,9 @@
 .sculpture-poster { object-fit: contain; transition: opacity .8s; }
 .studio-sculpture.is-live .sculpture-canvas { opacity: 1; }
 .studio-sculpture.is-live .sculpture-poster { opacity: 0; }
+.sculpture-poster { pointer-events: none; }
+.sculpture-interaction { position: absolute; bottom: 0; left: 20%; display: flex; align-items: center; gap: 22px; font-size: 12px; }
+.sculpture-interaction button { cursor: pointer; padding: 10px 0; }
 .sculpture-control { position: absolute; right: var(--studio-gutter); bottom: 105px; display: flex; align-items: center; gap: 12px; font-size: 12px; cursor: pointer; }
 .sculpture-control > span { display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid var(--color-line-strong); border-radius: 50%; font-size: 20px; }
 .hero-baseline { position: absolute; bottom: 28px; left: var(--studio-gutter); right: var(--studio-gutter); display: flex; justify-content: space-between; padding-top: 20px; border-top: 1px solid var(--color-line-strong); font-size: 12px; }
@@ -48,11 +51,12 @@
 .case-caption-meta { display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; gap: 14px; padding-top: 7px; text-align: right; font-size: 11px; line-height: 1.5; }
 .case-caption-meta span:last-child { color: var(--color-text-muted); }
 .work-case-marralhinha .case-visual { background: #253d34; }
-.work-case-marralhinha .case-image { object-fit: contain; padding: 5%; }
-.work-case-autopsy .case-visual { aspect-ratio: 16/9; background: #1c1c26; }
-.work-case-autopsy .case-image { object-fit: contain; padding: 7%; }
+.work-case-marralhinha .case-image { object-fit: contain; }
+.work-case-autopsy .case-visual { background: #e9eaf0; }
+.work-case-autopsy .case-image { object-fit: contain; }
 .work-case-readme-ryvamper .case-visual { aspect-ratio: 16/9; background: #171822; }
-.work-case-readme-ryvamper .case-image { object-fit: contain; padding: 9%; }
+.work-case-readme-ryvamper .case-image { object-fit: contain; padding: 3%; }
+.work-case-utd-roommates .case-image { object-fit: contain; }
 .case-diagram { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; padding: 5%; }
 .diagram-caption { margin-bottom: 30px; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; opacity: .5; }
 .diagram-engine { font-size: clamp(36px, 8vw, 130px); letter-spacing: -.075em; color: var(--case-accent); }
@@ -130,6 +134,8 @@
   .atelier-sculpture { inset: 355px -2% 245px 8%; z-index: -1; }
   .hero-bottom-copy { margin-top: 300px; max-width: 280px; gap: 20px; font-size: 14px; }
   .sculpture-control { bottom: 260px; font-size: 10px; }
+  .sculpture-interaction { left: 0; bottom: 15px; gap: 14px; font-size: 10px; }
+  .sculpture-canvas { bottom: 50px; }
   .hero-baseline { font-size: 10px; bottom: 24px; }
   .hero-baseline span:first-child { max-width: 150px; }
   .hero-baseline span:last-child { align-self: flex-end; }

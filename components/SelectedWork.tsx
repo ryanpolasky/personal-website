@@ -6,8 +6,7 @@ import { getEnabledProjects, type Project } from "@/lib/projects";
 const projects = getEnabledProjects();
 
 export function projectCover(project: Project) {
-  if (project.id === "nimby") return "/assets/projects/nimby/nim_hero.webp";
-  if (project.id === "marralhinha") return "/assets/projects/marralhinha/mar_board.webp";
+  if (project.cover) return project.cover.src;
   return project.media.items?.find((item) => item.src)?.src
     ?? project.sections?.flatMap((section) => section.media ?? []).find((item) => item.src)?.src;
 }
@@ -17,7 +16,7 @@ export function SelectedWork() {
     <section id="projects" className="selected-work" aria-labelledby="work-title">
       <header className="work-heading">
         <div className="section-label"><span>01 / selected work</span><span>{String(projects.length).padStart(2, "0")} projects</span></div>
-        <h2 id="work-title" className="oversize-heading" data-reveal>less talking.<br /><span>more making.</span></h2>
+        <h2 id="work-title" className="oversize-heading" data-reveal>a few things<br /><span>i’ve built.</span></h2>
         <p>from a family board game to tools that make<br className="desktop-break" /> the next person’s job a little easier.</p>
       </header>
       <div className="work-list">
@@ -31,14 +30,14 @@ export function SelectedWork() {
               <Link className="case-visual" href={`/work/${project.id}/`} prefetch={false} aria-label={`Explore ${project.name}`} data-cursor="explore">
                 {cover ? (
                   <div className="case-picture">
-                    <ProjectStill src={cover} alt={project.media.items?.[0]?.alt ?? `${project.name} project artwork`} fill sizes="(max-width: 767px) 100vw, 90vw" className="case-image" />
+                    <ProjectStill src={cover} alt={project.cover?.alt ?? project.media.items?.[0]?.alt ?? `${project.name} project artwork`} fill sizes="(max-width: 767px) 100vw, 90vw" className="case-image" />
                   </div>
                 ) : (
                   <div className="case-diagram" aria-hidden>
                     <span className="diagram-caption">apple / developer tooling</span>
                     <span className="diagram-input">{project.id === "apple-triage" ? "test failure" : "ask a question"}</span>
                     <span className="diagram-flow">↓</span>
-                    <span className="diagram-engine">{project.id === "apple-triage" ? "understand." : "understood."}</span>
+                    <span className="diagram-engine">{project.id === "apple-triage" ? "test triage" : "query planner"}</span>
                     <span className="diagram-flow">↓</span>
                     <span className="diagram-output">{project.id === "apple-triage" ? "root cause → resolution" : "natural language → database query"}</span>
                   </div>

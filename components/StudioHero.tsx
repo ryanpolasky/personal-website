@@ -19,7 +19,7 @@ export function StudioHero() {
   return (
     <section id="hero" className={`atelier-hero ${ready ? "is-ready" : ""}`} aria-labelledby="hero-title">
       <div className="hero-topline"><span>software engineer</span><span>cupertino, california</span></div>
-      <div className="atelier-sculpture" aria-hidden>
+      <div className="atelier-sculpture" role="group" aria-label="Interactive R sculpture">
         <StudioSculpture />
         <OilFilmRippleUnlock />
       </div>
@@ -35,7 +35,7 @@ export function StudioHero() {
         </div>
       </div>
       <button className="sculpture-control" onClick={cycle} aria-label="Change the sculpture color"><span aria-hidden>↻</span> change the mood</button>
-      <div className="hero-baseline"><span>small, useful things. on purpose.</span><span>scroll to explore ↓</span></div>
+      <div className="hero-baseline"><span>ryan polasky / software &amp; experiments</span><span>scroll to explore ↓</span></div>
     </section>
   );
 }
