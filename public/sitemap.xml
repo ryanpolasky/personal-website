@@ -4,10 +4,9 @@
 
   Keep in sync with:
     - enabled entries in lib/projects.ts  ->  /work/<id>/            (currently 8)
-    - VARIANTS in lib/variants.ts         ->  /variants/<key>.html   (currently 10)
 
   trailingSlash is true in next.config, so app routes need the trailing slash.
-  The variants are literal .html files, so they do not.
+  /variants/*.html are noindex and stay out of this file.
 
   No <lastmod> on purpose: this file is updated by hand and rarely, so a
   hardcoded date would go stale and Google would learn to ignore it.
@@ -68,59 +67,6 @@
     <loc>https://ryanpolasky.com/gallery/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
-  </url>
-
-  <!-- historical design variants: frozen, and deliberately lower priority so
-       they don't compete with the real content above -->
-  <url>
-    <loc>https://ryanpolasky.com/variants/original.html</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>https://ryanpolasky.com/variants/observability.html</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>https://ryanpolasky.com/variants/geocities.html</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>https://ryanpolasky.com/variants/risograph.html</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>https://ryanpolasky.com/variants/grimoire.html</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>https://ryanpolasky.com/variants/acid.html</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>https://ryanpolasky.com/variants/no-css.html</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>https://ryanpolasky.com/variants/gamebro.html</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>https://ryanpolasky.com/variants/liminal.html</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>https://ryanpolasky.com/variants/wikipedia.html</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
   </url>
 
 </urlset>
