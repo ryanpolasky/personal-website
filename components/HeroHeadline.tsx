@@ -76,7 +76,7 @@ export function HeroHeadline() {
       // at sm+ where the desktop stage has more negative space to spare.
       className="display relative max-w-[16ch] text-[clamp(3rem,13vw,8.5rem)] leading-tight text-white [text-shadow:0_2px_18px_rgba(0,0,0,0.55),0_1px_3px_rgba(0,0,0,0.85)] sm:text-[clamp(3.2rem,9vw,8.5rem)] sm:[text-shadow:none]"
     >
-      i&apos;m ryan,
+      i&apos;m ryan<span className="sr-only"> polasky</span>,
       <br />i{" "}
       <span
         ref={wrapperRef}

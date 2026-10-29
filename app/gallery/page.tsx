@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "Ryan Polasky · Gallery",
   description:
     "Ten visual interpretations of the same portfolio. Pick the one that resonates.",
+  alternates: { canonical: "/gallery/" },
 };
 
 export default function GalleryPage() {
