@@ -54,6 +54,7 @@ export interface Project {
   devpostHref?: string;
   logoSrc?: string;
   cover?: { src: string; alt: string; source: string };
+  showcase?: { src: string; alt: string };
   introLayout?: "landscape";
   width: ProjectWidth;
   media: {
@@ -79,6 +80,7 @@ export const PROJECTS: Project[] = [
     id: "marralhinha",
     index: "01.",
     name: "Marralhinha",
+    showcase: { src: "/assets/projects/marralhinha/mar_board.webp", alt: "Marralhinha’s wooden board and glass marbles" },
     cover: { src: "/assets/projects/marralhinha/cover.webp", alt: "Marralhinha marketing cover with its wooden board and marble sets", source: "https://github.com/ryanpolasky/Marralhinha/blob/master/docs/media/cover.jpg" },
     tagline: "the açorean marble game, rebuilt for the browser.",
     body: "my family has been playing marralhinha, a marble game from terceira, açores, for a couple of years. i built an online version so friends could pull up a chair from anywhere. a personal side project, from the 3d board to the multiplayer server.",
@@ -640,4 +642,9 @@ export const PROJECTS: Project[] = [
 
 export function getEnabledProjects(): Project[] {
   return PROJECTS.filter((p) => p.enabled);
+}
+
+export function projectCover(project: Project) {
+  return project.cover?.src ?? project.media.items?.find((item) => item.src)?.src
+    ?? project.sections?.flatMap((section) => section.media ?? []).find((item) => item.src)?.src;
 }

@@ -1,18 +1,14 @@
 "use client";
 
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Lenis from "lenis";
 import Snap from "lenis/snap";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { resolveSectionScrollTarget } from "@/lib/scroll";
+import { LenisContext } from "@/components/LenisContext";
 
-// active Lenis instance; null on touch/reduced-motion (Lenis never mounted).
-const LenisContext = createContext<Lenis | null>(null);
-
-export function useLenis(): Lenis | null {
-  return useContext(LenisContext);
-}
+export { useLenis } from "@/components/LenisContext";
 
 // registered at module load so it's available before child effects mount.
 if (typeof window !== "undefined") {

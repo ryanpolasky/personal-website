@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { Project } from "@/lib/projects";
 import { getEnabledProjects } from "@/lib/projects";
 import { MediaFrame } from "@/components/projects/MediaFrame";
-import { projectCover } from "@/components/SelectedWork";
+import { projectCover } from "@/lib/projects";
 
 export function ProjectCaseStudy({ project }: { project: Project }) {
   const cover = projectCover(project);
