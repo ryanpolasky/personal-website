@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
+import mediaDimensions from "@/lib/mediaDimensions.json";
 import type { Project, ProjectMediaItem } from "@/lib/projects";
 import { getEnabledProjects, projectCover } from "@/lib/projects";
 import { projectSequence } from "@/lib/project-track";
@@ -7,7 +8,8 @@ import { MediaFrame } from "@/components/projects/MediaFrame";
 import { ProjectTrack } from "@/components/ProjectTrack";
 
 function StudyFigure({ item, lead = false }: { item: ProjectMediaItem; lead?: boolean }) {
-  return <figure className={`case-panel case-frame${lead ? " case-lead" : ""}`} data-track-panel>
+  const size = (mediaDimensions as Record<string, { w: number; h: number }>)[item.src ?? ""];
+  return <figure className={`case-panel case-frame${lead ? " case-lead" : ""}`} data-track-panel style={{ "--media-aspect": size ? `${size.w} / ${size.h}` : "16 / 9" } as CSSProperties}>
     <MediaFrame item={item} className="case-media" sizes="(max-width: 700px) 100vw, 85vw" fit="contain" plain />
     <figcaption>{item.label}</figcaption>
   </figure>;

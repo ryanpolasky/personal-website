@@ -67,7 +67,7 @@
   .case-study[data-horizontal="true"] :is(.case-opening, .case-copy, .case-notes) { width: 100vw; }
   .case-study[data-horizontal="true"] :is(.case-frame, .case-lead) { width: 100vw; }
   .case-study[data-horizontal="true"] .case-frame { display: flex; flex-direction: column; justify-content: center; gap: 8px; padding: 90px 12px; }
-  .case-study[data-horizontal="true"] .case-media { position: relative; inset: auto; height: auto; max-height: calc(100svh - 200px); flex: none; }
+  .case-study[data-horizontal="true"] .case-media { position: relative; inset: auto; width: 100%; height: auto; aspect-ratio: var(--media-aspect); max-height: calc(100svh - 200px); flex: none; }
   .case-study[data-horizontal="true"] .case-frame figcaption { position: static; flex: none; }
   .case-study[data-horizontal="true"] .case-end { width: 100vw; }
 }
