@@ -6,10 +6,11 @@ import { HeroHeadline } from "@/components/HeroHeadline";
 import { HeroStage } from "@/components/HeroStage";
 import { MarqueeBand } from "@/components/MarqueeBand";
 import { AboutSection } from "@/components/AboutSection";
-import { ProjectsRail } from "@/components/ProjectsRail";
+import { SelectedWork } from "@/components/SelectedWork";
 import { FluidParticleBand } from "@/components/FluidParticleBand";
 import { Footer } from "@/components/Footer";
 import { OilFilmRippleUnlock } from "@/components/OilFilmRippleUnlock";
+import "./work-showcase.css";
 import { HDRI_STUDIO_HREF } from "@/lib/site";
 
 export default function HomePage() {
@@ -102,9 +103,9 @@ export default function HomePage() {
       {/* 03. ABOUT + EXPERIENCE */}
       <AboutSection />
 
-      {/* 05. PROJECTS RAIL */}
+      {/* 05. PROJECTS */}
       <div className="xl:pb-12">
-        <ProjectsRail />
+        <SelectedWork />
       </div>
 
       {/* 06. CONTACT */}

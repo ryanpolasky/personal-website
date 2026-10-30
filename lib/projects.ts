@@ -53,6 +53,7 @@ export interface Project {
   githubHref?: string | ProjectGithubRepo[];
   devpostHref?: string;
   logoSrc?: string;
+  cover?: { src: string; alt: string; source: string };
   introLayout?: "landscape";
   width: ProjectWidth;
   media: {
@@ -78,7 +79,8 @@ export const PROJECTS: Project[] = [
     id: "marralhinha",
     index: "01.",
     name: "Marralhinha",
-    tagline: "same game. different tables.",
+    cover: { src: "/assets/projects/marralhinha/cover.webp", alt: "Marralhinha marketing cover with its wooden board and marble sets", source: "https://github.com/ryanpolasky/Marralhinha/blob/master/docs/media/cover.jpg" },
+    tagline: "the açorean marble game, rebuilt for the browser.",
     body: "my family has been playing marralhinha, a marble game from terceira, açores, for a couple of years. i built an online version so friends could pull up a chair from anywhere. a personal side project, from the 3d board to the multiplayer server.",
     role: "solo · personal project",
     stack: ["React", "Three.js", "Node.js", "Socket.IO", "Discord SDK"],
@@ -92,7 +94,7 @@ export const PROJECTS: Project[] = [
       items: [
         {
           label: "the board",
-          src: "/assets/projects/marralhinha/mar_game.webp",
+          src: "/assets/projects/marralhinha/gameplay.webp",
           alt: "Marralhinha board mid-game with four players",
         },
       ],
@@ -105,25 +107,22 @@ export const PROJECTS: Project[] = [
         layout: "editorial",
         media: [
           {
-            label: "the classic board · rendered from game source",
-            src: "/assets/projects/marralhinha/mar_board.webp",
-            alt: "Marralhinha's wooden board and marble sets, rendered using the game's actual Three.js components",
+            label: "the classic board",
+            src: "/assets/projects/marralhinha/gameplay.webp",
+            alt: "Marralhinha's multiplayer game with its wooden board and player controls",
           },
         ],
       },
       {
         eyebrow: "between rounds",
-        title: "your marbles. your table.",
+        title: "make the table yours.",
         body: "glass, gold leaf, tiny galaxies. games earn marbucks for marbles, boards, and dice that make the table yours, without changing the odds. play in the browser or bring the same game into a discord voice channel.",
         layout: "editorial",
         media: [
           {
-            label: "the marble cabinet · actual in-game materials",
-            src: "/assets/projects/marralhinha/mar_collection.webp",
-            animatedSrc: "/assets/projects/marralhinha/mar_collection_loop.mp4",
-            animatedMobileSrc:
-              "/assets/projects/marralhinha/mar_collection_loop_mobile.mp4",
-            alt: "A showcase of actual Marralhinha marble skins across the game's rarity tiers",
+            label: "the locker",
+            src: "/assets/projects/marralhinha/locker.webp",
+            alt: "Marralhinha's locker with its marble skins and customization controls",
           },
         ],
       },
@@ -135,6 +134,7 @@ export const PROJECTS: Project[] = [
     id: "autopsy",
     index: "02.",
     name: "Autopsy",
+    cover: { src: "/assets/projects/autopsy/cover.webp", alt: "Autopsy's live website for its AI coding-agent memory tool", source: "https://autopsy.surf/" },
     tagline: "a black box recorder for ai coding agents.",
     body: "coding agents repeat the same mistakes every run. autopsy records every tool call, autopsies the rejected runs into a failure knowledge graph, and injects warnings straight into the next session's system prompt so the agent stops relearning lessons it already paid for. shipped at la hacks 2026 as a team of four.",
     role: "team of 4",
@@ -241,6 +241,7 @@ export const PROJECTS: Project[] = [
     id: "utd-roommates",
     index: "03.",
     name: "MeteorMate",
+    cover: { src: "/assets/projects/meteormate/cover.webp", alt: "MeteorMate's live student roommate-matching website", source: "https://www.meteormate.com/" },
     tagline: "ai-driven roommate matching for utd students.",
     body: "lead for an acm utd platform that matches students on habits, lifestyle, and preferences, not just location or price. owned roadmap/task breakdown, shaped the next/react frontend + python/fastapi backend architecture across postgres + firebase, and drove deployment reliability fixes for local and vercel-style environments.",
     role: "lead · acm utd",
@@ -352,6 +353,7 @@ export const PROJECTS: Project[] = [
     id: "rycord",
     index: "04.",
     name: "rycord",
+    cover: { src: "/assets/projects/rycord/cover.webp", alt: "Ryan's record collection in the live rycord 3D room", source: "https://rycord.dev/" },
     tagline: "a cache-first 3d record room built from my discogs collection.",
     body: "in rycord, a kallax-style shelf sits in a cozy bedroom scene, populated by the actual albums in my record collection. each record pulls out of its slot, flips to the back jacket, and shows the tracklist + description in an info panel. APIs only get hit on first grab, then every reload reads from the cache on local disk.",
     role: "solo",
@@ -413,6 +415,7 @@ export const PROJECTS: Project[] = [
     id: "nimby",
     index: "05.",
     name: "NIMBY",
+    cover: { src: "/assets/projects/nimby/cover.webp", alt: "NIMBY's main menu captured from its current Godot project", source: "https://github.com/ryanpolasky/NIMBY/blob/main/UI/MainMenu.tscn" },
     tagline:
       "a 2D survivor roguelike about a druid fighting capital encroachment.",
     body: "created for my Introduction to Video Game Programming course, NIMBY is a game where a magical druid defends the forest from corporate creatures: lumberjacks, construction foremen, contractors, and the CEO. four forms (druid, fox, bear, frog) with distinct ability kits shaped to counter a specific boss archetype, plus a roguelike loop of mutations and pawn-shop items between rooms. every sprite was hand-drawn by the team, and the original soundtrack was composed by yours truly.",
@@ -552,6 +555,7 @@ export const PROJECTS: Project[] = [
     id: "readme-ryvamper",
     index: "08.",
     name: "RyMe.md",
+    cover: { src: "/assets/projects/readme-ryvamper/cover.webp", alt: "The live RyMe.md workspace for designing animated GitHub profile banners", source: "https://ryme.md/editor" },
     tagline: "browser-only generator for animated github readme banners.",
     body: "static READMEs are tired and the existing stats-card generators all converge on the same look. RyMe.md is the workspace for designing animated profile banners across seven template families, each rendered and exported entirely in-tab. SVG templates bake CSS @keyframes so banners animate without javascript and play in github's markdown renderer. zero server, zero signup - one file out, drop into your username/username repo, done.",
     role: "solo",

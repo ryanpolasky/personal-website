@@ -67,6 +67,7 @@ export function SmoothScrollProvider({
     const runBootTeleport = () => {
       teleportToBootHash();
       const gateOnHero =
+        !!document.getElementById("hero") &&
         (!bootHash || bootHash === "#") &&
         !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       if (!gateOnHero) {
