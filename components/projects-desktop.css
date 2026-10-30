@@ -4,6 +4,11 @@
   font-weight: 600;
   font-display: swap;
 }
+@font-face {
+  font-family: "Project Boot";
+  src: url("/fonts/project-boot-dela.ttf") format("truetype");
+  font-display: swap;
+}
 
 .project-desktop {
   --pd-base: var(--pd-active, var(--color-accent));
@@ -55,12 +60,13 @@
 
 .project-desktop-archive {
   position: relative;
-  z-index: 2;
   width: min(1180px, 100%);
   margin: 45px auto 26px;
 }
 
 .project-desktop-heading {
+  position: relative;
+  z-index: 2;
   display: flex;
   align-items: center;
   gap: 20px;
@@ -102,6 +108,8 @@
 }
 
 .project-desktop-status {
+  position: relative;
+  z-index: 2;
   display: flex;
   justify-content: space-between;
   gap: 16px;
@@ -209,6 +217,8 @@
 }
 
 .project-desktop-readme {
+  position: relative;
+  z-index: 2;
   display: flex;
   align-items: center;
   gap: 20px;
@@ -266,16 +276,18 @@
   transition: opacity 120ms;
 }
 .project-boot-poster span {
-  width: 88%;
-  height: 32%;
-  background: var(--pd-base);
-  mask: url("/assets/project-objects/projects-word.svg") center / contain no-repeat;
+  max-width: 88%;
+  color: var(--pd-base);
+  font: clamp(32px, 8vw, 110px)/1 "Project Boot", "Project Display", sans-serif;
+  letter-spacing: -0.055em;
+  white-space: nowrap;
 }
 .project-desktop[data-motion="boot"]:not([data-boot="running"]):not([data-boot="backdrop"]) .project-boot-poster { opacity: 1; }
 .project-desktop-stage[data-live="true"] .project-desktop-stage-art { visibility: hidden; }
 
 .project-desktop-stage-word {
   position: absolute;
+  z-index: 0;
   top: 5%;
   left: -2%;
   width: 105%;
@@ -306,7 +318,7 @@
 .project-desktop-stage-caption {
   position: absolute;
   left: 10%;
-  z-index: 1;
+  z-index: 2;
   font: 10px var(--font-mono);
   letter-spacing: 0.1em;
 }
@@ -498,6 +510,8 @@
 }
 
 .project-desktop-foot {
+  position: relative;
+  z-index: 2;
   display: flex;
   justify-content: space-between;
   gap: 12px;

@@ -158,7 +158,7 @@ export function ProjectsDesktop() {
       className="project-desktop"
       aria-labelledby="project-desktop-title"
     >
-      <div className="project-boot-poster" aria-hidden="true"><span /></div>
+      <div className="project-boot-poster" aria-hidden="true"><span>PROJECTS</span></div>
       <div className="project-desktop-topline">
         <span>03 / SELECTED WORK</span>
         <span>RYAN POLASKY · PROJECT ARCHIVE</span>

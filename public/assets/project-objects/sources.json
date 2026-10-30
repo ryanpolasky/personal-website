@@ -10,9 +10,9 @@
   "meteormate.svg": {
     "source": "https://meteormate.com/MM_logo_V2.svg"
   },
-  "/fonts/project-boot.json": {
-    "source": "https://github.com/google/fonts/tree/main/ofl/anton",
-    "license": "/fonts/Anton-OFL.txt",
+  "/fonts/project-boot-dela.json": {
+    "source": "https://github.com/google/fonts/tree/main/ofl/delagothicone",
+    "license": "/fonts/DelaGothicOne-OFL.txt",
     "export": "TTFLoader outline subset of PROJECTS, for extruded 3D typography."
   }
 }

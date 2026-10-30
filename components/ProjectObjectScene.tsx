@@ -245,7 +245,8 @@ async function build(id: string) {
       );
   });
   if (radius > 0) sphere.radius = radius;
-  const modelRadius = sphere.radius;
+  const projectCenter = { value: new THREE.Vector3() };
+  const projectRadius = { value: 3 };
   root.traverse((o) => {
     if (!(o instanceof THREE.Mesh)) return;
     const mats = Array.isArray(o.material) ? o.material : [o.material];
@@ -253,17 +254,19 @@ async function build(id: string) {
       if (!(mat instanceof THREE.MeshStandardMaterial || mat instanceof THREE.MeshBasicMaterial)) continue;
       const twist = { value: 0 };
       mat.userData.projectTwist = twist;
+      mat.userData.projectCenter = projectCenter;
+      mat.userData.projectRadius = projectRadius;
       mat.onBeforeCompile = (shader) => {
         shader.uniforms.uProjectTwist = twist;
-        const axis = id === "marralhinha" ? "z" : "y";
-        const pair = id === "marralhinha" ? "xy" : "xz";
-        const deform = `float a = mvPosition.${axis} * uProjectTwist / ${modelRadius.toFixed(6)}; float s = sin(a); float c = cos(a); mvPosition.${pair} = mat2(c,-s,s,c) * mvPosition.${pair};`;
+        shader.uniforms.uProjectCenter = projectCenter;
+        shader.uniforms.uProjectRadius = projectRadius;
+        const deform = `vec3 p = mvPosition.xyz - uProjectCenter; float a = p.y * uProjectTwist / max(uProjectRadius, 0.0001); float s = sin(a); float c = cos(a); mvPosition.xz = mat2(c,-s,s,c) * p.xz + uProjectCenter.xz;`;
         shader.vertexShader =
-          `uniform float uProjectTwist;\n${shader.vertexShader}`.replace(
+          `uniform float uProjectTwist; uniform vec3 uProjectCenter; uniform float uProjectRadius;\n${shader.vertexShader}`.replace(
             "#include <project_vertex>",
             THREE.ShaderChunk.project_vertex.replace(
               "mvPosition = modelViewMatrix * mvPosition;",
-              `${deform}\nmvPosition = modelViewMatrix * mvPosition;`,
+              `mvPosition = modelViewMatrix * mvPosition;\n${deform}`,
             ),
           );
       };
@@ -318,6 +321,8 @@ function ObjectRig({
   const current = useRef<THREE.Group | null>(null);
   const phase = useRef({ name: "enter", t: 0, started: 0 });
   const idle = useRef(0);
+  const center = useRef(new THREE.Vector3());
+  const scale = useRef(new THREE.Vector3());
   const { invalidate, gl, camera, scene } = useThree();
 
   useEffect(() => {
@@ -402,6 +407,8 @@ function ObjectRig({
       0.25 +
       (reduced ? 0 : Math.sin(state.clock.elapsedTime * 0.8) * 0.1) +
       (entering ? (1 - t) ** 3 * -1.8 : t * 0.8);
+    holder.current.getWorldPosition(center.current).applyMatrix4(camera.matrixWorldInverse);
+    const radius = 3 * holder.current.getWorldScale(scale.current).x;
     current.current.traverse((o) => {
       if (!(o instanceof THREE.Mesh)) return;
       const materials = Array.isArray(o.material) ? o.material : [o.material];
@@ -412,6 +419,8 @@ function ObjectRig({
           m.userData.projectTwist.value = entering
             ? (1 - t) ** 3 * 2
             : t * t * 1.4;
+        m.userData.projectCenter?.value.copy(center.current);
+        if (m.userData.projectRadius) m.userData.projectRadius.value = radius;
       });
     });
     if (active && !reduced) invalidate();
@@ -622,19 +631,21 @@ export default function ProjectObjectScene({ id }: { id: string }) {
               intensity={2}
               color="#b6ddff"
             />
-            <ProjectBoot section={section} active={active} reduced={reduced} ready={onBootReady} />
             <Suspense fallback={null}>
               <Environment files={HDRI_STUDIO_HREF} />
+              <ProjectBoot section={section} active={active} reduced={reduced} ready={onBootReady} />
+            </Suspense>
+            <Suspense fallback={null}>
               <StageViewport element={ref.current} section={section}>
                 <ObjectRig
-                id={id}
-                active={active}
-                reduced={reduced}
-                gesture={gesture}
-                ready={onReady}
-                failed={onError}
-                section={section}
-              />
+                  id={id}
+                  active={active}
+                  reduced={reduced}
+                  gesture={gesture}
+                  ready={onReady}
+                  failed={onError}
+                  section={section}
+                />
               </StageViewport>
             </Suspense>
           </Canvas>
