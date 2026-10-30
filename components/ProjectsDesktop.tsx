@@ -1,6 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type PointerEvent,
+} from "react";
 import Image from "next/image";
 import { getEnabledProjects, type Project } from "@/lib/projects";
 import "./projects-desktop.css";
@@ -77,15 +83,88 @@ function ProjectObject({ project }: { project: Project }) {
 
 export function ProjectsDesktop() {
   const [selected, setSelected] = useState(0);
+  const [themeIndex, setThemeIndex] = useState<number | null>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const tiltFrame = useRef(0);
   const project = projects[selected];
+  const palette = themeIndex === null ? null : projects[themeIndex].tintHsl;
+  const themeStyle = palette
+    ? ({
+        "--pd-active": `hsl(${palette.h} ${palette.s}% ${palette.l}%)`,
+      } as CSSProperties)
+    : undefined;
   const githubRepos = project.githubHref
     ? typeof project.githubHref === "string"
       ? [{ label: "Source", href: project.githubHref }]
       : project.githubHref
     : [];
 
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (
+      !section ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+      !window.IntersectionObserver
+    ) return;
+    section.dataset.motion = "waiting";
+    let settleTimer = 0;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        section.dataset.motion = "entered";
+        settleTimer = window.setTimeout(() => {
+          section.dataset.motion = "complete";
+        }, 1500);
+        observer.disconnect();
+      },
+      { rootMargin: "0px 0px -14% 0px", threshold: 0.12 },
+    );
+    observer.observe(section);
+    return () => {
+      observer.disconnect();
+      window.clearTimeout(settleTimer);
+      cancelAnimationFrame(tiltFrame.current);
+    };
+  }, []);
+
+  const inspect = (index: number) => {
+    setSelected(index);
+    setThemeIndex(index);
+  };
+
+  const tilt = (event: PointerEvent<HTMLDivElement>) => {
+    if (
+      event.pointerType !== "mouse" ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) return;
+    const stage = stageRef.current;
+    if (!stage) return;
+    const bounds = stage.getBoundingClientRect();
+    const x = (event.clientX - bounds.left) / bounds.width - 0.5;
+    const y = (event.clientY - bounds.top) / bounds.height - 0.5;
+    cancelAnimationFrame(tiltFrame.current);
+    tiltFrame.current = requestAnimationFrame(() => {
+      stage.style.setProperty("--pd-tilt-x", `${(x * 9).toFixed(2)}deg`);
+      stage.style.setProperty("--pd-tilt-y", `${(-y * 7).toFixed(2)}deg`);
+    });
+  };
+
+  const clearTilt = () => {
+    cancelAnimationFrame(tiltFrame.current);
+    stageRef.current?.style.setProperty("--pd-tilt-x", "0deg");
+    stageRef.current?.style.setProperty("--pd-tilt-y", "0deg");
+  };
+
   return (
-    <section id="projects" className="project-desktop" aria-labelledby="project-desktop-title">
+    <section
+      id="projects"
+      data-snap
+      ref={sectionRef}
+      style={themeStyle}
+      className="project-desktop"
+      aria-labelledby="project-desktop-title"
+    >
       <div className="project-desktop-topline">
         <span>03 / SELECTED WORK</span>
         <span>RYAN POLASKY · PROJECT ARCHIVE</span>
@@ -116,7 +195,15 @@ export function ProjectsDesktop() {
                   className="project-desktop-object"
                   aria-pressed={selected === index}
                   aria-label={`View ${item.name}`}
-                  onClick={() => setSelected(index)}
+                  style={{ "--pd-stagger": `${250 + index * 65}ms` } as CSSProperties}
+                  onPointerEnter={(event) => {
+                    const motion = sectionRef.current?.dataset.motion;
+                    if (event.pointerType !== "touch" && motion !== "waiting" && motion !== "entered") {
+                      inspect(index);
+                    }
+                  }}
+                  onFocus={() => inspect(index)}
+                  onClick={() => inspect(index)}
                 >
                   <span className="project-desktop-object-slot">
                     <ProjectObject project={item} />
@@ -132,7 +219,13 @@ export function ProjectsDesktop() {
           </div>
 
           <div className="project-desktop-viewer" aria-live="polite" aria-atomic="true">
-            <div className="project-desktop-stage" key={project.id}>
+            <div
+              className="project-desktop-stage"
+              key={project.id}
+              ref={stageRef}
+              onPointerMove={tilt}
+              onPointerLeave={clearTilt}
+            >
               <span className="project-desktop-stage-id">OBJECT / {String(selected + 1).padStart(2, "0")}</span>
               <span className="project-desktop-orbit" aria-hidden="true" />
               <span className="project-desktop-stage-art">
