@@ -3,6 +3,7 @@ import { inter, jetbrainsMono, fraunces } from "@/lib/fonts";
 import { AccentProvider } from "@/components/AccentProvider";
 import { SmoothScrollProvider } from "@/components/SmoothScrollProvider";
 import { Nav } from "@/components/Nav";
+import { ProjectNavigation } from "@/components/ProjectLink";
 import { Watermark } from "@/components/Watermark";
 import { stateToken, stateNodeId } from "@/lib/rollout";
 import "./globals.css";
@@ -502,6 +503,7 @@ export default function RootLayout({
               skip to content
             </a>
             <Nav />
+            <ProjectNavigation />
             {children}
           </SmoothScrollProvider>
         </AccentProvider>

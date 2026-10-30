@@ -55,7 +55,7 @@ export function ProjectTrack({ projects, children }: { projects: TrackProject[];
     };
     const schedule = () => { if (!frame) frame = requestAnimationFrame(draw); };
     const scrollTo = (top: number) => {
-      if (lenis) { lenis.resize(); lenis.scrollTo(top, { immediate: true }); }
+      if (lenis) { lenis.resize(); lenis.scrollTo(top, { immediate: true, force: true }); }
       else window.scrollTo({ top, left: 0, behavior: "instant" });
     };
     const jump = (id: string, addHistory = true) => {

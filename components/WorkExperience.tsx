@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import Link from "next/link";
+import { ProjectLink } from "@/components/ProjectLink";
 import { useEffect, useRef, useState, type PointerEvent } from "react";
 import { ProjectStill } from "@/components/projects/ProjectStill";
 import { workMotion } from "@/lib/work-motion";
@@ -76,12 +76,12 @@ export function WorkExperience({ projects }: { projects: WorkPreview[] }) {
         <div className="work-project-caption">
           <span>selected work / featured project</span>
           <h2 id="work-title">{project.name}</h2>
-          <div><p>{project.tagline}</p><Link href={`/work/${project.id}/`} prefetch={false}>explore the project ↗</Link></div>
+          <div><p>{project.tagline}</p><ProjectLink project={project}>explore the project ↗</ProjectLink></div>
         </div>
       </div>
     </section>
     <div className="work-index"><p>all projects</p><ol>{projects.map((item, index) => <li key={item.id}>
-      <Link href={`/work/${item.id}/`} prefetch={false}><span>{String(index + 1).padStart(2, "0")}</span><span>{item.name}</span><span>explore ↗</span></Link>
+      <ProjectLink project={item}><span>{String(index + 1).padStart(2, "0")}</span><span>{item.name}</span><span>explore ↗</span></ProjectLink>
     </li>)}</ol></div>
   </section>;
 }

@@ -4,6 +4,18 @@ import { createRGeometry } from "../components/scenes/WorkFieldGeometry.ts";
 import { createWorkFieldLayout, WORK_FIELD_DRIFT } from "../lib/work-field-layout.ts";
 import { workMotion } from "../lib/work-motion.ts";
 import { projectSequence, trackPosition, activeTrackIndex } from "../lib/project-track.ts";
+import { animateProjectNavigation } from "../lib/project-navigation.ts";
+
+test("Explore transitions preserve modified links and respect motion and data preferences", () => {
+  const click = { button: 0, metaKey: false, ctrlKey: false, shiftKey: false, altKey: false };
+  assert.equal(animateProjectNavigation(click, false, false), true);
+  assert.equal(animateProjectNavigation(click, true, false), false);
+  assert.equal(animateProjectNavigation(click, false, true), false);
+  for (const modifier of ["metaKey", "ctrlKey", "shiftKey", "altKey"]) {
+    assert.equal(animateProjectNavigation({ ...click, [modifier]: true }, false, false), false);
+  }
+  for (const button of [1, 2]) assert.equal(animateProjectNavigation({ ...click, button }, false, false), false);
+});
 
 test("each direct project route continues through the registry exactly once", () => {
   const projects = ["marralhinha", "autopsy", "ryme-md", "ryplay"].map((id) => ({ id }));
