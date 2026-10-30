@@ -28,7 +28,7 @@
 .project-desktop::before {
   content: "";
   position: absolute;
-  inset: 0;
+  inset: -60px;
   z-index: -1;
   background-image:
     linear-gradient(color-mix(in srgb, var(--pd-paper) 40%, transparent) 1px, transparent 1px),
@@ -579,7 +579,7 @@
 }
 
 @keyframes project-desktop-drift {
-  to { background-position: 60px -60px; }
+  to { transform: translate(60px, -60px); }
 }
 
 @keyframes project-desktop-type {

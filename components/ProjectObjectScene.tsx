@@ -600,7 +600,7 @@ export default function ProjectObjectScene({ id }: { id: string }) {
               render.current = invalidate;
               gl.domElement.addEventListener("webglcontextlost", onError);
             }}
-            frameloop={active && !reduced ? "always" : "demand"}
+            frameloop={active && ready && !reduced ? "always" : "demand"}
             dpr={[1, 1.5]}
             camera={{ position: [0, 0, 10], fov: 38 }}
             gl={{
