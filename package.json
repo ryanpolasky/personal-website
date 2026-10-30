@@ -10,7 +10,8 @@
     "build": "next build && node scripts/inject-font-preloads.mjs",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:work": "node --experimental-strip-types --test scripts/work-motion.test.mjs"
   },
   "engines": {
     "node": ">=22"

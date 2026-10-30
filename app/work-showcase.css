@@ -2,7 +2,7 @@
 .selected-work button, .selected-work a { -webkit-tap-highlight-color: transparent; }
 .selected-work button:focus-visible, .selected-work a:focus-visible { outline: 2px solid white; outline-offset: 6px; }
 .work-experience { --work-reveal: 0; --work-charge: 0; position: relative; }
-.work-experience[data-enhanced="true"] { height: 240svh; }
+.work-experience[data-enhanced="true"] { height: max(100svh, 560px); }
 .work-stage { position: sticky; top: 0; height: 100svh; min-height: 560px; overflow: hidden; isolation: isolate; }
 .work-stage::before { content: ""; position: absolute; inset: 55% 0 0; z-index: 1; background: linear-gradient(transparent, #11131adb); pointer-events: none; }
 .work-field { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
@@ -44,6 +44,7 @@
 .work-index li > button span:last-child { font-size: clamp(24px, 4vw, 64px); letter-spacing: -.055em; }
 .work-index li > a { font-size: 12px; padding: 14px 0; white-space: nowrap; }
 @media (max-width: 639px) {
+  .work-experience[data-enhanced="true"] { height: max(100svh, 520px); }
   .work-stage { min-height: 520px; }
   .work-intro, .work-project-caption { left: 20px; right: 20px; bottom: 130px; }
   .work-intro p { flex-direction: column; gap: 10px; }

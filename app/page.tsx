@@ -104,9 +104,7 @@ export default function HomePage() {
       <AboutSection />
 
       {/* 05. PROJECTS */}
-      <div className="xl:pb-12">
-        <SelectedWork />
-      </div>
+      <SelectedWork />
 
       {/* 06. CONTACT */}
       <FluidParticleBand />

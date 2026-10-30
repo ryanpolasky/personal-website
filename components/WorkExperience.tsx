@@ -64,7 +64,7 @@ export function WorkExperience({ projects }: { projects: WorkPreview[] }) {
       if (rect.top > innerHeight || rect.bottom < 0) { heldAt.current = null; return; }
       const heldFor = heldAt.current === null ? 0 : now - heldAt.current;
       if (heldFor >= HOLD_DURATION && committedAt.current === null) committedAt.current = now;
-      const { charge, reveal } = workMotion(-rect.top / Math.max(1, rect.height - innerHeight), heldFor, committedAt.current === null ? null : now - committedAt.current);
+      const { charge, reveal } = workMotion(heldFor, committedAt.current === null ? null : now - committedAt.current);
       Object.assign(motion.current, { charge, reveal });
       element.style.setProperty("--work-reveal", String(reveal));
       element.style.setProperty("--work-charge", String(charge));
@@ -74,13 +74,13 @@ export function WorkExperience({ projects }: { projects: WorkPreview[] }) {
     };
     redraw.current = schedule;
     schedule();
-    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("scroll", cancel, { passive: true });
     window.addEventListener("resize", schedule);
     window.addEventListener("blur", cancel);
     document.addEventListener("visibilitychange", cancel);
     return () => {
       cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("scroll", cancel);
       window.removeEventListener("resize", schedule);
       window.removeEventListener("blur", cancel);
       document.removeEventListener("visibilitychange", cancel);
@@ -108,8 +108,8 @@ export function WorkExperience({ projects }: { projects: WorkPreview[] }) {
   return <section id="projects" className="selected-work" aria-label="selected work">
     <section ref={root} className="work-experience" data-enhanced={enhanced} aria-labelledby="work-title">
       <div className="work-stage" onPointerMove={move}>
-        {mountField && !reduced ? <Field state={motion} onReady={setFieldReady} /> : null}
-        <div className="work-intro" aria-hidden={controlsVisible}><span>01 / selected work</span><h2 id="work-title">selected work</h2><p>hold to reveal <span>or scroll into the work ↓</span></p></div>
+        {mountField && !reduced ? <Field state={motion} onReady={setFieldReady} awake={!expanded} /> : null}
+        <div className="work-intro" aria-hidden={controlsVisible}><span>01 / selected work</span><h2 id="work-title">selected work</h2><p>hold to reveal <span>scroll for all projects ↓</span></p></div>
         <article className="work-project" aria-hidden={!controlsVisible} inert={!controlsVisible}>
           <div className="work-project-media" key={project.id}>
             {project.image ? <ProjectStill src={project.image.src} alt={project.image.alt} fill viewportCover sizes="100vw" className="work-project-image" /> : <div className="work-project-diagram" aria-hidden><span>apple / developer tooling</span><strong>{"</>"}</strong></div>}
