@@ -7,7 +7,7 @@
 
 .project-desktop {
   --pd-base: var(--pd-active, var(--color-accent));
-  --pd-bg: color-mix(in srgb, var(--pd-base) 30%, #c7d2c4);
+  --pd-bg: color-mix(in srgb, var(--pd-base) 62%, #c9fff1);
   --pd-ink: color-mix(in srgb, var(--pd-base) 30%, #172431);
   --pd-muted: color-mix(in srgb, var(--pd-ink) 96%, var(--pd-bg));
   --pd-line: color-mix(in srgb, var(--pd-ink) 28%, var(--pd-bg));
@@ -34,6 +34,7 @@
     linear-gradient(color-mix(in srgb, var(--pd-paper) 40%, transparent) 1px, transparent 1px),
     linear-gradient(90deg, color-mix(in srgb, var(--pd-paper) 40%, transparent) 1px, transparent 1px);
   background-size: 60px 60px;
+  animation: project-desktop-drift 18s linear infinite;
   opacity: 0.48;
   pointer-events: none;
 }
@@ -234,6 +235,37 @@
   height: 470px;
 }
 
+.project-object-scene {
+  position: absolute;
+  inset: -40px -5% -20px;
+  z-index: 1;
+  touch-action: pan-y;
+  cursor: grab;
+}
+
+.project-object-scene:active { cursor: grabbing; }
+.project-object-scene:focus-visible { outline: 2px dashed var(--pd-ink); outline-offset: -12px; }
+.project-object-scene > div { position: absolute !important; inset: 0; }
+.project-object-scene[data-ready="false"] canvas { visibility: hidden; }
+.project-desktop-stage[data-live="true"] .project-desktop-stage-art { visibility: hidden; }
+
+.project-desktop-stage-word {
+  position: absolute;
+  top: 5%;
+  left: -2%;
+  width: 105%;
+  overflow: hidden;
+  white-space: nowrap;
+  color: transparent;
+  -webkit-text-stroke: 1px color-mix(in srgb, var(--pd-paper) 62%, transparent);
+  font: 600 clamp(70px, 9vw, 150px)/1 "Project Display", sans-serif;
+  letter-spacing: -.06em;
+  text-transform: uppercase;
+  transform: rotate(-7deg);
+  pointer-events: none;
+  animation: project-desktop-type 700ms cubic-bezier(.16,1,.3,1) both;
+}
+
 .project-desktop-stage::after {
   content: "";
   position: absolute;
@@ -343,6 +375,9 @@
   border: 1px solid var(--pd-ink);
   background: var(--pd-paper);
   box-shadow: 7px 7px 0 color-mix(in srgb, var(--pd-ink) 23%, transparent);
+  z-index: 3;
+  transform-origin: 100% 100%;
+  animation: project-desktop-window-switch 650ms cubic-bezier(.16,1,.3,1) both;
 }
 
 .project-desktop-window-title {
@@ -462,6 +497,7 @@
 .project-desktop[data-motion="waiting"] .project-desktop-readme,
 .project-desktop[data-motion="waiting"] .project-desktop-stage-id,
 .project-desktop[data-motion="waiting"] .project-desktop-stage-caption,
+.project-desktop[data-motion="waiting"] .project-desktop-stage-word,
 .project-desktop[data-motion="waiting"] .project-desktop-stage-art,
 .project-desktop[data-motion="waiting"] .project-desktop-details,
 .project-desktop[data-motion="waiting"] .project-desktop-foot,
@@ -474,7 +510,7 @@
 }
 
 .project-desktop[data-motion="entered"]::before {
-  animation: project-desktop-grid 850ms ease-out both;
+  animation: project-desktop-grid 850ms ease-out both, project-desktop-drift 18s linear infinite;
 }
 
 .project-desktop[data-motion="entered"] .project-desktop-topline,
@@ -498,6 +534,10 @@
   animation: project-desktop-launch 1100ms cubic-bezier(0.15, 0.85, 0.2, 1) 240ms both;
 }
 
+.project-desktop[data-motion="entered"] .project-desktop-stage-word {
+  animation: project-desktop-type 900ms cubic-bezier(.16,1,.3,1) 240ms both;
+}
+
 .project-desktop[data-motion="entered"] .project-desktop-stage-id,
 .project-desktop[data-motion="entered"] .project-desktop-stage-caption,
 .project-desktop[data-motion="entered"] .project-desktop-readme,
@@ -511,13 +551,13 @@
 }
 
 @keyframes project-desktop-grid {
-  from { opacity: 0; transform: scale(1.06); }
+  from { opacity: 0; transform: scale(1.6) rotate(-10deg); }
   to { opacity: 0.48; transform: scale(1); }
 }
 
 @keyframes project-desktop-header {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(60px) skewY(7deg); clip-path: inset(100% 0 0); }
+  to { opacity: 1; transform: translateY(0); clip-path: inset(0); }
 }
 
 @keyframes project-desktop-release {
@@ -533,9 +573,23 @@
 }
 
 @keyframes project-desktop-window {
-  from { opacity: 0; transform: translate(32px, 38px) rotate(6deg) scale(0.88); }
+  from { opacity: 0; transform: translate(140px, 160px) rotate(15deg) scale(0.1, 0.04); }
   78% { opacity: 1; transform: translate(-3px, -5px) rotate(-1deg) scale(1.015); }
   to { opacity: 1; transform: none; }
+}
+
+@keyframes project-desktop-drift {
+  to { background-position: 60px -60px; }
+}
+
+@keyframes project-desktop-type {
+  from { opacity: 0; transform: translateX(30%) rotate(-7deg); }
+  to { opacity: 1; transform: translateX(0) rotate(-7deg); }
+}
+
+@keyframes project-desktop-window-switch {
+  from { opacity: 0; transform: translateY(25px) rotate(3deg) scale(.85, .5); clip-path: inset(85% 0 0); }
+  to { opacity: 1; transform: none; clip-path: inset(0); }
 }
 
 @media (min-width: 801px) and (max-height: 850px) {
@@ -559,6 +613,8 @@
 }
 
 @media (max-width: 800px) {
+  .project-object-scene { inset: -12px 0; }
+  .project-desktop-stage-word { font-size: 72px; }
   .project-desktop-topline span:last-child { display: none; }
   .project-desktop {
     display: block;

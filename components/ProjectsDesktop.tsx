@@ -5,11 +5,13 @@ import {
   useRef,
   useState,
   type CSSProperties,
-  type PointerEvent,
 } from "react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import { getEnabledProjects, type Project } from "@/lib/projects";
 import "./projects-desktop.css";
+
+const ProjectObjectScene = dynamic(() => import("./ProjectObjectScene"), { ssr: false });
 
 const projects = getEnabledProjects().filter((project) => project.id !== "gallery");
 
@@ -85,8 +87,6 @@ export function ProjectsDesktop() {
   const [selected, setSelected] = useState(0);
   const [themeIndex, setThemeIndex] = useState<number | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
-  const stageRef = useRef<HTMLDivElement>(null);
-  const tiltFrame = useRef(0);
   const project = projects[selected];
   const palette = themeIndex === null ? null : projects[themeIndex].tintHsl;
   const themeStyle = palette
@@ -124,36 +124,12 @@ export function ProjectsDesktop() {
     return () => {
       observer.disconnect();
       window.clearTimeout(settleTimer);
-      cancelAnimationFrame(tiltFrame.current);
     };
   }, []);
 
   const inspect = (index: number) => {
     setSelected(index);
     setThemeIndex(index);
-  };
-
-  const tilt = (event: PointerEvent<HTMLDivElement>) => {
-    if (
-      event.pointerType !== "mouse" ||
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    ) return;
-    const stage = stageRef.current;
-    if (!stage) return;
-    const bounds = stage.getBoundingClientRect();
-    const x = (event.clientX - bounds.left) / bounds.width - 0.5;
-    const y = (event.clientY - bounds.top) / bounds.height - 0.5;
-    cancelAnimationFrame(tiltFrame.current);
-    tiltFrame.current = requestAnimationFrame(() => {
-      stage.style.setProperty("--pd-tilt-x", `${(x * 9).toFixed(2)}deg`);
-      stage.style.setProperty("--pd-tilt-y", `${(-y * 7).toFixed(2)}deg`);
-    });
-  };
-
-  const clearTilt = () => {
-    cancelAnimationFrame(tiltFrame.current);
-    stageRef.current?.style.setProperty("--pd-tilt-x", "0deg");
-    stageRef.current?.style.setProperty("--pd-tilt-y", "0deg");
   };
 
   return (
@@ -219,21 +195,16 @@ export function ProjectsDesktop() {
           </div>
 
           <div className="project-desktop-viewer" aria-live="polite" aria-atomic="true">
-            <div
-              className="project-desktop-stage"
-              key={project.id}
-              ref={stageRef}
-              onPointerMove={tilt}
-              onPointerLeave={clearTilt}
-            >
+            <div className="project-desktop-stage">
               <span className="project-desktop-stage-id">OBJECT / {String(selected + 1).padStart(2, "0")}</span>
-              <span className="project-desktop-orbit" aria-hidden="true" />
+              <span className="project-desktop-stage-word" aria-hidden="true" key={project.id}>{project.name}</span>
               <span className="project-desktop-stage-art">
                 <ProjectObject project={project} />
               </span>
+              <ProjectObjectScene id={project.id} />
               <span className="project-desktop-stage-caption">{project.name.toUpperCase()}</span>
             </div>
-            <div className="project-desktop-details">
+            <div className="project-desktop-details" key={project.id}>
               <div className="project-desktop-window-title">project.info</div>
               <div className="project-desktop-meta">
                 <span>{project.role.toUpperCase()}</span>
@@ -263,8 +234,8 @@ export function ProjectsDesktop() {
         </div>
 
         <div className="project-desktop-foot">
-          <span>MADE WITH CURIOSITY / BUILT TO LAST</span>
-          <span className="project-desktop-foot-hint">CLICK AN OBJECT TO EXPLORE</span>
+          <span>DRAG THE OBJECT TO ROTATE</span>
+          <span className="project-desktop-foot-hint">ARROW KEYS ROTATE / SPACE RESETS</span>
           <span>{String(selected + 1).padStart(2, "0")} — {String(projects.length).padStart(2, "0")}</span>
         </div>
       </div>
