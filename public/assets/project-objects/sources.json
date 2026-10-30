@@ -1,0 +1,18 @@
+{
+  "marralhinha-oak.glb": {
+    "repository": "https://github.com/ryanpolasky/Marralhinha",
+    "sourceCommit": "7af65ba",
+    "renderer": "src/three/Board.js",
+    "materials": "src/three/skins.js: boardSkin('oak'), marbleSkin('classic')",
+    "layout": "src/game/geometry.js: layoutFor('classic'), positionIn",
+    "export": "Rendered the canonical Board without its table; baked visible meshes, instanced divots and materials with GLTFExporter; added canonical 0.335-radius marbles with marbleSkin and positionIn; Meshopt-compressed without geometry simplification."
+  },
+  "meteormate.svg": {
+    "source": "https://meteormate.com/MM_logo_V2.svg"
+  },
+  "/fonts/project-boot.json": {
+    "source": "https://github.com/google/fonts/tree/main/ofl/anton",
+    "license": "/fonts/Anton-OFL.txt",
+    "export": "TTFLoader outline subset of PROJECTS, for extruded 3D typography."
+  }
+}

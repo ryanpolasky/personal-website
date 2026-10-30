@@ -4,61 +4,25 @@ import {
   Component,
   Suspense,
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
   type ReactNode,
 } from "react";
+import { createPortal } from "react-dom";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment } from "@react-three/drei";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
 import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js";
+import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader.js";
 import { HDRI_STUDIO_HREF } from "@/lib/site";
+import ProjectBoot from "./ProjectBoot";
 
 const models = new Map<string, Promise<THREE.Group>>();
 const box = new THREE.Box3();
 const sphere = new THREE.Sphere();
-
-function woodTexture() {
-  const canvas = document.createElement("canvas");
-  canvas.width = canvas.height = 512;
-  const ctx = canvas.getContext("2d")!;
-  let seed = 7;
-  const random = () => {
-    seed = (seed * 16807) % 2147483647;
-    return seed / 2147483647;
-  };
-  ctx.fillStyle = "#c9894a";
-  ctx.fillRect(0, 0, 512, 512);
-  for (let i = 0; i < 320; i++) {
-    const y = random() * 512,
-      amplitude = 2 + random() * 14,
-      k = 1 + Math.floor(random() * 3),
-      phase = random() * Math.PI * 2;
-    ctx.strokeStyle = `rgba(150,95,40,${0.04 + random() * 0.2})`;
-    ctx.lineWidth = 0.5 + random() * 2.4;
-    for (const offset of [-512, 0, 512]) {
-      ctx.beginPath();
-      for (let x = 0; x <= 512; x += 6) {
-        const py =
-          y +
-          offset +
-          Math.sin((x / 512) * Math.PI * 2 * k + phase) * amplitude;
-        if (!x) ctx.moveTo(x, py);
-        else ctx.lineTo(x, py);
-      }
-      ctx.stroke();
-    }
-  }
-  const texture = new THREE.CanvasTexture(canvas);
-  texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-  texture.repeat.set(0.055, 0.055);
-  texture.offset.set(0.5, 0.5);
-  texture.colorSpace = THREE.SRGBColorSpace;
-  texture.anisotropy = 4;
-  return texture;
-}
 
 function material(color: string, metalness = 0.05, roughness = 0.3) {
   return new THREE.MeshStandardMaterial({ color, metalness, roughness });
@@ -67,7 +31,7 @@ function material(color: string, metalness = 0.05, roughness = 0.3) {
 function add(
   root: THREE.Group,
   geometry: THREE.BufferGeometry,
-  mat: THREE.Material,
+  mat: THREE.Material | THREE.Material[],
   position: [number, number, number] = [0, 0, 0],
 ) {
   const mesh = new THREE.Mesh(geometry, mat);
@@ -98,19 +62,7 @@ async function build(id: string) {
   if (id === "marralhinha") {
     const gltf = await new GLTFLoader()
       .setMeshoptDecoder(MeshoptDecoder)
-      .loadAsync("/assets/project-objects/marralhinha.glb");
-    const wood = woodTexture();
-    gltf.scene.traverse((o) => {
-      if (
-        o instanceof THREE.Mesh &&
-        o.material instanceof THREE.MeshStandardMaterial &&
-        o.material.name === "pine"
-      ) {
-        o.material.map = wood;
-        o.material.color.set("white");
-        o.material.roughness = 0.5;
-      }
-    });
+      .loadAsync("/assets/project-objects/marralhinha-oak.glb");
     root.add(gltf.scene);
     root.rotation.set(0.95, -0.22, -0.18);
   } else if (id === "nimby") {
@@ -153,23 +105,32 @@ async function build(id: string) {
     add(root, new THREE.CircleGeometry(0.1, 24), black, [0, 0, 0.09]);
     root.rotation.set(-0.15, -0.3, -0.25);
   } else if (id === "utd-roommates") {
-    const head = add(
-      root,
-      new THREE.SphereGeometry(0.87, 32, 24),
-      material("#f6f6ef", 0.3, 0.2),
-      [0.8, -0.65, 0.2],
-    );
-    head.rotation.z = -0.7;
-    for (let i = 0; i < 3; i++) {
-      const flame = add(
-        root,
-        new THREE.ConeGeometry(0.48 - i * 0.08, 3.9 - i * 0.5, 4),
-        material(["#12a78b", "#22d66f", "#ff7f2b"][i]),
-        [-0.5 + i * 0.3, 0.5 - i * 0.13, -0.2 + i * 0.25],
-      );
-      flame.rotation.z = 0.75;
+    const response = await fetch("/assets/project-objects/meteormate.svg");
+    if (!response.ok) throw new Error("MeteorMate artwork unavailable");
+    const svg = new SVGLoader().parse((await response.text()).replace(/url\(#[^)]+\)/g, "#ff9100"));
+    const orange = new THREE.Color("#ff9100");
+    const gold = new THREE.Color("#ffc94c");
+    for (const path of svg.paths) {
+      for (const shape of SVGLoader.createShapes(path)) {
+        const geometry = new THREE.ExtrudeGeometry(shape, {
+          depth: 12, bevelEnabled: true, bevelSize: 0.8,
+          bevelThickness: 0.8, bevelSegments: 3, curveSegments: 16,
+        });
+        const position = geometry.getAttribute("position");
+        geometry.computeBoundingBox();
+        const { min, max } = geometry.boundingBox!;
+        const colors = new Float32Array(position.count * 3);
+        for (let i = 0; i < position.count; i++) {
+          orange.clone().lerp(gold, (position.getX(i) - min.x) / (max.x - min.x)).toArray(colors, i * 3);
+        }
+        geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+        const face = new THREE.MeshBasicMaterial({ vertexColors: true });
+        const edge = material("#df7900", 0.08, 0.45);
+        edge.envMapIntensity = 0.2;
+        add(root, geometry, [face, edge]);
+      }
     }
-    root.rotation.set(0.1, -0.2, -0.12);
+    root.rotation.set(Math.PI - 0.1, -0.22, 0.06);
   } else if (id === "autopsy") {
     add(
       root,
@@ -235,42 +196,35 @@ async function build(id: string) {
       [0, 0, 0.36],
     );
     root.rotation.set(-0.1, -0.35, 0.15);
+  } else if (id === "apple-triage") {
+    add(root, new RoundedBoxGeometry(3, 3.8, 0.3, 3, 0.14), material("#18252e"));
+    const paper = material("#f5f2ed", 0, 0.5);
+    add(root, new THREE.BoxGeometry(2.5, 0.4, 0.08), paper, [0, 1.4, 0.2]);
+    for (let i = 0; i < 4; i++) {
+      add(root, new THREE.CylinderGeometry(0.11, 0.11, 0.06, 16), material(i === 1 ? "#ed6675" : "#68bfa2"), [-1, 0.8 - i * 0.65, 0.2]).rotation.x = Math.PI / 2;
+      add(root, new THREE.BoxGeometry(1.6, 0.07, 0.05), paper, [0.18, 0.8 - i * 0.65, 0.2]);
+    }
+    const glass = new THREE.Group();
+    add(glass, new THREE.TorusGeometry(0.78, 0.12, 12, 48), material("#777bdf", 0.4, 0.2));
+    const lens = new THREE.MeshPhysicalMaterial({ color: "#c3ccff", transparent: true, opacity: 0.28, roughness: 0.1, metalness: 0.1 });
+    add(glass, new THREE.CircleGeometry(0.72, 48), lens);
+    add(glass, new RoundedBoxGeometry(0.23, 1.1, 0.25, 2, 0.07), material("#303661"), [0.7, -0.9, 0]).rotation.z = 0.65;
+    glass.position.set(1, -0.4, 0.5);
+    root.add(glass);
+    root.rotation.set(-0.12, -0.35, -0.12);
   } else {
-    const shape = new THREE.Shape();
-    shape.moveTo(-1.5, -2);
-    shape.lineTo(1.5, -2);
-    shape.lineTo(1.5, 1.25);
-    shape.lineTo(0.75, 2);
-    shape.lineTo(-1.5, 2);
-    shape.closePath();
+    const silver = material("#dce4df", 0.4, 0.32);
+    const edge = material("#607d73", 0.4, 0.3);
+    for (let i = 0; i < 3; i++) {
+      add(root, new THREE.CylinderGeometry(1.65, 1.65, 0.85, 64), silver, [0, -1 + i * 0.95, 0]);
+      add(root, new THREE.TorusGeometry(1.65, 0.04, 8, 64), edge, [0, -1.42 + i * 0.95, 0]).rotation.x = Math.PI / 2;
+    }
+    add(root, new RoundedBoxGeometry(2.25, 1.4, 0.22, 3, 0.1), material("#263c36"), [0.8, -0.7, 1.6]);
     add(
       root,
-      new THREE.ExtrudeGeometry(shape, {
-        depth: 0.25,
-        bevelEnabled: true,
-        bevelSegments: 2,
-        steps: 1,
-        bevelSize: 0.06,
-        bevelThickness: 0.06,
-      }),
-      material("#f1f5ee", 0.1, 0.38),
-    );
-    add(
-      root,
-      new THREE.PlaneGeometry(2.6, 2.6),
-      label(id === "apple-triage" ? "LOG" : "SQL", "#123f41", "#f1f5ee"),
-      [0, -0.1, 0.32],
-    );
-    const fold = new THREE.Shape();
-    fold.moveTo(0.75, 2);
-    fold.lineTo(0.75, 1.25);
-    fold.lineTo(1.5, 1.25);
-    fold.closePath();
-    add(
-      root,
-      new THREE.ExtrudeGeometry(fold, { depth: 0.04, bevelEnabled: false }),
-      material("#94c7bd"),
-      [0, 0, 0.32],
+      new THREE.PlaneGeometry(1.6, 1.1),
+      label(">_", "#a6e0b7", "#263c36"),
+      [0.8, -0.7, 1.72],
     );
     root.rotation.set(-0.12, -0.35, -0.12);
   }
@@ -296,7 +250,7 @@ async function build(id: string) {
     if (!(o instanceof THREE.Mesh)) return;
     const mats = Array.isArray(o.material) ? o.material : [o.material];
     for (const mat of mats) {
-      if (!(mat instanceof THREE.MeshStandardMaterial)) continue;
+      if (!(mat instanceof THREE.MeshStandardMaterial || mat instanceof THREE.MeshBasicMaterial)) continue;
       const twist = { value: 0 };
       mat.userData.projectTwist = twist;
       mat.onBeforeCompile = (shader) => {
@@ -325,7 +279,10 @@ async function build(id: string) {
 }
 
 function load(id: string) {
-  if (!models.has(id)) models.set(id, build(id));
+  if (!models.has(id)) models.set(id, build(id).catch((error: unknown) => {
+    models.delete(id);
+    throw error;
+  }));
   return models.get(id)!;
 }
 
@@ -346,6 +303,7 @@ function ObjectRig({
   gesture,
   ready,
   failed,
+  section,
 }: {
   id: string;
   active: boolean;
@@ -353,6 +311,7 @@ function ObjectRig({
   gesture: React.RefObject<Gesture>;
   ready: () => void;
   failed: () => void;
+  section: HTMLElement;
 }) {
   const holder = useRef<THREE.Group>(null);
   const next = useRef<THREE.Group | null>(null);
@@ -383,7 +342,12 @@ function ObjectRig({
         }
       })
       .catch(() => {
-        if (alive) failed();
+        if (alive) {
+          holder.current?.clear();
+          current.current = null;
+          next.current = null;
+          failed();
+        }
       });
     return () => {
       alive = false;
@@ -393,6 +357,7 @@ function ObjectRig({
   useFrame((state, delta) => {
     if (!holder.current || !current.current) return;
     if (!active && !reduced) return;
+    if (section.dataset.motion === "waiting" || section.dataset.motion === "boot") return;
     const dt = Math.min(delta, 0.045);
     const p = phase.current;
     if (!p.started) p.started = performance.now();
@@ -441,7 +406,7 @@ function ObjectRig({
       if (!(o instanceof THREE.Mesh)) return;
       const materials = Array.isArray(o.material) ? o.material : [o.material];
       materials.forEach((m) => {
-        if (!(m instanceof THREE.MeshStandardMaterial)) return;
+        if (!(m instanceof THREE.MeshStandardMaterial || m instanceof THREE.MeshBasicMaterial)) return;
         m.wireframe = entering && t < 0.18;
         if (m.userData.projectTwist)
           m.userData.projectTwist.value = entering
@@ -453,6 +418,36 @@ function ObjectRig({
   });
 
   return <group ref={holder} dispose={null} />;
+}
+
+function StageViewport({ element, section, children }: {
+  element: HTMLDivElement; section: HTMLElement; children: ReactNode;
+}) {
+  const ref = useRef<THREE.Group>(null);
+  const { viewport, invalidate } = useThree();
+  useLayoutEffect(() => {
+    const update = () => {
+      if (!ref.current) return;
+      const stage = element.getBoundingClientRect();
+      const canvas = section.getBoundingClientRect();
+      ref.current.position.set(
+        ((stage.left + stage.width / 2 - canvas.left) / canvas.width - 0.5) * viewport.width,
+        (0.5 - (stage.top + stage.height / 2 - canvas.top) / canvas.height) * viewport.height,
+        0,
+      );
+      ref.current.scale.setScalar(stage.height / canvas.height);
+      invalidate();
+    };
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(element);
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, [element, section, viewport, invalidate]);
+  useFrame(() => {
+    if (ref.current) ref.current.visible = section.dataset.motion !== "waiting" && section.dataset.motion !== "boot";
+  });
+  return <group ref={ref}>{children}</group>;
 }
 
 class SceneBoundary extends Component<
@@ -477,6 +472,9 @@ export default function ProjectObjectScene({ id }: { id: string }) {
   const [active, setActive] = useState(false);
   const [reduced, setReduced] = useState(false);
   const [ready, setReady] = useState(false);
+  const [bootReady, setBootReady] = useState(false);
+  const [section, setSection] = useState<HTMLElement | null>(null);
+  const onBootReady = useRef(() => setBootReady(true)).current;
   const gesture = useRef<Gesture>({
     down: false,
     x: 0,
@@ -499,6 +497,8 @@ export default function ProjectObjectScene({ id }: { id: string }) {
   useEffect(() => {
     const element = ref.current;
     if (!element) return;
+    const host = element.closest("section")!;
+    setSection(host);
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
     const updateMotion = () => setReduced(motion.matches);
     updateMotion();
@@ -517,13 +517,13 @@ export default function ProjectObjectScene({ id }: { id: string }) {
       { threshold: 0.15 },
     );
     const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
-    if (!connection?.saveData) warm.observe(element);
-    visible.observe(element);
+    if (!connection?.saveData) warm.observe(host);
+    visible.observe(host);
     const visibility = () =>
       setActive(
         document.visibilityState === "visible" &&
-          element.getBoundingClientRect().bottom > 0 &&
-          element.getBoundingClientRect().top < innerHeight,
+          host.getBoundingClientRect().bottom > 0 &&
+          host.getBoundingClientRect().top < innerHeight,
       );
     document.addEventListener("visibilitychange", visibility);
     return () => {
@@ -535,7 +535,7 @@ export default function ProjectObjectScene({ id }: { id: string }) {
   }, []);
 
   return (
-    <div
+    <><div
       ref={ref}
       className="project-object-scene"
       data-ready={ready}
@@ -592,15 +592,16 @@ export default function ProjectObjectScene({ id }: { id: string }) {
         }
         render.current();
       }}
-    >
-      {near && (
+    />
+      {near && section && ref.current && createPortal(
+        <div className="project-scene-layer" aria-hidden="true">
         <SceneBoundary onError={onError}>
           <Canvas
             onCreated={({ invalidate, gl }) => {
               render.current = invalidate;
               gl.domElement.addEventListener("webglcontextlost", onError);
             }}
-            frameloop={active && ready && !reduced ? "always" : "demand"}
+            frameloop={active && (ready || bootReady) && !reduced ? "always" : "demand"}
             dpr={[1, 1.5]}
             camera={{ position: [0, 0, 10], fov: 38 }}
             gl={{
@@ -621,20 +622,25 @@ export default function ProjectObjectScene({ id }: { id: string }) {
               intensity={2}
               color="#b6ddff"
             />
+            <ProjectBoot section={section} active={active} reduced={reduced} ready={onBootReady} />
             <Suspense fallback={null}>
               <Environment files={HDRI_STUDIO_HREF} />
-              <ObjectRig
+              <StageViewport element={ref.current} section={section}>
+                <ObjectRig
                 id={id}
                 active={active}
                 reduced={reduced}
                 gesture={gesture}
                 ready={onReady}
                 failed={onError}
+                section={section}
               />
+              </StageViewport>
             </Suspense>
           </Canvas>
         </SceneBoundary>
+        </div>, section,
       )}
-    </div>
+    </>
   );
 }

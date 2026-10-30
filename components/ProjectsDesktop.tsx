@@ -17,7 +17,7 @@ const projects = getEnabledProjects().filter((project) => project.id !== "galler
 
 const objects: Record<string, { src: string; alt: string }> = {
   marralhinha: {
-    src: "/assets/project-objects/board.png",
+    src: "/assets/project-objects/board-oak.png",
     alt: "Marralhinha marble board",
   },
   autopsy: {
@@ -25,11 +25,11 @@ const objects: Record<string, { src: string; alt: string }> = {
     alt: "Autopsy icon",
   },
   "utd-roommates": {
-    src: "/assets/project-objects/meteor.ico",
+    src: "/assets/project-objects/meteormate.svg",
     alt: "MeteorMate icon",
   },
   rycord: {
-    src: "/assets/project-objects/rycord.svg",
+    src: "/assets/project-objects/rycord-record.svg",
     alt: "rycord record icon",
   },
   nimby: {
@@ -39,6 +39,14 @@ const objects: Record<string, { src: string; alt: string }> = {
   "readme-ryvamper": {
     src: "/assets/project-objects/ryme.svg",
     alt: "RyMe.md icon",
+  },
+  "apple-triage": {
+    src: "/assets/project-objects/triage.svg",
+    alt: "Camera-test logs under a magnifying glass",
+  },
+  "apple-nlsql": {
+    src: "/assets/project-objects/database.svg",
+    alt: "Database stack with a query terminal",
   },
 };
 
@@ -108,21 +116,30 @@ export function ProjectsDesktop() {
       !window.IntersectionObserver
     ) return;
     section.dataset.motion = "waiting";
+    let revealTimer = 0;
     let settleTimer = 0;
+    const reveal = () => {
+      if (section.dataset.motion !== "boot") return;
+      section.dataset.motion = "entered";
+      settleTimer = window.setTimeout(() => {
+        section.dataset.motion = "complete";
+      }, 1500);
+    };
+    section.addEventListener("project-boot-reveal", reveal);
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) return;
-        section.dataset.motion = "entered";
-        settleTimer = window.setTimeout(() => {
-          section.dataset.motion = "complete";
-        }, 1500);
+        section.dataset.motion = "boot";
+        revealTimer = window.setTimeout(reveal, 2400);
         observer.disconnect();
       },
-      { rootMargin: "0px 0px -14% 0px", threshold: 0.12 },
+      { rootMargin: "0px 0px -68% 0px", threshold: 0.12 },
     );
     observer.observe(section);
     return () => {
       observer.disconnect();
+      section.removeEventListener("project-boot-reveal", reveal);
+      window.clearTimeout(revealTimer);
       window.clearTimeout(settleTimer);
     };
   }, []);
@@ -141,6 +158,7 @@ export function ProjectsDesktop() {
       className="project-desktop"
       aria-labelledby="project-desktop-title"
     >
+      <div className="project-boot-poster" aria-hidden="true"><span /></div>
       <div className="project-desktop-topline">
         <span>03 / SELECTED WORK</span>
         <span>RYAN POLASKY · PROJECT ARCHIVE</span>
@@ -174,7 +192,7 @@ export function ProjectsDesktop() {
                   style={{ "--pd-stagger": `${250 + index * 65}ms` } as CSSProperties}
                   onPointerEnter={(event) => {
                     const motion = sectionRef.current?.dataset.motion;
-                    if (event.pointerType !== "touch" && motion !== "waiting" && motion !== "entered") {
+                    if (event.pointerType !== "touch" && motion !== "waiting" && motion !== "boot" && motion !== "entered") {
                       inspect(index);
                     }
                   }}

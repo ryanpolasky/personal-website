@@ -54,6 +54,8 @@
 }
 
 .project-desktop-archive {
+  position: relative;
+  z-index: 2;
   width: min(1180px, 100%);
   margin: 45px auto 26px;
 }
@@ -245,8 +247,31 @@
 
 .project-object-scene:active { cursor: grabbing; }
 .project-object-scene:focus-visible { outline: 2px dashed var(--pd-ink); outline-offset: -12px; }
-.project-object-scene > div { position: absolute !important; inset: 0; }
-.project-object-scene[data-ready="false"] canvas { visibility: hidden; }
+.project-scene-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+.project-scene-layer > div { position: absolute !important; inset: 0; }
+.project-desktop-topline, .project-desktop-bottomline { position: relative; z-index: 2; }
+.project-boot-poster {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms;
+}
+.project-boot-poster span {
+  width: 88%;
+  height: 32%;
+  background: var(--pd-base);
+  mask: url("/assets/project-objects/projects-word.svg") center / contain no-repeat;
+}
+.project-desktop[data-motion="boot"]:not([data-boot="running"]):not([data-boot="backdrop"]) .project-boot-poster { opacity: 1; }
 .project-desktop-stage[data-live="true"] .project-desktop-stage-art { visibility: hidden; }
 
 .project-desktop-stage-word {
@@ -488,24 +513,27 @@
   to { opacity: 1; transform: none; }
 }
 
-.project-desktop[data-motion="waiting"]::before,
-.project-desktop[data-motion="waiting"] .project-desktop-topline,
-.project-desktop[data-motion="waiting"] .project-desktop-heading,
-.project-desktop[data-motion="waiting"] .project-desktop-status,
-.project-desktop[data-motion="waiting"] .project-desktop-library-label,
-.project-desktop[data-motion="waiting"] .project-desktop-object,
-.project-desktop[data-motion="waiting"] .project-desktop-readme,
-.project-desktop[data-motion="waiting"] .project-desktop-stage-id,
-.project-desktop[data-motion="waiting"] .project-desktop-stage-caption,
-.project-desktop[data-motion="waiting"] .project-desktop-stage-word,
-.project-desktop[data-motion="waiting"] .project-desktop-stage-art,
-.project-desktop[data-motion="waiting"] .project-desktop-details,
-.project-desktop[data-motion="waiting"] .project-desktop-foot,
-.project-desktop[data-motion="waiting"] .project-desktop-bottomline {
+.project-desktop:is([data-motion="waiting"], [data-motion="boot"])::before,
+.project-desktop:is([data-motion="waiting"], [data-motion="boot"]) .project-desktop-topline,
+.project-desktop:is([data-motion="waiting"], [data-motion="boot"]) .project-desktop-heading,
+.project-desktop:is([data-motion="waiting"], [data-motion="boot"]) .project-desktop-status,
+.project-desktop:is([data-motion="waiting"], [data-motion="boot"]) .project-desktop-library-label,
+.project-desktop:is([data-motion="waiting"], [data-motion="boot"]) .project-desktop-object,
+.project-desktop:is([data-motion="waiting"], [data-motion="boot"]) .project-desktop-readme,
+.project-desktop:is([data-motion="waiting"], [data-motion="boot"]) .project-desktop-stage-id,
+.project-desktop:is([data-motion="waiting"], [data-motion="boot"]) .project-desktop-stage-caption,
+.project-desktop:is([data-motion="waiting"], [data-motion="boot"]) .project-desktop-stage-word,
+.project-desktop:is([data-motion="waiting"], [data-motion="boot"]) .project-desktop-stage-art,
+.project-desktop:is([data-motion="waiting"], [data-motion="boot"]) .project-object-scene,
+.project-desktop:is([data-motion="waiting"], [data-motion="boot"]) .project-desktop-details,
+.project-desktop:is([data-motion="waiting"], [data-motion="boot"]) .project-desktop-foot,
+.project-desktop:is([data-motion="waiting"], [data-motion="boot"]) .project-desktop-bottomline {
   opacity: 0;
+  visibility: hidden;
+  animation: none;
 }
 
-.project-desktop[data-motion="waiting"] .project-desktop-stage-art {
+.project-desktop:is([data-motion="waiting"], [data-motion="boot"]) .project-desktop-stage-art {
   animation: none;
 }
 
