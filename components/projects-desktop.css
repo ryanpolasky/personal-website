@@ -4,12 +4,6 @@
   font-weight: 600;
   font-display: swap;
 }
-@font-face {
-  font-family: "Project Boot";
-  src: url("/fonts/project-boot-dela.ttf") format("truetype");
-  font-display: swap;
-}
-
 .project-desktop {
   --pd-base: var(--pd-active, var(--color-accent));
   --pd-bg: color-mix(in srgb, var(--pd-base) 62%, #c9fff1);
@@ -263,6 +257,7 @@
   z-index: 1;
   pointer-events: none;
 }
+.project-scene-layer * { pointer-events: none !important; }
 .project-scene-layer > div { position: absolute !important; inset: 0; }
 .project-desktop-topline, .project-desktop-bottomline { position: relative; z-index: 2; }
 .project-boot-poster {
@@ -273,16 +268,17 @@
   place-items: center;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 120ms;
+  transition: opacity 320ms cubic-bezier(.2,.7,.2,1), transform 420ms ease;
 }
 .project-boot-poster span {
-  max-width: 88%;
-  color: var(--pd-base);
-  font: clamp(32px, 8vw, 110px)/1 "Project Boot", "Project Display", sans-serif;
-  letter-spacing: -0.055em;
+  color: var(--pd-ink);
+  font: 750 clamp(44px, 11vw, 138px)/1 var(--font-display);
+  font-variation-settings: "opsz" 144, "SOFT" 80, "WONK" 1;
+  letter-spacing: -0.075em;
   white-space: nowrap;
 }
-.project-desktop[data-motion="boot"]:not([data-boot="running"]):not([data-boot="backdrop"]) .project-boot-poster { opacity: 1; }
+.project-desktop[data-motion="boot"]:not([data-boot="burst"]):not([data-boot="backdrop"]) .project-boot-poster { opacity: 1; }
+.project-desktop[data-boot="burst"] .project-boot-poster { transform: scale(1.06) translateY(-12px); }
 .project-desktop-stage[data-live="true"] .project-desktop-stage-art { visibility: hidden; }
 
 .project-desktop-stage-word {
@@ -313,6 +309,7 @@
   background: color-mix(in srgb, var(--pd-paper) 66%, transparent);
   z-index: -1;
 }
+.project-desktop:is([data-motion="waiting"], [data-motion="boot"]) .project-desktop-stage::after { opacity: 0; }
 
 .project-desktop-stage-id,
 .project-desktop-stage-caption {

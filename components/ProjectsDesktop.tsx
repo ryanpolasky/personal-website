@@ -130,7 +130,7 @@ export function ProjectsDesktop() {
       ([entry]) => {
         if (!entry.isIntersecting) return;
         section.dataset.motion = "boot";
-        revealTimer = window.setTimeout(reveal, 2400);
+        revealTimer = window.setTimeout(reveal, 3600);
         observer.disconnect();
       },
       { rootMargin: "0px 0px -68% 0px", threshold: 0.12 },
