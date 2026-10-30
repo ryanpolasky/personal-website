@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { useLayoutEffect, useRef, useState, type ReactNode, type CSSProperties } from "react";
 import { useLenis } from "@/components/LenisContext";
-import { activeTrackIndex, trackPosition, trackHandoff, trackScroll } from "@/lib/project-track";
+import { activeTrackIndex, trackPosition, trackHandoff, trackScroll, handoffMotion } from "@/lib/project-track";
 import { blendPalette, paletteStyle, rgb, type ProjectPalette } from "@/lib/project-palette";
+import { ProjectStill } from "@/components/projects/ProjectStill";
 
-type TrackProject = { id: string; name: string; tagline: string; palette: ProjectPalette };
+type TrackProject = { id: string; name: string; tagline: string; palette: ProjectPalette; image?: string };
 
 export function ProjectTrack({ projects, children }: { projects: TrackProject[]; children: ReactNode }) {
   const root = useRef<HTMLElement>(null);
@@ -14,8 +15,11 @@ export function ProjectTrack({ projects, children }: { projects: TrackProject[];
   const track = useRef<HTMLDivElement>(null);
   const progress = useRef<HTMLSpanElement>(null);
   const handoff = useRef<HTMLSpanElement>(null);
+  const transition = useRef<HTMLDivElement>(null);
   const goTo = useRef<(id: string) => void>(() => {});
   const [active, setActive] = useState(0);
+  const [incoming, setIncoming] = useState(1);
+  const [horizontalTrack, setHorizontalTrack] = useState(false);
   const lenis = useLenis();
 
   useLayoutEffect(() => {
@@ -72,6 +76,19 @@ export function ProjectTrack({ projects, children }: { projects: TrackProject[];
         if (progress.current) progress.current.style.transform = `scaleX(${position / Math.max(1, distance)})`;
         paint(blendPalette(projects[state.from].palette, projects[state.to].palette, state.blend));
         element.dataset.handoff = String(state.pressure > 0 && state.pressure < 0.995);
+        if (transition.current) {
+          const next = Math.min(projects.length - 1, state.to + Number(state.from === state.to));
+          if (transition.current.dataset.project !== projects[next].id) {
+            transition.current.dataset.project = projects[next].id;
+            setIncoming(next);
+          }
+          if (state.from !== state.to) {
+            const motion = handoffMotion(state.pressure);
+            transition.current.style.transform = `translate3d(${motion.x}%, 0, 0)`;
+            transition.current.style.setProperty("--handoff-image-scale", String(motion.imageScale));
+            transition.current.style.setProperty("--handoff-title-y", `${motion.titleY}%`);
+          }
+        }
         if (handoff.current) handoff.current.textContent = `keep scrolling → ${projects[state.to].name}`;
         publish(state.blend >= 0.5 ? state.to : state.from);
       } else {
@@ -108,6 +125,7 @@ export function ProjectTrack({ projects, children }: { projects: TrackProject[];
       const oldStart = offsets[oldIndex] ?? 0;
       const fraction = (position - oldStart) / Math.max(1, (offsets[oldIndex + 1] ?? extent) - oldStart);
       horizontal = preference.matches && !saveData;
+      setHorizontalTrack(horizontal);
       element.dataset.horizontal = String(horizontal);
       if (horizontal) {
         extent = strip.scrollWidth;
@@ -179,7 +197,13 @@ export function ProjectTrack({ projects, children }: { projects: TrackProject[];
         }}><span>{String(index + 1).padStart(2, "0")}</span>{project.name}</a>
       </li>)}</ol></details>
     </nav>
-    <div className="case-window" ref={viewport}><div className="case-track" ref={track}>{children}</div></div>
+    <div className="case-window" ref={viewport}>
+      <div className="case-track" ref={track}>{children}</div>
+      {horizontalTrack ? <div className="case-transition" ref={transition} aria-hidden="true" style={{ backgroundColor: rgb(projects[incoming]?.palette.surface ?? projects[0].palette.surface) }}>
+        {projects[incoming]?.image ? <ProjectStill key={projects[incoming].id} src={projects[incoming].image} alt="" fill sizes="100vw" className="case-transition-image" loading="eager" /> : null}
+        <div className="case-transition-caption"><span>{String(incoming + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span><strong>{projects[incoming]?.name}</strong><span>{projects[incoming]?.tagline}</span></div>
+      </div> : null}
+    </div>
     <div className="case-guide"><span aria-live="polite" aria-atomic="true">{projects[active].name}</span><p><span className="case-guide-horizontal">scroll to explore →</span><span className="case-guide-vertical">scroll to explore ↓</span><span className="case-handoff" ref={handoff} /></p><span>{String(active + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span><span className="case-progress" ref={progress} aria-hidden /></div>
   </main>;
 }

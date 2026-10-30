@@ -3,7 +3,7 @@ import test from "node:test";
 import { createRGeometry } from "../components/scenes/WorkFieldGeometry.ts";
 import { createWorkFieldLayout, WORK_FIELD_DRIFT } from "../lib/work-field-layout.ts";
 import { workMotion } from "../lib/work-motion.ts";
-import { projectSequence, trackPosition, activeTrackIndex, trackScroll, trackHandoff } from "../lib/project-track.ts";
+import { projectSequence, trackPosition, activeTrackIndex, trackScroll, trackHandoff, handoffMotion } from "../lib/project-track.ts";
 import { animateProjectNavigation } from "../lib/project-navigation.ts";
 import { blendPalette, contrast } from "../lib/project-palette.ts";
 import { getEnabledProjects } from "../lib/projects.ts";
@@ -49,6 +49,23 @@ test("weighted handoffs stay continuous, bounded, reversible and invertible even
     assert.ok(Math.abs(middle.pressure - 0.5) < 1e-8);
     assert.ok(middle.position - start < width * 0.1);
     assert.ok(Math.abs(trackHandoff(start + width * 0.95, offsets, width, distance).position - offsets[1]) < 1e-6);
+  }
+});
+
+test("the incoming image enters, holds, then leaves without a jump in either direction", () => {
+  assert.equal(handoffMotion(0).x, 100);
+  assert.equal(handoffMotion(0.7).x, 0);
+  assert.equal(handoffMotion(1).x, -100);
+  let last = handoffMotion(0).x;
+  for (let step = 1; step <= 1000; step++) {
+    const pressure = step / 1000;
+    const { x: position, imageScale, titleY } = handoffMotion(pressure);
+    assert.ok(position <= last && position >= -100);
+    assert.ok(last - position < 1);
+    assert.ok(imageScale >= 1 && imageScale <= 1.18);
+    assert.ok(titleY >= -30 && titleY <= 100);
+    assert.ok(Math.abs(handoffMotion(pressure).x - position) < 1e-8);
+    last = position;
   }
 });
 

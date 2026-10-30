@@ -21,6 +21,19 @@ function handoffRange(offsets: number[], index: number, viewport: number) {
   return { start: offsets[index] - travel, travel, effort: travel * 0.95 / 0.72 };
 }
 
+export function handoffMotion(pressure: number) {
+  const smooth = (start: number, end: number) => {
+    const t = Math.max(0, Math.min(1, (pressure - start) / (end - start)));
+    return t * t * (3 - 2 * t);
+  };
+  const enter = smooth(0.1, 0.7), leave = smooth(0.72, 1);
+  return {
+    x: 100 * (1 - enter - leave),
+    imageScale: 1.18 - enter * 0.14 + leave * 0.08,
+    titleY: (1 - enter) * 100 - leave * 30,
+  };
+}
+
 export function trackScroll(position: number, offsets: number[], viewport: number) {
   const x = Math.max(0, position);
   let extra = 0;

@@ -31,11 +31,30 @@ export function WorkExperience({ projects }: { projects: WorkPreview[] }) {
     };
     update();
     preference.addEventListener("change", update);
+    let idle = 0;
+    const prepare = () => {
+      if (preference.matches || connection?.saveData) return;
+      const image = root.current?.querySelector<HTMLImageElement>(".work-project-image");
+      if (image) { image.loading = "eager"; void image.decode().catch(() => {}); }
+      setMountField(true);
+    };
+    const timer = window.setTimeout(() => {
+      if (window.requestIdleCallback) idle = window.requestIdleCallback(prepare);
+      else prepare();
+    }, 1800);
     const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) { setMountField(true); observer.disconnect(); }
-    }, { rootMargin: "300px" });
+      if (entry.isIntersecting) {
+        prepare();
+        observer.disconnect();
+      }
+    }, { rootMargin: "1400px" });
     if (root.current) observer.observe(root.current);
-    return () => { observer.disconnect(); preference.removeEventListener("change", update); };
+    return () => {
+      clearTimeout(timer);
+      if (idle) window.cancelIdleCallback(idle);
+      observer.disconnect();
+      preference.removeEventListener("change", update);
+    };
   }, []);
 
   useEffect(() => {

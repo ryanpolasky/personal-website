@@ -11,7 +11,12 @@ type ProjectDestination = { id: string; name: string; palette: ProjectPalette; i
 type NavigationRequest = { project: ProjectDestination; featured: boolean };
 
 export function ProjectLink({ project, children }: { project: ProjectDestination; children: ReactNode }) {
-  return <Link href={`/work/${project.id}/`} prefetch={false} onClick={(event) => {
+  const router = useRouter();
+  const warm = () => {
+    const saveData = !!(navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
+    if (!saveData) router.prefetch(`/work/${project.id}/`);
+  };
+  return <Link href={`/work/${project.id}/`} prefetch={false} onPointerEnter={warm} onFocus={warm} onClick={(event) => {
     const saveData = !!(navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
     if (!animateProjectNavigation(event, matchMedia("(prefers-reduced-motion: reduce)").matches, saveData)) return;
     const request = new CustomEvent<NavigationRequest>("project:explore", {
@@ -45,6 +50,7 @@ export function ProjectNavigation() {
       overlay.setAttribute("data-lenis-prevent", "");
       const image = new Image();
       image.alt = "";
+      image.decoding = "async";
       const source = featured ? document.querySelector<HTMLImageElement>(".work-project-image")?.currentSrc || project.image?.src : project.image?.src;
       if (source) image.src = source;
       else image.hidden = true;
@@ -112,6 +118,8 @@ export function ProjectNavigation() {
       }, { signal: controller.signal });
       void (async () => {
         try {
+          if (source) await image.decode().catch(() => {});
+          if (controller.signal.aborted) return;
           void play(image, [{ transform: "scale(1)" }, { transform: "scale(1.08)" }], 1100).catch(() => {});
           await play(overlay, featured ? [{ opacity: 0 }, { opacity: 1 }] : [{ clipPath: "inset(100% 0 0 0)" }, { clipPath: "inset(0 0 0 0)" }], featured ? 320 : 500);
           if (controller.signal.aborted) return;

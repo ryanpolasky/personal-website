@@ -249,7 +249,14 @@ function ParticleField({
   counts: number[];
   substeps: number;
 }) {
-  const { gl } = useThree();
+  const { gl, scene, camera, advance } = useThree();
+  useEffect(() => {
+    let alive = true;
+    void gl.compileAsync(scene, camera).then(() => {
+      if (alive) advance(performance.now());
+    }).catch(() => {});
+    return () => { alive = false; };
+  }, [gl, scene, camera, advance]);
 
   const baseSize = 0.12;
   const geoms = useMemo(

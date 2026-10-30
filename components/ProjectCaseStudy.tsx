@@ -9,7 +9,7 @@ import { ProjectTrack } from "@/components/ProjectTrack";
 
 function StudyFigure({ item, lead = false }: { item: ProjectMediaItem; lead?: boolean }) {
   const size = (mediaDimensions as Record<string, { w: number; h: number }>)[item.src ?? ""];
-  return <figure className={`case-panel case-frame${lead ? " case-lead" : ""}`} data-track-panel style={{ "--media-aspect": size ? `${size.w} / ${size.h}` : "16 / 9" } as CSSProperties}>
+  return <figure className={`case-panel case-frame${lead ? " case-lead" : ""}`} data-track-panel style={{ "--media-aspect": size ? `${size.w} / ${size.h}` : "16 / 9", "--media-ratio": size ? size.w / size.h : 16 / 9 } as CSSProperties}>
     <MediaFrame item={item} className="case-media" sizes="(max-width: 700px) 100vw, 85vw" fit="contain" plain />
     <figcaption>{item.label}</figcaption>
   </figure>;
@@ -29,7 +29,7 @@ function ProjectFacts({ project }: { project: Project }) {
 
 export function ProjectCaseStudy({ project }: { project: Project }) {
   const projects = projectSequence(getEnabledProjects(), project.id);
-  return <ProjectTrack projects={projects.map(({ id, name, tagline, palette }) => ({ id, name, tagline, palette }))}>
+  return <ProjectTrack projects={projects.map((item) => ({ id: item.id, name: item.name, tagline: item.tagline, palette: item.palette, image: projectCover(item) }))}>
     {projects.map((item, index) => {
       const cover = projectCover(item);
       const Heading = index === 0 ? "h1" : "h2";

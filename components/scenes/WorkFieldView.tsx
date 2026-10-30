@@ -60,12 +60,21 @@ export function WorkFieldView({ state, onReady, awake }: { state: RefObject<Work
     const pmrem = new THREE.PMREMGenerator(renderer);
     let environment: THREE.WebGLRenderTarget | undefined;
     let destroyed = false;
+    let prepared = false;
+    const prepare = async () => {
+      try { await renderer.compileAsync(scene, camera); }
+      catch { if (!destroyed) onReady(false); return; }
+      if (destroyed) return;
+      prepared = true;
+      tick(performance.now(), true);
+    };
     new RGBELoader().load(HDRI_STUDIO_HREF, (texture) => {
       if (destroyed) { texture.dispose(); return; }
       environment = pmrem.fromEquirectangular(texture);
       scene.environment = environment.texture;
       texture.dispose();
-    }, undefined, () => {});
+      void prepare();
+    }, undefined, () => { void prepare(); });
     const dummy = new THREE.Object3D();
     const base = new THREE.Vector3();
     const outward = new THREE.Vector3();
@@ -73,7 +82,7 @@ export function WorkFieldView({ state, onReady, awake }: { state: RefObject<Work
     let layout = createWorkFieldLayout(1, geometry.boundingSphere?.radius ?? 1.41);
     let frame = 0, time = 0, previous = performance.now(), announced = false;
     const schedule = () => {
-      if (!destroyed && !frame && visible && !document.hidden && state.current.reveal < 1) frame = requestAnimationFrame(tick);
+      if (!destroyed && prepared && !frame && visible && !document.hidden && state.current.reveal < 1) frame = requestAnimationFrame(tick);
     };
     wake.current = schedule;
     const resize = new ResizeObserver(([entry]) => {
@@ -86,14 +95,14 @@ export function WorkFieldView({ state, onReady, awake }: { state: RefObject<Work
       layout = createWorkFieldLayout(camera.aspect, geometry.boundingSphere?.radius ?? 1.41);
       schedule();
     });
-    resize.observe(canvas);
+    resize.observe(canvas.parentElement ?? canvas);
     const observer = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; schedule(); });
     observer.observe(canvas);
     const onVisibility = () => schedule();
     document.addEventListener("visibilitychange", onVisibility);
-    const tick = (now: number) => {
+    const tick = (now: number, warmup = false) => {
       frame = 0;
-      if (destroyed || !visible || document.hidden || state.current.reveal >= 1) return;
+      if (destroyed || document.hidden || (!warmup && (!visible || state.current.reveal >= 1))) return;
       const dt = Math.min((now - previous) / 1000, 0.04);
       previous = now;
       time += dt;
@@ -138,5 +147,5 @@ export function WorkFieldView({ state, onReady, awake }: { state: RefObject<Work
       renderer.dispose();
     };
   }, [state, onReady]);
-  return <canvas ref={ref} className="work-field" aria-hidden />;
+  return <canvas ref={ref} className="work-canvas" aria-hidden />;
 }
