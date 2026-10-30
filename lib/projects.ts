@@ -1,3 +1,5 @@
+import type { ProjectPalette } from "./project-palette";
+
 export type ProjectWidth = "narrow" | "wide" | "xl";
 
 export type ProjectMediaKind = "image" | "video" | "scene" | "none";
@@ -66,6 +68,7 @@ export interface Project {
   sections?: ProjectSection[];
   closingMedia?: ProjectMediaItem;
   tintHsl?: { h: number; s: number; l: number };
+  palette: ProjectPalette;
   enabled: boolean;
 }
 
@@ -78,6 +81,7 @@ export const WIDTH_VW: Record<ProjectWidth, number> = {
 export const PROJECTS: Project[] = [
   {
     id: "marralhinha",
+    palette: { surface: [16, 53, 46], ink: [243, 235, 212] },
     index: "01.",
     name: "Marralhinha",
     showcase: { src: "/assets/projects/marralhinha/mar_board.webp", alt: "Marralhinha’s wooden board and glass marbles" },
@@ -134,6 +138,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "autopsy",
+    palette: { surface: [240, 243, 248], ink: [16, 20, 29] },
     index: "02.",
     name: "Autopsy",
     cover: { src: "/assets/projects/autopsy/cover.webp", alt: "Autopsy's live website for its AI coding-agent memory tool", source: "https://autopsy.surf/" },
@@ -241,6 +246,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "utd-roommates",
+    palette: { surface: [22, 20, 16], ink: [245, 237, 214] },
     index: "03.",
     name: "MeteorMate",
     cover: { src: "/assets/projects/meteormate/cover.webp", alt: "MeteorMate's live student roommate-matching website", source: "https://www.meteormate.com/" },
@@ -353,6 +359,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "rycord",
+    palette: { surface: [37, 26, 16], ink: [245, 229, 205] },
     index: "04.",
     name: "rycord",
     cover: { src: "/assets/projects/rycord/cover.webp", alt: "Ryan's record collection in the live rycord 3D room", source: "https://rycord.dev/" },
@@ -415,6 +422,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "nimby",
+    palette: { surface: [27, 42, 28], ink: [238, 240, 205] },
     index: "05.",
     name: "NIMBY",
     cover: { src: "/assets/projects/nimby/cover.webp", alt: "NIMBY's main menu captured from its current Godot project", source: "https://github.com/ryanpolasky/NIMBY/blob/main/UI/MainMenu.tscn" },
@@ -489,6 +497,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "apple-triage",
+    palette: { surface: [228, 220, 236], ink: [30, 23, 37] },
     index: "06.",
     name: "LLM Test Triage",
     tagline:
@@ -540,6 +549,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "apple-nlsql",
+    palette: { surface: [232, 225, 221], ink: [36, 24, 23] },
     index: "07.",
     name: "NL → SQL / NoSQL",
     tagline: "natural-language query interface for internal data stores.",
@@ -555,6 +565,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "readme-ryvamper",
+    palette: { surface: [24, 24, 28], ink: [242, 237, 243] },
     index: "08.",
     name: "RyMe.md",
     cover: { src: "/assets/projects/readme-ryvamper/cover.webp", alt: "The live RyMe.md workspace for designing animated GitHub profile banners", source: "https://ryme.md/editor" },

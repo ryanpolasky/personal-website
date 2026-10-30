@@ -2,14 +2,15 @@
 
 import dynamic from "next/dynamic";
 import { ProjectLink } from "@/components/ProjectLink";
-import { useEffect, useRef, useState, type PointerEvent } from "react";
+import { useEffect, useRef, useState, type PointerEvent, type CSSProperties } from "react";
+import { paletteStyle, type ProjectPalette } from "@/lib/project-palette";
 import { ProjectStill } from "@/components/projects/ProjectStill";
 import { workMotion } from "@/lib/work-motion";
 import type { WorkFieldState } from "@/components/scenes/WorkFieldView";
 
 const Field = dynamic(() => import("@/components/scenes/WorkFieldView").then((module) => module.WorkFieldView), { ssr: false });
 
-type WorkPreview = { id: string; name: string; tagline: string; image?: { src: string; alt: string } };
+type WorkPreview = { id: string; name: string; tagline: string; palette: ProjectPalette; image?: { src: string; alt: string } };
 
 export function WorkExperience({ projects }: { projects: WorkPreview[] }) {
   const root = useRef<HTMLElement>(null);
@@ -66,7 +67,7 @@ export function WorkExperience({ projects }: { projects: WorkPreview[] }) {
     motion.current.y = 1 - (event.clientY - rect.top) / rect.height * 2;
   };
 
-  return <section id="projects" className="selected-work" aria-label="selected work">
+  return <section id="projects" className="selected-work" aria-label="selected work" style={paletteStyle(project.palette) as CSSProperties}>
     <section ref={root} className="work-experience" data-snap data-enhanced={enhanced} aria-labelledby="work-title">
       <div className="work-stage" onPointerMove={move} onPointerLeave={() => { motion.current.x = 0; motion.current.y = 0; }}>
         {mountField && !reduced && (!expanded || fieldReady) ? <Field state={motion} onReady={setFieldReady} awake={!expanded} /> : null}

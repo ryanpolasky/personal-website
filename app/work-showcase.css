@@ -11,7 +11,7 @@
 .work-project-caption p { max-width: 470px; font-size: clamp(14px, 1.4vw, 20px); line-height: 1.45; }
 .work-project-caption a { flex: none; padding: 12px 0; border-bottom: 1px solid #fff9; font-size: 14px; }
 .work-project-caption a:focus-visible { outline: 2px solid white; outline-offset: 6px; }
-.work-index { padding: 100px 6vw 140px; }
+.work-index { padding: 100px 6vw 140px; background: var(--project-surface); color: var(--project-ink); --color-bg: var(--project-surface); --color-accent: var(--project-ink); --color-text-muted: var(--project-ink); --color-line-strong: color-mix(in srgb, var(--project-ink) 24%, transparent); }
 .work-index > p { margin-bottom: 35px; font-size: 12px; }
 .work-index li { border-top: 1px solid var(--color-line-strong); }
 .work-index li:last-child { border-bottom: 1px solid var(--color-line-strong); }

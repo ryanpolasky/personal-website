@@ -3,8 +3,54 @@ import test from "node:test";
 import { createRGeometry } from "../components/scenes/WorkFieldGeometry.ts";
 import { createWorkFieldLayout, WORK_FIELD_DRIFT } from "../lib/work-field-layout.ts";
 import { workMotion } from "../lib/work-motion.ts";
-import { projectSequence, trackPosition, activeTrackIndex } from "../lib/project-track.ts";
+import { projectSequence, trackPosition, activeTrackIndex, trackScroll, trackHandoff } from "../lib/project-track.ts";
 import { animateProjectNavigation } from "../lib/project-navigation.ts";
+import { blendPalette, contrast } from "../lib/project-palette.ts";
+import { getEnabledProjects } from "../lib/projects.ts";
+
+test("every project palette and every rotated colour handoff retains readable text", () => {
+  const projects = getEnabledProjects();
+  for (const project of projects) {
+    assert.ok(contrast(project.palette.surface, project.palette.ink) >= 4.5, project.id);
+    for (const next of projects) {
+      assert.deepEqual(blendPalette(project.palette, next.palette, 0), project.palette);
+      assert.deepEqual(blendPalette(project.palette, next.palette, 1), next.palette);
+      for (let step = 0; step <= 100; step++) {
+        const palette = blendPalette(project.palette, next.palette, step / 100);
+        assert.ok(contrast(palette.surface, palette.ink) >= 4.5, `${project.id} → ${next.id} at ${step}%`);
+      }
+    }
+  }
+  assert.notDeepEqual(projects[0].palette.surface, projects[1].palette.surface);
+});
+
+test("weighted handoffs stay continuous, bounded, reversible and invertible even around short projects", () => {
+  for (const width of [320, 390, 768, 1440, 3440]) {
+    const offsets = [0, 4, 8, 8.52, 9.1, 18].map((value) => value * width);
+    const distance = 20 * width, end = trackScroll(distance, offsets, width);
+    let previous = 0;
+    for (let scroll = 0; scroll <= end; scroll += width / 100) {
+      const state = trackHandoff(scroll, offsets, width, distance);
+      assert.ok(state.position >= previous - 1e-7);
+      assert.ok(state.position - previous <= width * 0.025);
+      assert.ok(state.position >= 0 && state.position <= distance);
+      assert.ok(state.blend >= 0 && state.blend <= 1);
+      assert.ok(Math.abs(trackScroll(state.position, offsets, width) - scroll) < 1e-5);
+      previous = state.position;
+    }
+    assert.equal(trackHandoff(-10, offsets, width, distance).position, 0);
+    assert.equal(trackHandoff(end + 10, offsets, width, distance).position, distance);
+    for (const position of offsets) {
+      const scroll = trackScroll(position, offsets, width);
+      assert.ok(Math.abs(trackHandoff(scroll, offsets, width, distance).position - position) < 1e-5);
+    }
+    const start = offsets[1] - width * 0.72;
+    const middle = trackHandoff(start + width * 0.475, offsets, width, distance);
+    assert.ok(Math.abs(middle.pressure - 0.5) < 1e-8);
+    assert.ok(middle.position - start < width * 0.1);
+    assert.ok(Math.abs(trackHandoff(start + width * 0.95, offsets, width, distance).position - offsets[1]) < 1e-6);
+  }
+});
 
 test("Explore transitions preserve modified links and respect motion and data preferences", () => {
   const click = { button: 0, metaKey: false, ctrlKey: false, shiftKey: false, altKey: false };

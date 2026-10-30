@@ -5,8 +5,9 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, type ReactNode } from "react";
 import { useLenis } from "@/components/LenisContext";
 import { animateProjectNavigation } from "@/lib/project-navigation";
+import { rgb, type ProjectPalette } from "@/lib/project-palette";
 
-type ProjectDestination = { id: string; name: string; image?: { src: string } };
+type ProjectDestination = { id: string; name: string; palette: ProjectPalette; image?: { src: string } };
 type NavigationRequest = { project: ProjectDestination; featured: boolean };
 
 export function ProjectLink({ project, children }: { project: ProjectDestination; children: ReactNode }) {
@@ -44,11 +45,16 @@ export function ProjectNavigation() {
       overlay.setAttribute("data-lenis-prevent", "");
       const image = new Image();
       image.alt = "";
-      image.src = featured ? document.querySelector<HTMLImageElement>(".work-project-image")?.currentSrc || project.image?.src || "" : project.image?.src || "";
+      const source = featured ? document.querySelector<HTMLImageElement>(".work-project-image")?.currentSrc || project.image?.src : project.image?.src;
+      if (source) image.src = source;
+      else image.hidden = true;
+      overlay.style.backgroundColor = rgb(project.palette.surface);
+      overlay.style.color = source ? "white" : rgb(project.palette.ink);
       if (project.image) overlay.append(image);
       const sourceCaption = featured ? document.querySelector<HTMLElement>(".work-project-caption") : null;
       const title = sourceCaption ? sourceCaption.cloneNode(true) as HTMLElement : document.createElement("span");
       if (!sourceCaption) title.textContent = project.name;
+      if (!source) title.style.background = "none";
       title.querySelectorAll("a").forEach((link) => { link.style.visibility = "hidden"; });
       title.querySelectorAll("[id]").forEach((element) => element.removeAttribute("id"));
       overlay.append(title);

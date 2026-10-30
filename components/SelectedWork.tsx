@@ -7,6 +7,7 @@ export function SelectedWork() {
     return {
       id: project.id,
       name: project.name,
+      palette: project.palette,
       tagline: project.tagline,
       image: src ? { src, alt: project.showcase?.alt ?? project.cover?.alt ?? project.name } : undefined,
     };

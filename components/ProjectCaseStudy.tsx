@@ -29,12 +29,11 @@ function ProjectFacts({ project }: { project: Project }) {
 
 export function ProjectCaseStudy({ project }: { project: Project }) {
   const projects = projectSequence(getEnabledProjects(), project.id);
-  return <ProjectTrack projects={projects.map(({ id, name, tagline, tintHsl }) => ({ id, name, tagline, tintHsl }))}>
+  return <ProjectTrack projects={projects.map(({ id, name, tagline, palette }) => ({ id, name, tagline, palette }))}>
     {projects.map((item, index) => {
       const cover = projectCover(item);
-      const tint = item.tintHsl;
       const Heading = index === 0 ? "h1" : "h2";
-      return <article className="case-project" data-project={item.id} aria-labelledby={`study-${item.id}`} key={item.id} style={{ "--project-tint": tint ? `hsl(${tint.h} ${tint.s}% ${tint.l}%)` : "#566283" } as CSSProperties}>
+      return <article className="case-project" data-project={item.id} aria-labelledby={`study-${item.id}`} key={item.id}>
         <header className="case-panel case-opening" data-track-panel>
           <p className="case-role">{item.index} / {item.role}</p>
           <Heading id={`study-${item.id}`} tabIndex={-1}>{item.name}</Heading>
