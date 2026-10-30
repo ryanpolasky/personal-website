@@ -19,6 +19,7 @@ export interface MediaFrameProps {
   onOpen?: (item: ProjectMediaItem) => void;
   // 'contain' = natural aspect + blurred backdrop; 'cover' = crop to fill.
   fit?: "contain" | "cover";
+  plain?: boolean;
 }
 
 // steps a spritesheet via background-position. respects reduced-motion.
@@ -130,6 +131,7 @@ export function MediaFrame({
   sizes,
   onOpen,
   fit = "contain",
+  plain = false,
 }: MediaFrameProps) {
   const label = item?.label ?? "preview";
   // item.cover overrides the layout-supplied fit so individual screenshots
@@ -147,7 +149,7 @@ export function MediaFrame({
   // animated content drops the card chrome (border/bg/shadow) so pixel
   // art doesn't look gallery-framed.
   const isAnimated = isSprite || isMarch;
-  const chromeClass = isAnimated
+  const chromeClass = isAnimated || plain
     ? ""
     : "rounded-[1.65rem] border border-white/10 bg-[linear-gradient(135deg,rgba(255,255,255,0.11),rgba(255,255,255,0.035)),radial-gradient(circle_at_24%_18%,color-mix(in_oklab,var(--project-tint)_34%,transparent),transparent_42%)] shadow-[0_24px_70px_-48px_rgba(0,0,0,0.9)]";
   const wrapperClass =
@@ -172,6 +174,8 @@ export function MediaFrame({
         rows={item.sprite.rows}
         fps={item.sprite.fps}
       />
+    ) : plain ? (
+      <ProjectImage item={item} fill sizes={sizes} className={effectiveFit === "cover" ? "object-cover" : "object-contain"} />
     ) : effectiveFit === "cover" ? (
       <ProjectImage
         item={item}

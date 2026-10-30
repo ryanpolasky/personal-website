@@ -2,14 +2,41 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { createRGeometry } from "../components/scenes/WorkFieldGeometry.ts";
 import { createWorkFieldLayout, WORK_FIELD_DRIFT } from "../lib/work-field-layout.ts";
-import { HOLD_DURATION, REVEAL_DURATION, workMotion } from "../lib/work-motion.ts";
+import { workMotion } from "../lib/work-motion.ts";
+import { projectSequence, trackPosition, activeTrackIndex } from "../lib/project-track.ts";
 
-test("uncommitted motion never reveals a project", () => {
-  for (const heldFor of [0, HOLD_DURATION / 2, HOLD_DURATION]) {
-    assert.equal(workMotion(heldFor, null).reveal, 0);
+test("each direct project route continues through the registry exactly once", () => {
+  const projects = ["marralhinha", "autopsy", "ryme-md", "ryplay"].map((id) => ({ id }));
+  for (const project of projects) {
+    const sequence = projectSequence(projects, project.id);
+    assert.equal(sequence[0].id, project.id);
+    assert.equal(new Set(sequence.map((item) => item.id)).size, projects.length);
   }
-  assert.equal(workMotion(HOLD_DURATION / 2, null).charge, 0.5);
-  assert.equal(workMotion(0, REVEAL_DURATION).reveal, 1);
+  assert.deepEqual(projectSequence(projects, "missing"), projects);
+});
+
+test("native vertical travel maps to bounded horizontal movement and the next project", () => {
+  const offsets = [0, 4000, 7600];
+  assert.equal(trackPosition(400, 500, 9000), 0);
+  assert.equal(trackPosition(2500, 500, 9000), 2000);
+  assert.equal(trackPosition(10000, 500, 9000), 9000);
+  assert.equal(trackPosition(500, 500, -1), 0);
+  assert.equal(activeTrackIndex(offsets, 0, 1440), 0);
+  assert.equal(activeTrackIndex(offsets, 3700, 1440), 1);
+  assert.equal(activeTrackIndex(offsets, 7600, 390), 2);
+  assert.equal(activeTrackIndex(offsets, 2000, 390), 0);
+});
+
+test("arrival reveals the featured project without a click or hold", () => {
+  assert.equal(workMotion(800, 800).reveal, 0);
+  assert.equal(workMotion(520, 800).reveal, 0);
+  assert.equal(workMotion(260, 800).reveal, 0.5);
+  assert.equal(workMotion(0, 800).reveal, 1);
+  assert.equal(workMotion(-800, 800).reveal, 1);
+  assert.equal(workMotion(0, 0).reveal, 1);
+  for (let top = 800; top > 0; top -= 10) {
+    assert.ok(workMotion(top, 800).reveal <= workMotion(top - 10, 800).reveal);
+  }
 });
 
 test("mesh bounding spheres remain separate during idle, charge, and burst", () => {

@@ -1,9 +1,9 @@
-export const HOLD_DURATION = 800;
-export const REVEAL_DURATION = 1200;
 const clamp = (value: number) => Math.max(0, Math.min(1, value));
 
-export function workMotion(heldFor: number, revealedFor: number | null) {
-  const charge = revealedFor === null ? clamp(heldFor / HOLD_DURATION) : 1;
-  const timed = revealedFor === null ? 0 : 1 - Math.pow(1 - clamp(revealedFor / REVEAL_DURATION), 3);
-  return { charge, reveal: timed };
+export function workMotion(sectionTop: number, viewportHeight: number) {
+  const progress = clamp(1 - sectionTop / Math.max(1, viewportHeight * 0.65));
+  return {
+    charge: Math.sin(progress * Math.PI) * 0.6,
+    reveal: progress * progress * (3 - 2 * progress),
+  };
 }

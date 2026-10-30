@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import Lenis from "lenis";
 import Snap from "lenis/snap";
 import { gsap } from "gsap";
@@ -23,6 +24,38 @@ export function SmoothScrollProvider({
   const lenisRef = useRef<Lenis | null>(null);
   // state mirror of ref so context consumers re-render on create/destroy.
   const [lenis, setLenis] = useState<Lenis | null>(null);
+  const homeRoute = usePathname() === "/";
+
+  useEffect(() => {
+    if (!lenis || !homeRoute) return;
+    const snap = new Snap(lenis, {
+      type: "proximity",
+      distanceThreshold: "36%",
+      duration: 0.62,
+      easing: (t) => Math.min(1, 1.001 - 2 ** (-10 * t)),
+      lerp: 0.18,
+      debounce: 140,
+    });
+    const targets = Array.from(document.querySelectorAll<HTMLElement>("[data-snap]"));
+    targets.forEach((element) => snap.addElement(element, { align: ["start"] }));
+    const onIntent = ({ deltaY }: { deltaY: number }) => {
+      const position = lenis.scroll;
+      const predicted = position + deltaY;
+      const nearest = targets.map((target) => target.getBoundingClientRect().top + window.scrollY)
+        .sort((a, b) => Math.abs(a - predicted) - Math.abs(b - predicted))[0];
+      if (nearest !== undefined && (deltaY > 0 ? nearest > position + 2 : deltaY < 0 && nearest < position - 2)) snap.start();
+      else snap.stop();
+    };
+    lenis.on("virtual-scroll", onIntent);
+    let disposed = false;
+    void document.fonts.ready.then(() => { if (!disposed) snap.resize(); });
+    return () => {
+      disposed = true;
+      lenis.off("virtual-scroll", onIntent);
+      snap.stop();
+      snap.destroy();
+    };
+  }, [lenis, homeRoute]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -151,27 +184,9 @@ export function SmoothScrollProvider({
     const onScroll = () => ScrollTrigger.update();
     lenis.on("scroll", onScroll);
 
-    // proximity snap: `[data-snap]` sections become landing points without
-    // interrupting scrub through tall pinned timelines.
-    const snap = new Snap(lenis, {
-      type: "proximity",
-      distanceThreshold: "36%",
-      duration: 0.62,
-      easing: (t) => Math.min(1, 1.001 - 2 ** (-10 * t)),
-      lerp: 0.18,
-      debounce: 140,
-    });
-    const snapTargets = Array.from(
-      document.querySelectorAll<HTMLElement>("[data-snap]"),
-    );
-    const removeSnaps = snapTargets.map((el) =>
-      snap.addElement(el, { align: ["start"] }),
-    );
-
     // refresh after fonts/images settle so triggers measure final layout.
     const refresh = () => {
       ScrollTrigger.refresh();
-      snap.resize();
     };
     // ScrollTrigger.refresh forces a full layout pass; a window drag fires
     // resize dozens of times a second, so coalesce to the trailing edge.
@@ -195,8 +210,6 @@ export function SmoothScrollProvider({
       if (bootLoad) window.removeEventListener("load", bootLoad);
       if (heroReadyHandler)
         window.removeEventListener("hero:ready", heroReadyHandler);
-      removeSnaps.forEach((off) => off());
-      snap.destroy();
       lenis.off("scroll", onScroll);
       gsap.ticker.remove(raf);
       lenis.destroy();
