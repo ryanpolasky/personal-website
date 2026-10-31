@@ -1,4 +1,9 @@
 {
+  "baked-project-objects": {
+    "manifest": "lib/projectObjects.json",
+    "sources": "scripts/projectObjectSources.ts",
+    "pipeline": "npm run bake:project-objects: bake node transforms and instance colors into shared model coordinates; tessellate shared horizontal slices and broad triangles for continuous twist deformation; preserve material groups, UVs and normals; weld and Meshopt-compress without position quantization or geometry simplification."
+  },
   "marralhinha-oak.glb": {
     "repository": "https://github.com/ryanpolasky/Marralhinha",
     "sourceCommit": "7af65ba",
