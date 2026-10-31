@@ -153,11 +153,13 @@ export function ProjectsDesktop() {
         ([entry]) => {
           if (entry.isIntersecting) {
             reversing = false;
-            timeline.timeScale(1).play();
+            const time = clock.time;
+            timeline.pause().timeScale(1).play(time);
             sync();
           } else if (entry.boundingClientRect.top > 0 && clock.time > 0) {
             reversing = true;
-            timeline.timeScale(2.6).reverse();
+            const time = clock.time;
+            timeline.pause().timeScale(2.6).reverse(time);
             sync();
           }
         },
