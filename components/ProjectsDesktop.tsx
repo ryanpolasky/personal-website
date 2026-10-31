@@ -143,12 +143,13 @@ export function ProjectsDesktop() {
       letters.forEach((letter, i) => {
         const glyph = word.children[i] as HTMLElement;
         timeline.fromTo(letter, {
+          xPercent: -50, yPercent: -50,
           x: () => (section.clientWidth - word.offsetWidth) / 2 + glyph.offsetLeft + glyph.offsetWidth / 2 - letter.offsetLeft,
           y: () => section.clientHeight / 2 - letter.offsetTop,
           scale: () => word.offsetHeight / letter.offsetHeight,
           rotation: 0,
         }, {
-          x: 0, y: 0, scale: 1, rotation: letterPositions[i][2],
+          xPercent: -50, yPercent: -50, x: 0, y: 0, scale: 1, rotation: letterPositions[i][2],
           duration: 1.05, ease: "expo.out",
         }, PROJECT_HOLD + i * 0.025);
         timeline.fromTo(letter, { opacity: 1 }, { opacity: 0.13, duration: 0.62, ease: "power2.inOut" }, PROJECT_HOLD + 0.16 + i * 0.025);
