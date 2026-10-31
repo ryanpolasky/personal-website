@@ -6,7 +6,7 @@ function setup(t, coarse = false) {
   const browser = new EventTarget();
   const page = new EventTarget();
   const timers = new Map();
-  const calls = { land: 0, move: 0, leave: 0, snap: [] };
+  const calls = { land: 0, browse: 0, move: 0, leave: 0, snap: [] };
   let now = 0;
   let nextTimer = 0;
   let entered = false;
@@ -31,6 +31,7 @@ function setup(t, coarse = false) {
     getBoundingClientRect: () => ({ top: 1600 - browser.scrollY, bottom: 2600 - browser.scrollY }),
   }, {
     onLand: () => { calls.land++; entered = true; },
+    onBrowse: () => { calls.browse++; entered = true; },
     onMove: () => { calls.move++; },
     onLeaveAbove: () => { calls.leave++; entered = false; },
     canSnap: () => !entered,
@@ -151,6 +152,25 @@ test("upward exit reverses immediately without snapping back; re-entry can land"
   s.wait();
   assert.deepEqual(s.calls.snap, [{ top: 1600, behavior: "smooth" }]);
 });
+
+for (const coarse of [false, true]) {
+  test(`a fast pass into the visible tail exposes content without an entrance (${coarse ? "touch" : "desktop"})`, (t) => {
+    const s = setup(t, coarse);
+    for (const y of [1500, 1800, 2000, 2250]) {
+      s.scroll(y);
+      s.wait(PROJECT_SCROLL_IDLE - 1);
+      assert.equal(s.calls.land, 0);
+      assert.equal(s.calls.browse, 0);
+    }
+    s.wait(1);
+    assert.equal(s.calls.land, 0);
+    assert.equal(s.calls.browse, 1);
+    assert.deepEqual(s.calls.snap, []);
+    s.scroll(2700);
+    s.wait();
+    assert.equal(s.calls.browse, 1);
+  });
+}
 
 test("a new touch interrupts a native snap, including multi-touch release", (t) => {
   const s = setup(t, true);

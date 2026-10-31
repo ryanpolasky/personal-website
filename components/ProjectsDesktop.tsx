@@ -190,6 +190,13 @@ export function ProjectsDesktop() {
           gsap.ticker.add(advance);
           sync();
         },
+        onBrowse: () => {
+          reversing = false;
+          gsap.ticker.remove(advance);
+          clock.time = PROJECT_ARRIVAL_END;
+          timeline.time(clock.time, true);
+          sync();
+        },
         onLeaveAbove: () => {
           if (clock.time > 0) {
             reversing = true;

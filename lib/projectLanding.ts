@@ -2,6 +2,7 @@ export const PROJECT_SCROLL_IDLE = 240;
 
 interface ProjectLandingHandlers {
   onLand: () => void;
+  onBrowse: () => void;
   onMove: () => void;
   onLeaveAbove: () => void;
   canSnap: () => boolean;
@@ -9,7 +10,7 @@ interface ProjectLandingHandlers {
 
 export function observeProjectLanding(
   section: HTMLElement,
-  { onLand, onMove, onLeaveAbove, canSnap }: ProjectLandingHandlers,
+  { onLand, onBrowse, onMove, onLeaveAbove, canSnap }: ProjectLandingHandlers,
 ) {
   let timer = 0;
   let touching = false;
@@ -33,7 +34,10 @@ export function observeProjectLanding(
     }
     if (snapping && Math.abs(top) > 3) return;
     snapping = false;
-    if (top <= height * 0.2 && bottom >= height * 0.5) onLand();
+    if (top <= height * 0.2 && bottom > 0) {
+      if (bottom >= height * 0.5) onLand();
+      else onBrowse();
+    }
   };
   const schedule = () => {
     window.clearTimeout(timer);
