@@ -18,6 +18,7 @@ import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeom
 import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js";
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader.js";
 import { HDRI_STUDIO_HREF } from "@/lib/site";
+import { PROJECT_REVEAL, type ProjectArrival } from "@/lib/projectMotion";
 import ProjectBoot from "./ProjectBoot";
 
 const models = new Map<string, Promise<THREE.Group>>();
@@ -306,7 +307,7 @@ function ObjectRig({
   gesture,
   ready,
   failed,
-  section,
+  arrival,
 }: {
   id: string;
   active: boolean;
@@ -314,7 +315,7 @@ function ObjectRig({
   gesture: React.RefObject<Gesture>;
   ready: () => void;
   failed: () => void;
-  section: HTMLElement;
+  arrival: React.RefObject<ProjectArrival>;
 }) {
   const holder = useRef<THREE.Group>(null);
   const next = useRef<THREE.Group | null>(null);
@@ -362,7 +363,9 @@ function ObjectRig({
   useFrame((state, delta) => {
     if (!holder.current || !current.current) return;
     if (!active && !reduced) return;
-    if (section.dataset.motion === "waiting" || section.dataset.motion === "boot") return;
+    const arrivalProgress = reduced ? 1 : THREE.MathUtils.clamp((arrival.current.time - PROJECT_REVEAL) / 1.3, 0, 1);
+    holder.current.visible = arrivalProgress > 0;
+    if (!holder.current.visible) return;
     const dt = Math.min(delta, 0.045);
     const p = phase.current;
     if (!p.started) p.started = performance.now();
@@ -393,7 +396,7 @@ function ObjectRig({
     const entering = phase.current.name === "enter";
     const t = reduced
       ? 1
-      : Math.min(1, phase.current.t / (entering ? 1.3 : 0.22));
+      : Math.min(entering ? arrivalProgress : 1, phase.current.t / (entering ? 1.3 : 0.22));
     const spring = entering ? 1 - Math.exp(-6 * t) * Math.cos(t * 9) : 1 - t;
     holder.current.scale.setScalar(Math.max(0.001, spring));
     holder.current.rotation.set(
@@ -475,7 +478,7 @@ class SceneBoundary extends Component<
   }
 }
 
-export default function ProjectObjectScene({ id }: { id: string }) {
+export default function ProjectObjectScene({ id, arrival }: { id: string; arrival: React.RefObject<ProjectArrival> }) {
   const ref = useRef<HTMLDivElement>(null);
   const [near, setNear] = useState(false);
   const [active, setActive] = useState(false);
@@ -633,7 +636,7 @@ export default function ProjectObjectScene({ id }: { id: string }) {
             />
             <Suspense fallback={null}>
               <Environment files={HDRI_STUDIO_HREF} />
-              <ProjectBoot section={section} active={active} reduced={reduced} ready={onBootReady} />
+              <ProjectBoot section={section} active={active} reduced={reduced} ready={onBootReady} arrival={arrival} />
             </Suspense>
             <Suspense fallback={null}>
               <StageViewport element={ref.current} section={section}>
@@ -644,7 +647,7 @@ export default function ProjectObjectScene({ id }: { id: string }) {
                   gesture={gesture}
                   ready={onReady}
                   failed={onError}
-                  section={section}
+                  arrival={arrival}
                 />
               </StageViewport>
             </Suspense>

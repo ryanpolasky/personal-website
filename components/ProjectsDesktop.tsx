@@ -8,7 +8,9 @@ import {
 } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
+import gsap from "gsap";
 import { getEnabledProjects, type Project } from "@/lib/projects";
+import { PROJECT_HOLD, PROJECT_REVEAL, PROJECT_ARRIVAL_END, type ProjectArrival } from "@/lib/projectMotion";
 import "./projects-desktop.css";
 
 const ProjectObjectScene = dynamic(() => import("./ProjectObjectScene"), { ssr: false });
@@ -93,10 +95,10 @@ function ProjectObject({ project }: { project: Project }) {
 
 export function ProjectsDesktop() {
   const [selected, setSelected] = useState(0);
-  const [themeIndex, setThemeIndex] = useState<number | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
+  const arrival = useRef<ProjectArrival>({ time: PROJECT_ARRIVAL_END });
   const project = projects[selected];
-  const palette = themeIndex === null ? null : projects[themeIndex].tintHsl;
+  const palette = project.tintHsl;
   const themeStyle = palette
     ? ({
         "--pd-active": `hsl(${palette.h} ${palette.s}% ${palette.l}%)`,
@@ -110,43 +112,71 @@ export function ProjectsDesktop() {
 
   useEffect(() => {
     const section = sectionRef.current;
-    if (
-      !section ||
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
-      !window.IntersectionObserver
-    ) return;
-    section.dataset.motion = "waiting";
-    let revealTimer = 0;
-    let settleTimer = 0;
-    const reveal = () => {
-      if (section.dataset.motion !== "boot") return;
-      section.dataset.motion = "entered";
-      settleTimer = window.setTimeout(() => {
-        section.dataset.motion = "complete";
-      }, 1500);
-    };
-    section.addEventListener("project-boot-reveal", reveal);
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return;
-        section.dataset.motion = "boot";
-        revealTimer = window.setTimeout(reveal, 3600);
+    if (!section || !window.IntersectionObserver) return;
+    const media = gsap.matchMedia();
+    media.add("(prefers-reduced-motion: no-preference)", () => {
+      const clock = arrival.current;
+      const archive = section.querySelector<HTMLElement>(".project-desktop-archive")!;
+      let reversing = false;
+      const sync = () => {
+        const time = clock.time;
+        const motion = time === 0 ? "waiting" : reversing ? "reversing" :
+          time < PROJECT_REVEAL ? "boot" : time < PROJECT_ARRIVAL_END ? "entered" : "complete";
+        const boot = time < PROJECT_HOLD ? "holding" : time < PROJECT_HOLD + 1.25 ? "burst" : "backdrop";
+        const inert = time < PROJECT_REVEAL || reversing;
+        if (section.dataset.motion !== motion) section.dataset.motion = motion;
+        if (section.dataset.boot !== boot) section.dataset.boot = boot;
+        if (archive.inert !== inert) archive.inert = inert;
+      };
+      clock.time = 0;
+      sync();
+      const timeline = gsap.timeline({ paused: true, onUpdate: sync });
+      timeline.to(clock, { time: PROJECT_ARRIVAL_END, duration: PROJECT_ARRIVAL_END, ease: "none" }, 0);
+      timeline.fromTo(section,
+        { "--pd-grid-opacity": 0, "--pd-grid-scale": 1.6, "--pd-grid-turn": "-10deg" },
+        { "--pd-grid-opacity": 0.48, "--pd-grid-scale": 1, "--pd-grid-turn": "0deg", duration: 0.85 }, PROJECT_REVEAL);
+      const enter = (selector: string, from: gsap.TweenVars, duration: number, delay = 0, stagger = 0, ease = "power3.out") => {
+        timeline.fromTo(section.querySelectorAll(selector), { opacity: 0, ...from }, {
+          opacity: 1, x: 0, y: 0, rotation: 0, scale: 1, skewY: 0,
+          duration, stagger, ease,
+        }, PROJECT_REVEAL + delay);
+      };
+      enter(".project-desktop-topline, .project-desktop-heading", { y: 60, skewY: 7 }, 0.56, 0, 0.06);
+      enter(".project-desktop-status, .project-desktop-library-label", { y: 60, skewY: 7 }, 0.49, 0.17);
+      enter(".project-desktop-object", { y: 35, rotation: -14, scale: 0.68 }, 0.67, 0.25, 0.065, "back.out(1.2)");
+      timeline.fromTo(section.querySelector(".project-desktop-stage"), { opacity: 0 }, { opacity: 1, duration: 0.9 }, PROJECT_REVEAL + 0.24);
+      enter(".project-desktop-stage-art", { x: -80, y: 70, rotation: -14, scale: 0.54 }, 1.1, 0.24, 0, "back.out(1.2)");
+      enter(".project-desktop-stage-id, .project-desktop-stage-caption, .project-desktop-readme, .project-desktop-foot, .project-desktop-bottomline",
+        { y: 60, skewY: 7 }, 0.5, 0.6);
+      enter(".project-desktop-details", { x: 140, y: 160, rotation: 15, scaleX: 0.1, scaleY: 0.04 }, 0.75, 0.52, 0, "back.out(1.1)");
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            reversing = false;
+            timeline.timeScale(1).play();
+            sync();
+          } else if (entry.boundingClientRect.top > 0 && clock.time > 0) {
+            reversing = true;
+            timeline.timeScale(2.6).reverse();
+            sync();
+          }
+        },
+        { rootMargin: "0px 0px -68% 0px", threshold: 0.12 },
+      );
+      observer.observe(section);
+      return () => {
         observer.disconnect();
-      },
-      { rootMargin: "0px 0px -68% 0px", threshold: 0.12 },
-    );
-    observer.observe(section);
-    return () => {
-      observer.disconnect();
-      section.removeEventListener("project-boot-reveal", reveal);
-      window.clearTimeout(revealTimer);
-      window.clearTimeout(settleTimer);
-    };
+        archive.inert = false;
+        clock.time = PROJECT_ARRIVAL_END;
+        delete section.dataset.motion;
+        delete section.dataset.boot;
+      };
+    });
+    return () => media.revert();
   }, []);
 
   const inspect = (index: number) => {
     setSelected(index);
-    setThemeIndex(index);
   };
 
   return (
@@ -166,7 +196,6 @@ export function ProjectsDesktop() {
 
       <div className="project-desktop-archive">
         <div className="project-desktop-heading">
-          <span className="project-desktop-mark" aria-hidden="true">R<span>·</span></span>
           <h2 id="project-desktop-title">Projects</h2>
           <span className="project-desktop-path" aria-hidden="true">~/ryan/work/</span>
         </div>
@@ -189,10 +218,9 @@ export function ProjectsDesktop() {
                   className="project-desktop-object"
                   aria-pressed={selected === index}
                   aria-label={`View ${item.name}`}
-                  style={{ "--pd-stagger": `${250 + index * 65}ms` } as CSSProperties}
                   onPointerEnter={(event) => {
                     const motion = sectionRef.current?.dataset.motion;
-                    if (event.pointerType !== "touch" && motion !== "waiting" && motion !== "boot" && motion !== "entered") {
+                    if (event.pointerType !== "touch" && (!motion || motion === "complete")) {
                       inspect(index);
                     }
                   }}
@@ -219,33 +247,35 @@ export function ProjectsDesktop() {
               <span className="project-desktop-stage-art">
                 <ProjectObject project={project} />
               </span>
-              <ProjectObjectScene id={project.id} />
+              <ProjectObjectScene id={project.id} arrival={arrival} />
               <span className="project-desktop-stage-caption">{project.name.toUpperCase()}</span>
             </div>
-            <div className="project-desktop-details" key={project.id}>
-              <div className="project-desktop-window-title">project.info</div>
-              <div className="project-desktop-meta">
-                <span>{project.role.toUpperCase()}</span>
-                <span>{String(selected + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span>
-              </div>
-              <h3>{project.name}</h3>
-              <p className="project-desktop-description">{descriptions[project.id] ?? project.body}</p>
-              <p className="project-desktop-stack">{project.stack.slice(0, 4).join(" / ")}</p>
-              <div className="project-desktop-actions">
-                {project.href ? (
-                  <a href={project.href} target="_blank" rel="noopener noreferrer">
-                    {project.hrefLabel?.replace(/\s*→$/, "") ?? "Visit project"}<span aria-hidden="true">↗</span>
-                  </a>
-                ) : (
-                  <span className="project-desktop-private">
-                    {githubRepos.length ? "No public demo" : "Internal work · no public demo"}
-                  </span>
-                )}
-                {githubRepos.map((repo) => (
-                  <a key={repo.href} href={repo.href} target="_blank" rel="noopener noreferrer">
-                    {repo.label}<span aria-hidden="true">↗</span>
-                  </a>
-                ))}
+            <div className="project-desktop-details">
+              <div className="project-desktop-details-content" key={project.id}>
+                <div className="project-desktop-window-title">project.info</div>
+                <div className="project-desktop-meta">
+                  <span>{project.role.toUpperCase()}</span>
+                  <span>{String(selected + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}</span>
+                </div>
+                <h3>{project.name}</h3>
+                <p className="project-desktop-description">{descriptions[project.id] ?? project.body}</p>
+                <p className="project-desktop-stack">{project.stack.slice(0, 4).join(" / ")}</p>
+                <div className="project-desktop-actions">
+                  {project.href ? (
+                    <a href={project.href} target="_blank" rel="noopener noreferrer">
+                      {project.hrefLabel?.replace(/\s*→$/, "") ?? "Visit project"}<span aria-hidden="true">↗</span>
+                    </a>
+                  ) : (
+                    <span className="project-desktop-private">
+                      {githubRepos.length ? "No public demo" : "Internal work · no public demo"}
+                    </span>
+                  )}
+                  {githubRepos.map((repo) => (
+                    <a key={repo.href} href={repo.href} target="_blank" rel="noopener noreferrer">
+                      {repo.label}<span aria-hidden="true">↗</span>
+                    </a>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
