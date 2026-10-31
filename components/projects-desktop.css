@@ -597,14 +597,14 @@
   .project-desktop-heading { gap: 12px; padding-bottom: 10px; }
   .project-desktop-heading h2 { font-size: 30px; }
   .project-desktop-path { display: none; }
-  .project-desktop-status { padding-bottom: 16px; font-size: 8px; }
+  .project-desktop-status { padding-bottom: 16px; font-size: 10px; }
   .project-desktop-status span:last-child { display: none; }
   .project-desktop-workspace { display: flex; flex-direction: column; min-height: 0; padding: 0; gap: 20px; }
   .project-desktop-library { width: 100%; }
   .project-desktop-library-label, .project-desktop-readme { display: none; }
   .project-desktop-objects { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px 6px; padding: 0; }
   .project-desktop-object-slot { width: 100%; height: auto; aspect-ratio: 1.2; }
-  .project-desktop-object-name { font-size: 9px; min-height: 24px; }
+  .project-desktop-object-name { font-size: clamp(10px, 3vw, 11px); min-height: 35px; padding: 3px 1px; }
   .project-desktop-viewer { position: relative; inset: auto; width: 100%; height: auto; }
   .project-desktop-stage { height: 240px; overflow: hidden; }
   .project-desktop-stage::after { display: none; }
@@ -616,6 +616,8 @@
   .project-desktop-stage-art .project-desktop-document { font-size: 36px; }
   .project-desktop-details { position: relative; right: auto; bottom: auto; width: 100%; margin-top: 14px; }
   .project-desktop-details h3 { font-size: 35px; }
+  .project-desktop-meta, .project-desktop-stack { font-size: 11px; }
+  .project-desktop-meta span:last-child { white-space: nowrap; }
   .project-desktop-description { font-size: 14px; }
   .project-desktop-actions a, .project-desktop-private { min-height: 42px; font-size: 11px; }
 }
@@ -623,7 +625,6 @@
 @media (max-width: 350px) {
   .project-desktop { padding-left: 12px; padding-right: 12px; }
   .project-desktop-topline { font-size: 8px; }
-  .project-desktop-object-name { font-size: 8px; }
   .project-desktop-stage { height: 215px; }
 }
 
