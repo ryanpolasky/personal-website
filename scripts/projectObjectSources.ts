@@ -21,7 +21,7 @@ function add(
   return mesh;
 }
 
-function label(text: string, color: string, background: string) {
+function label(text: string, color: string, background: string, textY = 260) {
   const canvas = document.createElement("canvas");
   canvas.width = 512;
   canvas.height = 512;
@@ -32,7 +32,7 @@ function label(text: string, color: string, background: string) {
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.font = "600 145px sans-serif";
-  ctx.fillText(text, 256, 260);
+  ctx.fillText(text, 256, textY);
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
   return new THREE.MeshStandardMaterial({ map: texture, roughness: 0.35 });
@@ -80,7 +80,7 @@ export async function buildProjectObject(id: string) {
     add(
       root,
       new THREE.CircleGeometry(0.77, 48),
-      label("ry", "#302b25", "#efe3c3"),
+      label("ry", "#302b25", "#efe3c3", 132),
       [0, 0, 0.08],
     );
     add(root, new THREE.CircleGeometry(0.1, 24), black, [0, 0, 0.09]);
