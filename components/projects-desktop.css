@@ -253,7 +253,7 @@
   z-index: 0;
   pointer-events: none;
   color: var(--pd-ink);
-  font: 750 clamp(160px, 22vw, 290px)/1 var(--font-display);
+  font: 750 clamp(160px, min(22vw, 32svh), 290px)/1 var(--font-display);
   font-variation-settings: "opsz" 144, "SOFT" 80, "WONK" 1;
   letter-spacing: 0;
 }

@@ -18,7 +18,7 @@ const ProjectObjectScene = dynamic(() => import("./ProjectObjectScene"), { ssr: 
 const projects = getEnabledProjects().filter((project) => project.id !== "gallery");
 const letterPositions = [
   [0.03, 0.24, -12, 0.02, 0.10], [0.91, 0.17, 12, 0.98, 0.23],
-  [0.48, 0.04, -8, 0.01, 0.36], [0.99, 0.52, 9, 0.99, 0.49],
+  [0.48, 0.04, -8, 0.01, 0.36], [0.99, 0.54, 9, 0.99, 0.49],
   [0.01, 0.62, -9, 0.01, 0.62], [0.30, 0.92, 14, 0.99, 0.75],
   [0.62, 0.87, -7, 0.02, 0.87], [0.92, 0.91, -13, 0.98, 0.96],
 ];
