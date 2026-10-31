@@ -1,0 +1,34 @@
+{
+  "marralhinha": {
+    "file": "marralhinha-fd14043565.glb",
+    "bytes": 5672220
+  },
+  "autopsy": {
+    "file": "autopsy-b5100086c0.glb",
+    "bytes": 303972
+  },
+  "utd-roommates": {
+    "file": "utd-roommates-66f1367689.glb",
+    "bytes": 689712
+  },
+  "rycord": {
+    "file": "rycord-39c212c4aa.glb",
+    "bytes": 740192
+  },
+  "nimby": {
+    "file": "nimby-6ece715335.glb",
+    "bytes": 1455728
+  },
+  "apple-triage": {
+    "file": "apple-triage-26d3009167.glb",
+    "bytes": 315936
+  },
+  "apple-nlsql": {
+    "file": "apple-nlsql-6bc32b497d.glb",
+    "bytes": 380080
+  },
+  "readme-ryvamper": {
+    "file": "readme-ryvamper-c990fb8f50.glb",
+    "bytes": 317024
+  }
+}

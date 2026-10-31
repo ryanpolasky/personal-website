@@ -23,6 +23,19 @@ npm run lint
 npm run typecheck
 ```
 
+## project object assets
+
+The archive loads pre-baked, Meshopt-compressed GLBs from `lib/projectObjects.json`.
+To change an object, edit `scripts/projectObjectSources.ts`, then run
+`CDP_URL=http://localhost:9222 npm run bake:project-objects` against a Chrome
+instance with remote debugging enabled. The baker opens and closes its own tab;
+it does not change existing tabs. Commit the manifest and its content-hashed GLBs.
+
+Transforms and instance colors are baked before a shared-space tessellation pass.
+Position quantization is deliberately disabled so compression cannot introduce
+per-part transforms that break the object-space twist. Materials and UVs survive.
+Run `npm run test:project-objects` to check geometry, shader normals, and assets.
+
 ## deploy
 
 `next.config.mjs` is set to `output: 'export'` so `npm run build` writes a static `out/` directory. Cloudflare Pages serves that directory; `_headers` and `_redirects` live in `public/` and are copied through.
