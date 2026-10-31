@@ -180,7 +180,6 @@ export function ProjectsDesktop() {
         if (clock.time === 0 || clock.time === PROJECT_ARRIVAL_END) gsap.ticker.remove(advance);
       };
       const stopLanding = observeProjectLanding(section, {
-        canSnap: () => clock.time === 0,
         onMove: () => {
           if (!reversing) gsap.ticker.remove(advance);
         },
@@ -241,7 +240,7 @@ export function ProjectsDesktop() {
       data-snap
       ref={sectionRef}
       style={themeStyle}
-      className="project-desktop"
+      className="project-desktop home-scroll-region"
       aria-labelledby="project-desktop-title"
     >
       <div className="project-boot-poster" aria-hidden="true">

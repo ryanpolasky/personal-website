@@ -23,6 +23,7 @@ export default function HomePage() {
     <main id="main" className="relative">
       <Cursor />
 
+      <div className="home-scroll-region">
       {/* 01. HERO - exactly 100svh tall with padded frame on all sides.
           stage uses h-full so it fits the inner box (svh minus padding). */}
       <section
@@ -101,15 +102,18 @@ export default function HomePage() {
 
       {/* 03. ABOUT + EXPERIENCE */}
       <AboutSection />
+      </div>
 
       {/* 05. PROJECTS */}
       <ProjectsDesktop />
 
+      <div className="home-scroll-region">
       {/* 06. CONTACT */}
       <FluidParticleBand />
 
       {/* 07. FOOTER */}
       <Footer />
+      </div>
     </main>
   );
 }

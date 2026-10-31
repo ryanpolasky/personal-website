@@ -4,6 +4,7 @@
   font-weight: 600;
   font-display: swap;
 }
+
 .project-desktop {
   --pd-base: var(--pd-active, var(--color-accent));
   --pd-bg: color-mix(in srgb, var(--pd-base) 62%, #c9fff1);
@@ -626,6 +627,12 @@
   .project-desktop { padding-left: 12px; padding-right: 12px; }
   .project-desktop-topline { font-size: 8px; }
   .project-desktop-stage { height: 215px; }
+}
+
+@media (pointer: coarse) and (prefers-reduced-motion: no-preference) {
+  html:has(.home-scroll-region) { scroll-snap-type: y mandatory; }
+  .home-scroll-region { scroll-snap-align: start; }
+  .project-desktop { min-height: 100dvh; }
 }
 
 @media (prefers-reduced-motion: reduce) {
