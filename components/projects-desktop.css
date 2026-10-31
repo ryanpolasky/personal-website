@@ -520,19 +520,6 @@
   color: var(--pd-muted);
 }
 
-.project-desktop-foot {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: 22px;
-  padding: 10px 14px;
-  border: 1px solid var(--pd-line);
-  background: color-mix(in srgb, var(--pd-paper) 18%, var(--pd-bg));
-  font: 9px var(--font-mono);
-}
-
 @keyframes project-desktop-appear {
   from { opacity: 0; transform: translateY(15px) rotate(-5deg) scale(0.93); }
   to { opacity: 1; transform: none; }
@@ -551,7 +538,6 @@
 .project-desktop:is([data-motion="waiting"], [data-motion="boot"]) .project-desktop-stage-art,
 .project-desktop:is([data-motion="waiting"], [data-motion="boot"]) .project-object-scene,
 .project-desktop:is([data-motion="waiting"], [data-motion="boot"]) .project-desktop-details,
-.project-desktop:is([data-motion="waiting"], [data-motion="boot"]) .project-desktop-foot,
 .project-desktop:is([data-motion="waiting"], [data-motion="boot"]) .project-desktop-bottomline {
   opacity: 0;
   visibility: hidden;
@@ -592,7 +578,6 @@
   .project-desktop-object-slot { width: 66px; height: 54px; }
   .project-desktop-object-name { min-height: 21px; }
   .project-desktop-readme { display: none; }
-  .project-desktop-foot { margin-top: 14px; }
 }
 
 @media (max-width: 800px) {
@@ -633,8 +618,6 @@
   .project-desktop-details h3 { font-size: 35px; }
   .project-desktop-description { font-size: 14px; }
   .project-desktop-actions a, .project-desktop-private { min-height: 42px; font-size: 11px; }
-  .project-desktop-foot { margin-top: 22px; font-size: 8px; }
-  .project-desktop-foot-hint { display: none; }
 }
 
 @media (max-width: 350px) {

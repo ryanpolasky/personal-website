@@ -168,7 +168,7 @@ export function ProjectsDesktop() {
       enter(".project-desktop-object", { y: 35, rotation: -14, scale: 0.68 }, 0.67, 0.25, 0.065, "back.out(1.2)");
       timeline.fromTo(section.querySelector(".project-desktop-stage"), { opacity: 0 }, { opacity: 1, duration: 0.9 }, PROJECT_REVEAL + 0.24);
       enter(".project-desktop-stage-art", { x: -80, y: 70, rotation: -14, scale: 0.54 }, 1.1, 0.24, 0, "back.out(1.2)");
-      enter(".project-desktop-stage-id, .project-desktop-stage-caption, .project-desktop-readme, .project-desktop-foot, .project-desktop-bottomline",
+      enter(".project-desktop-stage-id, .project-desktop-stage-caption, .project-desktop-readme, .project-desktop-bottomline",
         { y: 60, skewY: 7 }, 0.5, 0.6);
       enter(".project-desktop-details", { x: 140, y: 160, rotation: 15, scaleX: 0.1, scaleY: 0.04 }, 0.75, 0.52, 0, "back.out(1.1)");
       let direction = 1;
@@ -336,11 +336,6 @@ export function ProjectsDesktop() {
           </div>
         </div>
 
-        <div className="project-desktop-foot">
-          <span>DRAG THE OBJECT TO ROTATE</span>
-          <span className="project-desktop-foot-hint">ARROW KEYS ROTATE / SPACE RESETS</span>
-          <span>{String(selected + 1).padStart(2, "0")} — {String(projects.length).padStart(2, "0")}</span>
-        </div>
       </div>
       <div className="project-desktop-bottomline">
         <span>PERSONAL / COLLABORATIVE / PROFESSIONAL</span>
