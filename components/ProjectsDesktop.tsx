@@ -130,8 +130,8 @@ export function ProjectsDesktop() {
       };
       clock.time = 0;
       sync();
-      const timeline = gsap.timeline({ paused: true, onUpdate: sync });
-      timeline.to(clock, { time: PROJECT_ARRIVAL_END, duration: PROJECT_ARRIVAL_END, ease: "none" }, 0);
+      const timeline = gsap.timeline({ paused: true });
+      timeline.to({}, { duration: PROJECT_ARRIVAL_END }, 0);
       timeline.fromTo(section,
         { "--pd-grid-opacity": 0, "--pd-grid-scale": 1.6, "--pd-grid-turn": "-10deg" },
         { "--pd-grid-opacity": 0.48, "--pd-grid-scale": 1, "--pd-grid-turn": "0deg", duration: 0.85 }, PROJECT_REVEAL);
@@ -149,17 +149,24 @@ export function ProjectsDesktop() {
       enter(".project-desktop-stage-id, .project-desktop-stage-caption, .project-desktop-readme, .project-desktop-foot, .project-desktop-bottomline",
         { y: 60, skewY: 7 }, 0.5, 0.6);
       enter(".project-desktop-details", { x: 140, y: 160, rotation: 15, scaleX: 0.1, scaleY: 0.04 }, 0.75, 0.52, 0, "back.out(1.1)");
+      let direction = 1;
+      const advance = (_time: number, delta: number) => {
+        clock.time = gsap.utils.clamp(0, PROJECT_ARRIVAL_END, clock.time + Math.min(delta, 100) / 1000 * direction);
+        timeline.time(clock.time, true);
+        sync();
+        if (clock.time === 0 || clock.time === PROJECT_ARRIVAL_END) gsap.ticker.remove(advance);
+      };
       const observer = new IntersectionObserver(
         ([entry]) => {
           if (entry.isIntersecting) {
             reversing = false;
-            const time = clock.time;
-            timeline.pause().timeScale(1).play(time);
+            direction = 1;
+            gsap.ticker.add(advance);
             sync();
           } else if (entry.boundingClientRect.top > 0 && clock.time > 0) {
             reversing = true;
-            const time = clock.time;
-            timeline.pause().timeScale(2.6).reverse(time);
+            direction = -2.6;
+            gsap.ticker.add(advance);
             sync();
           }
         },
@@ -168,6 +175,7 @@ export function ProjectsDesktop() {
       observer.observe(section);
       return () => {
         observer.disconnect();
+        gsap.ticker.remove(advance);
         archive.inert = false;
         clock.time = PROJECT_ARRIVAL_END;
         delete section.dataset.motion;
