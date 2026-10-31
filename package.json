@@ -6,6 +6,7 @@
   "scripts": {
     "bake:project-objects": "node scripts/bake-project-objects.mjs",
     "test:project-objects": "node --experimental-strip-types --test scripts/projectObjectGeometry.test.mjs",
+    "test:project-landing": "node --experimental-strip-types --test scripts/projectLanding.test.mjs",
     "predev": "node scripts/build-media.mjs",
     "dev": "next dev",
     "prebuild": "node scripts/build-media.mjs",

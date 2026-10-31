@@ -9,6 +9,7 @@ import {
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import gsap from "gsap";
+import { observeProjectLanding } from "@/lib/projectLanding";
 import { getEnabledProjects, type Project } from "@/lib/projects";
 import { PROJECT_HOLD, PROJECT_REVEAL, PROJECT_ARRIVAL_END, type ProjectArrival } from "@/lib/projectMotion";
 import "./projects-desktop.css";
@@ -178,23 +179,26 @@ export function ProjectsDesktop() {
         sync();
         if (clock.time === 0 || clock.time === PROJECT_ARRIVAL_END) gsap.ticker.remove(advance);
       };
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            reversing = false;
-            direction = 1;
-            gsap.ticker.add(advance);
-            sync();
-          } else if (entry.boundingClientRect.top > 0 && clock.time > 0) {
+      const stopLanding = observeProjectLanding(section, {
+        canSnap: () => clock.time === 0,
+        onMove: () => {
+          if (!reversing) gsap.ticker.remove(advance);
+        },
+        onLand: () => {
+          reversing = false;
+          direction = 1;
+          gsap.ticker.add(advance);
+          sync();
+        },
+        onLeaveAbove: () => {
+          if (clock.time > 0) {
             reversing = true;
             direction = -2.6;
             gsap.ticker.add(advance);
             sync();
           }
         },
-        { rootMargin: "0px 0px -68% 0px", threshold: 0.12 },
-      );
-      observer.observe(section);
+      });
       const resize = () => timeline.invalidate().time(clock.time, true);
       const layout = new ResizeObserver(resize);
       layout.observe(section);
@@ -206,7 +210,7 @@ export function ProjectsDesktop() {
       document.fonts.ready.then(() => { if (alive) resize(); });
       return () => {
         alive = false;
-        observer.disconnect();
+        stopLanding();
         layout.disconnect();
         visible.disconnect();
         gsap.ticker.remove(advance);
