@@ -19,7 +19,6 @@ import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.j
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader.js";
 import { HDRI_STUDIO_HREF } from "@/lib/site";
 import { PROJECT_REVEAL, type ProjectArrival } from "@/lib/projectMotion";
-import ProjectBoot from "./ProjectBoot";
 
 const models = new Map<string, Promise<THREE.Group>>();
 const box = new THREE.Box3();
@@ -63,7 +62,7 @@ async function build(id: string) {
   if (id === "marralhinha") {
     const gltf = await new GLTFLoader()
       .setMeshoptDecoder(MeshoptDecoder)
-      .loadAsync("/assets/project-objects/marralhinha-oak.glb");
+      .loadAsync("/assets/project-objects/marralhinha-oak.glb?v=e7766c94");
     root.add(gltf.scene);
     root.rotation.set(0.95, -0.22, -0.18);
   } else if (id === "nimby") {
@@ -484,9 +483,7 @@ export default function ProjectObjectScene({ id, arrival }: { id: string; arriva
   const [active, setActive] = useState(false);
   const [reduced, setReduced] = useState(false);
   const [ready, setReady] = useState(false);
-  const [bootReady, setBootReady] = useState(false);
   const [section, setSection] = useState<HTMLElement | null>(null);
-  const onBootReady = useRef(() => setBootReady(true)).current;
   const gesture = useRef<Gesture>({
     down: false,
     x: 0,
@@ -613,7 +610,7 @@ export default function ProjectObjectScene({ id, arrival }: { id: string; arriva
               render.current = invalidate;
               gl.domElement.addEventListener("webglcontextlost", onError);
             }}
-            frameloop={active && (ready || bootReady) && !reduced ? "always" : "demand"}
+            frameloop={active && ready && !reduced ? "always" : "demand"}
             dpr={[1, 1.5]}
             camera={{ position: [0, 0, 10], fov: 38 }}
             gl={{
@@ -636,7 +633,6 @@ export default function ProjectObjectScene({ id, arrival }: { id: string; arriva
             />
             <Suspense fallback={null}>
               <Environment files={HDRI_STUDIO_HREF} />
-              <ProjectBoot section={section} active={active} reduced={reduced} ready={onBootReady} arrival={arrival} />
             </Suspense>
             <Suspense fallback={null}>
               <StageViewport element={ref.current} section={section}>

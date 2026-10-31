@@ -250,23 +250,46 @@
 .project-boot-poster {
   position: absolute;
   inset: 0;
-  z-index: 3;
-  display: grid;
-  place-items: center;
-  opacity: 0;
+  z-index: 0;
   pointer-events: none;
-  transition: opacity 320ms cubic-bezier(.2,.7,.2,1), transform 420ms ease;
-}
-.project-boot-poster span {
   color: var(--pd-ink);
-  font: 750 clamp(44px, 11vw, 138px)/1 var(--font-display);
+  font: 750 clamp(160px, 22vw, 290px)/1 var(--font-display);
   font-variation-settings: "opsz" 144, "SOFT" 80, "WONK" 1;
-  letter-spacing: -0.075em;
-  white-space: nowrap;
+  letter-spacing: 0;
 }
-.project-desktop[data-motion="boot"]:not([data-boot="burst"]):not([data-boot="backdrop"]) .project-boot-poster { opacity: 1; }
-.project-desktop[data-motion="reversing"][data-boot="holding"] .project-boot-poster { opacity: 1; }
-.project-desktop[data-boot="burst"] .project-boot-poster { transform: scale(1.06) translateY(-12px); }
+.project-boot-word {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: flex;
+  width: max-content;
+  translate: -50% -50%;
+  font-size: clamp(44px, 11vw, 138px);
+  visibility: hidden;
+}
+.project-boot-word > span:not(:last-child) { margin-right: -0.075em; }
+.project-boot-letter {
+  position: absolute;
+  left: var(--letter-x);
+  top: var(--letter-y);
+  display: block;
+  translate: -50% -50%;
+  transform: rotate(var(--letter-rotation));
+  opacity: 0.13;
+}
+.project-boot-glyph { display: block; }
+.project-desktop[data-boot="backdrop"] .project-boot-glyph {
+  animation: project-letter-drift var(--letter-duration) ease-in-out infinite alternate;
+}
+.project-desktop[data-visible="false"] .project-boot-glyph { animation-play-state: paused; }
+@keyframes project-letter-drift {
+  from { transform: translate(0, 0) rotate(0deg); }
+  to { transform: translate(6px, -8px) rotate(2deg); }
+}
+@media (max-width: 800px) {
+  .project-boot-poster { font-size: clamp(115px, 29vw, 180px); }
+  .project-boot-letter { left: var(--letter-phone-x); top: var(--letter-phone-y); }
+}
 .project-desktop-stage[data-live="true"] .project-desktop-stage-art { visibility: hidden; }
 
 .project-desktop-stage-word {

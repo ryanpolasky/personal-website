@@ -5,7 +5,7 @@
     "renderer": "src/three/Board.js",
     "materials": "src/three/skins.js: boardSkin('oak'), marbleSkin('classic')",
     "layout": "src/game/geometry.js: layoutFor('classic'), positionIn",
-    "export": "Rendered the canonical Board without its table; baked visible meshes, instanced divots and materials with GLTFExporter; added canonical 0.335-radius marbles with marbleSkin and positionIn; Meshopt-compressed without geometry simplification."
+    "export": "Rendered the canonical Board without its table; baked visible meshes, instanced divots and materials with GLTFExporter; added canonical 0.335-radius marbles with marbleSkin and positionIn. Replaced only the bottom caps of the board and four trays with their unperforated outer shapes, retaining the original top, sides, wood UVs and materials. Meshopt-compressed without geometry simplification."
   },
   "meteormate.svg": {
     "source": "https://meteormate.com/MM_logo_V2.svg"

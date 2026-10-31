@@ -16,6 +16,12 @@ import "./projects-desktop.css";
 const ProjectObjectScene = dynamic(() => import("./ProjectObjectScene"), { ssr: false });
 
 const projects = getEnabledProjects().filter((project) => project.id !== "gallery");
+const letterPositions = [
+  [0.03, 0.24, -12, 0.02, 0.10], [0.91, 0.17, 12, 0.98, 0.23],
+  [0.48, 0.04, -8, 0.01, 0.36], [0.99, 0.52, 9, 0.99, 0.49],
+  [0.01, 0.62, -9, 0.01, 0.62], [0.30, 0.92, 14, 0.99, 0.75],
+  [0.62, 0.87, -7, 0.02, 0.87], [0.92, 0.91, -13, 0.98, 0.96],
+];
 
 const objects: Record<string, { src: string; alt: string }> = {
   marralhinha: {
@@ -132,6 +138,21 @@ export function ProjectsDesktop() {
       sync();
       const timeline = gsap.timeline({ paused: true });
       timeline.to({}, { duration: PROJECT_ARRIVAL_END }, 0);
+      const word = section.querySelector<HTMLElement>(".project-boot-word")!;
+      const letters = section.querySelectorAll<HTMLElement>(".project-boot-letter");
+      letters.forEach((letter, i) => {
+        const glyph = word.children[i] as HTMLElement;
+        timeline.fromTo(letter, {
+          x: () => (section.clientWidth - word.offsetWidth) / 2 + glyph.offsetLeft + glyph.offsetWidth / 2 - letter.offsetLeft,
+          y: () => section.clientHeight / 2 - letter.offsetTop,
+          scale: () => word.offsetHeight / letter.offsetHeight,
+          rotation: 0,
+        }, {
+          x: 0, y: 0, scale: 1, rotation: letterPositions[i][2],
+          duration: 1.05, ease: "expo.out",
+        }, PROJECT_HOLD + i * 0.025);
+        timeline.fromTo(letter, { opacity: 1 }, { opacity: 0.13, duration: 0.62, ease: "power2.inOut" }, PROJECT_HOLD + 0.16 + i * 0.025);
+      });
       timeline.fromTo(section,
         { "--pd-grid-opacity": 0, "--pd-grid-scale": 1.6, "--pd-grid-turn": "-10deg" },
         { "--pd-grid-opacity": 0.48, "--pd-grid-scale": 1, "--pd-grid-turn": "0deg", duration: 0.85 }, PROJECT_REVEAL);
@@ -173,13 +194,26 @@ export function ProjectsDesktop() {
         { rootMargin: "0px 0px -68% 0px", threshold: 0.12 },
       );
       observer.observe(section);
+      const resize = () => timeline.invalidate().time(clock.time, true);
+      const layout = new ResizeObserver(resize);
+      layout.observe(section);
+      const visible = new IntersectionObserver(([entry]) => {
+        section.dataset.visible = String(entry.isIntersecting);
+      });
+      visible.observe(section);
+      let alive = true;
+      document.fonts.ready.then(() => { if (alive) resize(); });
       return () => {
+        alive = false;
         observer.disconnect();
+        layout.disconnect();
+        visible.disconnect();
         gsap.ticker.remove(advance);
         archive.inert = false;
         clock.time = PROJECT_ARRIVAL_END;
         delete section.dataset.motion;
         delete section.dataset.boot;
+        delete section.dataset.visible;
       };
     });
     return () => media.revert();
@@ -198,7 +232,17 @@ export function ProjectsDesktop() {
       className="project-desktop"
       aria-labelledby="project-desktop-title"
     >
-      <div className="project-boot-poster" aria-hidden="true"><span>PROJECTS</span></div>
+      <div className="project-boot-poster" aria-hidden="true">
+        <div className="project-boot-word">{Array.from("PROJECTS", (letter, i) => <span key={i}>{letter}</span>)}</div>
+        {Array.from("PROJECTS", (letter, i) => {
+          const [x, y, rotation, phoneX, phoneY] = letterPositions[i];
+          return <span key={i} className="project-boot-letter" style={{
+            "--letter-x": `${x * 100}%`, "--letter-y": `${y * 100}%`,
+            "--letter-phone-x": `${phoneX * 100}%`, "--letter-phone-y": `${phoneY * 100}%`,
+            "--letter-rotation": `${rotation}deg`, "--letter-duration": `${13 + i * 1.1}s`,
+          } as CSSProperties}><span className="project-boot-glyph">{letter}</span></span>;
+        })}
+      </div>
       <div className="project-desktop-topline">
         <span>03 / SELECTED WORK</span>
         <span>RYAN POLASKY · PROJECT ARCHIVE</span>
