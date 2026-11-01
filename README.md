@@ -36,6 +36,27 @@ Position quantization is deliberately disabled so compression cannot introduce
 per-part transforms that break the object-space twist. Materials and UVs survive.
 Run `npm run test:project-objects` to check geometry, shader normals, and assets.
 
+## retired projects implementations
+
+Both previous designs are preserved as complete, restorable Git snapshots:
+
+- [Original horizontal rail](https://github.com/ryanpolasky/personal-website/tree/archive/projects-rail): `archive/projects-rail`.
+- [Lusion-style showcase and connected case studies](https://github.com/ryanpolasky/personal-website/tree/archive/projects-lusion): `archive/projects-lusion`.
+
+To run either without replacing the current design:
+
+```bash
+git fetch origin --tags
+git worktree add ../personal-website-projects-archive archive/projects-lusion
+cd ../personal-website-projects-archive
+npm ci
+npm run dev
+```
+
+Use `archive/projects-rail` instead for the original. These tags preserve each
+version's source, assets, styles, and dependencies without adding archive routes
+or importing the retired implementations into the current homepage.
+
 ## deploy
 
 `next.config.mjs` is set to `output: 'export'` so `npm run build` writes a static `out/` directory. Cloudflare Pages serves that directory; `_headers` and `_redirects` live in `public/` and are copied through.
