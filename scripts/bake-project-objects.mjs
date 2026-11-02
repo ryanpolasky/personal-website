@@ -20,7 +20,7 @@ import { buildProjectObject } from '/sources.js';
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
 window.bakeProjects = async () => {
   for (const id of ${JSON.stringify(ids)}) {
-    const model = await buildProjectObject(id, ${candidate ? 0.002 : 0});
+    const model = await buildProjectObject(id, ${candidate ? 0.002 : "undefined"});
     const data = await new GLTFExporter().parseAsync(model, { binary: true });
     const response = await fetch('/export/' + id, { method: 'POST', body: data });
     if (!response.ok) throw new Error(await response.text());

@@ -42,7 +42,8 @@ both versions use a one-year immutable cache because their names are content-has
 The loader falls back to raw GLB when compression is unavailable. Development
 loads the authoring GLBs directly. Run `npm run test:project-models` for delivery tests.
 
-`npm run bake:project-objects -- --candidate` writes an experimental, error-budgeted
+Marralhinha uses the lean bake with a 0.002-unit sampled full-twist error target.
+`npm run bake:project-objects -- --candidate` writes an isolated, error-budgeted
 Marralhinha bake to the ignored `reference/project-object-candidate/` directory.
 It never changes the production models or manifest; compare before promoting it.
 

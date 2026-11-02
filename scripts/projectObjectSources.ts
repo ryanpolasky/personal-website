@@ -38,7 +38,7 @@ function label(text: string, color: string, background: string, textY = 260) {
   return new THREE.MeshStandardMaterial({ map: texture, roughness: 0.35 });
 }
 
-export async function buildProjectObject(id: string, bendTolerance = 0) {
+export async function buildProjectObject(id: string, bendTolerance = id === "marralhinha" ? 0.002 : 0) {
   const root = new THREE.Group();
   if (id === "marralhinha") {
     const gltf = await new GLTFLoader()
