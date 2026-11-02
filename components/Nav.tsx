@@ -15,7 +15,7 @@ import { RESUME_PDF_HREF } from "@/lib/site";
 import { useLenis } from "@/components/SmoothScrollProvider";
 import { UtdWebringButtons } from "@/components/UtdWebringButtons";
 import { resolveSectionScrollTarget } from "@/lib/scroll";
-import { PROJECT_HOLD } from "@/lib/projectMotion";
+import { PROJECT_HOLD, PROJECT_RIPPLE } from "@/lib/projectMotion";
 
 // floating nav with active-section tracking and curtain-masked anchor teleports.
 
@@ -137,7 +137,10 @@ export function Nav() {
     setProjectCover(colors ? {
       backgroundColor: colors.backgroundColor,
       color: colors.color,
-    } : null);
+      "--project-loading-duration": `${PROJECT_RIPPLE.duration}s`,
+      "--project-loading-delay": `${PROJECT_RIPPLE.delay}s`,
+      "--project-loading-step": `${PROJECT_RIPPLE.step}s`,
+    } as CSSProperties : null);
     pendingTarget.current = {
       id,
       element: resolved.element,
@@ -263,6 +266,7 @@ export function Nav() {
       {/* curtain wash overlay: accent panel sweeps up, covers, sweeps off top. */}
       <div
         aria-hidden
+        data-project-loading={!!projectCover && phase === "closed"}
         className={`fixed inset-0 z-[200] flex items-center justify-center overflow-hidden bg-[var(--color-accent)] ${projectCover ? "project-nav-curtain" : ""} ${
           phase === "idle" || phase === "resetting" || phase === "handoff"
             ? "pointer-events-none"
@@ -286,7 +290,7 @@ export function Nav() {
       >
         {projectCover ? (
           <div className="project-boot-word" style={{ top: (pendingTarget.current?.element.clientHeight ?? 0) / 2 }}>
-            {Array.from("PROJECTS", (letter, i) => <span key={i}>{letter}</span>)}
+            {Array.from("PROJECTS", (letter, i) => <span key={i} style={{ "--letter-index": i } as CSSProperties}>{letter}</span>)}
           </div>
         ) : <span
           className="display select-none text-white"

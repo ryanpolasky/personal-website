@@ -4,7 +4,7 @@ import { readFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import vm from "node:vm";
 import ts from "typescript";
-import { PROJECT_HOLD, PROJECT_ARRIVAL_END } from "../lib/projectMotion.ts";
+import { PROJECT_HOLD, PROJECT_RIPPLE, PROJECT_ARRIVAL_END } from "../lib/projectMotion.ts";
 
 const require = createRequire(import.meta.url);
 const sources = await Promise.all(["Nav", "ProjectsDesktop"].map(async (name) => [name,
@@ -80,7 +80,7 @@ function nav(t, { lenis = null, reduced = false } = {}) {
     "next/link": { default: () => null },
     "@/lib/site": { RESUME_PDF_HREF: "/resume.pdf" },
     "@/lib/scroll": { resolveSectionScrollTarget: () => ({ element, offset: -12 }) },
-    "@/lib/projectMotion": { PROJECT_HOLD },
+    "@/lib/projectMotion": { PROJECT_HOLD, PROJECT_RIPPLE },
     "@/components/UtdWebringButtons": { UtdWebringButtons: () => null },
     "@/components/SmoothScrollProvider": { useLenis: () => context.lenis },
   }, {
@@ -115,11 +115,17 @@ for (const native of [true, false]) for (const mobile of [false, true]) {
     assert.equal(s.scrolls.length + scrolls.length, 0);
     assert.equal(curtain(tree).props.style.transform, "translate3d(0, 0%, 0)");
     assert.equal(curtain(tree).props.style.backgroundColor, "rgb(80, 210, 150)");
+    assert.equal(curtain(tree).props["data-project-loading"], false);
+    assert.equal(curtain(tree).props.style["--project-loading-duration"], `${PROJECT_RIPPLE.duration}s`);
+    assert.equal(curtain(tree).props.style["--project-loading-delay"], `${PROJECT_RIPPLE.delay}s`);
+    assert.equal(curtain(tree).props.style["--project-loading-step"], `${PROJECT_RIPPLE.step}s`);
+    assert.deepEqual(nodes(curtain(tree)).filter((node) => node.type === "span").map((node) => node.props.style["--letter-index"]), [0, 1, 2, 3, 4, 5, 6, 7]);
     assert.equal(nodes(curtain(tree)).filter((node) => node.type === "span").map((node) => node.props.children).join(""), "PROJECTS");
     assert.equal(nodes(tree).find((node) => node.props?.["aria-expanded"] !== undefined).props["aria-expanded"], false);
     s.transition(tree);
     tree = s.render();
     assert.deepEqual(s.events.slice(-2), ["projects:prepare", "nav:teleport"]);
+    assert.equal(curtain(tree).props["data-project-loading"], true);
     assert.equal([...s.timers.values()][0].delay, PROJECT_HOLD * 1000);
     assert.equal(s.hashes.at(-1)[2], "#projects");
     if (native) assert.equal(s.scrolls[0].behavior, "instant");
@@ -128,6 +134,7 @@ for (const native of [true, false]) for (const mobile of [false, true]) {
     tree = s.render();
     assert.equal(curtain(tree).props.style.transform, "translate3d(0, 100%, 0)");
     assert.equal(curtain(tree).props.style.transition, "none");
+    assert.equal(curtain(tree).props["data-project-loading"], false);
     assert.equal(s.events.at(-1), "projects:enter");
     assert.equal(curtain(s.render()).props.style.transition, "none");
   });
@@ -174,17 +181,18 @@ test("modifier and middle clicks stay native", (t) => {
 
 test("arrival stays pinned under the curtain, starts at the burst, and still reverses on scroll", (t) => {
   const browser = new EventTarget(), ticks = new Set(), archive = { inert: false };
+  const glyphs = Array.from({ length: 8 }, () => ({ opacity: 1 })), tweens = [];
   let handlers, arrival, cleanup;
-  const timeline = { to() { return this; }, fromTo() { return this; }, time() { return this; }, invalidate() { return this; } };
+  const timeline = { to() { return this; }, fromTo(...args) { tweens.push(args); return this; }, time() { return this; }, invalidate() { return this; } };
   const section = {
     dataset: {}, querySelector: (selector) => selector === ".project-desktop-archive" ? archive : { children: [] },
-    querySelectorAll: () => [],
+    querySelectorAll: (selector) => selector === ".project-boot-glyph" ? glyphs : [],
   };
   class Observer { observe() {} disconnect() {} }
   const c = component("ProjectsDesktop", {
     "next/dynamic": { default: () => null }, "next/image": { default: () => null }, "./projects-desktop.css": {},
     "@/lib/projects": { getEnabledProjects: () => [{ id: "marralhinha", name: "Marralhinha", role: "Creator", stack: [] }] },
-    "@/lib/projectMotion": { PROJECT_HOLD, PROJECT_REVEAL: PROJECT_HOLD + 0.27, PROJECT_ARRIVAL_END },
+    "@/lib/projectMotion": { PROJECT_HOLD, PROJECT_RIPPLE, PROJECT_REVEAL: PROJECT_HOLD + 0.27, PROJECT_ARRIVAL_END },
     "@/lib/projectLanding": { observeProjectLanding: (_section, callbacks) => { handlers = callbacks; return () => {}; } },
     gsap: { default: {
       matchMedia: () => ({ add: (_query, callback) => { cleanup = callback(); }, revert: () => cleanup() }),
@@ -198,6 +206,29 @@ test("arrival stays pinned under the curtain, starts at the burst, and still rev
   arrival = nodes(tree).find((node) => node.props?.arrival)?.props.arrival.current;
   c.flush();
   t.after(c.cleanup);
+  const ripple = tweens.filter(([target]) => glyphs.includes(target));
+  assert.equal(ripple.length, 8);
+  const gsap = require("gsap").gsap, wave = gsap.timeline({ paused: true });
+  try {
+    ripple.forEach(([glyph, from, to, position], i) => {
+      assert.equal(glyph, glyphs[i]);
+      assert.equal(from.opacity, 1);
+      assert.equal(to.opacity, 0.4);
+      assert.equal(to.duration * 2, PROJECT_RIPPLE.duration);
+      assert.equal(position, PROJECT_RIPPLE.delay + i * PROJECT_RIPPLE.step);
+      assert.ok(position + to.duration * (to.repeat + 1) < PROJECT_HOLD);
+      wave.fromTo(glyph, from, to, position);
+    });
+    wave.time(PROJECT_RIPPLE.delay + 3 * PROJECT_RIPPLE.step + PROJECT_RIPPLE.duration / 2);
+    assert.equal(glyphs[3].opacity, 0.4);
+    wave.time(PROJECT_HOLD);
+    assert.ok(glyphs.every((glyph) => glyph.opacity === 1));
+    wave.time(0);
+    assert.ok(glyphs.every((glyph) => glyph.opacity === 1));
+  } finally {
+    wave.kill();
+    gsap.ticker.sleep();
+  }
   const event = (name) => browser.dispatchEvent(new CustomEvent(`projects:${name}`));
   const tick = () => { for (const callback of [...ticks]) callback(0, 100); };
   handlers.onLand(); tick();
