@@ -1,5 +1,5 @@
 import { createServer } from "node:http";
-import { readFile, writeFile, mkdtemp, rm } from "node:fs/promises";
+import { readFile, writeFile, mkdtemp, mkdir, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { createHash } from "node:crypto";
@@ -11,14 +11,16 @@ import { weld, reorder, quantize } from "@gltf-transform/functions";
 import { MeshoptEncoder, MeshoptDecoder } from "meshoptimizer";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
-const ids = ["marralhinha", "autopsy", "utd-roommates", "rycord", "nimby", "apple-triage", "apple-nlsql", "readme-ryvamper"];
+const candidate = process.argv.includes("--candidate");
+if (candidate) await mkdir(path.join(root, "reference/project-object-candidate"), { recursive: true });
+const ids = candidate ? ["marralhinha"] : ["marralhinha", "autopsy", "utd-roommates", "rycord", "nimby", "apple-triage", "apple-nlsql", "readme-ryvamper"];
 const directory = await mkdtemp(path.join(tmpdir(), "project-bake-"));
 const html = `<!doctype html><script type="importmap">{"imports":{"three":"/three/build/three.module.js","three/":"/three/"}}</script><script type="module">
 import { buildProjectObject } from '/sources.js';
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
 window.bakeProjects = async () => {
   for (const id of ${JSON.stringify(ids)}) {
-    const model = await buildProjectObject(id);
+    const model = await buildProjectObject(id, ${candidate ? 0.002 : 0});
     const data = await new GLTFExporter().parseAsync(model, { binary: true });
     const response = await fetch('/export/' + id, { method: 'POST', body: data });
     if (!response.ok) throw new Error(await response.text());
@@ -95,11 +97,11 @@ try {
     const data = await io.writeBinary(document);
     const hash = createHash("sha256").update(data).digest("hex").slice(0, 10);
     const file = `${id}-${hash}.glb`;
-    await writeFile(path.join(root, "public/assets/project-objects", file), data);
+    await writeFile(path.join(root, candidate ? "reference/project-object-candidate" : "public/assets/project-objects", file), data);
     manifest[id] = { file, bytes: data.byteLength };
     console.log(`${id}: ${(data.byteLength / 1024).toFixed(0)} KiB`);
   }
-  await writeFile(path.join(root, "lib/projectObjects.json"), JSON.stringify(manifest, null, 2) + "\n");
+  await writeFile(path.join(root, candidate ? "reference/project-object-candidate/manifest.json" : "lib/projectObjects.json"), JSON.stringify(manifest, null, 2) + "\n");
 } finally {
   socket?.close();
   if (tab) await fetch(`${cdp}/json/close/${tab.id}`).catch(() => {});

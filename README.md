@@ -36,6 +36,16 @@ Position quantization is deliberately disabled so compression cannot introduce
 per-part transforms that break the object-space twist. Materials and UVs survive.
 Run `npm run test:project-objects` to check geometry, shader normals, and assets.
 
+The production build writes losslessly Brotli-compressed models and raw fallbacks
+to `out/models/projects/`. Pages serves the `.br` files with `Content-Encoding: br`;
+both versions use a one-year immutable cache because their names are content-hashed.
+The loader falls back to raw GLB when compression is unavailable. Development
+loads the authoring GLBs directly. Run `npm run test:project-models` for delivery tests.
+
+`npm run bake:project-objects -- --candidate` writes an experimental, error-budgeted
+Marralhinha bake to the ignored `reference/project-object-candidate/` directory.
+It never changes the production models or manifest; compare before promoting it.
+
 ## retired projects implementations
 
 Both previous designs are preserved as complete, restorable Git snapshots:

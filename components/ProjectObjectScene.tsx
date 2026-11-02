@@ -19,12 +19,16 @@ import projectObjects from "@/lib/projectObjects.json";
 import { HDRI_STUDIO_HREF } from "@/lib/site";
 import { PROJECT_REVEAL, type ProjectArrival } from "@/lib/projectMotion";
 import { applyProjectTwist } from "@/lib/projectObjectGeometry";
+import { loadProjectModel } from "@/lib/projectModel";
 
 const models = new Map<string, Promise<THREE.Group>>();
 
 function load(id: string) {
-  if (!models.has(id)) models.set(id, new GLTFLoader().setMeshoptDecoder(MeshoptDecoder)
-    .loadAsync(`/assets/project-objects/${projectObjects[id as keyof typeof projectObjects].file}`)
+  if (!models.has(id)) models.set(id, loadProjectModel(
+    new GLTFLoader().setMeshoptDecoder(MeshoptDecoder),
+    projectObjects[id as keyof typeof projectObjects].file,
+    process.env.NODE_ENV !== "development",
+  )
     .then(({ scene }) => {
       applyProjectTwist(scene);
       return scene;

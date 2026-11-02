@@ -4,6 +4,26 @@ const sliceHeight = 0.125;
 const stride = 11;
 type Vertex = number[];
 
+function bend(point: number[]) {
+  const angle = point[1] * 2 / 3;
+  return [Math.cos(angle) * point[0] + Math.sin(angle) * point[2], point[1], -Math.sin(angle) * point[0] + Math.cos(angle) * point[2]];
+}
+
+function bendError(triangle: Vertex[]) {
+  const curved = triangle.map(bend);
+  let error = 0;
+  for (let a = 0; a <= 4; a++) {
+    for (let b = 0; b <= 4 - a; b++) {
+      const weights = [a / 4, b / 4, 1 - (a + b) / 4];
+      const point = [0, 1, 2].map((axis) => triangle.reduce((sum, vertex, i) => sum + vertex[axis] * weights[i], 0));
+      const actual = bend(point);
+      const interpolated = [0, 1, 2].map((axis) => curved.reduce((sum, vertex, i) => sum + vertex[axis] * weights[i], 0));
+      error = Math.max(error, Math.hypot(...actual.map((value, i) => value - interpolated[i])));
+    }
+  }
+  return error;
+}
+
 function split(polygon: Vertex[], height: number) {
   const below: Vertex[] = [];
   const above: Vertex[] = [];
@@ -23,7 +43,7 @@ function split(polygon: Vertex[], height: number) {
   return [below, above];
 }
 
-function append(polygon: Vertex[], output: number[]) {
+function append(polygon: Vertex[], output: number[], bendTolerance = 0) {
   for (let i = 1; i < polygon.length - 1; i++) {
     const pending = [[polygon[0], polygon[i], polygon[i + 1]]];
     while (pending.length) {
@@ -31,7 +51,7 @@ function append(polygon: Vertex[], output: number[]) {
       const distances = triangle.map((a, j) => Math.hypot(...a.slice(0, 3).map((value, axis) => value - triangle[(j + 1) % 3][axis])));
       const edge = distances.indexOf(Math.max(...distances));
       const height = Math.max(...triangle.map((v) => v[1])) - Math.min(...triangle.map((v) => v[1]));
-      if (height * distances[edge] > 0.012) {
+      if (bendTolerance ? bendError(triangle) > bendTolerance : height * distances[edge] > 0.012) {
         const a = triangle[edge];
         const b = triangle[(edge + 1) % 3];
         const c = triangle[(edge + 2) % 3];
@@ -47,7 +67,8 @@ function append(polygon: Vertex[], output: number[]) {
   }
 }
 
-export function bakeProjectObject(root: THREE.Group) {
+export function bakeProjectObject(root: THREE.Group, bendTolerance = 0) {
+  if (!Number.isFinite(bendTolerance) || bendTolerance < 0) throw new RangeError("Invalid bend tolerance");
   root.updateMatrixWorld(true);
   const parts: { geometry: THREE.BufferGeometry; materials: THREE.Material[] }[] = [];
   const instance = new THREE.Matrix4();
@@ -140,12 +161,12 @@ export function bakeProjectObject(root: THREE.Group) {
         });
         const low = Math.min(...polygon.map((point) => point[1]));
         const high = Math.max(...polygon.map((point) => point[1]));
-        for (let y = (Math.floor(low / sliceHeight) + 1) * sliceHeight; y < high; y += sliceHeight) {
+        for (let y = bendTolerance ? high : (Math.floor(low / sliceHeight) + 1) * sliceHeight; y < high; y += sliceHeight) {
           const [below, above] = split(polygon, y);
           append(below, output);
           polygon = above;
         }
-        append(polygon, output);
+        append(polygon, output, bendTolerance);
       }
     }
     geometry.dispose();

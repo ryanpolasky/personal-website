@@ -117,6 +117,30 @@ test("twists normals with the surface and shares one amount across all materials
   assert.ok(Math.abs(along.dot(transformed)) < 1e-5);
 });
 
+test("candidate baking preserves materials and bounds deformation at edges and interiors", () => {
+  const root = new THREE.Group();
+  root.add(new THREE.Mesh(new THREE.BoxGeometry(4, 4, 0.7), Array.from({ length: 6 }, () => new THREE.MeshStandardMaterial())));
+  const legacy = bakeProjectObject(root).children[0];
+  const candidate = bakeProjectObject(root, 0.002).children[0];
+  assert.equal(candidate.geometry.groups.length, legacy.geometry.groups.length);
+  const p = candidate.geometry.attributes.position;
+  assert.ok(p.count < legacy.geometry.attributes.position.count);
+  let error = 0;
+  for (let i = 0; i < p.count; i += 3) {
+    const points = [0, 1, 2].map((j) => new THREE.Vector3().fromBufferAttribute(p, i + j));
+    for (const amount of [0.7, 1.4, 2]) {
+      for (let a = 0; a <= 8; a++) for (let b = 0; b <= 8 - a; b++) {
+        const weights = [a / 8, b / 8, 1 - (a + b) / 8];
+        const center = points.reduce((sum, point, j) => sum.addScaledVector(point, weights[j]), new THREE.Vector3());
+        const interpolated = points.reduce((sum, point, j) => sum.addScaledVector(turn(point, amount), weights[j]), new THREE.Vector3());
+        error = Math.max(error, turn(center, amount).distanceTo(interpolated));
+      }
+    }
+  }
+  assert.ok(error < 0.0021, String(error));
+  for (const tolerance of [-1, NaN, Infinity]) assert.throws(() => bakeProjectObject(root, tolerance), RangeError);
+});
+
 test("every compressed asset keeps shared coordinates, complete groups, and smooth twist topology", async () => {
   await MeshoptDecoder.ready;
   const io = new NodeIO().registerExtensions(ALL_EXTENSIONS).registerDependencies({ "meshopt.decoder": MeshoptDecoder });

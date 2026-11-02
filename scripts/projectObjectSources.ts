@@ -38,7 +38,7 @@ function label(text: string, color: string, background: string, textY = 260) {
   return new THREE.MeshStandardMaterial({ map: texture, roughness: 0.35 });
 }
 
-export async function buildProjectObject(id: string) {
+export async function buildProjectObject(id: string, bendTolerance = 0) {
   const root = new THREE.Group();
   if (id === "marralhinha") {
     const gltf = await new GLTFLoader()
@@ -209,6 +209,6 @@ export async function buildProjectObject(id: string) {
     );
     root.rotation.set(-0.12, -0.35, -0.12);
   }
-  const baked = bakeProjectObject(root);
+  const baked = bakeProjectObject(root, bendTolerance);
   return baked;
 }
