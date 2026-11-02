@@ -23,6 +23,51 @@ npm run lint
 npm run typecheck
 ```
 
+## project object assets
+
+The archive loads pre-baked, Meshopt-compressed GLBs from `lib/projectObjects.json`.
+To change an object, edit `scripts/projectObjectSources.ts`, then run
+`CDP_URL=http://localhost:9222 npm run bake:project-objects` against a Chrome
+instance with remote debugging enabled. The baker opens and closes its own tab;
+it does not change existing tabs. Commit the manifest and its content-hashed GLBs.
+
+Transforms and instance colors are baked before a shared-space tessellation pass.
+Position quantization is deliberately disabled so compression cannot introduce
+per-part transforms that break the object-space twist. Materials and UVs survive.
+Run `npm run test:project-objects` to check geometry, shader normals, and assets.
+
+The production build writes losslessly Brotli-compressed models and raw fallbacks
+to `out/models/projects/`. Pages serves the `.br` files with `Content-Encoding: br`;
+both versions use a one-year immutable cache because their names are content-hashed.
+The loader falls back to raw GLB when compression is unavailable. Development
+loads the authoring GLBs directly. Run `npm run test:project-models` for delivery tests.
+
+Marralhinha uses the lean bake with a 0.002-unit sampled full-twist error target.
+`npm run bake:project-objects -- --candidate` writes an isolated, error-budgeted
+Marralhinha bake to the ignored `reference/project-object-candidate/` directory.
+It never changes the production models or manifest; compare before promoting it.
+
+## retired projects implementations
+
+Both previous designs are preserved as complete, restorable Git snapshots:
+
+- [Original horizontal rail](https://github.com/ryanpolasky/personal-website/tree/archive/projects-rail): `archive/projects-rail`.
+- [Lusion-style showcase and connected case studies](https://github.com/ryanpolasky/personal-website/tree/archive/projects-lusion): `archive/projects-lusion`.
+
+To run either without replacing the current design:
+
+```bash
+git fetch origin --tags
+git worktree add ../personal-website-projects-archive archive/projects-lusion
+cd ../personal-website-projects-archive
+npm ci
+npm run dev
+```
+
+Use `archive/projects-rail` instead for the original. These tags preserve each
+version's source, assets, styles, and dependencies without adding archive routes
+or importing the retired implementations into the current homepage.
+
 ## deploy
 
 `next.config.mjs` is set to `output: 'export'` so `npm run build` writes a static `out/` directory. Cloudflare Pages serves that directory; `_headers` and `_redirects` live in `public/` and are copied through.

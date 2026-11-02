@@ -7,6 +7,7 @@ import {
   useState,
   type MouseEvent,
   type TransitionEvent,
+  type CSSProperties,
 } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -14,13 +15,14 @@ import { RESUME_PDF_HREF } from "@/lib/site";
 import { useLenis } from "@/components/SmoothScrollProvider";
 import { UtdWebringButtons } from "@/components/UtdWebringButtons";
 import { resolveSectionScrollTarget } from "@/lib/scroll";
+import { PROJECT_HOLD } from "@/lib/projectMotion";
 
 // floating nav with active-section tracking and curtain-masked anchor teleports.
 
 const SLIDE_MS = 400;
 const DWELL_MS = 140;
 
-type NavPhase = "idle" | "closing" | "closed" | "opening" | "resetting";
+type NavPhase = "idle" | "closing" | "closed" | "opening" | "resetting" | "handoff";
 
 const SECTIONS = [
   { id: "about", label: "about" },
@@ -46,6 +48,7 @@ export function Nav() {
   const [active, setActive] = useState<string>("");
   const [phase, setPhase] = useState<NavPhase>("idle");
   const [destLabel, setDestLabel] = useState("ryan");
+  const [projectCover, setProjectCover] = useState<CSSProperties | null>(null);
   // mobile drawer toggle; only relevant <sm. opens via top-left hamburger.
   const [mobileOpen, setMobileOpen] = useState(false);
   const transitionTimer = useRef<number | null>(null);
@@ -64,8 +67,16 @@ export function Nav() {
         transitionTimer.current = null;
       }
       pendingTarget.current = null;
+      window.dispatchEvent(new CustomEvent("projects:cancel"));
     };
   }, []);
+
+  useEffect(() => {
+    if (phase !== "handoff") return;
+    window.dispatchEvent(new CustomEvent("projects:enter"));
+    pendingTarget.current = null;
+    setPhase("idle");
+  }, [phase]);
 
   useEffect(() => {
     // active-section + scrolled flag, driven by scroll events rather than a
@@ -120,6 +131,13 @@ export function Nav() {
       window.clearTimeout(transitionTimer.current);
       transitionTimer.current = null;
     }
+    window.dispatchEvent(new CustomEvent("projects:cancel"));
+    const projectEntry = id === "projects" && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const colors = projectEntry ? window.getComputedStyle(resolved.element) : null;
+    setProjectCover(colors ? {
+      backgroundColor: colors.backgroundColor,
+      color: colors.color,
+    } : null);
     pendingTarget.current = {
       id,
       element: resolved.element,
@@ -136,7 +154,6 @@ export function Nav() {
       e.preventDefault();
       e.stopPropagation();
       e.nativeEvent.stopImmediatePropagation();
-      // the real teleport waits for the curtain's transform transitionend.
       triggerWashTo(id);
     },
     [triggerWashTo],
@@ -165,6 +182,8 @@ export function Nav() {
     }
 
     pendingTarget.current = { id: "", element: document.body, offset: 0 };
+    window.dispatchEvent(new CustomEvent("projects:cancel"));
+    setProjectCover(null);
     setDestLabel("ryan");
     setPhase("closing");
   }, []);
@@ -180,9 +199,10 @@ export function Nav() {
 
         setPhase("closed");
 
-        // notify ProjectsRail (and any other listeners) that the next scroll
-        // change is a curtain-masked teleport, not user-driven; rail uses this
-        // to skip onEnter/onEnterBack landings that would hijack the teleport.
+        if (projectCover) {
+          window.dispatchEvent(new CustomEvent("projects:prepare"));
+        }
+
         window.dispatchEvent(new CustomEvent("nav:teleport"));
 
         if (lenis) {
@@ -196,7 +216,7 @@ export function Nav() {
           }
         } else {
           if (pending.id) {
-            pending.element.scrollIntoView({ behavior: "auto" });
+            pending.element.scrollIntoView({ behavior: projectCover ? "instant" : "auto" });
           } else {
             window.scrollTo({ top: 0, left: 0, behavior: "auto" });
           }
@@ -209,17 +229,12 @@ export function Nav() {
           );
         }
 
-        // tell ProjectsRail to reset to slot 0; without this the rail's
-        // internal currentIdx stays at the previously-viewed project.
-        if (pending.id === "projects" && typeof window !== "undefined") {
-          window.dispatchEvent(new CustomEvent("projects:reset"));
-        }
-
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
+            if (pendingTarget.current !== pending) return;
             transitionTimer.current = window.setTimeout(() => {
-              setPhase("opening");
-            }, DWELL_MS);
+              setPhase(projectCover ? "handoff" : "opening");
+            }, projectCover ? PROJECT_HOLD * 1000 : DWELL_MS);
           });
         });
         return;
@@ -238,7 +253,7 @@ export function Nav() {
         });
       }
     },
-    [lenis, phase],
+    [lenis, phase, projectCover],
   );
 
   if (!homeRoute) return null;
@@ -248,12 +263,13 @@ export function Nav() {
       {/* curtain wash overlay: accent panel sweeps up, covers, sweeps off top. */}
       <div
         aria-hidden
-        className={`fixed inset-0 z-[200] flex items-center justify-center overflow-hidden bg-[var(--color-accent)] ${
-          phase === "idle" || phase === "resetting"
+        className={`fixed inset-0 z-[200] flex items-center justify-center overflow-hidden bg-[var(--color-accent)] ${projectCover ? "project-nav-curtain" : ""} ${
+          phase === "idle" || phase === "resetting" || phase === "handoff"
             ? "pointer-events-none"
             : "pointer-events-auto"
         }`}
         style={{
+          ...projectCover,
           transform:
             phase === "closing" || phase === "closed"
               ? "translate3d(0, 0%, 0)"
@@ -261,14 +277,18 @@ export function Nav() {
                 ? "translate3d(0, -100%, 0)"
                 : "translate3d(0, 100%, 0)",
           transition:
-            phase === "resetting"
+            phase === "resetting" || phase === "handoff" || (projectCover && phase === "idle")
               ? "none"
               : `transform ${SLIDE_MS}ms cubic-bezier(0.83, 0, 0.17, 1)`,
           willChange: "transform",
         }}
         onTransitionEnd={handleCurtainTransitionEnd}
       >
-        <span
+        {projectCover ? (
+          <div className="project-boot-word" style={{ top: (pendingTarget.current?.element.clientHeight ?? 0) / 2 }}>
+            {Array.from("PROJECTS", (letter, i) => <span key={i}>{letter}</span>)}
+          </div>
+        ) : <span
           className="display select-none text-white"
           style={{
             fontFamily: "var(--font-display)",
@@ -283,7 +303,7 @@ export function Nav() {
           }}
         >
           {destLabel}
-        </span>
+        </span>}
       </div>
       <nav
         aria-label="primary"

@@ -6,7 +6,7 @@ import { HeroHeadline } from "@/components/HeroHeadline";
 import { HeroStage } from "@/components/HeroStage";
 import { MarqueeBand } from "@/components/MarqueeBand";
 import { AboutSection } from "@/components/AboutSection";
-import { ProjectsRail } from "@/components/ProjectsRail";
+import { ProjectsDesktop } from "@/components/ProjectsDesktop";
 import { FluidParticleBand } from "@/components/FluidParticleBand";
 import { Footer } from "@/components/Footer";
 import { OilFilmRippleUnlock } from "@/components/OilFilmRippleUnlock";
@@ -23,6 +23,7 @@ export default function HomePage() {
     <main id="main" className="relative">
       <Cursor />
 
+      <div className="home-scroll-region">
       {/* 01. HERO - exactly 100svh tall with padded frame on all sides.
           stage uses h-full so it fits the inner box (svh minus padding). */}
       <section
@@ -101,17 +102,18 @@ export default function HomePage() {
 
       {/* 03. ABOUT + EXPERIENCE */}
       <AboutSection />
-
-      {/* 05. PROJECTS RAIL */}
-      <div className="xl:pb-12">
-        <ProjectsRail />
       </div>
 
+      {/* 05. PROJECTS */}
+      <ProjectsDesktop />
+
+      <div className="home-scroll-region">
       {/* 06. CONTACT */}
       <FluidParticleBand />
 
       {/* 07. FOOTER */}
       <Footer />
+      </div>
     </main>
   );
 }
