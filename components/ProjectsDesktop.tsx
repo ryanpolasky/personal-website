@@ -11,7 +11,7 @@ import Image from "next/image";
 import gsap from "gsap";
 import { observeProjectLanding } from "@/lib/projectLanding";
 import { getEnabledProjects, type Project } from "@/lib/projects";
-import { PROJECT_HOLD, PROJECT_REVEAL, PROJECT_ARRIVAL_END, type ProjectArrival } from "@/lib/projectMotion";
+import { PROJECT_HOLD, PROJECT_RIPPLE, PROJECT_REVEAL, PROJECT_ARRIVAL_END, type ProjectArrival } from "@/lib/projectMotion";
 import "./projects-desktop.css";
 
 const ProjectObjectScene = dynamic(() => import("./ProjectObjectScene"), { ssr: false });
@@ -142,6 +142,12 @@ export function ProjectsDesktop() {
       timeline.to({}, { duration: PROJECT_ARRIVAL_END }, 0);
       const word = section.querySelector<HTMLElement>(".project-boot-word")!;
       const letters = section.querySelectorAll<HTMLElement>(".project-boot-letter");
+      section.querySelectorAll<HTMLElement>(".project-boot-glyph").forEach((glyph, i) => {
+        timeline.fromTo(glyph, { opacity: 1 }, {
+          opacity: 0.4, duration: PROJECT_RIPPLE.duration / 2,
+          repeat: 1, yoyo: true, ease: "sine.inOut",
+        }, PROJECT_RIPPLE.delay + i * PROJECT_RIPPLE.step);
+      });
       letters.forEach((letter, i) => {
         const glyph = word.children[i] as HTMLElement;
         timeline.fromTo(letter, {

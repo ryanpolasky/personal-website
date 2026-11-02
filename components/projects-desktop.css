@@ -273,6 +273,14 @@
 }
 .project-boot-word > span:not(:last-child) { margin-right: -0.075em; }
 .project-nav-curtain .project-boot-word { visibility: visible; }
+.project-nav-curtain[data-project-loading="true"] .project-boot-word > span {
+  animation: project-letter-loading var(--project-loading-duration) ease-in-out both;
+  animation-delay: calc(var(--project-loading-delay) + var(--letter-index) * var(--project-loading-step));
+}
+@keyframes project-letter-loading {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
 .project-boot-letter {
   position: absolute;
   left: var(--letter-x);
@@ -653,6 +661,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .project-nav-curtain .project-boot-word > span,
   .project-desktop, .project-desktop *, .project-desktop::before {
     animation-duration: 0s !important;
     transition-duration: 0s !important;
