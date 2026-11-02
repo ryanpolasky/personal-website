@@ -248,15 +248,18 @@
 .project-scene-layer * { pointer-events: none !important; }
 .project-scene-layer > div { position: absolute !important; inset: 0; }
 .project-desktop-topline, .project-desktop-bottomline { position: relative; z-index: 2; }
+.project-boot-poster,
+.project-nav-curtain {
+  font: 750 clamp(160px, min(22vw, 32svh), 290px)/1 var(--font-display);
+  font-variation-settings: "opsz" 144, "SOFT" 80, "WONK" 1;
+  letter-spacing: 0;
+}
 .project-boot-poster {
   position: absolute;
   inset: 0;
   z-index: 0;
   pointer-events: none;
   color: var(--pd-ink);
-  font: 750 clamp(160px, min(22vw, 32svh), 290px)/1 var(--font-display);
-  font-variation-settings: "opsz" 144, "SOFT" 80, "WONK" 1;
-  letter-spacing: 0;
 }
 .project-boot-word {
   position: absolute;
@@ -269,6 +272,7 @@
   visibility: hidden;
 }
 .project-boot-word > span:not(:last-child) { margin-right: -0.075em; }
+.project-nav-curtain .project-boot-word { visibility: visible; }
 .project-boot-letter {
   position: absolute;
   left: var(--letter-x);

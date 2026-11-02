@@ -125,6 +125,7 @@ export function ProjectsDesktop() {
       const clock = arrival.current;
       const archive = section.querySelector<HTMLElement>(".project-desktop-archive")!;
       let reversing = false;
+      let navHeld = false;
       const sync = () => {
         const time = clock.time;
         const motion = time === 0 ? "waiting" : reversing ? "reversing" :
@@ -181,15 +182,18 @@ export function ProjectsDesktop() {
       };
       const stopLanding = observeProjectLanding(section, {
         onMove: () => {
+          if (navHeld) return;
           if (!reversing) gsap.ticker.remove(advance);
         },
         onLand: () => {
+          if (navHeld) return;
           reversing = false;
           direction = 1;
           gsap.ticker.add(advance);
           sync();
         },
         onBrowse: () => {
+          if (navHeld) return;
           reversing = false;
           gsap.ticker.remove(advance);
           clock.time = PROJECT_ARRIVAL_END;
@@ -197,6 +201,7 @@ export function ProjectsDesktop() {
           sync();
         },
         onLeaveAbove: () => {
+          if (navHeld) return;
           if (clock.time > 0) {
             reversing = true;
             direction = -2.6;
@@ -205,6 +210,27 @@ export function ProjectsDesktop() {
           }
         },
       });
+      const prepareNav = () => {
+        navHeld = true;
+        reversing = false;
+        gsap.ticker.remove(advance);
+        clock.time = 0;
+        timeline.time(0, true);
+        sync();
+      };
+      const enterNav = () => {
+        if (!navHeld) return;
+        navHeld = false;
+        direction = 1;
+        clock.time = PROJECT_HOLD;
+        timeline.time(clock.time, true);
+        gsap.ticker.add(advance);
+        sync();
+      };
+      const cancelNav = () => { navHeld = false; };
+      window.addEventListener("projects:prepare", prepareNav);
+      window.addEventListener("projects:enter", enterNav);
+      window.addEventListener("projects:cancel", cancelNav);
       const resize = () => timeline.invalidate().time(clock.time, true);
       const layout = new ResizeObserver(resize);
       layout.observe(section);
@@ -217,6 +243,9 @@ export function ProjectsDesktop() {
       return () => {
         alive = false;
         stopLanding();
+        window.removeEventListener("projects:prepare", prepareNav);
+        window.removeEventListener("projects:enter", enterNav);
+        window.removeEventListener("projects:cancel", cancelNav);
         layout.disconnect();
         visible.disconnect();
         gsap.ticker.remove(advance);
