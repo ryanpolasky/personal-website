@@ -120,6 +120,22 @@ export function Nav() {
       window.clearTimeout(transitionTimer.current);
       transitionTimer.current = null;
     }
+    if (id === "projects") {
+      pendingTarget.current = null;
+      setPhase("idle");
+      setMobileOpen(false);
+      window.dispatchEvent(new CustomEvent("nav:teleport"));
+      if (lenis) {
+        lenis.scrollTo(resolved.element, {
+          immediate: true,
+          offset: resolved.offset,
+        });
+      } else {
+        resolved.element.scrollIntoView({ behavior: "instant" });
+      }
+      history.replaceState(null, "", `#${id}`);
+      return;
+    }
     pendingTarget.current = {
       id,
       element: resolved.element,
@@ -127,7 +143,7 @@ export function Nav() {
     };
     setDestLabel(destLabelFor(id));
     setPhase("closing");
-  }, []);
+  }, [lenis]);
 
   const handleNavClick = useCallback(
     (e: MouseEvent<HTMLAnchorElement>, id: string) => {
@@ -136,7 +152,6 @@ export function Nav() {
       e.preventDefault();
       e.stopPropagation();
       e.nativeEvent.stopImmediatePropagation();
-      // the real teleport waits for the curtain's transform transitionend.
       triggerWashTo(id);
     },
     [triggerWashTo],
