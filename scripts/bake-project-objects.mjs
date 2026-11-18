@@ -13,7 +13,7 @@ import { MeshoptEncoder, MeshoptDecoder } from "meshoptimizer";
 const root = fileURLToPath(new URL("../", import.meta.url));
 const candidate = process.argv.includes("--candidate");
 if (candidate) await mkdir(path.join(root, "reference/project-object-candidate"), { recursive: true });
-const ids = candidate ? ["marralhinha"] : ["marralhinha", "autopsy", "utd-roommates", "rycord", "nimby", "apple-triage", "apple-nlsql", "readme-ryvamper"];
+const ids = candidate ? ["marralhinha"] : ["wellspring", "marralhinha", "autopsy", "utd-roommates", "rycord", "nimby", "apple-triage", "readme-ryvamper"];
 const directory = await mkdtemp(path.join(tmpdir(), "project-bake-"));
 const html = `<!doctype html><script type="importmap">{"imports":{"three":"/three/build/three.module.js","three/":"/three/"}}</script><script type="module">
 import { buildProjectObject } from '/sources.js';

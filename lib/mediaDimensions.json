@@ -110,5 +110,25 @@
   "/assets/projects/rycord/ryc_vinyl.webp": {
     "w": 2940,
     "h": 1504
+  },
+  "/assets/projects/wellspring/ws_fall.webp": {
+    "w": 640,
+    "h": 1152
+  },
+  "/assets/projects/wellspring/ws_logo.png": {
+    "w": 642,
+    "h": 336
+  },
+  "/assets/projects/wellspring/ws_palettes.webp": {
+    "w": 3200,
+    "h": 1152
+  },
+  "/assets/projects/wellspring/ws_spells.webp": {
+    "w": 1920,
+    "h": 864
+  },
+  "/assets/projects/wellspring/ws_title.webp": {
+    "w": 640,
+    "h": 1152
   }
 }

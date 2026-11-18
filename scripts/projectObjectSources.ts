@@ -193,21 +193,23 @@ export async function buildProjectObject(id: string, bendTolerance = id === "mar
     glass.position.set(1, -0.4, 0.5);
     root.add(glass);
     root.rotation.set(-0.12, -0.35, -0.12);
-  } else {
-    const silver = material("#dce4df", 0.4, 0.32);
-    const edge = material("#607d73", 0.4, 0.3);
-    for (let i = 0; i < 3; i++) {
-      add(root, new THREE.CylinderGeometry(1.65, 1.65, 0.85, 64), silver, [0, -1 + i * 0.95, 0]);
-      add(root, new THREE.TorusGeometry(1.65, 0.04, 8, 64), edge, [0, -1.42 + i * 0.95, 0]).rotation.x = Math.PI / 2;
-    }
-    add(root, new RoundedBoxGeometry(2.25, 1.4, 0.22, 3, 0.1), material("#263c36"), [0.8, -0.7, 1.6]);
-    add(
-      root,
-      new THREE.PlaneGeometry(1.6, 1.1),
-      label(">_", "#a6e0b7", "#263c36"),
-      [0.8, -0.7, 1.72],
+  } else if (id === "wellspring") {
+    const response = await fetch("/assets/project-objects/wellspring-voxels.json");
+    if (!response.ok) throw new Error("Wizard artwork unavailable");
+    const pixels = (await response.json()) as [number, number, number, string][];
+    const voxels = new THREE.InstancedMesh(
+      new THREE.BoxGeometry(0.24, 0.24, 0.24),
+      material("white", 0.05, 0.55),
+      pixels.length,
     );
-    root.rotation.set(-0.12, -0.35, -0.12);
+    const matrix = new THREE.Matrix4();
+    const color = new THREE.Color();
+    pixels.forEach(([x, y, z, hex], i) => {
+      voxels.setMatrixAt(i, matrix.makeTranslation(x, y, z));
+      voxels.setColorAt(i, color.set(hex));
+    });
+    root.add(voxels);
+    root.rotation.set(-0.08, -0.4, 0.08);
   }
   const baked = bakeProjectObject(root, bendTolerance);
   return baked;
