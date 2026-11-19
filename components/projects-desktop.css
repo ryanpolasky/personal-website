@@ -572,7 +572,7 @@
 
 @keyframes project-desktop-window-switch {
   from { opacity: 0; transform: translateY(25px) rotate(3deg) scale(.85, .5); clip-path: inset(85% 0 0); }
-  to { opacity: 1; transform: none; clip-path: inset(0); }
+  to { opacity: 1; transform: none; clip-path: none; }
 }
 
 @media (min-width: 801px) and (max-height: 850px) {
