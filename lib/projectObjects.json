@@ -1,4 +1,8 @@
 {
+  "wellspring": {
+    "file": "wellspring-f6af58e463.glb",
+    "bytes": 994972
+  },
   "marralhinha": {
     "file": "marralhinha-7658bf31c4.glb",
     "bytes": 4183000
@@ -22,10 +26,6 @@
   "apple-triage": {
     "file": "apple-triage-26d3009167.glb",
     "bytes": 315936
-  },
-  "apple-nlsql": {
-    "file": "apple-nlsql-6bc32b497d.glb",
-    "bytes": 380080
   },
   "readme-ryvamper": {
     "file": "readme-ryvamper-c990fb8f50.glb",

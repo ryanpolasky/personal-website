@@ -76,8 +76,68 @@ export const WIDTH_VW: Record<ProjectWidth, number> = {
 
 export const PROJECTS: Project[] = [
   {
-    id: "marralhinha",
+    id: "wellspring",
     index: "01.",
+    name: "Wellspring",
+    tagline: "a spell-powered fall down a well.",
+    body: "a tiny pixel roguelike about falling down a well. jump off a ledge and it's a jump; jump in midair and you cast a spell straight down, which clears whatever's below and slows your fall. land or stomp something to refill mana, pick a blessing at the bottom, and keep going. a personal side project, from the sprites to the synth.",
+    role: "solo · personal project",
+    stack: ["TypeScript", "Vite", "Canvas 2D", "Web Audio", "Cloudflare Workers"],
+    href: "https://ws.ryanpolasky.com",
+    hrefLabel: "jump in →",
+    logoSrc: "/assets/projects/wellspring/ws_logo.png",
+    width: "xl",
+    introLayout: "landscape",
+    media: {
+      kind: "image",
+      items: [
+        {
+          label: "one moment, five palettes",
+          src: "/assets/projects/wellspring/ws_palettes.webp",
+          alt: "The same Wellspring frame rendered in five of the game's palettes",
+        },
+      ],
+    },
+    sections: [
+      {
+        eyebrow: "the spells",
+        title: "your gun is also your parachute.",
+        body: "every cast fires downward and kicks you back up a little, so shooting is how you steer the fall. you start with missile; stomp a bat, frog, jelly or golem to take its spell instead. spread fans out, orbs ricochet off the walls, beam holds a ray under you, boulder plows through everything for three mana.",
+        layout: "editorial",
+        media: [
+          {
+            label: "spread · orbs · beam · boulder · same well, same inputs",
+            src: "/assets/projects/wellspring/ws_spells.webp",
+            animatedSrc: "/assets/projects/wellspring/ws_spells.mp4",
+            alt: "Four Wellspring runs side by side, each falling through the same well with a different spell",
+          },
+        ],
+      },
+      {
+        eyebrow: "the well",
+        title: "drawn in code, one pixel at a time.",
+        body: "every sprite is hand-authored as palette-index pixel art right in the source, no image files. wells generate from a seed, sound effects are synthesized live with web audio, and the whole game draws to a 160×288 canvas scaled up by whole pixels. swapping one of 33 palettes recolors everything at once.",
+        layout: "editorial",
+        media: [
+          {
+            label: "the title",
+            src: "/assets/projects/wellspring/ws_title.webp",
+            alt: "Wellspring title screen with the wizard standing beside the well",
+          },
+          {
+            label: "mid-fall",
+            src: "/assets/projects/wellspring/ws_fall.webp",
+            alt: "The wizard falling past ledges and enemies deep in a well",
+          },
+        ],
+      },
+    ],
+    tintHsl: { h: 353, s: 86, l: 57 },
+    enabled: true,
+  },
+  {
+    id: "marralhinha",
+    index: "02.",
     name: "Marralhinha",
     tagline: "same game. different tables.",
     body: "my family has been playing marralhinha, a marble game from terceira, açores, for a couple of years. i built an online version so friends could pull up a chair from anywhere. a personal side project, from the 3d board to the multiplayer server.",
@@ -135,7 +195,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "autopsy",
-    index: "02.",
+    index: "03.",
     name: "Autopsy",
     tagline: "a black box recorder for ai coding agents.",
     body: "coding agents repeat the same mistakes every run. autopsy records every tool call, autopsies the rejected runs into a failure knowledge graph, and injects warnings straight into the next session's system prompt so the agent stops relearning lessons it already paid for. shipped at la hacks 2026 as a team of four.",
@@ -242,7 +302,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "utd-roommates",
-    index: "03.",
+    index: "04.",
     name: "MeteorMate",
     tagline: "ai-driven roommate matching for utd students.",
     body: "lead for an acm utd platform that matches students on habits, lifestyle, and preferences, not just location or price. owned roadmap/task breakdown, shaped the next/react frontend + python/fastapi backend architecture across postgres + firebase, and drove deployment reliability fixes for local and vercel-style environments.",
@@ -354,7 +414,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "rycord",
-    index: "04.",
+    index: "05.",
     name: "rycord",
     tagline: "a cache-first 3d record room built from my discogs collection.",
     body: "in rycord, a kallax-style shelf sits in a cozy bedroom scene, populated by the actual albums in my record collection. each record pulls out of its slot, flips to the back jacket, and shows the tracklist + description in an info panel. APIs only get hit on first grab, then every reload reads from the cache on local disk.",
@@ -416,7 +476,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "nimby",
-    index: "05.",
+    index: "06.",
     name: "NIMBY",
     tagline:
       "a 2D survivor roguelike about a druid fighting capital encroachment.",
@@ -489,7 +549,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "apple-triage",
-    index: "06.",
+    index: "07.",
     name: "LLM Test Triage",
     tagline:
       "end-to-end triage pipeline for 1000+ camera tests: parse, group, classify, file.",
@@ -536,21 +596,6 @@ export const PROJECTS: Project[] = [
       },
     ],
     tintHsl: { h: 285, s: 60, l: 70 },
-    enabled: true,
-  },
-  {
-    id: "apple-nlsql",
-    index: "07.",
-    name: "NL → SQL / NoSQL",
-    tagline: "natural-language query interface for internal data stores.",
-    body: "engineers ask in plain english; the planner generates schema-aware queries against postgres and nosql backends. also migrated the surrounding service from java 11 → jdk 21 and designed its aws/gcp ci/cd workflow. 2024 cupertino internship on the developer tools team.",
-    role: "apple WTE intern",
-    stack: ["Python", "FastAPI", "Postgres"],
-    href: undefined,
-    hrefLabel: "private",
-    width: "wide",
-    media: { kind: "none" },
-    tintHsl: { h: 4, s: 75, l: 60 },
     enabled: true,
   },
   {

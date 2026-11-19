@@ -25,6 +25,10 @@ const letterPositions = [
 ];
 
 const objects: Record<string, { src: string; alt: string }> = {
+  wellspring: {
+    src: "/assets/project-objects/wizard.png",
+    alt: "Wellspring wizard sprite",
+  },
   marralhinha: {
     src: "/assets/project-objects/board-oak.png",
     alt: "Marralhinha marble board",
@@ -53,13 +57,11 @@ const objects: Record<string, { src: string; alt: string }> = {
     src: "/assets/project-objects/triage.svg",
     alt: "Camera-test logs under a magnifying glass",
   },
-  "apple-nlsql": {
-    src: "/assets/project-objects/database.svg",
-    alt: "Database stack with a query terminal",
-  },
 };
 
 const descriptions: Record<string, string> = {
+  wellspring:
+    "A pixel roguelike down a well, where every midair jump casts a spell straight down.",
   marralhinha:
     "The marble game my family plays, rebuilt as a multiplayer table for the browser.",
   autopsy:
@@ -72,8 +74,6 @@ const descriptions: Record<string, string> = {
     "A hand-drawn roguelike where a shapeshifting druid defends the forest.",
   "apple-triage":
     "Groups and diagnoses 1,000+ camera-test failures and files bug reports for engineers.",
-  "apple-nlsql":
-    "Plain-English queries for Postgres and NoSQL backends, backed by schema-aware planning.",
   "readme-ryvamper":
     "Build animated GitHub README banners in your browser and export them as SVGs.",
 };
@@ -84,7 +84,7 @@ function ProjectObject({ project }: { project: Project }) {
     return (
       <span className="project-desktop-document" aria-hidden="true">
         <span className="project-desktop-document-lines" />
-        <span>{project.id === "apple-triage" ? "LOG" : "SQL"}</span>
+        <span>LOG</span>
       </span>
     );
   }
