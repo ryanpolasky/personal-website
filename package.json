@@ -12,7 +12,8 @@
     "predev": "node scripts/build-media.mjs",
     "dev": "next dev",
     "prebuild": "node scripts/build-media.mjs",
-    "build": "next build && node scripts/build-project-models.mjs && node scripts/inject-font-preloads.mjs",
+    "build": "next build && node scripts/build-project-models.mjs && node scripts/inject-font-preloads.mjs && node --experimental-strip-types scripts/build-project-redirects.mjs",
+    "test:project-redirects": "node --experimental-strip-types --test scripts/projectRedirects.test.mjs",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit"

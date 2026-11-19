@@ -42,6 +42,7 @@ export interface ProjectGithubRepo {
 
 export interface Project {
   id: string;
+  slug?: string;
   index: string;
   name: string;
   tagline: string;
@@ -83,6 +84,7 @@ export const PROJECTS: Project[] = [
     role: "solo · personal project",
     stack: ["React", "Three.js", "Node.js", "Socket.IO", "Discord SDK"],
     href: "https://marralhinha.app",
+    slug: "marralhinha",
     hrefLabel: "play a round →",
     githubHref: "https://github.com/ryanpolasky/Marralhinha",
     width: "xl",
@@ -149,6 +151,7 @@ export const PROJECTS: Project[] = [
       "Gemma",
     ],
     href: "https://autopsy.surf",
+    slug: "autopsy",
     hrefLabel: "visit →",
     githubHref: "https://github.com/balebbae/autopsy",
     devpostHref: "https://devpost.com/software/autopsy-zq5d84",
@@ -246,6 +249,7 @@ export const PROJECTS: Project[] = [
     role: "lead · acm utd",
     stack: ["React.js", "FastAPI", "Python", "Postgres", "Firebase", "DevOps"],
     href: "https://meteormate.com",
+    slug: "meteormate",
     hrefLabel: "visit →",
     githubHref: [
       {
@@ -365,6 +369,7 @@ export const PROJECTS: Project[] = [
       "Docker",
     ],
     href: "https://rycord.dev",
+    slug: "rycord",
     hrefLabel: "visit",
     githubHref: "https://github.com/ryanpolasky/rycord",
     width: "wide",
@@ -565,6 +570,7 @@ export const PROJECTS: Project[] = [
       "Cloudflare Pages",
     ],
     href: "https://ryme.md",
+    slug: "ryme-md",
     hrefLabel: "visit →",
     githubHref: "https://github.com/ryanpolasky/ryme.md",
     width: "wide",
