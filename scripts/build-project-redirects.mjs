@@ -6,18 +6,18 @@ import { PROJECTS } from "../lib/projects.ts";
 export function projectRedirects(projects, reserved = []) {
   const occupied = new Set(reserved);
   const rules = [];
-  for (const { id, href } of projects) {
+  for (const { id, slug = id, href } of projects) {
     if (!href || href.startsWith("/")) continue;
-    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id)) {
-      throw new Error(`Invalid project redirect slug: ${id}`);
+    if (typeof slug !== "string" || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
+      throw new Error(`Invalid project redirect slug: ${slug}`);
     }
     const target = new URL(href);
     if (!/^https?:$/.test(target.protocol) || /\s/.test(href) || target.username || target.password) {
       throw new Error(`Invalid project redirect target: ${id}`);
     }
-    if (occupied.has(id)) throw new Error(`Project redirect clashes with an existing route: /${id}`);
-    occupied.add(id);
-    rules.push(`/${id} ${href} 302`, `/${id}/ ${href} 302`);
+    if (occupied.has(slug)) throw new Error(`Project redirect clashes with an existing route: /${slug}`);
+    occupied.add(slug);
+    rules.push(`/${slug} ${href} 302`, `/${slug}/ ${href} 302`);
   }
   return rules;
 }

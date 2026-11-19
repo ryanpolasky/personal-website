@@ -72,7 +72,7 @@ or importing the retired implementations into the current homepage.
 
 `next.config.mjs` is set to `output: 'export'` so `npm run build` writes a static `out/` directory. Cloudflare Pages serves that directory; `_headers` and `_redirects` live in `public/` and are copied through.
 
-The build appends project links to `out/_redirects` from `lib/projects.ts`: each project with an external HTTP(S) `href` gets `/<id>` and `/<id>/` redirects with status **302**, so targets can change without permanent browser caching. Update the project `href` to repoint a link. Projects without live URLs are skipped. Existing exported routes and manual redirect names are reserved; collisions fail the build. Keep manual rules in `public/_redirects`, not the generated output.
+The build appends project links to `out/_redirects` from `lib/projects.ts`: each project with an external HTTP(S) `href` gets `/<slug>` and `/<slug>/` redirects with status **302**, so targets can change without permanent browser caching. Set an explicit `slug` to the project's public brand name in lowercase kebab-case (for example, MeteorMate → `meteormate`, RyMe.md → `ryme-md`). Keep it stable even if the display name or destination changes; update only `href` to repoint a link. Projects missing `slug` fall back to their existing `id` for backwards compatibility. Empty or invalid slugs, duplicate effective slugs, and collisions with exported routes or manual redirect names fail the build. Projects without live URLs are skipped. Keep manual rules in `public/_redirects`, not the generated output.
 
 ## variant gallery
 
