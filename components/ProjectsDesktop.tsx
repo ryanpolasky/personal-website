@@ -237,7 +237,9 @@ export function ProjectsDesktop() {
       window.addEventListener("projects:prepare", prepareNav);
       window.addEventListener("projects:enter", enterNav);
       window.addEventListener("projects:cancel", cancelNav);
-      const resize = () => timeline.invalidate().time(clock.time, true);
+      // unstarted fromTo tweens don't re-render their from-state after invalidate,
+      // so pass through the end and back to re-apply freshly measured letter offsets.
+      const resize = () => timeline.invalidate().time(PROJECT_ARRIVAL_END, true).time(clock.time, true);
       const layout = new ResizeObserver(resize);
       layout.observe(section);
       const visible = new IntersectionObserver(([entry]) => {
