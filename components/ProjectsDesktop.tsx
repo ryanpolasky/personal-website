@@ -153,7 +153,7 @@ export function ProjectsDesktop() {
         timeline.fromTo(letter, {
           xPercent: -50, yPercent: -50,
           x: () => (section.clientWidth - word.offsetWidth) / 2 + glyph.offsetLeft + glyph.offsetWidth / 2 - letter.offsetLeft,
-          y: () => section.clientHeight / 2 - letter.offsetTop,
+          y: () => Math.min(section.clientHeight, innerHeight) / 2 - letter.offsetTop,
           scale: () => word.offsetHeight / letter.offsetHeight,
           rotation: 0,
         }, {
